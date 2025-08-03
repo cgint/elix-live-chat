@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>mix phx.digest.clean - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+mix phx.digest.clean 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Removes old versions of compiled assets.</p><p>By default, it will keep the latest version and
+2 previous versions as well as any digest created
+in the last hour.</p><pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">mix phx.digest.clean
+</samp><samp class="gp unselectable">$ </samp><samp class="">mix phx.digest.clean -o /www/public
+</samp><samp class="gp unselectable">$ </samp><samp class="">mix phx.digest.clean --age 600 --keep 3
+</samp><samp class="gp unselectable">$ </samp><samp class="">mix phx.digest.clean --all
+</samp></code></pre><h2 id="module-options" class="section-heading">
+  <a href="#module-options" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Options</span>
+</h2>
+<ul><li><p><code class="inline">-o, --output</code> - indicates the path to your compiled
+assets directory. Defaults to <code class="inline">priv/static</code></p></li><li><p><code class="inline">--age</code> - specifies a maximum age (in seconds) for assets.
+Files older than age that are not in the last <code class="inline">--keep</code> versions
+will be removed. Defaults to 3600 (1 hour)</p></li><li><p><code class="inline">--keep</code> - specifies how many previous versions of assets to keep.
+Defaults to 2 previous versions</p></li><li><p><code class="inline">--all</code> - specifies that all compiled assets (including the manifest)
+will be removed. Note this overrides the age and keep switches.</p></li></ul>
+      </section>
+
+
+
+
+  </body>
+</html>

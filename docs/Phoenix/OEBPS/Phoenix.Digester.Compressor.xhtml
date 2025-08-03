@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.Digester.Compressor - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.Digester.Compressor <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Defines the <a href="Phoenix.Digester.Compressor.xhtml"><code class="inline">Phoenix.Digester.Compressor</code></a> behaviour for
+implementing static file compressors.</p><p>A custom compressor expects 2 functions to be implemented.</p><p>By default, Phoenix uses only <a href="Phoenix.Digester.Gzip.xhtml"><code class="inline">Phoenix.Digester.Gzip</code></a> to compress
+static files, but additional compressors can be defined and added
+to the digest process.</p><h2 id="module-example" class="section-heading">
+  <a href="#module-example" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Example</span>
+</h2>
+<p>If you wanted to compress files using an external brotli compression
+library, you could define a new module implementing the behaviour and add the
+module to the list of configured Phoenix static compressors.</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.BrotliCompressor</samp><samp class="w"> </samp><samp class="k" data-group-id="5546652343-1">do</samp><samp class="w">
+  </samp><samp class="na">@behaviour</samp><samp class="w"> </samp><samp class="nc">Phoenix.Digester.Compressor</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">compress_file</samp><samp class="p" data-group-id="5546652343-2">(</samp><samp class="n">file_path</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">content</samp><samp class="p" data-group-id="5546652343-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5546652343-3">do</samp><samp class="w">
+    </samp><samp class="n">valid_extension</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Path</samp><samp class="o">.</samp><samp class="n">extname</samp><samp class="p" data-group-id="5546652343-4">(</samp><samp class="n">file_path</samp><samp class="p" data-group-id="5546652343-4">)</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="nc">Application</samp><samp class="o">.</samp><samp class="n">fetch_env!</samp><samp class="p" data-group-id="5546652343-5">(</samp><samp class="ss">:phoenix</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:gzippable_exts</samp><samp class="p" data-group-id="5546652343-5">)</samp><samp class="w">
+    </samp><samp class="p" data-group-id="5546652343-6">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">compressed_content</samp><samp class="p" data-group-id="5546652343-6">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">:brotli</samp><samp class="o">.</samp><samp class="n">encode</samp><samp class="p" data-group-id="5546652343-7">(</samp><samp class="n">content</samp><samp class="p" data-group-id="5546652343-7">)</samp><samp class="w">
+
+    </samp><samp class="k">if</samp><samp class="w"> </samp><samp class="n">valid_extension</samp><samp class="w"> </samp><samp class="o">&amp;&amp;</samp><samp class="w"> </samp><samp class="n">byte_size</samp><samp class="p" data-group-id="5546652343-8">(</samp><samp class="n">compressed_content</samp><samp class="p" data-group-id="5546652343-8">)</samp><samp class="w"> </samp><samp class="o">&lt;</samp><samp class="w"> </samp><samp class="n">byte_size</samp><samp class="p" data-group-id="5546652343-9">(</samp><samp class="n">content</samp><samp class="p" data-group-id="5546652343-9">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5546652343-10">do</samp><samp class="w">
+      </samp><samp class="p" data-group-id="5546652343-11">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">compressed_content</samp><samp class="p" data-group-id="5546652343-11">}</samp><samp class="w">
+    </samp><samp class="k" data-group-id="5546652343-10">else</samp><samp class="w">
+      </samp><samp class="ss">:error</samp><samp class="w">
+    </samp><samp class="k" data-group-id="5546652343-10">end</samp><samp class="w">
+  </samp><samp class="k" data-group-id="5546652343-3">end</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">file_extensions</samp><samp class="w"> </samp><samp class="k" data-group-id="5546652343-12">do</samp><samp class="w">
+    </samp><samp class="p" data-group-id="5546652343-13">[</samp><samp class="s">&quot;.br&quot;</samp><samp class="p" data-group-id="5546652343-13">]</samp><samp class="w">
+  </samp><samp class="k" data-group-id="5546652343-12">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="5546652343-1">end</samp><samp class="w">
+
+</samp><samp class="c1"># config/config.exs</samp><samp class="w">
+</samp><samp class="n">config</samp><samp class="w"> </samp><samp class="ss">:phoenix</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">static_compressors</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5546652343-14">[</samp><samp class="nc">Phoenix.Digester.Gzip</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyApp.BrotliCompressor</samp><samp class="p" data-group-id="5546652343-14">]</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="c1"># ...</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:compress_file/2" data-no-tooltip="" translate="no">compress_file(t, binary)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:file_extensions/0" data-no-tooltip="" translate="no">file_extensions()</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:compress_file/2">
+
+  <div class="detail-header">
+    <a href="#c:compress_file/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">compress_file(t, binary)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/digester/compressor.ex#L42" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> compress_file(<a href="https://hexdocs.pm/elixir/Path.html#t:t/0">Path.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()} | :error</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:file_extensions/0">
+
+  <div class="detail-header">
+    <a href="#c:file_extensions/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">file_extensions()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/digester/compressor.ex#L43" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> file_extensions() :: [<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), ...]</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

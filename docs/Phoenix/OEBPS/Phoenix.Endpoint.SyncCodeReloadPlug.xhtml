@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.Endpoint.SyncCodeReloadPlug - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.Endpoint.SyncCodeReloadPlug 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Wraps an Endpoint, attempting to sync with Phoenix's code reloader if 
+an exception is raising which indicates that we may be in the middle of a reload.</p><p>We detect this by looking at the raised exception and seeing if it indicates
+that the endpoint is not defined. This indicates that the code reloader may be 
+mid way through a compile, and that we should attempt to retry the request
+after the compile has completed. This is also why this must be implemented in
+a separate module (one that is not recompiled in a typical code reload cycle),
+since otherwise it may be the case that the endpoint itself is not defined.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#call/2" data-no-tooltip="" translate="no">call(conn, arg)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Callback implementation for <a href="https://hexdocs.pm/plug/1.15.3/Plug.html#c:call/2"><code class="inline">Plug.call/2</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#init/1" data-no-tooltip="" translate="no">init(arg)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Callback implementation for <a href="https://hexdocs.pm/plug/1.15.3/Plug.html#c:init/1"><code class="inline">Plug.init/1</code></a>.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="call/2">
+
+  <div class="detail-header">
+    <a href="#call/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">call(conn, arg)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/endpoint/sync_code_reload_plug.ex#L18" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Callback implementation for <a href="https://hexdocs.pm/plug/1.15.3/Plug.html#c:call/2"><code class="inline">Plug.call/2</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="init/1">
+
+  <div class="detail-header">
+    <a href="#init/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">init(arg)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/endpoint/sync_code_reload_plug.ex#L16" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Callback implementation for <a href="https://hexdocs.pm/plug/1.15.3/Plug.html#c:init/1"><code class="inline">Plug.init/1</code></a>.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

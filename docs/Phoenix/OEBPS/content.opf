@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf"
+         unique-identifier="project-Phoenix"
+         version="3.0">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:title>Phoenix - 1.7.21</dc:title>
+    <dc:identifier id="project-Phoenix">urn:uuid:5e6e17f7-c7be-25de-32ad-e0eb5cc2edb5</dc:identifier>
+    <dc:language>en</dc:language>
+
+    <meta property="dcterms:modified">2025-05-09T13:07:47Z</meta>
+
+  </metadata>
+  <manifest>
+    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav scripted"/>
+    <item id="cover" href="title.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="changelog" href="changelog.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="overview" href="overview.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="installation" href="installation.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="up_and_running" href="up_and_running.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="community" href="community.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="packages_glossary" href="packages_glossary.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="directory_structure" href="directory_structure.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="request_lifecycle" href="request_lifecycle.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="plug" href="plug.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="routing" href="routing.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="controllers" href="controllers.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="components" href="components.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="ecto" href="ecto.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="contexts" href="contexts.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="json_and_apis" href="json_and_apis.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="mix_tasks" href="mix_tasks.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="telemetry" href="telemetry.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="asset_management" href="asset_management.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="mix_phx_gen_auth" href="mix_phx_gen_auth.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="api_authentication" href="api_authentication.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="channels" href="channels.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="presence" href="presence.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="testing" href="testing.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="testing_contexts" href="testing_contexts.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="testing_controllers" href="testing_controllers.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="testing_channels" href="testing_channels.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="deployment" href="deployment.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="releases" href="releases.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="gigalixir" href="gigalixir.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="fly" href="fly.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="heroku" href="heroku.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="router" href="router.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="custom_error_pages" href="custom_error_pages.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="file_uploads" href="file_uploads.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="using_ssl" href="using_ssl.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="writing_a_channels_client" href="writing_a_channels_client.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+
+      <item id="Phoenix" href="Phoenix.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Channel" href="Phoenix.Channel.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Controller" href="Phoenix.Controller.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Endpoint" href="Phoenix.Endpoint.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Flash" href="Phoenix.Flash.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Logger" href="Phoenix.Logger.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Naming" href="Phoenix.Naming.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Param" href="Phoenix.Param.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Presence" href="Phoenix.Presence.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Router" href="Phoenix.Router.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Socket" href="Phoenix.Socket.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Token" href="Phoenix.Token.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.VerifiedRoutes" href="Phoenix.VerifiedRoutes.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.ChannelTest" href="Phoenix.ChannelTest.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.ConnTest" href="Phoenix.ConnTest.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.CodeReloader" href="Phoenix.CodeReloader.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Endpoint.Cowboy2Adapter" href="Phoenix.Endpoint.Cowboy2Adapter.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Endpoint.SyncCodeReloadPlug" href="Phoenix.Endpoint.SyncCodeReloadPlug.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Digester.Compressor" href="Phoenix.Digester.Compressor.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Digester.Gzip" href="Phoenix.Digester.Gzip.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Socket.Broadcast" href="Phoenix.Socket.Broadcast.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Socket.Message" href="Phoenix.Socket.Message.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Socket.Reply" href="Phoenix.Socket.Reply.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Socket.Serializer" href="Phoenix.Socket.Serializer.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Socket.Transport" href="Phoenix.Socket.Transport.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.ActionClauseError" href="Phoenix.ActionClauseError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.MissingParamError" href="Phoenix.MissingParamError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.NotAcceptableError" href="Phoenix.NotAcceptableError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Router.MalformedURIError" href="Phoenix.Router.MalformedURIError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Router.NoRouteError" href="Phoenix.Router.NoRouteError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.Socket.InvalidMessageError" href="Phoenix.Socket.InvalidMessageError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Local.Phx" href="Mix.Tasks.Local.Phx.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx" href="Mix.Tasks.Phx.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Digest" href="Mix.Tasks.Phx.Digest.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Digest.Clean" href="Mix.Tasks.Phx.Digest.Clean.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen" href="Mix.Tasks.Phx.Gen.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Auth" href="Mix.Tasks.Phx.Gen.Auth.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Cert" href="Mix.Tasks.Phx.Gen.Cert.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Channel" href="Mix.Tasks.Phx.Gen.Channel.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Context" href="Mix.Tasks.Phx.Gen.Context.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Embedded" href="Mix.Tasks.Phx.Gen.Embedded.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Html" href="Mix.Tasks.Phx.Gen.Html.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Json" href="Mix.Tasks.Phx.Gen.Json.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Live" href="Mix.Tasks.Phx.Gen.Live.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Notifier" href="Mix.Tasks.Phx.Gen.Notifier.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Presence" href="Mix.Tasks.Phx.Gen.Presence.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Release" href="Mix.Tasks.Phx.Gen.Release.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Schema" href="Mix.Tasks.Phx.Gen.Schema.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Secret" href="Mix.Tasks.Phx.Gen.Secret.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Gen.Socket" href="Mix.Tasks.Phx.Gen.Socket.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.New" href="Mix.Tasks.Phx.New.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.New.Ecto" href="Mix.Tasks.Phx.New.Ecto.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.New.Web" href="Mix.Tasks.Phx.New.Web.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Routes" href="Mix.Tasks.Phx.Routes.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Phx.Server" href="Mix.Tasks.Phx.Server.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+
+      <item id="epub-4wip524f-js" href="dist/epub-4WIP524F.js" media-type="text/javascript"/>
+
+      <item id="epub-elixir-fnuukfp7-css" href="dist/epub-elixir-FNUUKFP7.css" media-type="text/css"/>
+
+      <item id="hello-from-phoenix-png" href="assets/images/hello-from-phoenix.png" media-type="image/png"/>
+
+      <item id="welcome-to-phoenix-png" href="assets/images/welcome-to-phoenix.png" media-type="image/png"/>
+
+      <item id="hello-world-from-frank-png" href="assets/images/hello-world-from-frank.png" media-type="image/png"/>
+
+
+
+      <item id="logo" href="assets/logo.png" media-type="image/png"/>
+
+  </manifest>
+  <spine>
+    <itemref idref="cover"/>
+    <itemref idref="nav"/>
+
+      <itemref idref="changelog"/>
+
+      <itemref idref="overview"/>
+
+      <itemref idref="installation"/>
+
+      <itemref idref="up_and_running"/>
+
+      <itemref idref="community"/>
+
+      <itemref idref="packages_glossary"/>
+
+      <itemref idref="directory_structure"/>
+
+      <itemref idref="request_lifecycle"/>
+
+      <itemref idref="plug"/>
+
+      <itemref idref="routing"/>
+
+      <itemref idref="controllers"/>
+
+      <itemref idref="components"/>
+
+      <itemref idref="ecto"/>
+
+      <itemref idref="contexts"/>
+
+      <itemref idref="json_and_apis"/>
+
+      <itemref idref="mix_tasks"/>
+
+      <itemref idref="telemetry"/>
+
+      <itemref idref="asset_management"/>
+
+      <itemref idref="mix_phx_gen_auth"/>
+
+      <itemref idref="api_authentication"/>
+
+      <itemref idref="channels"/>
+
+      <itemref idref="presence"/>
+
+      <itemref idref="testing"/>
+
+      <itemref idref="testing_contexts"/>
+
+      <itemref idref="testing_controllers"/>
+
+      <itemref idref="testing_channels"/>
+
+      <itemref idref="deployment"/>
+
+      <itemref idref="releases"/>
+
+      <itemref idref="gigalixir"/>
+
+      <itemref idref="fly"/>
+
+      <itemref idref="heroku"/>
+
+      <itemref idref="router"/>
+
+      <itemref idref="custom_error_pages"/>
+
+      <itemref idref="file_uploads"/>
+
+      <itemref idref="using_ssl"/>
+
+      <itemref idref="writing_a_channels_client"/>
+
+
+      <itemref idref="Phoenix"/>
+
+      <itemref idref="Phoenix.Channel"/>
+
+      <itemref idref="Phoenix.Controller"/>
+
+      <itemref idref="Phoenix.Endpoint"/>
+
+      <itemref idref="Phoenix.Flash"/>
+
+      <itemref idref="Phoenix.Logger"/>
+
+      <itemref idref="Phoenix.Naming"/>
+
+      <itemref idref="Phoenix.Param"/>
+
+      <itemref idref="Phoenix.Presence"/>
+
+      <itemref idref="Phoenix.Router"/>
+
+      <itemref idref="Phoenix.Socket"/>
+
+      <itemref idref="Phoenix.Token"/>
+
+      <itemref idref="Phoenix.VerifiedRoutes"/>
+
+      <itemref idref="Phoenix.ChannelTest"/>
+
+      <itemref idref="Phoenix.ConnTest"/>
+
+      <itemref idref="Phoenix.CodeReloader"/>
+
+      <itemref idref="Phoenix.Endpoint.Cowboy2Adapter"/>
+
+      <itemref idref="Phoenix.Endpoint.SyncCodeReloadPlug"/>
+
+      <itemref idref="Phoenix.Digester.Compressor"/>
+
+      <itemref idref="Phoenix.Digester.Gzip"/>
+
+      <itemref idref="Phoenix.Socket.Broadcast"/>
+
+      <itemref idref="Phoenix.Socket.Message"/>
+
+      <itemref idref="Phoenix.Socket.Reply"/>
+
+      <itemref idref="Phoenix.Socket.Serializer"/>
+
+      <itemref idref="Phoenix.Socket.Transport"/>
+
+      <itemref idref="Phoenix.ActionClauseError"/>
+
+      <itemref idref="Phoenix.MissingParamError"/>
+
+      <itemref idref="Phoenix.NotAcceptableError"/>
+
+      <itemref idref="Phoenix.Router.MalformedURIError"/>
+
+      <itemref idref="Phoenix.Router.NoRouteError"/>
+
+      <itemref idref="Phoenix.Socket.InvalidMessageError"/>
+
+      <itemref idref="Mix.Tasks.Local.Phx"/>
+
+      <itemref idref="Mix.Tasks.Phx"/>
+
+      <itemref idref="Mix.Tasks.Phx.Digest"/>
+
+      <itemref idref="Mix.Tasks.Phx.Digest.Clean"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Auth"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Cert"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Channel"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Context"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Embedded"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Html"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Json"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Live"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Notifier"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Presence"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Release"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Schema"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Secret"/>
+
+      <itemref idref="Mix.Tasks.Phx.Gen.Socket"/>
+
+      <itemref idref="Mix.Tasks.Phx.New"/>
+
+      <itemref idref="Mix.Tasks.Phx.New.Ecto"/>
+
+      <itemref idref="Mix.Tasks.Phx.New.Web"/>
+
+      <itemref idref="Mix.Tasks.Phx.Routes"/>
+
+      <itemref idref="Mix.Tasks.Phx.Server"/>
+
+  </spine>
+</package>

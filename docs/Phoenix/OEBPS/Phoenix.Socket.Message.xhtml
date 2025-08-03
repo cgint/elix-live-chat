@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.Socket.Message - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.Socket.Message 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Defines a message dispatched over transport to channels and vice-versa.</p><p>The message format requires the following keys:</p><ul><li><code class="inline">:topic</code> - The string topic or topic:subtopic pair namespace, for
+example &quot;messages&quot;, &quot;messages:123&quot;</li><li><code class="inline">:event</code>- The string event name, for example &quot;phx_join&quot;</li><li><code class="inline">:payload</code> - The message payload</li><li><code class="inline">:ref</code> - The unique string ref</li><li><code class="inline">:join_ref</code> - The unique string ref when joining</li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#from_map!/1" data-no-tooltip="" translate="no">from_map!(map)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts a map with string keys into a message struct.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/socket/message.ex#L16" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %Phoenix.Socket.Message{
+  event: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  join_ref: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  payload: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  ref: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  topic: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="from_map!/1">
+
+  <div class="detail-header">
+    <a href="#from_map!/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">from_map!(map)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/socket/message.ex#L24" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Converts a map with string keys into a message struct.</p><p>Raises <a href="Phoenix.Socket.InvalidMessageError.xhtml"><code class="inline">Phoenix.Socket.InvalidMessageError</code></a> if not valid.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

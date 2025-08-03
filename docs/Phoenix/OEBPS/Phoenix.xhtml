@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>This is the documentation for the Phoenix project.</p><p>To get started, see our <a href="overview.html">overview guides</a>.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#json_library/0" data-no-tooltip="" translate="no">json_library()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the configured JSON encoding library for Phoenix.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#plug_init_mode/0" data-no-tooltip="" translate="no">plug_init_mode()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the <code class="inline">:plug_init_mode</code> that controls when plugs are
+initialized.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="json_library/0">
+
+  <div class="detail-header">
+    <a href="#json_library/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">json_library()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix.ex#L43" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns the configured JSON encoding library for Phoenix.</p><p>To customize the JSON library, including the following
+in your <code class="inline">config/config.exs</code>:</p><pre><code class="makeup elixir" translate="no"><samp class="n">config</samp><samp class="w"> </samp><samp class="ss">:phoenix</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:json_library</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">AlternativeJsonLibrary</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="plug_init_mode/0">
+
+  <div class="detail-header">
+    <a href="#plug_init_mode/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">plug_init_mode()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix.ex#L57" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns the <code class="inline">:plug_init_mode</code> that controls when plugs are
+initialized.</p><p>We recommend to set it to <code class="inline">:runtime</code> in development for
+compilation time improvements. It must be <code class="inline">:compile</code> in
+production (the default).</p><p>This option is passed as the <code class="inline">:init_mode</code> to <a href="https://hexdocs.pm/plug/1.15.3/Plug.Builder.html#compile/3"><code class="inline">Plug.Builder.compile/3</code></a>.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

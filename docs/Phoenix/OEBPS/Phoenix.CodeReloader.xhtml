@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.CodeReloader - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.CodeReloader 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A plug and module to handle automatic code reloading.</p><p>To avoid race conditions, all code reloads are funneled through a
+sequential call operation.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#call/2" data-no-tooltip="" translate="no">call(conn, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>API used by Plug to invoke the code reloader on every request.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#init/1" data-no-tooltip="" translate="no">init(opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>API used by Plug to start the code reloader.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#reload/2" data-no-tooltip="" translate="no">reload(endpoint, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Reloads code for the current Mix project by invoking the
+<code class="inline">:reloadable_compilers</code> on the list of <code class="inline">:reloadable_apps</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#reload!/2" data-no-tooltip="" translate="no">reload!(endpoint, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Same as <a href="#reload/1"><code class="inline">reload/1</code></a> but it will raise if Mix is not available.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#sync/0" data-no-tooltip="" translate="no">sync()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Synchronizes with the code server if it is alive.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="call/2">
+
+  <div class="detail-header">
+    <a href="#call/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">call(conn, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/code_reloader.ex#L84" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>API used by Plug to invoke the code reloader on every request.</p>
+  </section>
+</section>
+<section class="detail" id="init/1">
+
+  <div class="detail-header">
+    <a href="#init/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">init(opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/code_reloader.ex#L77" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>API used by Plug to start the code reloader.</p>
+  </section>
+</section>
+<section class="detail" id="reload/2">
+
+    <span id="reload/1"></span>
+
+  <div class="detail-header">
+    <a href="#reload/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">reload(endpoint, opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/code_reloader.ex#L42" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> reload(
+  <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>(),
+  <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>()
+) :: :ok | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()}</pre>
+
+      </div>
+
+<p>Reloads code for the current Mix project by invoking the
+<code class="inline">:reloadable_compilers</code> on the list of <code class="inline">:reloadable_apps</code>.</p><p>This is configured in your application environment like:</p><pre><code class="makeup elixir" translate="no"><samp class="n">config</samp><samp class="w"> </samp><samp class="ss">:your_app</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">YourAppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">reloadable_compilers</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9887611640-1">[</samp><samp class="ss">:gettext</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:elixir</samp><samp class="p" data-group-id="9887611640-1">]</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">reloadable_apps</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9887611640-2">[</samp><samp class="ss">:ui</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:backend</samp><samp class="p" data-group-id="9887611640-2">]</samp></code></pre><p>Keep in mind <code class="inline">:reloadable_compilers</code> must be a subset of the
+<code class="inline">:compilers</code> specified in <code class="inline">project/0</code> in your <code class="inline">mix.exs</code>.</p><p>The <code class="inline">:reloadable_apps</code> defaults to <code class="inline">nil</code>. In such case
+default behaviour is to reload the current project if it
+consists of a single app, or all applications within an umbrella
+project. You can set <code class="inline">:reloadable_apps</code> to a subset of default
+applications to reload only some of them, an empty list - to
+effectively disable the code reloader, or include external
+applications from library dependencies.</p><p>This function is a no-op and returns <code class="inline">:ok</code> if Mix is not available.</p><h2 id="reload/2-options" class="section-heading">
+  <a href="#reload/2-options" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Options</span>
+</h2>
+<ul><li><code class="inline">:reloadable_args</code> - additional CLI args to pass to the compiler tasks.
+Defaults to <code class="inline">[&quot;--no-all-warnings&quot;]</code> so only warnings related to the
+files being compiled are printed</li></ul>
+  </section>
+</section>
+<section class="detail" id="reload!/2">
+
+  <div class="detail-header">
+    <a href="#reload!/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">reload!(endpoint, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/code_reloader.ex#L50" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> reload!(
+  <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>(),
+  <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>()
+) :: :ok | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()}</pre>
+
+      </div>
+
+<p>Same as <a href="#reload/1"><code class="inline">reload/1</code></a> but it will raise if Mix is not available.</p>
+  </section>
+</section>
+<section class="detail" id="sync/0">
+
+  <div class="detail-header">
+    <a href="#sync/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">sync()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/code_reloader.ex#L58" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> sync() :: :ok</pre>
+
+      </div>
+
+<p>Synchronizes with the code server if it is alive.</p><p>It returns <code class="inline">:ok</code>. If it is not running, it also returns <code class="inline">:ok</code>.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

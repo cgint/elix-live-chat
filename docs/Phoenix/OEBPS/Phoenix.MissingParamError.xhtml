@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.MissingParamError - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.MissingParamError <small>exception</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Raised when a key is expected to be present in the request parameters,
+but is not.</p><p>This exception is raised by <a href="Phoenix.Controller.xhtml#scrub_params/2"><code class="inline">Phoenix.Controller.scrub_params/2</code></a> which:</p><ul><li>Checks to see if the required_key is present (can be empty)</li><li>Changes all empty parameters to nils (&quot;&quot; -&gt; nil)</li></ul><p>If you are seeing this error, you should handle the error and surface it
+to the end user. It means that there is a parameter missing from the request.</p>
+      </section>
+
+
+
+
+  </body>
+</html>

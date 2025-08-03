@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.Endpoint.Cowboy2Adapter - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.Endpoint.Cowboy2Adapter 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>The Cowboy2 adapter for Phoenix.</p><h2 id="module-endpoint-configuration" class="section-heading">
+  <a href="#module-endpoint-configuration" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Endpoint configuration</span>
+</h2>
+<p>This adapter uses the following endpoint configuration:</p><ul><li><p><code class="inline">:http</code> - the configuration for the HTTP server. It accepts all options
+as defined by <a href="https://hexdocs.pm/plug_cowboy/"><code class="inline">Plug.Cowboy</code></a>. Defaults
+to <code class="inline">false</code></p></li><li><p><code class="inline">:https</code> - the configuration for the HTTPS server. It accepts all options
+as defined by <a href="https://hexdocs.pm/plug_cowboy/"><code class="inline">Plug.Cowboy</code></a>. Defaults
+to <code class="inline">false</code></p></li><li><p><code class="inline">:drainer</code> - a drainer process that triggers when your application is
+shutting down to wait for any on-going request to finish. It accepts all
+options as defined by <a href="https://hexdocs.pm/plug_cowboy/Plug.Cowboy.Drainer.html"><code class="inline">Plug.Cowboy.Drainer</code></a>.
+Defaults to <code class="inline">[]</code>, which will start a drainer process for each configured endpoint,
+but can be disabled by setting it to <code class="inline">false</code>.</p></li></ul><h2 id="module-custom-dispatch-options" class="section-heading">
+  <a href="#module-custom-dispatch-options" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Custom dispatch options</span>
+</h2>
+<p>You can provide custom dispatch options in order to use Phoenix's
+builtin Cowboy server with custom handlers. For example, to handle
+raw WebSockets <a href="https://github.com/ninenines/cowboy/tree/master/examples">as shown in Cowboy's docs</a>).</p><p>The options are passed to both <code class="inline">:http</code> and <code class="inline">:https</code> keys in the
+endpoint configuration. However, once you pass your custom dispatch
+options, you will need to manually wire the Phoenix endpoint by
+adding the following rule:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="0041047033-1">{</samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Plug.Cowboy.Handler</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0041047033-2">{</samp><samp class="nc">MyAppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0041047033-3">[</samp><samp class="p" data-group-id="0041047033-3">]</samp><samp class="p" data-group-id="0041047033-2">}</samp><samp class="p" data-group-id="0041047033-1">}</samp></code></pre><p>For example:</p><pre><code class="makeup elixir" translate="no"><samp class="n">config</samp><samp class="w"> </samp><samp class="ss">:myapp</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">http</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3399536244-1">[</samp><samp class="ss">dispatch</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3399536244-2">[</samp><samp class="w">
+          </samp><samp class="p" data-group-id="3399536244-3">{</samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3399536244-4">[</samp><samp class="w">
+              </samp><samp class="p" data-group-id="3399536244-5">{</samp><samp class="s">&quot;/foo&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.CustomHandler</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3399536244-6">[</samp><samp class="p" data-group-id="3399536244-6">]</samp><samp class="p" data-group-id="3399536244-5">}</samp><samp class="p">,</samp><samp class="w">
+              </samp><samp class="p" data-group-id="3399536244-7">{</samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Plug.Cowboy.Handler</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3399536244-8">{</samp><samp class="nc">MyAppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3399536244-9">[</samp><samp class="p" data-group-id="3399536244-9">]</samp><samp class="p" data-group-id="3399536244-8">}</samp><samp class="p" data-group-id="3399536244-7">}</samp><samp class="w">
+            </samp><samp class="p" data-group-id="3399536244-4">]</samp><samp class="p" data-group-id="3399536244-3">}</samp><samp class="p" data-group-id="3399536244-2">]</samp><samp class="p" data-group-id="3399536244-1">]</samp></code></pre><p>It is also important to specify your handlers first, otherwise
+Phoenix will intercept the requests before they get to your handler.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#server_info/2" data-no-tooltip="" translate="no">server_info(endpoint, scheme)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="server_info/2">
+
+  <div class="detail-header">
+    <a href="#server_info/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">server_info(endpoint, scheme)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/endpoint/cowboy2_adapter.ex#L141" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

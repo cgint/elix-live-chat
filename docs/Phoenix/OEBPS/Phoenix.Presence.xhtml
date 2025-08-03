@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.Presence - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.Presence <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Provides Presence tracking to processes and channels.</p><p>This behaviour provides presence features such as fetching
+presences for a given topic, as well as handling diffs of
+join and leave events as they occur in real-time. Using this
+module defines a supervisor and a module that implements the
+<a href="https://hexdocs.pm/phoenix_pubsub/2.1.3/Phoenix.Tracker.html"><code class="inline">Phoenix.Tracker</code></a> behaviour that uses <a href="https://hexdocs.pm/phoenix_pubsub/2.1.3/Phoenix.PubSub.html"><code class="inline">Phoenix.PubSub</code></a> to
+broadcast presence updates.</p><p>In case you want to use only a subset of the functionality
+provided by <a href="Phoenix.Presence.xhtml"><code class="inline">Phoenix.Presence</code></a>, such as tracking processes
+but without broadcasting updates, we recommend that you look
+at the <a href="https://hexdocs.pm/phoenix_pubsub/2.1.3/Phoenix.Tracker.html"><code class="inline">Phoenix.Tracker</code></a> functionality from the <code class="inline">phoenix_pubsub</code>
+project.</p><h2 id="module-example-usage" class="section-heading">
+  <a href="#module-example-usage" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Example Usage</span>
+</h2>
+<p>Start by defining a presence module within your application
+which uses <a href="Phoenix.Presence.xhtml"><code class="inline">Phoenix.Presence</code></a> and provide the <code class="inline">:otp_app</code> which
+holds your configuration, as well as the <code class="inline">:pubsub_server</code>.</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Presence</samp><samp class="w"> </samp><samp class="k" data-group-id="2413569509-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Phoenix.Presence</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">otp_app</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:my_app</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">pubsub_server</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyApp.PubSub</samp><samp class="w">
+</samp><samp class="k" data-group-id="2413569509-1">end</samp></code></pre><p>The <code class="inline">:pubsub_server</code> must point to an existing pubsub server
+running in your application, which is included by default as
+<code class="inline">MyApp.PubSub</code> for new applications.</p><p>Next, add the new supervisor to your supervision tree in
+<code class="inline">lib/my_app/application.ex</code>. It must be after the PubSub child
+and before the endpoint:</p><pre><code class="makeup elixir" translate="no"><samp class="n">children</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="8952490109-1">[</samp><samp class="w">
+  </samp><samp class="n">...</samp><samp class="w">
+  </samp><samp class="p" data-group-id="8952490109-2">{</samp><samp class="nc">Phoenix.PubSub</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyApp.PubSub</samp><samp class="p" data-group-id="8952490109-2">}</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="nc">MyAppWeb.Presence</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="nc">MyAppWeb.Endpoint</samp><samp class="w">
+</samp><samp class="p" data-group-id="8952490109-1">]</samp></code></pre><p>Once added, presences can be tracked in your channel after joining:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.MyChannel</samp><samp class="w"> </samp><samp class="k" data-group-id="4544189933-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">MyAppWeb</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:channel</samp><samp class="w">
+  </samp><samp class="kn">alias</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Presence</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">join</samp><samp class="p" data-group-id="4544189933-2">(</samp><samp class="s">&quot;some:topic&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_params</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="p" data-group-id="4544189933-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="4544189933-3">do</samp><samp class="w">
+    </samp><samp class="n">send</samp><samp class="p" data-group-id="4544189933-4">(</samp><samp class="n">self</samp><samp class="p" data-group-id="4544189933-5">(</samp><samp class="p" data-group-id="4544189933-5">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:after_join</samp><samp class="p" data-group-id="4544189933-4">)</samp><samp class="w">
+    </samp><samp class="p" data-group-id="4544189933-6">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">assign</samp><samp class="p" data-group-id="4544189933-7">(</samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:user_id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="4544189933-7">)</samp><samp class="p" data-group-id="4544189933-6">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="4544189933-3">end</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">handle_info</samp><samp class="p" data-group-id="4544189933-8">(</samp><samp class="ss">:after_join</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="p" data-group-id="4544189933-8">)</samp><samp class="w"> </samp><samp class="k" data-group-id="4544189933-9">do</samp><samp class="w">
+    </samp><samp class="p" data-group-id="4544189933-10">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="4544189933-10">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Presence</samp><samp class="o">.</samp><samp class="n">track</samp><samp class="p" data-group-id="4544189933-11">(</samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="o">.</samp><samp class="n">assigns</samp><samp class="o">.</samp><samp class="n">user_id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4544189933-12">%{</samp><samp class="w">
+      </samp><samp class="ss">online_at</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">inspect</samp><samp class="p" data-group-id="4544189933-13">(</samp><samp class="nc">System</samp><samp class="o">.</samp><samp class="n">system_time</samp><samp class="p" data-group-id="4544189933-14">(</samp><samp class="ss">:second</samp><samp class="p" data-group-id="4544189933-14">)</samp><samp class="p" data-group-id="4544189933-13">)</samp><samp class="w">
+    </samp><samp class="p" data-group-id="4544189933-12">}</samp><samp class="p" data-group-id="4544189933-11">)</samp><samp class="w">
+
+    </samp><samp class="n">push</samp><samp class="p" data-group-id="4544189933-15">(</samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;presence_state&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Presence</samp><samp class="o">.</samp><samp class="n">list</samp><samp class="p" data-group-id="4544189933-16">(</samp><samp class="n">socket</samp><samp class="p" data-group-id="4544189933-16">)</samp><samp class="p" data-group-id="4544189933-15">)</samp><samp class="w">
+    </samp><samp class="p" data-group-id="4544189933-17">{</samp><samp class="ss">:noreply</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="p" data-group-id="4544189933-17">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="4544189933-9">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="4544189933-1">end</samp></code></pre><p>In the example above, <code class="inline">Presence.track</code> is used to register this channel's process as a
+presence for the socket's user ID, with a map of metadata.
+Next, the current presence information for
+the socket's topic is pushed to the client as a <code class="inline">&quot;presence_state&quot;</code> event.</p><p>Finally, a diff of presence join and leave events will be sent to the
+client as they happen in real-time with the &quot;presence_diff&quot; event.
+The diff structure will be a map of <code class="inline">:joins</code> and <code class="inline">:leaves</code> of the form:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="2729659298-1">%{</samp><samp class="w">
+  </samp><samp class="ss">joins</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2729659298-2">%{</samp><samp class="s">&quot;123&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="2729659298-3">%{</samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2729659298-4">[</samp><samp class="p" data-group-id="2729659298-5">%{</samp><samp class="ss">status</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;away&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">phx_ref</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="2729659298-5">}</samp><samp class="p" data-group-id="2729659298-4">]</samp><samp class="p" data-group-id="2729659298-3">}</samp><samp class="p" data-group-id="2729659298-2">}</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">leaves</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2729659298-6">%{</samp><samp class="s">&quot;456&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="2729659298-7">%{</samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2729659298-8">[</samp><samp class="p" data-group-id="2729659298-9">%{</samp><samp class="ss">status</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;online&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">phx_ref</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="2729659298-9">}</samp><samp class="p" data-group-id="2729659298-8">]</samp><samp class="p" data-group-id="2729659298-7">}</samp><samp class="p" data-group-id="2729659298-6">}</samp><samp class="w">
+</samp><samp class="p" data-group-id="2729659298-1">}</samp><samp class="p">,</samp></code></pre><p>See <a href="#c:list/1"><code class="inline">list/1</code></a> for more information on the presence data structure.</p><h2 id="module-fetching-presence-information" class="section-heading">
+  <a href="#module-fetching-presence-information" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Fetching Presence Information</span>
+</h2>
+<p>Presence metadata should be minimized and used to store small,
+ephemeral state, such as a user's &quot;online&quot; or &quot;away&quot; status.
+More detailed information, such as user details that need to be fetched
+from the database, can be achieved by overriding the <a href="#c:fetch/2"><code class="inline">fetch/2</code></a> function.</p><p>The <a href="#c:fetch/2"><code class="inline">fetch/2</code></a> callback is triggered when using <a href="#c:list/1"><code class="inline">list/1</code></a> and on
+every update, and it serves as a mechanism to fetch presence information
+a single time, before broadcasting the information to all channel subscribers.
+This prevents N query problems and gives you a single place to group
+isolated data fetching to extend presence metadata.</p><p>The function must return a map of data matching the outlined Presence
+data structure, including the <code class="inline">:metas</code> key, but can extend the map of
+information to include any additional information. For example:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">fetch</samp><samp class="p" data-group-id="8044494862-1">(</samp><samp class="c">_topic</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">presences</samp><samp class="p" data-group-id="8044494862-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8044494862-2">do</samp><samp class="w">
+  </samp><samp class="n">users</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">presences</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="8044494862-3">(</samp><samp class="p" data-group-id="8044494862-3">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Accounts</samp><samp class="o">.</samp><samp class="n">get_users_map</samp><samp class="p" data-group-id="8044494862-4">(</samp><samp class="p" data-group-id="8044494862-4">)</samp><samp class="w">
+
+  </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="p" data-group-id="8044494862-5">{</samp><samp class="n">key</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8044494862-6">%{</samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">metas</samp><samp class="p" data-group-id="8044494862-6">}</samp><samp class="p" data-group-id="8044494862-5">}</samp><samp class="w"> </samp><samp class="o">&lt;-</samp><samp class="w"> </samp><samp class="n">presences</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">into</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8044494862-7">%{</samp><samp class="p" data-group-id="8044494862-7">}</samp><samp class="w"> </samp><samp class="k" data-group-id="8044494862-8">do</samp><samp class="w">
+    </samp><samp class="p" data-group-id="8044494862-9">{</samp><samp class="n">key</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8044494862-10">%{</samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">metas</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">users</samp><samp class="p" data-group-id="8044494862-11">[</samp><samp class="nc">String</samp><samp class="o">.</samp><samp class="n">to_integer</samp><samp class="p" data-group-id="8044494862-12">(</samp><samp class="n">key</samp><samp class="p" data-group-id="8044494862-12">)</samp><samp class="p" data-group-id="8044494862-11">]</samp><samp class="p" data-group-id="8044494862-10">}</samp><samp class="p" data-group-id="8044494862-9">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="8044494862-8">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="8044494862-2">end</samp></code></pre><p>Where <code class="inline">Account.get_users_map/1</code> could be implemented like:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">get_users_map</samp><samp class="p" data-group-id="2764394524-1">(</samp><samp class="n">ids</samp><samp class="p" data-group-id="2764394524-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="2764394524-2">do</samp><samp class="w">
+  </samp><samp class="n">query</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w">
+    </samp><samp class="n">from</samp><samp class="w"> </samp><samp class="n">u</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="nc">User</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">where</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">u</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="o">^</samp><samp class="n">ids</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">select</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2764394524-3">{</samp><samp class="n">u</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">u</samp><samp class="p" data-group-id="2764394524-3">}</samp><samp class="w">
+
+  </samp><samp class="n">query</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Repo</samp><samp class="o">.</samp><samp class="n">all</samp><samp class="p" data-group-id="2764394524-4">(</samp><samp class="p" data-group-id="2764394524-4">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">into</samp><samp class="p" data-group-id="2764394524-5">(</samp><samp class="p" data-group-id="2764394524-6">%{</samp><samp class="p" data-group-id="2764394524-6">}</samp><samp class="p" data-group-id="2764394524-5">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="2764394524-2">end</samp></code></pre><p>The <code class="inline">fetch/2</code> function above fetches all users from the database who
+have registered presences for the given topic. The presences
+information is then extended with a <code class="inline">:user</code> key of the user's
+information, while maintaining the required <code class="inline">:metas</code> field from the
+original presence data.</p><h2 id="module-using-elixir-as-a-presence-client" class="section-heading">
+  <a href="#module-using-elixir-as-a-presence-client" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Using Elixir as a Presence Client</span>
+</h2>
+<p>Presence is great for external clients, such as JavaScript applications, but
+it can also be used from an Elixir client process to keep track of presence
+changes as they happen on the server. This can be accomplished by implementing
+the optional <a href="#c:init/1"><code class="inline">init/1</code></a> and <a href="#c:handle_metas/4"><code class="inline">handle_metas/4</code></a>
+callbacks on your presence module. For example, the following callback
+receives presence metadata changes, and broadcasts to other Elixir processes
+about users joining and leaving:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.Presence</samp><samp class="w"> </samp><samp class="k" data-group-id="9208260059-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Phoenix.Presence</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">otp_app</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:my_app</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">pubsub_server</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyApp.PubSub</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">init</samp><samp class="p" data-group-id="9208260059-2">(</samp><samp class="c">_opts</samp><samp class="p" data-group-id="9208260059-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="9208260059-3">do</samp><samp class="w">
+    </samp><samp class="p" data-group-id="9208260059-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9208260059-5">%{</samp><samp class="p" data-group-id="9208260059-5">}</samp><samp class="p" data-group-id="9208260059-4">}</samp><samp class="w"> </samp><samp class="c1"># user-land state</samp><samp class="w">
+  </samp><samp class="k" data-group-id="9208260059-3">end</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">handle_metas</samp><samp class="p" data-group-id="9208260059-6">(</samp><samp class="n">topic</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9208260059-7">%{</samp><samp class="ss">joins</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">joins</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">leaves</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">leaves</samp><samp class="p" data-group-id="9208260059-7">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">presences</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">state</samp><samp class="p" data-group-id="9208260059-6">)</samp><samp class="w"> </samp><samp class="k" data-group-id="9208260059-8">do</samp><samp class="w">
+    </samp><samp class="c1"># fetch existing presence information for the joined users and broadcast the</samp><samp class="w">
+    </samp><samp class="c1"># event to all subscribers</samp><samp class="w">
+    </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="p" data-group-id="9208260059-9">{</samp><samp class="n">user_id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">presence</samp><samp class="p" data-group-id="9208260059-9">}</samp><samp class="w"> </samp><samp class="o">&lt;-</samp><samp class="w"> </samp><samp class="n">joins</samp><samp class="w"> </samp><samp class="k" data-group-id="9208260059-10">do</samp><samp class="w">
+      </samp><samp class="n">user_data</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="9208260059-11">%{</samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">presence</samp><samp class="o">.</samp><samp class="n">user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">fetch!</samp><samp class="p" data-group-id="9208260059-12">(</samp><samp class="n">presences</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user_id</samp><samp class="p" data-group-id="9208260059-12">)</samp><samp class="p" data-group-id="9208260059-11">}</samp><samp class="w">
+      </samp><samp class="n">msg</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="9208260059-13">{</samp><samp class="nc">MyApp.PresenceClient</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9208260059-14">{</samp><samp class="ss">:join</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user_data</samp><samp class="p" data-group-id="9208260059-14">}</samp><samp class="p" data-group-id="9208260059-13">}</samp><samp class="w">
+      </samp><samp class="nc">Phoenix.PubSub</samp><samp class="o">.</samp><samp class="n">local_broadcast</samp><samp class="p" data-group-id="9208260059-15">(</samp><samp class="nc">MyApp.PubSub</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">topic</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">msg</samp><samp class="p" data-group-id="9208260059-15">)</samp><samp class="w">
+    </samp><samp class="k" data-group-id="9208260059-10">end</samp><samp class="w">
+
+    </samp><samp class="c1"># fetch existing presence information for the left users and broadcast the</samp><samp class="w">
+    </samp><samp class="c1"># event to all subscribers</samp><samp class="w">
+    </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="p" data-group-id="9208260059-16">{</samp><samp class="n">user_id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">presence</samp><samp class="p" data-group-id="9208260059-16">}</samp><samp class="w"> </samp><samp class="o">&lt;-</samp><samp class="w"> </samp><samp class="n">leaves</samp><samp class="w"> </samp><samp class="k" data-group-id="9208260059-17">do</samp><samp class="w">
+      </samp><samp class="n">metas</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w">
+        </samp><samp class="k">case</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">fetch</samp><samp class="p" data-group-id="9208260059-18">(</samp><samp class="n">presences</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user_id</samp><samp class="p" data-group-id="9208260059-18">)</samp><samp class="w"> </samp><samp class="k" data-group-id="9208260059-19">do</samp><samp class="w">
+          </samp><samp class="p" data-group-id="9208260059-20">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">presence_metas</samp><samp class="p" data-group-id="9208260059-20">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="n">presence_metas</samp><samp class="w">
+          </samp><samp class="ss">:error</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="9208260059-21">[</samp><samp class="p" data-group-id="9208260059-21">]</samp><samp class="w">
+        </samp><samp class="k" data-group-id="9208260059-19">end</samp><samp class="w">
+
+      </samp><samp class="n">user_data</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="9208260059-22">%{</samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">presence</samp><samp class="o">.</samp><samp class="n">user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">metas</samp><samp class="p" data-group-id="9208260059-22">}</samp><samp class="w">
+      </samp><samp class="n">msg</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="9208260059-23">{</samp><samp class="nc">MyApp.PresenceClient</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9208260059-24">{</samp><samp class="ss">:leave</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user_data</samp><samp class="p" data-group-id="9208260059-24">}</samp><samp class="p" data-group-id="9208260059-23">}</samp><samp class="w">
+      </samp><samp class="nc">Phoenix.PubSub</samp><samp class="o">.</samp><samp class="n">local_broadcast</samp><samp class="p" data-group-id="9208260059-25">(</samp><samp class="nc">MyApp.PubSub</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">topic</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">msg</samp><samp class="p" data-group-id="9208260059-25">)</samp><samp class="w">
+    </samp><samp class="k" data-group-id="9208260059-17">end</samp><samp class="w">
+
+    </samp><samp class="p" data-group-id="9208260059-26">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">state</samp><samp class="p" data-group-id="9208260059-26">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="9208260059-8">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="9208260059-1">end</samp></code></pre><p>The <code class="inline">handle_metas/4</code> callback receives the topic, presence diff, current presences
+for the topic with their metadata, and any user-land state accumulated from init and
+subsequent <code class="inline">handle_metas/4</code> calls. In our example implementation, we walk the <code class="inline">:joins</code> and
+<code class="inline">:leaves</code> in the diff, and populate a complete presence from our known presence information.
+Then we broadcast to the local node subscribers about user joins and leaves.</p><h2 id="module-testing-with-presence" class="section-heading">
+  <a href="#module-testing-with-presence" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Testing with Presence</span>
+</h2>
+<p>Every time the <code class="inline">fetch</code> callback is invoked, it is done from a separate
+process. Given those processes run asynchronously, it is often necessary
+to guarantee they have been shutdown at the end of every test. This can
+be done by using ExUnit's <code class="inline">on_exit</code> hook plus <code class="inline">fetchers_pids</code> function:</p><pre><code class="makeup elixir" translate="no"><samp class="n">on_exit</samp><samp class="p" data-group-id="9230647356-1">(</samp><samp class="k" data-group-id="9230647356-2">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+  </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="n">pid</samp><samp class="w"> </samp><samp class="o">&lt;-</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Presence</samp><samp class="o">.</samp><samp class="n">fetchers_pids</samp><samp class="p" data-group-id="9230647356-3">(</samp><samp class="p" data-group-id="9230647356-3">)</samp><samp class="w"> </samp><samp class="k" data-group-id="9230647356-4">do</samp><samp class="w">
+    </samp><samp class="n">ref</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Process</samp><samp class="o">.</samp><samp class="n">monitor</samp><samp class="p" data-group-id="9230647356-5">(</samp><samp class="n">pid</samp><samp class="p" data-group-id="9230647356-5">)</samp><samp class="w">
+    </samp><samp class="n">assert_receive</samp><samp class="w"> </samp><samp class="p" data-group-id="9230647356-6">{</samp><samp class="ss">:DOWN</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">^</samp><samp class="n">ref</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="9230647356-6">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1000</samp><samp class="w">
+  </samp><samp class="k" data-group-id="9230647356-4">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="9230647356-2">end</samp><samp class="p" data-group-id="9230647356-1">)</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:presence/0" data-no-tooltip="" translate="no">presence()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:presences/0" data-no-tooltip="" translate="no">presences()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:topic/0" data-no-tooltip="" translate="no">topic()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:fetch/2" data-no-tooltip="" translate="no">fetch(topic, presences)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Extend presence information with additional data.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:get_by_key/2" data-no-tooltip="" translate="no">get_by_key(arg1, key)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the map of presence metadata for a socket/topic-key pair.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:handle_metas/4" data-no-tooltip="" translate="no">handle_metas(topic, diff, presences, state)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Receives presence metadata changes.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:init/1" data-no-tooltip="" translate="no">init(state)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Initializes the presence client state.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:list/1" data-no-tooltip="" translate="no">list(socket_or_topic)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns presences for a socket/topic.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:track/3" data-no-tooltip="" translate="no">track(socket, key, meta)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Track a channel's process as a presence.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:track/4" data-no-tooltip="" translate="no">track(pid, topic, key, meta)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Track an arbitrary process as a presence.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:untrack/2" data-no-tooltip="" translate="no">untrack(socket, key)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Stop tracking a channel's process.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:untrack/3" data-no-tooltip="" translate="no">untrack(pid, topic, key)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Stop tracking a process.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:update/3" data-no-tooltip="" translate="no">update(socket, key, meta)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Update a channel presence's metadata.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:update/4" data-no-tooltip="" translate="no">update(pid, topic, key, meta)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Update a process presence's metadata.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:presence/0">
+
+  <div class="detail-header">
+    <a href="#t:presence/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">presence()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L193" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> presence() :: %{key: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), meta: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:presences/0">
+
+  <div class="detail-header">
+    <a href="#t:presences/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">presences()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L192" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> presences() :: %{required(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) =&gt; %{metas: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()]}}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:topic/0">
+
+  <div class="detail-header">
+    <a href="#t:topic/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">topic()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L194" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> topic() :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:fetch/2">
+
+  <div class="detail-header">
+    <a href="#c:fetch/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">fetch(topic, presences)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L334" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> fetch(<a href="#t:topic/0">topic</a>(), <a href="#t:presences/0">presences</a>()) :: <a href="#t:presences/0">presences</a>()</pre>
+
+      </div>
+
+<p>Extend presence information with additional data.</p><p>When <a href="#c:list/1"><code class="inline">list/1</code></a> is used to list all presences of the given <code class="inline">topic</code>, this
+callback is triggered once to modify the result before it is broadcasted to
+all channel subscribers. This avoids N query problems and provides a single
+place to extend presence metadata. You must return a map of data matching the
+original result, including the <code class="inline">:metas</code> key, but can extend the map to include
+any additional information.</p><p>The default implementation simply passes <code class="inline">presences</code> through unchanged.</p><h2 id="c:fetch/2-example" class="section-heading">
+  <a href="#c:fetch/2-example" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Example</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">fetch</samp><samp class="p" data-group-id="4940907868-1">(</samp><samp class="c">_topic</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">presences</samp><samp class="p" data-group-id="4940907868-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="4940907868-2">do</samp><samp class="w">
+  </samp><samp class="n">query</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w">
+    </samp><samp class="n">from</samp><samp class="w"> </samp><samp class="n">u</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="nc">User</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">where</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">u</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="o">^</samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="4940907868-3">(</samp><samp class="n">presences</samp><samp class="p" data-group-id="4940907868-3">)</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">select</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4940907868-4">{</samp><samp class="n">u</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">u</samp><samp class="p" data-group-id="4940907868-4">}</samp><samp class="w">
+
+  </samp><samp class="n">users</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">query</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Repo</samp><samp class="o">.</samp><samp class="n">all</samp><samp class="p" data-group-id="4940907868-5">(</samp><samp class="p" data-group-id="4940907868-5">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">into</samp><samp class="p" data-group-id="4940907868-6">(</samp><samp class="p" data-group-id="4940907868-7">%{</samp><samp class="p" data-group-id="4940907868-7">}</samp><samp class="p" data-group-id="4940907868-6">)</samp><samp class="w">
+  </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="p" data-group-id="4940907868-8">{</samp><samp class="n">key</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4940907868-9">%{</samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">metas</samp><samp class="p" data-group-id="4940907868-9">}</samp><samp class="p" data-group-id="4940907868-8">}</samp><samp class="w"> </samp><samp class="o">&lt;-</samp><samp class="w"> </samp><samp class="n">presences</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">into</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4940907868-10">%{</samp><samp class="p" data-group-id="4940907868-10">}</samp><samp class="w"> </samp><samp class="k" data-group-id="4940907868-11">do</samp><samp class="w">
+    </samp><samp class="p" data-group-id="4940907868-12">{</samp><samp class="n">key</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4940907868-13">%{</samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">metas</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">users</samp><samp class="p" data-group-id="4940907868-14">[</samp><samp class="n">key</samp><samp class="p" data-group-id="4940907868-14">]</samp><samp class="p" data-group-id="4940907868-13">}</samp><samp class="p" data-group-id="4940907868-12">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="4940907868-11">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="4940907868-2">end</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="c:get_by_key/2">
+
+  <div class="detail-header">
+    <a href="#c:get_by_key/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_by_key(arg1, key)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L305" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> get_by_key(<a href="Phoenix.Socket.xhtml#t:t/0">Phoenix.Socket.t</a>() | <a href="#t:topic/0">topic</a>(), key :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) :: [<a href="#t:presence/0">presence</a>()]</pre>
+
+      </div>
+
+<p>Returns the map of presence metadata for a socket/topic-key pair.</p><h2 id="c:get_by_key/2-examples" class="section-heading">
+  <a href="#c:get_by_key/2-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<p>Uses the same data format as each presence in <a href="#c:list/1"><code class="inline">list/1</code></a>, but only
+returns metadata for the presences under a topic and key pair. For example,
+a user with key <code class="inline">&quot;user1&quot;</code>, connected to the same chat room <code class="inline">&quot;room:1&quot;</code> from two
+devices, could return:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyPresence</samp><samp class="o">.</samp><samp class="n">get_by_key</samp><samp class="p" data-group-id="9597386032-1">(</samp><samp class="s">&quot;room:1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;user1&quot;</samp><samp class="p" data-group-id="9597386032-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9597386032-2">[</samp><samp class="p" data-group-id="9597386032-3">%{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;User 1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9597386032-4">[</samp><samp class="p" data-group-id="9597386032-5">%{</samp><samp class="ss">device</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Desktop&quot;</samp><samp class="p" data-group-id="9597386032-5">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9597386032-6">%{</samp><samp class="ss">device</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Mobile&quot;</samp><samp class="p" data-group-id="9597386032-6">}</samp><samp class="p" data-group-id="9597386032-4">]</samp><samp class="p" data-group-id="9597386032-3">}</samp><samp class="p" data-group-id="9597386032-2">]</samp></code></pre><p>Like <a href="#c:list/1"><code class="inline">list/1</code></a>, the presence metadata is passed to the <code class="inline">fetch</code>
+callback of your presence module to fetch any additional information.</p>
+  </section>
+</section>
+<section class="detail" id="c:handle_metas/4">
+
+  <div class="detail-header">
+    <a href="#c:handle_metas/4" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_metas(topic, diff, presences, state)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L347" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> handle_metas(
+  topic :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(),
+  diff :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>(),
+  presences :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>(),
+  state :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()
+) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>Receives presence metadata changes.</p>
+  </section>
+</section>
+<section class="detail" id="c:init/1">
+
+  <div class="detail-header">
+    <a href="#c:init/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">init(state)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L342" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> init(state :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: {:ok, new_state :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>Initializes the presence client state.</p><p>Invoked when your presence module starts, allows dynamically
+providing initial state for handling presence metadata.</p>
+  </section>
+</section>
+<section class="detail" id="c:list/1">
+
+  <div class="detail-header">
+    <a href="#c:list/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">list(socket_or_topic)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L287" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> list(socket_or_topic :: <a href="Phoenix.Socket.xhtml#t:t/0">Phoenix.Socket.t</a>() | <a href="#t:topic/0">topic</a>()) :: <a href="#t:presences/0">presences</a>()</pre>
+
+      </div>
+
+<p>Returns presences for a socket/topic.</p><h2 id="c:list/1-presence-data-structure" class="section-heading">
+  <a href="#c:list/1-presence-data-structure" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Presence data structure</span>
+</h2>
+<p>The presence information is returned as a map with presences grouped
+by key, cast as a string, and accumulated metadata, with the following form:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="1870048985-1">%{</samp><samp class="n">key</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="1870048985-2">%{</samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1870048985-3">[</samp><samp class="p" data-group-id="1870048985-4">%{</samp><samp class="ss">phx_ref</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="1870048985-4">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="1870048985-3">]</samp><samp class="p" data-group-id="1870048985-2">}</samp><samp class="p" data-group-id="1870048985-1">}</samp></code></pre><p>For example, imagine a user with id <code class="inline">123</code> online from two
+different devices, as well as a user with id <code class="inline">456</code> online from
+just one device. The following presence information might be returned:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="4177744216-1">%{</samp><samp class="s">&quot;123&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="4177744216-2">%{</samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4177744216-3">[</samp><samp class="p" data-group-id="4177744216-4">%{</samp><samp class="ss">status</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;away&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">phx_ref</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="4177744216-4">}</samp><samp class="p">,</samp><samp class="w">
+                     </samp><samp class="p" data-group-id="4177744216-5">%{</samp><samp class="ss">status</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;online&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">phx_ref</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="4177744216-5">}</samp><samp class="p" data-group-id="4177744216-3">]</samp><samp class="p" data-group-id="4177744216-2">}</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="s">&quot;456&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="4177744216-6">%{</samp><samp class="ss">metas</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4177744216-7">[</samp><samp class="p" data-group-id="4177744216-8">%{</samp><samp class="ss">status</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;online&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">phx_ref</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="4177744216-8">}</samp><samp class="p" data-group-id="4177744216-7">]</samp><samp class="p" data-group-id="4177744216-6">}</samp><samp class="p" data-group-id="4177744216-1">}</samp></code></pre><p>The keys of the map will usually point to a resource ID. The value
+will contain a map with a <code class="inline">:metas</code> key containing a list of metadata
+for each resource. Additionally, every metadata entry will contain a
+<code class="inline">:phx_ref</code> key which can be used to uniquely identify metadata for a
+given key. In the event that the metadata was previously updated,
+a <code class="inline">:phx_ref_prev</code> key will be present containing the previous
+<code class="inline">:phx_ref</code> value.</p>
+  </section>
+</section>
+<section class="detail" id="c:track/3">
+
+  <div class="detail-header">
+    <a href="#c:track/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">track(socket, key, meta)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L215" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> track(socket :: <a href="Phoenix.Socket.xhtml#t:t/0">Phoenix.Socket.t</a>(), key :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), meta :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()) ::
+  {:ok, ref :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()} | {:error, reason :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>Track a channel's process as a presence.</p><p>Tracked presences are grouped by <code class="inline">key</code>, cast as a string. For example, to
+group each user's channels together, use user IDs as keys. Each presence can
+be associated with a map of metadata to store small, ephemeral state, such as
+a user's online status. To store detailed information, see <a href="#c:fetch/2"><code class="inline">fetch/2</code></a>.</p><h2 id="c:track/3-example" class="section-heading">
+  <a href="#c:track/3-example" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Example</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="kn">alias</samp><samp class="w"> </samp><samp class="nc">MyApp.Presence</samp><samp class="w">
+</samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">handle_info</samp><samp class="p" data-group-id="7943590174-1">(</samp><samp class="ss">:after_join</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="p" data-group-id="7943590174-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="7943590174-2">do</samp><samp class="w">
+  </samp><samp class="p" data-group-id="7943590174-3">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="7943590174-3">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Presence</samp><samp class="o">.</samp><samp class="n">track</samp><samp class="p" data-group-id="7943590174-4">(</samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="o">.</samp><samp class="n">assigns</samp><samp class="o">.</samp><samp class="n">user_id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="7943590174-5">%{</samp><samp class="w">
+    </samp><samp class="ss">online_at</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">inspect</samp><samp class="p" data-group-id="7943590174-6">(</samp><samp class="nc">System</samp><samp class="o">.</samp><samp class="n">system_time</samp><samp class="p" data-group-id="7943590174-7">(</samp><samp class="ss">:second</samp><samp class="p" data-group-id="7943590174-7">)</samp><samp class="p" data-group-id="7943590174-6">)</samp><samp class="w">
+  </samp><samp class="p" data-group-id="7943590174-5">}</samp><samp class="p" data-group-id="7943590174-4">)</samp><samp class="w">
+  </samp><samp class="p" data-group-id="7943590174-8">{</samp><samp class="ss">:noreply</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="p" data-group-id="7943590174-8">}</samp><samp class="w">
+</samp><samp class="k" data-group-id="7943590174-2">end</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="c:track/4">
+
+  <div class="detail-header">
+    <a href="#c:track/4" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">track(pid, topic, key, meta)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L224" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> track(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pid</a>(), <a href="#t:topic/0">topic</a>(), key :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), meta :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()) ::
+  {:ok, ref :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()} | {:error, reason :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>Track an arbitrary process as a presence.</p><p>Same with <code class="inline">track/3</code>, except track any process by <code class="inline">topic</code> and <code class="inline">key</code>.</p>
+  </section>
+</section>
+<section class="detail" id="c:untrack/2">
+
+  <div class="detail-header">
+    <a href="#c:untrack/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">untrack(socket, key)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L231" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> untrack(socket :: <a href="Phoenix.Socket.xhtml#t:t/0">Phoenix.Socket.t</a>(), key :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) :: :ok</pre>
+
+      </div>
+
+<p>Stop tracking a channel's process.</p>
+  </section>
+</section>
+<section class="detail" id="c:untrack/3">
+
+  <div class="detail-header">
+    <a href="#c:untrack/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">untrack(pid, topic, key)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L236" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> untrack(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pid</a>(), <a href="#t:topic/0">topic</a>(), key :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) :: :ok</pre>
+
+      </div>
+
+<p>Stop tracking a process.</p>
+  </section>
+</section>
+<section class="detail" id="c:update/3">
+
+  <div class="detail-header">
+    <a href="#c:update/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">update(socket, key, meta)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L244" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> update(
+  socket :: <a href="Phoenix.Socket.xhtml#t:t/0">Phoenix.Socket.t</a>(),
+  key :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(),
+  meta :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>() | (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>() -&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>())
+) :: {:ok, ref :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()} | {:error, reason :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>Update a channel presence's metadata.</p><p>Replace a presence's metadata by passing a new map or a function that takes
+the current map and returns a new one.</p>
+  </section>
+</section>
+<section class="detail" id="c:update/4">
+
+  <div class="detail-header">
+    <a href="#c:update/4" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">update(pid, topic, key, meta)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/presence.ex#L257" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> update(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pid</a>(), <a href="#t:topic/0">topic</a>(), key :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), meta :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>() | (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>() -&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>())) ::
+  {:ok, ref :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()} | {:error, reason :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>Update a process presence's metadata.</p><p>Same as <code class="inline">update/3</code>, but with an arbitrary process.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

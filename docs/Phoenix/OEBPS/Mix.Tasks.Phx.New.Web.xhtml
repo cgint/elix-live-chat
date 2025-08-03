@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>mix phx.new.web - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+mix phx.new.web 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Creates a new Phoenix web project within an umbrella project.</p><p>It expects the name of the OTP app as the first argument and
+for the command to be run inside your umbrella application's
+apps directory:</p><pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">cd my_umbrella/apps
+</samp><samp class="gp unselectable">$ </samp><samp class="">mix phx.new.web APP [--module MODULE] [--app APP]
+</samp></code></pre><p>This task is intended to create a bare Phoenix project without
+database integration, which interfaces with your greater
+umbrella application(s).</p><h2 id="module-examples" class="section-heading">
+  <a href="#module-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">mix phx.new.web hello_web
+</samp></code></pre><p>Is equivalent to:</p><pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">mix phx.new.web hello_web --module HelloWeb
+</samp></code></pre><p>Supports the same options as the <code class="inline">phx.new</code> task.
+See <a href="https://hexdocs.pm/phx_new/1.8.0-rc.3/Mix.Tasks.Phx.New.html"><code class="inline">Mix.Tasks.Phx.New</code></a> for details.</p>
+      </section>
+
+
+
+
+  </body>
+</html>

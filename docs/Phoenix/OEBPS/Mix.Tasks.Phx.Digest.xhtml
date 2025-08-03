@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>mix phx.digest - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+mix phx.digest 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Digests and compresses static files.</p><pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">mix phx.digest
+</samp><samp class="gp unselectable">$ </samp><samp class="">mix phx.digest priv/static -o /www/public
+</samp></code></pre><p>The first argument is the path where the static files are located. The
+<code class="inline">-o</code> option indicates the path that will be used to save the digested and
+compressed files.</p><p>If no path is given, it will use <code class="inline">priv/static</code> as the input and output path.</p><p>The output folder will contain:</p><ul><li>the original file</li><li>the file compressed with gzip</li><li>a file containing the original file name and its digest</li><li>a compressed file containing the file name and its digest</li><li>a cache manifest file</li></ul><p>Example of generated files:</p><ul><li>app.js</li><li>app.js.gz</li><li>app-eb0a5b9302e8d32828d8a73f137cc8f0.js</li><li>app-eb0a5b9302e8d32828d8a73f137cc8f0.js.gz</li><li>cache_manifest.json</li></ul><p>You can use <a href="Mix.Tasks.Phx.Digest.Clean.xhtml"><code class="inline">mix phx.digest.clean</code></a> to prune stale versions of the assets.
+If you want to remove all produced files, run <code class="inline">mix phx.digest.clean --all</code>.</p><h2 id="module-vsn" class="section-heading">
+  <a href="#module-vsn" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">vsn</span>
+</h2>
+<p>It is possible to digest the stylesheet asset references without the query
+string &quot;?vsn=d&quot; with the option <code class="inline">--no-vsn</code>.</p>
+      </section>
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>mix phx.gen.embedded - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+mix phx.gen.embedded 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Generates an embedded Ecto schema for casting/validating data outside the DB.</p><pre><code class="makeup elixir" translate="no"><samp class="n">mix</samp><samp class="w"> </samp><samp class="n">phx</samp><samp class="o">.</samp><samp class="n">gen</samp><samp class="o">.</samp><samp class="n">embedded</samp><samp class="w"> </samp><samp class="nc">Blog.Post</samp><samp class="w"> </samp><samp class="n">title</samp><samp class="ss">:string</samp><samp class="w"> </samp><samp class="n">views</samp><samp class="ss">:integer</samp></code></pre><p>The first argument is the schema module followed by the schema attributes.</p><p>The generated schema above will contain:</p><ul><li>an embedded schema file in <code class="inline">lib/my_app/blog/post.ex</code></li></ul><h2 id="module-attributes" class="section-heading">
+  <a href="#module-attributes" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Attributes</span>
+</h2>
+<p>The resource fields are given using <code class="inline">name:type</code> syntax
+where type are the types supported by Ecto. Omitting
+the type makes it default to <code class="inline">:string</code>:</p><pre><code class="makeup elixir" translate="no"><samp class="n">mix</samp><samp class="w"> </samp><samp class="n">phx</samp><samp class="o">.</samp><samp class="n">gen</samp><samp class="o">.</samp><samp class="n">embedded</samp><samp class="w"> </samp><samp class="nc">Blog.Post</samp><samp class="w"> </samp><samp class="n">title</samp><samp class="w"> </samp><samp class="n">views</samp><samp class="ss">:integer</samp></code></pre><p>The following types are supported:</p><ul><li><p><code class="inline">:integer</code></p></li><li><p><code class="inline">:float</code></p></li><li><p><code class="inline">:decimal</code></p></li><li><p><code class="inline">:boolean</code></p></li><li><p><code class="inline">:map</code></p></li><li><p><code class="inline">:string</code></p></li><li><p><code class="inline">:array</code></p></li><li><p><code class="inline">:references</code></p></li><li><p><code class="inline">:text</code></p></li><li><p><code class="inline">:date</code></p></li><li><p><code class="inline">:time</code></p></li><li><p><code class="inline">:time_usec</code></p></li><li><p><code class="inline">:naive_datetime</code></p></li><li><p><code class="inline">:naive_datetime_usec</code></p></li><li><p><code class="inline">:utc_datetime</code></p></li><li><p><code class="inline">:utc_datetime_usec</code></p></li><li><p><code class="inline">:uuid</code></p></li><li><p><code class="inline">:binary</code></p></li><li><p><code class="inline">:enum</code></p></li><li><p><code class="inline">:datetime</code> - An alias for <code class="inline">:naive_datetime</code></p></li></ul>
+      </section>
+
+
+
+
+  </body>
+</html>

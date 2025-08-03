@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>mix phx.new.ecto - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+mix phx.new.ecto 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Creates a new Ecto project within an umbrella project.</p><p>This task is intended to create a bare Ecto project without
+web integration, which serves as a core application of your
+domain for web applications and your greater umbrella
+platform to integrate with.</p><p>It expects the name of the project as an argument.</p><pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">cd my_umbrella/apps
+</samp><samp class="gp unselectable">$ </samp><samp class="">mix phx.new.ecto APP [--module MODULE] [--app APP]
+</samp></code></pre><p>A project at the given APP directory will be created. The
+application name and module name will be retrieved
+from the application name, unless <code class="inline">--module</code> or <code class="inline">--app</code> is given.</p><h2 id="module-options" class="section-heading">
+  <a href="#module-options" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Options</span>
+</h2>
+<ul><li><p><code class="inline">--app</code> - the name of the OTP application</p></li><li><p><code class="inline">--module</code> - the name of the base module in
+the generated skeleton</p></li><li><p><code class="inline">--database</code> - specify the database adapter for Ecto. One of:</p><ul><li><code class="inline">postgres</code> - via <a href="https://github.com/elixir-ecto/postgrex">https://github.com/elixir-ecto/postgrex</a></li><li><code class="inline">mysql</code> - via <a href="https://github.com/elixir-ecto/myxql">https://github.com/elixir-ecto/myxql</a></li><li><code class="inline">mssql</code> - via <a href="https://github.com/livehelpnow/tds">https://github.com/livehelpnow/tds</a></li><li><code class="inline">sqlite3</code> - via <a href="https://github.com/elixir-sqlite/ecto_sqlite3">https://github.com/elixir-sqlite/ecto_sqlite3</a></li></ul><p>Please check the driver docs for more information
+and requirements. Defaults to &quot;postgres&quot;.</p></li><li><p><code class="inline">--binary-id</code> - use <code class="inline">binary_id</code> as primary key type
+in Ecto schemas</p></li></ul><h2 id="module-examples" class="section-heading">
+  <a href="#module-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">mix phx.new.ecto hello_ecto
+</samp></code></pre><p>Is equivalent to:</p><pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">mix phx.new.ecto hello_ecto --module HelloEcto
+</samp></code></pre>
+      </section>
+
+
+
+
+  </body>
+</html>

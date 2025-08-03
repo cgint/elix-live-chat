@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.VerifiedRoutes - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.VerifiedRoutes 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Provides route generation with compile-time verification.</p><p>Use of the <code class="inline">sigil_p</code> macro allows paths and URLs throughout your
+application to be compile-time verified against your Phoenix router(s).
+For example, the following path and URL usages:</p><pre><code class="makeup elixir" translate="no"><samp class="o">&lt;</samp><samp class="o">.</samp><samp class="n">link</samp><samp class="w"> </samp><samp class="n">href</samp><samp class="o">=</samp><samp class="p" data-group-id="6038531546-1">{</samp><samp class="sx">~p&quot;/sessions/new&quot;</samp><samp class="p" data-group-id="6038531546-1">}</samp><samp class="w"> </samp><samp class="n">method</samp><samp class="o">=</samp><samp class="s">&quot;post&quot;</samp><samp class="o">&gt;</samp><samp class="nc">Log</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="o">&lt;</samp><samp class="o">/</samp><samp class="o">.</samp><samp class="n">link</samp><samp class="o">&gt;</samp><samp class="w">
+
+</samp><samp class="n">redirect</samp><samp class="p" data-group-id="6038531546-2">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">url</samp><samp class="p" data-group-id="6038531546-3">(</samp><samp class="sx">~p&quot;/posts/</samp><samp class="si" data-group-id="6038531546-4">#{</samp><samp class="n">post</samp><samp class="si" data-group-id="6038531546-4">}</samp><samp class="sx">&quot;</samp><samp class="p" data-group-id="6038531546-3">)</samp><samp class="p" data-group-id="6038531546-2">)</samp></code></pre><p>Will be verified against your standard <a href="Phoenix.Router.xhtml"><code class="inline">Phoenix.Router</code></a> definitions:</p><pre><code class="makeup elixir" translate="no"><samp class="n">get</samp><samp class="w"> </samp><samp class="s">&quot;/posts/:post_id&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">PostController</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:show</samp><samp class="w">
+</samp><samp class="n">post</samp><samp class="w"> </samp><samp class="s">&quot;/sessions/new&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">SessionController</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:create</samp></code></pre><p>Unmatched routes will issue compiler warnings:</p><pre><code class="makeup elixir" translate="no"><samp class="ss">warning</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">no</samp><samp class="w"> </samp><samp class="n">route</samp><samp class="w"> </samp><samp class="n">path</samp><samp class="w"> </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="nc">AppWeb.Router</samp><samp class="w"> </samp><samp class="n">matches</samp><samp class="w"> </samp><samp class="s">&quot;/postz/</samp><samp class="si" data-group-id="4218394259-1">#{</samp><samp class="n">post</samp><samp class="si" data-group-id="4218394259-1">}</samp><samp class="s">&quot;</samp><samp class="w">
+  </samp><samp class="n">lib</samp><samp class="o">/</samp><samp class="n">app_web</samp><samp class="o">/</samp><samp class="n">controllers</samp><samp class="o">/</samp><samp class="n">post_controller</samp><samp class="o">.</samp><samp class="n">ex</samp><samp class="p">:</samp><samp class="mi">100</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">AppWeb.PostController</samp><samp class="o">.</samp><samp class="n">show</samp><samp class="o">/</samp><samp class="mi">2</samp></code></pre><p>Additionally, interpolated ~p values are encoded via the <a href="Phoenix.Param.xhtml"><code class="inline">Phoenix.Param</code></a> protocol.
+For example, a <code class="inline">%Post{}</code> struct in your application may derive the <a href="Phoenix.Param.xhtml"><code class="inline">Phoenix.Param</code></a>
+protocol to generate slug-based paths rather than ID based ones. This allows you to
+use <code class="inline">~p&quot;/posts/#{post}&quot;</code> rather than <code class="inline">~p&quot;/posts/#{post.slug}&quot;</code> throughout your
+application. See the <a href="Phoenix.Param.xhtml"><code class="inline">Phoenix.Param</code></a> documentation for more details.</p><p>Finally, query strings are also supported in verified routes, either in traditional form:</p><pre><code class="makeup elixir" translate="no"><samp class="sx">~p&quot;/posts?page=</samp><samp class="si" data-group-id="6265383653-1">#{</samp><samp class="n">page</samp><samp class="si" data-group-id="6265383653-1">}</samp><samp class="sx">&quot;</samp></code></pre><p>Or as a keyword list or map of values:</p><pre><code class="makeup elixir" translate="no"><samp class="n">params</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="8635706912-1">%{</samp><samp class="ss">page</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">direction</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;asc&quot;</samp><samp class="p" data-group-id="8635706912-1">}</samp><samp class="w">
+</samp><samp class="sx">~p&quot;/posts?</samp><samp class="si" data-group-id="8635706912-2">#{</samp><samp class="n">params</samp><samp class="si" data-group-id="8635706912-2">}</samp><samp class="sx">&quot;</samp></code></pre><p>Like path segments, query strings params are proper URL encoded and may be interpolated
+directly into the ~p string.</p><h2 id="module-what-about-named-routes" class="section-heading">
+  <a href="#module-what-about-named-routes" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">What about named routes?</span>
+</h2>
+<p>Many web frameworks, and early versions of Phoenix, provided a feature called &quot;named routes&quot;.
+The idea is that, when you define routes in your web applications, you could give them names
+too. In Phoenix that was done as follows:</p><pre><code class="makeup elixir" translate="no"><samp class="n">get</samp><samp class="w"> </samp><samp class="s">&quot;/login&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">SessionController</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:create</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">as</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:login</samp></code></pre><p>And now you could generate the route usnig the <code class="inline">login_path</code> function.</p><p>Named routes exist to avoid hardcoding routes in your templates, if you wrote <code class="inline">&lt;a href=&quot;/login&quot;&gt;</code>
+and then changed your router, the link would point to a page that no longer exist. By using
+<code class="inline">login_path</code>, we make sure it always points to a valid URL in our router. However, named routes
+come with the downsides of indirection: when you look at the code, it is not immediately clear
+which URL will be generated. Furthermore, if you have an existing URL and you want to add it
+to a template, you need to do a reverse lookup and find its name in the router. At the end of
+the day, named routes are arbitrary names that need to be memorized by developers, adding
+cognitive overhead.</p><p>Verified routes tackle this problem by allowing the routes to be written as we would read them
+in a browser, but using the <code class="inline">~p</code> sigil to guarantee they actually exist at compilation time.
+They remove the indirection of named routes while keeping their guarantees.</p><p>In any case, if part of your application requires features similar to named routes, then
+remember you can still leverage Elixir features to achieve the same result. For example,
+you can define several functions as named routes to be reused across modules:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">login_path</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sx">~p&quot;/login&quot;</samp><samp class="w">
+</samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">user_home_path</samp><samp class="p" data-group-id="4469704588-1">(</samp><samp class="n">user</samp><samp class="p" data-group-id="4469704588-1">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sx">~p&quot;/users/</samp><samp class="si" data-group-id="4469704588-2">#{</samp><samp class="n">user</samp><samp class="o">.</samp><samp class="n">username</samp><samp class="si" data-group-id="4469704588-2">}</samp><samp class="sx">&quot;</samp></code></pre><h2 id="module-options" class="section-heading">
+  <a href="#module-options" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Options</span>
+</h2>
+<p>To verify routes in your application modules, such as controller, templates, and views,
+<code class="inline">use Phoenix.VerifiedRoutes</code>, which supports the following options:</p><ul><li><code class="inline">:router</code> - The required router to verify ~p paths against</li><li><code class="inline">:endpoint</code> - The optional endpoint for ~p script_name and URL generation</li><li><code class="inline">:statics</code> - The optional list of static directories to treat as verified paths</li></ul><p>For example:</p><pre><code class="makeup elixir" translate="no"><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Phoenix.VerifiedRoutes</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">router</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">AppWeb.Router</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">endpoint</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">AppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">statics</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sx">~w(images)</samp></code></pre><h2 id="module-usage" class="section-heading">
+  <a href="#module-usage" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Usage</span>
+</h2>
+<p>The majority of path and URL generation needs your application will be met
+with <code class="inline">~p</code> and <a href="#url/1"><code class="inline">url/1</code></a>, where all information necessary to construct the path
+or URL is provided by the compile-time information stored in the Endpoint
+and Router passed to <code class="inline">use Phoenix.VerifiedRoutes</code>.</p><p>That said, there are some circumstances where <a href="#path/2"><code class="inline">path/2</code></a>, <a href="#path/3"><code class="inline">path/3</code></a>, <a href="#url/2"><code class="inline">url/2</code></a>, and <a href="#url/3"><code class="inline">url/3</code></a>
+are required:</p><ul><li><p>When the runtime values of the <code class="inline">%Plug.Conn{}</code>, <code class="inline">%Phoenix.LiveSocket{}</code>, or a <code class="inline">%URI{}</code>
+dictate the formation of the path or URL, which happens under the following scenarios:</p><ul><li><a href="Phoenix.Controller.xhtml#put_router_url/2"><code class="inline">Phoenix.Controller.put_router_url/2</code></a> is used to override the endpoint's URL</li><li><a href="Phoenix.Controller.xhtml#put_static_url/2"><code class="inline">Phoenix.Controller.put_static_url/2</code></a> is used to override the endpoint's static URL</li></ul></li><li><p>When the Router module differs from the one passed to <code class="inline">use Phoenix.VerifiedRoutes</code>,
+such as library code, or application code that relies on multiple routers. In such cases,
+the router module can be provided explicitly to <a href="#path/3"><code class="inline">path/3</code></a> and <a href="#url/3"><code class="inline">url/3</code></a>.</p></li></ul><h2 id="module-tracking-warnings" class="section-heading">
+  <a href="#module-tracking-warnings" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Tracking Warnings</span>
+</h2>
+<p>All static path segments must start with forward slash, and you must have a static segment
+between dynamic interpolations in order for a route to be verified without warnings.
+For example, the following path generates proper warnings</p><pre><code class="makeup elixir" translate="no"><samp class="sx">~p&quot;/media/posts/</samp><samp class="si" data-group-id="9307366394-1">#{</samp><samp class="n">post</samp><samp class="si" data-group-id="9307366394-1">}</samp><samp class="sx">&quot;</samp></code></pre><p>While this one will not allow the compiler to see the full path:</p><pre><code class="makeup elixir" translate="no"><samp class="n">type</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="s">&quot;posts&quot;</samp><samp class="w">
+</samp><samp class="sx">~p&quot;/media/</samp><samp class="si" data-group-id="8354177258-1">#{</samp><samp class="n">type</samp><samp class="si" data-group-id="8354177258-1">}</samp><samp class="sx">/</samp><samp class="si" data-group-id="8354177258-2">#{</samp><samp class="n">post</samp><samp class="si" data-group-id="8354177258-2">}</samp><samp class="sx">&quot;</samp></code></pre><p>In such cases, it's better to write a function such as <code class="inline">media_path/1</code> which branches
+on different <code class="inline">~p</code>'s to handle each type.</p><p>Like any other compilation warning, the Elixir compiler will warn any time the file
+that a ~p resides in changes, or if the router is changed. To view previously issued
+warnings for files that lack new changes, the <code class="inline">--all-warnings</code> flag may be passed to
+the <a href="https://hexdocs.pm/mix/Mix.Tasks.Compile.html"><code class="inline">mix compile</code></a> task. For the following will show all warnings the compiler
+has previously encountered when compiling the current application code:</p><pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">mix compile --all-warnings
+</samp></code></pre><p>*Note: Elixir &gt;= 1.14.0 is required for comprehensive warnings. Older versions
+will compile properly, but no warnings will be issued.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#path/2" data-no-tooltip="" translate="no">path(conn_or_socket_or_endpoint_or_uri, sigil_p)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates the router path with route verification.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#path/3" data-no-tooltip="" translate="no">path(conn_or_socket_or_endpoint_or_uri, router, sigil_p)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates the router path with route verification.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#sigil_p/2" data-no-tooltip="" translate="no">sigil_p(route, extra)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates the router path with route verification.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#static_integrity/2" data-no-tooltip="" translate="no">static_integrity(conn_or_socket_or_endpoint_or_uri, path)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates an integrity hash to a static asset given its file path.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#static_path/2" data-no-tooltip="" translate="no">static_path(conn_or_socket_or_endpoint_or_uri, path)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates path to a static asset given its file path.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#static_url/2" data-no-tooltip="" translate="no">static_url(conn_or_socket_or_endpoint, path)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates url to a static asset given its file path.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#unverified_path/4" data-no-tooltip="" translate="no">unverified_path(conn_or_socket_or_endpoint_or_uri, router, path, params \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the path with relevant script name prefixes without verification.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#unverified_url/3" data-no-tooltip="" translate="no">unverified_url(conn_or_socket_or_endpoint_or_uri, path, params \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the URL for the endpoint from the path without verification.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#url/1" data-no-tooltip="" translate="no">url(sigil_p)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates the router url with route verification.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#url/2" data-no-tooltip="" translate="no">url(conn_or_socket_or_endpoint_or_uri, sigil_p)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates the router url with route verification from the connection, socket, or URI.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#url/3" data-no-tooltip="" translate="no">url(conn_or_socket_or_endpoint_or_uri, router, sigil_p)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates the url with route verification from the connection, socket, or URI and router.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="path/2">
+
+  <div class="detail-header">
+    <a href="#path/2" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">path(conn_or_socket_or_endpoint_or_uri, sigil_p)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/verified_routes.ex#L338" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Generates the router path with route verification.</p><p>See <a href="#sigil_p/2"><code class="inline">sigil_p/2</code></a> for more information.</p><p>Warns when the provided path does not match against the router specified
+in <code class="inline">use Phoenix.VerifiedRoutes</code> or the <code class="inline">@router</code> module attribute.</p><h2 id="path/2-examples" class="section-heading">
+  <a href="#path/2-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Phoenix.VerifiedRoutes</samp><samp class="w">
+
+</samp><samp class="n">redirect</samp><samp class="p" data-group-id="7953817343-1">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">path</samp><samp class="p" data-group-id="7953817343-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="sx">~p&quot;/users/top&quot;</samp><samp class="p" data-group-id="7953817343-2">)</samp><samp class="p" data-group-id="7953817343-1">)</samp><samp class="w">
+
+</samp><samp class="n">redirect</samp><samp class="p" data-group-id="7953817343-3">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">path</samp><samp class="p" data-group-id="7953817343-4">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="sx">~p&quot;/users/</samp><samp class="si" data-group-id="7953817343-5">#{</samp><samp class="na">@user</samp><samp class="si" data-group-id="7953817343-5">}</samp><samp class="sx">&quot;</samp><samp class="p" data-group-id="7953817343-4">)</samp><samp class="p" data-group-id="7953817343-3">)</samp><samp class="w">
+
+</samp><samp class="sx">~H&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">.link</samp><samp class="w"> </samp><samp class="ni">href</samp><samp class="p">=</samp><samp class="p" data-group-id="7174016412-1">{</samp><samp class="n">path</samp><samp class="p" data-group-id="7953817343-6">(</samp><samp class="na">@uri</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/users?page=</samp><samp class="si" data-group-id="7953817343-7">#{</samp><samp class="na">@page</samp><samp class="si" data-group-id="7953817343-7">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="7953817343-6">)</samp><samp class="p" data-group-id="7174016412-1">}</samp><samp class="p">&gt;</samp><samp class="n">profile</samp><samp class="p">&lt;/</samp><samp class="nt">.link</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">.link</samp><samp class="w"> </samp><samp class="ni">href</samp><samp class="p">=</samp><samp class="p" data-group-id="7174016412-2">{</samp><samp class="n">path</samp><samp class="p" data-group-id="7953817343-8">(</samp><samp class="na">@uri</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/users?</samp><samp class="si" data-group-id="7953817343-9">#{</samp><samp class="na">@params</samp><samp class="si" data-group-id="7953817343-9">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="7953817343-8">)</samp><samp class="p" data-group-id="7174016412-2">}</samp><samp class="p">&gt;</samp><samp class="n">profile</samp><samp class="p">&lt;/</samp><samp class="nt">.link</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="sx">&quot;&quot;&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="path/3">
+
+  <div class="detail-header">
+    <a href="#path/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">path(conn_or_socket_or_endpoint_or_uri, router, sigil_p)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/verified_routes.ex#L303" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Generates the router path with route verification.</p><p>See <a href="#sigil_p/2"><code class="inline">sigil_p/2</code></a> for more information.</p><p>Warns when the provided path does not match against the router specified
+in the router argument.</p><h2 id="path/3-examples" class="section-heading">
+  <a href="#path/3-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Phoenix.VerifiedRoutes</samp><samp class="w">
+
+</samp><samp class="n">redirect</samp><samp class="p" data-group-id="0099633300-1">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">path</samp><samp class="p" data-group-id="0099633300-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Router</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="sx">~p&quot;/users/top&quot;</samp><samp class="p" data-group-id="0099633300-2">)</samp><samp class="p" data-group-id="0099633300-1">)</samp><samp class="w">
+
+</samp><samp class="n">redirect</samp><samp class="p" data-group-id="0099633300-3">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">path</samp><samp class="p" data-group-id="0099633300-4">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Router</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="sx">~p&quot;/users/</samp><samp class="si" data-group-id="0099633300-5">#{</samp><samp class="na">@user</samp><samp class="si" data-group-id="0099633300-5">}</samp><samp class="sx">&quot;</samp><samp class="p" data-group-id="0099633300-4">)</samp><samp class="p" data-group-id="0099633300-3">)</samp><samp class="w">
+
+</samp><samp class="sx">~H&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">.link</samp><samp class="w"> </samp><samp class="ni">href</samp><samp class="p">=</samp><samp class="p" data-group-id="3592696605-1">{</samp><samp class="n">path</samp><samp class="p" data-group-id="0099633300-6">(</samp><samp class="na">@uri</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Router</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/users?page=</samp><samp class="si" data-group-id="0099633300-7">#{</samp><samp class="na">@page</samp><samp class="si" data-group-id="0099633300-7">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="0099633300-6">)</samp><samp class="p" data-group-id="3592696605-1">}</samp><samp class="p">&gt;</samp><samp class="n">profile</samp><samp class="p">&lt;/</samp><samp class="nt">.link</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">.link</samp><samp class="w"> </samp><samp class="ni">href</samp><samp class="p">=</samp><samp class="p" data-group-id="3592696605-2">{</samp><samp class="n">path</samp><samp class="p" data-group-id="0099633300-8">(</samp><samp class="na">@uri</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Router</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/users?</samp><samp class="si" data-group-id="0099633300-9">#{</samp><samp class="na">@params</samp><samp class="si" data-group-id="0099633300-9">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="0099633300-8">)</samp><samp class="p" data-group-id="3592696605-2">}</samp><samp class="p">&gt;</samp><samp class="n">profile</samp><samp class="p">&lt;/</samp><samp class="nt">.link</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="sx">&quot;&quot;&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="sigil_p/2">
+
+  <div class="detail-header">
+    <a href="#sigil_p/2" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">sigil_p(route, extra)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/verified_routes.ex#L231" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Generates the router path with route verification.</p><p>Interpolated named parameters are encoded via the <a href="Phoenix.Param.xhtml"><code class="inline">Phoenix.Param</code></a> protocol.</p><p>Warns when the provided path does not match against the router specified
+in <code class="inline">use Phoenix.VerifiedRoutes</code> or the <code class="inline">@router</code> module attribute.</p><h2 id="sigil_p/2-examples" class="section-heading">
+  <a href="#sigil_p/2-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Phoenix.VerifiedRoutes</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">endpoint</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">router</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Router</samp><samp class="w">
+
+</samp><samp class="n">redirect</samp><samp class="p" data-group-id="6850595922-1">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sx">~p&quot;/users/top&quot;</samp><samp class="p" data-group-id="6850595922-1">)</samp><samp class="w">
+
+</samp><samp class="n">redirect</samp><samp class="p" data-group-id="6850595922-2">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sx">~p&quot;/users/</samp><samp class="si" data-group-id="6850595922-3">#{</samp><samp class="na">@user</samp><samp class="si" data-group-id="6850595922-3">}</samp><samp class="sx">&quot;</samp><samp class="p" data-group-id="6850595922-2">)</samp><samp class="w">
+
+</samp><samp class="sx">~H&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">.link</samp><samp class="w"> </samp><samp class="ni">href</samp><samp class="p">=</samp><samp class="p" data-group-id="7872063148-1">{</samp><samp class="sx">~p&quot;/users?page=</samp><samp class="si" data-group-id="6850595922-4">#{</samp><samp class="na">@page</samp><samp class="si" data-group-id="6850595922-4">}</samp><samp class="sx">&quot;</samp><samp class="p" data-group-id="7872063148-1">}</samp><samp class="p">&gt;</samp><samp class="n">profile</samp><samp class="p">&lt;/</samp><samp class="nt">.link</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">.link</samp><samp class="w"> </samp><samp class="ni">href</samp><samp class="p">=</samp><samp class="p" data-group-id="7872063148-2">{</samp><samp class="sx">~p&quot;/users?</samp><samp class="si" data-group-id="6850595922-5">#{</samp><samp class="na">@params</samp><samp class="si" data-group-id="6850595922-5">}</samp><samp class="sx">&quot;</samp><samp class="p" data-group-id="7872063148-2">}</samp><samp class="p">&gt;</samp><samp class="n">profile</samp><samp class="p">&lt;/</samp><samp class="nt">.link</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="sx">&quot;&quot;&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="static_integrity/2">
+
+  <div class="detail-header">
+    <a href="#static_integrity/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">static_integrity(conn_or_socket_or_endpoint_or_uri, path)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/verified_routes.ex#L742" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Generates an integrity hash to a static asset given its file path.</p><p>See <code class="inline">Phoenix.Endpoint.static_integrity/1</code> for more information.</p><h2 id="static_integrity/2-examples" class="section-heading">
+  <a href="#static_integrity/2-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">static_integrity</samp><samp class="p" data-group-id="0592478660-1">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/assets/app.js&quot;</samp><samp class="p" data-group-id="0592478660-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;813dfe33b5c7f8388bccaaa38eec8382&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">static_integrity</samp><samp class="p" data-group-id="0592478660-2">(</samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/assets/app.js&quot;</samp><samp class="p" data-group-id="0592478660-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;813dfe33b5c7f8388bccaaa38eec8382&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">static_integrity</samp><samp class="p" data-group-id="0592478660-3">(</samp><samp class="nc">AppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/assets/app.js&quot;</samp><samp class="p" data-group-id="0592478660-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;813dfe33b5c7f8388bccaaa38eec8382&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="static_path/2">
+
+  <div class="detail-header">
+    <a href="#static_path/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">static_path(conn_or_socket_or_endpoint_or_uri, path)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/verified_routes.ex#L546" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Generates path to a static asset given its file path.</p><p>See <code class="inline">Phoenix.Endpoint.static_path/1</code> for more information.</p><h2 id="static_path/2-examples" class="section-heading">
+  <a href="#static_path/2-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">static_path</samp><samp class="p" data-group-id="1465187099-1">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/assets/app.js&quot;</samp><samp class="p" data-group-id="1465187099-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;/assets/app-813dfe33b5c7f8388bccaaa38eec8382.js&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">static_path</samp><samp class="p" data-group-id="1465187099-2">(</samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/assets/app.js&quot;</samp><samp class="p" data-group-id="1465187099-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;/assets/app-813dfe33b5c7f8388bccaaa38eec8382.js&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">static_path</samp><samp class="p" data-group-id="1465187099-3">(</samp><samp class="nc">AppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/assets/app.js&quot;</samp><samp class="p" data-group-id="1465187099-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;/assets/app-813dfe33b5c7f8388bccaaa38eec8382.js&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">static_path</samp><samp class="p" data-group-id="1465187099-4">(</samp><samp class="p" data-group-id="1465187099-5">%</samp><samp class="nc" data-group-id="1465187099-5">URI</samp><samp class="p" data-group-id="1465187099-5">{</samp><samp class="ss">path</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;/subresource&quot;</samp><samp class="p" data-group-id="1465187099-5">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/assets/app.js&quot;</samp><samp class="p" data-group-id="1465187099-4">)</samp><samp class="w">
+</samp><samp class="s">&quot;/subresource/assets/app-813dfe33b5c7f8388bccaaa38eec8382.js&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="static_url/2">
+
+  <div class="detail-header">
+    <a href="#static_url/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">static_url(conn_or_socket_or_endpoint, path)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/verified_routes.ex#L457" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Generates url to a static asset given its file path.</p><p>See <code class="inline">Phoenix.Endpoint.static_url/0</code> and <code class="inline">Phoenix.Endpoint.static_path/1</code> for more information.</p><h2 id="static_url/2-examples" class="section-heading">
+  <a href="#static_url/2-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">static_url</samp><samp class="p" data-group-id="1924570799-1">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/assets/app.js&quot;</samp><samp class="p" data-group-id="1924570799-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;https://example.com/assets/app-813dfe33b5c7f8388bccaaa38eec8382.js&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">static_url</samp><samp class="p" data-group-id="1924570799-2">(</samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/assets/app.js&quot;</samp><samp class="p" data-group-id="1924570799-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;https://example.com/assets/app-813dfe33b5c7f8388bccaaa38eec8382.js&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">static_url</samp><samp class="p" data-group-id="1924570799-3">(</samp><samp class="nc">AppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/assets/app.js&quot;</samp><samp class="p" data-group-id="1924570799-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;https://example.com/assets/app-813dfe33b5c7f8388bccaaa38eec8382.js&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="unverified_path/4">
+
+    <span id="unverified_path/3"></span>
+
+  <div class="detail-header">
+    <a href="#unverified_path/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">unverified_path(conn_or_socket_or_endpoint_or_uri, router, path, params \\ %{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/verified_routes.ex#L578" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns the path with relevant script name prefixes without verification.</p><h2 id="unverified_path/4-examples" class="section-heading">
+  <a href="#unverified_path/4-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">unverified_path</samp><samp class="p" data-group-id="7896933432-1">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">AppWeb.Router</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/posts&quot;</samp><samp class="p" data-group-id="7896933432-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;/posts&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">unverified_path</samp><samp class="p" data-group-id="7896933432-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">AppWeb.Router</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/posts&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">page</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="7896933432-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;/posts?page=1&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="unverified_url/3">
+
+    <span id="unverified_url/2"></span>
+
+  <div class="detail-header">
+    <a href="#unverified_url/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">unverified_url(conn_or_socket_or_endpoint_or_uri, path, params \\ %{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/verified_routes.ex#L491" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns the URL for the endpoint from the path without verification.</p><h2 id="unverified_url/3-examples" class="section-heading">
+  <a href="#unverified_url/3-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">unverified_url</samp><samp class="p" data-group-id="9467155363-1">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/posts&quot;</samp><samp class="p" data-group-id="9467155363-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;https://example.com/posts&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">unverified_url</samp><samp class="p" data-group-id="9467155363-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/posts&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">page</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9467155363-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;https://example.com/posts?page=1&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="url/1">
+
+  <div class="detail-header">
+    <a href="#url/1" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">url(sigil_p)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/verified_routes.ex#L393" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Generates the router url with route verification.</p><p>See <a href="#sigil_p/2"><code class="inline">sigil_p/2</code></a> for more information.</p><p>Warns when the provided path does not match against the router specified
+in <code class="inline">use Phoenix.VerifiedRoutes</code> or the <code class="inline">@router</code> module attribute.</p><h2 id="url/1-examples" class="section-heading">
+  <a href="#url/1-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Phoenix.VerifiedRoutes</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">endpoint</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">router</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Router</samp><samp class="w">
+
+</samp><samp class="n">redirect</samp><samp class="p" data-group-id="9117744544-1">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">url</samp><samp class="p" data-group-id="9117744544-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="sx">~p&quot;/users/top&quot;</samp><samp class="p" data-group-id="9117744544-2">)</samp><samp class="p" data-group-id="9117744544-1">)</samp><samp class="w">
+
+</samp><samp class="n">redirect</samp><samp class="p" data-group-id="9117744544-3">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">url</samp><samp class="p" data-group-id="9117744544-4">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="sx">~p&quot;/users/</samp><samp class="si" data-group-id="9117744544-5">#{</samp><samp class="na">@user</samp><samp class="si" data-group-id="9117744544-5">}</samp><samp class="sx">&quot;</samp><samp class="p" data-group-id="9117744544-4">)</samp><samp class="p" data-group-id="9117744544-3">)</samp><samp class="w">
+
+</samp><samp class="sx">~H&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">.link</samp><samp class="w"> </samp><samp class="ni">href</samp><samp class="p">=</samp><samp class="p" data-group-id="5756101997-1">{</samp><samp class="n">url</samp><samp class="p" data-group-id="9117744544-6">(</samp><samp class="na">@uri</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/users?</samp><samp class="si" data-group-id="9117744544-7">#{</samp><samp class="p" data-group-id="9117744544-8">[</samp><samp class="ss">page</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="na">@page</samp><samp class="p" data-group-id="9117744544-8">]</samp><samp class="si" data-group-id="9117744544-7">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="9117744544-6">)</samp><samp class="p" data-group-id="5756101997-1">}</samp><samp class="p">&gt;</samp><samp class="n">profile</samp><samp class="p">&lt;/</samp><samp class="nt">.link</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="sx">&quot;&quot;&quot;</samp></code></pre><p>The router may also be provided in cases where you want to verify routes for a
+router other than the one passed to <code class="inline">use Phoenix.VerifiedRoutes</code>:</p><pre><code class="makeup elixir" translate="no"><samp class="n">redirect</samp><samp class="p" data-group-id="2669095007-1">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">url</samp><samp class="p" data-group-id="2669095007-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">OtherRouter</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="sx">~p&quot;/users&quot;</samp><samp class="p" data-group-id="2669095007-2">)</samp><samp class="p" data-group-id="2669095007-1">)</samp></code></pre><p>Forwarded routes are also resolved automatically. For example, imagine you
+have a forward path to an admin router in your main router:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">AppWeb.Router</samp><samp class="w"> </samp><samp class="k" data-group-id="2618654400-1">do</samp><samp class="w">
+  </samp><samp class="n">...</samp><samp class="w">
+  </samp><samp class="n">forward</samp><samp class="w"> </samp><samp class="s">&quot;/admin&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">AppWeb.AdminRouter</samp><samp class="w">
+</samp><samp class="k" data-group-id="2618654400-1">end</samp><samp class="w">
+
+</samp><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">AppWeb.AdminRouter</samp><samp class="w"> </samp><samp class="k" data-group-id="2618654400-2">do</samp><samp class="w">
+  </samp><samp class="n">...</samp><samp class="w">
+  </samp><samp class="n">get</samp><samp class="w"> </samp><samp class="s">&quot;/users&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">AppWeb.Admin.UserController</samp><samp class="w">
+</samp><samp class="k" data-group-id="2618654400-2">end</samp></code></pre><p>Forwarded paths in your main application router will be verified as usual,
+such as <code class="inline">~p&quot;/admin/users&quot;</code>.</p>
+  </section>
+</section>
+<section class="detail" id="url/2">
+
+  <div class="detail-header">
+    <a href="#url/2" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">url(conn_or_socket_or_endpoint_or_uri, sigil_p)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/verified_routes.ex#L409" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Generates the router url with route verification from the connection, socket, or URI.</p><p>See <a href="#url/1"><code class="inline">url/1</code></a> for more information.</p>
+  </section>
+</section>
+<section class="detail" id="url/3">
+
+  <div class="detail-header">
+    <a href="#url/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">url(conn_or_socket_or_endpoint_or_uri, router, sigil_p)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/verified_routes.ex#L427" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Generates the url with route verification from the connection, socket, or URI and router.</p><p>See <a href="#url/1"><code class="inline">url/1</code></a> for more information.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

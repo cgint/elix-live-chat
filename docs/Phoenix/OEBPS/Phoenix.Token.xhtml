@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.Token - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.Token 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Conveniences to sign/encrypt data inside tokens
+for use in Channels, API authentication, and more.</p><p>The data stored in the token is signed to prevent tampering, and is
+optionally encrypted. This means that, so long as the
+key (see below) remains secret, you can be assured that the data
+stored in the token has not been tampered with by a third party.
+However, unless the token is encrypted, it is not safe to use this
+token to store private information, such as a user's sensitive
+identification data, as it can be trivially decoded. If the
+token is encrypted, its contents will be kept secret from the
+client, but it is still a best practice to encode as little secret
+information as possible, to minimize the impact of key leakage.</p><h2 id="module-example" class="section-heading">
+  <a href="#module-example" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Example</span>
+</h2>
+<p>When generating a unique token for use in an API or Channel
+it is advised to use a unique identifier for the user, typically
+the id from a database. For example:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">user_id</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">token</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Phoenix.Token</samp><samp class="o">.</samp><samp class="n">sign</samp><samp class="p" data-group-id="9208803046-1">(</samp><samp class="nc">MyAppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;user auth&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user_id</samp><samp class="p" data-group-id="9208803046-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Token</samp><samp class="o">.</samp><samp class="n">verify</samp><samp class="p" data-group-id="9208803046-2">(</samp><samp class="nc">MyAppWeb.Endpoint</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;user auth&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">token</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">max_age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">86400</samp><samp class="p" data-group-id="9208803046-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9208803046-3">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9208803046-3">}</samp></code></pre><p>In that example we have a user's id, we generate a token and
+verify it using the secret key base configured in the given
+<code class="inline">endpoint</code>. We guarantee the token will only be valid for one day
+by setting a max age (recommended).</p><p>The first argument to <a href="#sign/4"><code class="inline">sign/4</code></a>, <a href="#verify/4"><code class="inline">verify/4</code></a>, <a href="#encrypt/4"><code class="inline">encrypt/4</code></a>, and
+<a href="#decrypt/4"><code class="inline">decrypt/4</code></a> can be one of:</p><ul><li>the module name of a Phoenix endpoint (shown above) - where
+the secret key base is extracted from the endpoint</li><li><a href="https://hexdocs.pm/plug/1.15.3/Plug.Conn.html"><code class="inline">Plug.Conn</code></a> - where the secret key base is extracted from the
+endpoint stored in the connection</li><li><a href="Phoenix.Socket.xhtml"><code class="inline">Phoenix.Socket</code></a> or <code class="inline">Phoenix.LiveView.Socket</code> - where the secret
+key base is extracted from the endpoint stored in the socket</li><li>a string, representing the secret key base itself. A key base
+with at least 20 randomly generated characters should be used
+to provide adequate entropy</li></ul><p>The second argument is a <a href="https://en.wikipedia.org/wiki/Salt_(cryptography)">cryptographic salt</a>
+which must be the same in both calls to <a href="#sign/4"><code class="inline">sign/4</code></a> and <a href="#verify/4"><code class="inline">verify/4</code></a>, or
+both calls to <a href="#encrypt/4"><code class="inline">encrypt/4</code></a> and <a href="#decrypt/4"><code class="inline">decrypt/4</code></a>. For instance, it may be
+called &quot;user auth&quot; and treated as namespace when generating a token
+that will be used to authenticate users on channels or on your APIs.</p><p>The third argument can be any term (string, int, list, etc.)
+that you wish to codify into the token. Upon valid verification,
+this same term will be extracted from the token.</p><h2 id="module-usage" class="section-heading">
+  <a href="#module-usage" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Usage</span>
+</h2>
+<p>Once a token is signed, we can send it to the client in multiple ways.</p><p>One is via the meta tag:</p><pre><code class="makeup elixir" translate="no"><samp class="o">&lt;</samp><samp class="p">%</samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">tag</samp><samp class="w"> </samp><samp class="ss">:meta</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;channel_token&quot;</samp><samp class="p">,</samp><samp class="w">
+               </samp><samp class="ss">content</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Phoenix.Token</samp><samp class="o">.</samp><samp class="n">sign</samp><samp class="p" data-group-id="2474768142-1">(</samp><samp class="na">@conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;user auth&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="na">@current_user</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="p" data-group-id="2474768142-1">)</samp><samp class="w"> </samp><samp class="p">%</samp><samp class="o">&gt;</samp></code></pre><p>Or an endpoint that returns it:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">create</samp><samp class="p" data-group-id="5584992829-1">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">params</samp><samp class="p" data-group-id="5584992829-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5584992829-2">do</samp><samp class="w">
+  </samp><samp class="n">user</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">User</samp><samp class="o">.</samp><samp class="n">create</samp><samp class="p" data-group-id="5584992829-3">(</samp><samp class="n">params</samp><samp class="p" data-group-id="5584992829-3">)</samp><samp class="w">
+  </samp><samp class="n">render</samp><samp class="p" data-group-id="5584992829-4">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;user.json&quot;</samp><samp class="p">,</samp><samp class="w">
+         </samp><samp class="p" data-group-id="5584992829-5">%{</samp><samp class="ss">token</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Phoenix.Token</samp><samp class="o">.</samp><samp class="n">sign</samp><samp class="p" data-group-id="5584992829-6">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;user auth&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="p" data-group-id="5584992829-6">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">user</samp><samp class="p" data-group-id="5584992829-5">}</samp><samp class="p" data-group-id="5584992829-4">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="5584992829-2">end</samp></code></pre><p>Once the token is sent, the client may now send it back to the server
+as an authentication mechanism. For example, we can use it to authenticate
+a user on a Phoenix channel:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.UserSocket</samp><samp class="w"> </samp><samp class="k" data-group-id="1366906893-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Phoenix.Socket</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">connect</samp><samp class="p" data-group-id="1366906893-2">(</samp><samp class="p" data-group-id="1366906893-3">%{</samp><samp class="s">&quot;token&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="n">token</samp><samp class="p" data-group-id="1366906893-3">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_connect_info</samp><samp class="p" data-group-id="1366906893-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="1366906893-4">do</samp><samp class="w">
+    </samp><samp class="k">case</samp><samp class="w"> </samp><samp class="nc">Phoenix.Token</samp><samp class="o">.</samp><samp class="n">verify</samp><samp class="p" data-group-id="1366906893-5">(</samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;user auth&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">token</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">max_age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">86400</samp><samp class="p" data-group-id="1366906893-5">)</samp><samp class="w"> </samp><samp class="k" data-group-id="1366906893-6">do</samp><samp class="w">
+      </samp><samp class="p" data-group-id="1366906893-7">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user_id</samp><samp class="p" data-group-id="1366906893-7">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+        </samp><samp class="n">socket</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">assign</samp><samp class="p" data-group-id="1366906893-8">(</samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Repo</samp><samp class="o">.</samp><samp class="n">get!</samp><samp class="p" data-group-id="1366906893-9">(</samp><samp class="nc">User</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user_id</samp><samp class="p" data-group-id="1366906893-9">)</samp><samp class="p" data-group-id="1366906893-8">)</samp><samp class="w">
+        </samp><samp class="p" data-group-id="1366906893-10">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="p" data-group-id="1366906893-10">}</samp><samp class="w">
+      </samp><samp class="p" data-group-id="1366906893-11">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="1366906893-11">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+        </samp><samp class="ss">:error</samp><samp class="w">
+    </samp><samp class="k" data-group-id="1366906893-6">end</samp><samp class="w">
+  </samp><samp class="k" data-group-id="1366906893-4">end</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">connect</samp><samp class="p" data-group-id="1366906893-12">(</samp><samp class="c">_params</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_connect_info</samp><samp class="p" data-group-id="1366906893-12">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:error</samp><samp class="w">
+</samp><samp class="k" data-group-id="1366906893-1">end</samp></code></pre><p>In this example, the phoenix.js client will send the token in the
+<code class="inline">connect</code> command which is then validated by the server.</p><p><a href="Phoenix.Token.xhtml"><code class="inline">Phoenix.Token</code></a> can also be used for validating APIs, handling
+password resets, e-mail confirmation and more.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:context/0" data-no-tooltip="" translate="no">context()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:max_age_opt/0" data-no-tooltip="" translate="no">max_age_opt()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:shared_opt/0" data-no-tooltip="" translate="no">shared_opt()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:signed_at_opt/0" data-no-tooltip="" translate="no">signed_at_opt()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#decrypt/4" data-no-tooltip="" translate="no">decrypt(context, secret, token, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Decrypts the original data from the token and verifies its integrity.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#encrypt/4" data-no-tooltip="" translate="no">encrypt(context, secret, data, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Encodes, encrypts, and signs data into a token you can send to
+clients. Its usage is identical to that of <a href="#sign/4"><code class="inline">sign/4</code></a>, but the data
+is extracted using <a href="#decrypt/4"><code class="inline">decrypt/4</code></a>, rather than <a href="#verify/4"><code class="inline">verify/4</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#sign/4" data-no-tooltip="" translate="no">sign(context, salt, data, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Encodes and signs data into a token you can send to clients.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#verify/4" data-no-tooltip="" translate="no">verify(context, salt, token, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Decodes the original data from the token and verifies its integrity.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:context/0">
+
+  <div class="detail-header">
+    <a href="#t:context/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">context()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/token.ex#L102" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> context() ::
+  <a href="https://hexdocs.pm/plug/1.15.3/Plug.Conn.html#t:t/0">Plug.Conn.t</a>()
+  | %{:endpoint =&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), optional(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) =&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()}
+  | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()
+  | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:max_age_opt/0">
+
+  <div class="detail-header">
+    <a href="#t:max_age_opt/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">max_age_opt()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/token.ex#L113" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> max_age_opt() :: {:max_age, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>() | :infinity}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:shared_opt/0">
+
+  <div class="detail-header">
+    <a href="#t:shared_opt/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">shared_opt()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/token.ex#L108" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> shared_opt() ::
+  {:key_iterations, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>()}
+  | {:key_length, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>()}
+  | {:key_digest, :sha256 | :sha384 | :sha512}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:signed_at_opt/0">
+
+  <div class="detail-header">
+    <a href="#t:signed_at_opt/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">signed_at_opt()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/token.ex#L114" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> signed_at_opt() :: {:signed_at, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="decrypt/4">
+
+    <span id="decrypt/3"></span>
+
+  <div class="detail-header">
+    <a href="#decrypt/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">decrypt(context, secret, token, opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/token.ex#L245" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> decrypt(<a href="#t:context/0">context</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), [<a href="#t:shared_opt/0">shared_opt</a>() | <a href="#t:max_age_opt/0">max_age_opt</a>()]) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>Decrypts the original data from the token and verifies its integrity.</p><p>Its usage is identical to <a href="#verify/4"><code class="inline">verify/4</code></a> but for encrypted tokens.</p><h2 id="decrypt/4-options" class="section-heading">
+  <a href="#decrypt/4-options" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Options</span>
+</h2>
+<ul><li><code class="inline">:key_iterations</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to 1000</li><li><code class="inline">:key_length</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to 32</li><li><code class="inline">:key_digest</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to <code class="inline">:sha256</code></li><li><code class="inline">:max_age</code> - verifies the token only if it has been generated
+&quot;max age&quot; ago in seconds. Defaults to the max age signed in the
+token by <a href="#encrypt/4"><code class="inline">encrypt/4</code></a>.</li></ul>
+  </section>
+</section>
+<section class="detail" id="encrypt/4">
+
+    <span id="encrypt/3"></span>
+
+  <div class="detail-header">
+    <a href="#encrypt/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">encrypt(context, secret, data, opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/token.ex#L160" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> encrypt(<a href="#t:context/0">context</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), [
+  <a href="#t:shared_opt/0">shared_opt</a>() | <a href="#t:max_age_opt/0">max_age_opt</a>() | <a href="#t:signed_at_opt/0">signed_at_opt</a>()
+]) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()</pre>
+
+      </div>
+
+<p>Encodes, encrypts, and signs data into a token you can send to
+clients. Its usage is identical to that of <a href="#sign/4"><code class="inline">sign/4</code></a>, but the data
+is extracted using <a href="#decrypt/4"><code class="inline">decrypt/4</code></a>, rather than <a href="#verify/4"><code class="inline">verify/4</code></a>.</p><h2 id="encrypt/4-options" class="section-heading">
+  <a href="#encrypt/4-options" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Options</span>
+</h2>
+<ul><li><code class="inline">:key_iterations</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to 1000</li><li><code class="inline">:key_length</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to 32</li><li><code class="inline">:key_digest</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to <code class="inline">:sha256</code></li><li><code class="inline">:signed_at</code> - set the timestamp of the token in seconds.
+Defaults to <code class="inline">System.os_time(:millisecond)</code></li><li><code class="inline">:max_age</code> - the default maximum age of the token. Defaults to
+86400 seconds (1 day) and it may be overridden on <a href="#decrypt/4"><code class="inline">decrypt/4</code></a>.</li></ul>
+  </section>
+</section>
+<section class="detail" id="sign/4">
+
+    <span id="sign/3"></span>
+
+  <div class="detail-header">
+    <a href="#sign/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">sign(context, salt, data, opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/token.ex#L134" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> sign(<a href="#t:context/0">context</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), [
+  <a href="#t:shared_opt/0">shared_opt</a>() | <a href="#t:max_age_opt/0">max_age_opt</a>() | <a href="#t:signed_at_opt/0">signed_at_opt</a>()
+]) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()</pre>
+
+      </div>
+
+<p>Encodes and signs data into a token you can send to clients.</p><h2 id="sign/4-options" class="section-heading">
+  <a href="#sign/4-options" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Options</span>
+</h2>
+<ul><li><code class="inline">:key_iterations</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to 1000</li><li><code class="inline">:key_length</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to 32</li><li><code class="inline">:key_digest</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to <code class="inline">:sha256</code></li><li><code class="inline">:signed_at</code> - set the timestamp of the token in seconds.
+Defaults to <code class="inline">System.os_time(:millisecond)</code></li><li><code class="inline">:max_age</code> - the default maximum age of the token. Defaults to
+86400 seconds (1 day) and it may be overridden on <a href="#verify/4"><code class="inline">verify/4</code></a>.</li></ul>
+  </section>
+</section>
+<section class="detail" id="verify/4">
+
+    <span id="verify/3"></span>
+
+  <div class="detail-header">
+    <a href="#verify/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">verify(context, salt, token, opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/token.ex#L221" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> verify(<a href="#t:context/0">context</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), [<a href="#t:shared_opt/0">shared_opt</a>() | <a href="#t:max_age_opt/0">max_age_opt</a>()]) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, :expired | :invalid | :missing}</pre>
+
+      </div>
+
+<p>Decodes the original data from the token and verifies its integrity.</p><h2 id="verify/4-examples" class="section-heading">
+  <a href="#verify/4-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<p>In this scenario we will create a token, sign it, then provide it to a client
+application. The client will then use this token to authenticate requests for
+resources from the server. See <a href="Phoenix.Token.xhtml"><code class="inline">Phoenix.Token</code></a> summary for more info about
+creating tokens.</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">user_id</samp><samp class="w">    </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="mi">99</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">secret</samp><samp class="w">     </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="s">&quot;kjoy3o1zeidquwy1398juxzldjlksahdk3&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">namespace</samp><samp class="w">  </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="s">&quot;user auth&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">token</samp><samp class="w">      </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Phoenix.Token</samp><samp class="o">.</samp><samp class="n">sign</samp><samp class="p" data-group-id="0241345259-1">(</samp><samp class="n">secret</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">namespace</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user_id</samp><samp class="p" data-group-id="0241345259-1">)</samp></code></pre><p>The mechanism for passing the token to the client is typically through a
+cookie, a JSON response body, or HTTP header. For now, assume the client has
+received a token it can use to validate requests for protected resources.</p><p>When the server receives a request, it can use <a href="#verify/4"><code class="inline">verify/4</code></a> to determine if it
+should provide the requested resources to the client:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Token</samp><samp class="o">.</samp><samp class="n">verify</samp><samp class="p" data-group-id="5540887842-1">(</samp><samp class="n">secret</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">namespace</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">token</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">max_age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">86400</samp><samp class="p" data-group-id="5540887842-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5540887842-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">99</samp><samp class="p" data-group-id="5540887842-2">}</samp></code></pre><p>In this example, we know the client sent a valid token because <a href="#verify/4"><code class="inline">verify/4</code></a>
+returned a tuple of type <code class="inline">{:ok, user_id}</code>. The server can now proceed with
+the request.</p><p>However, if the client had sent an expired token, an invalid token, or <code class="inline">nil</code>,
+<a href="#verify/4"><code class="inline">verify/4</code></a> would have returned an error instead:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Token</samp><samp class="o">.</samp><samp class="n">verify</samp><samp class="p" data-group-id="8851893370-1">(</samp><samp class="n">secret</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">namespace</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">expired</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">max_age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">86400</samp><samp class="p" data-group-id="8851893370-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8851893370-2">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:expired</samp><samp class="p" data-group-id="8851893370-2">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Token</samp><samp class="o">.</samp><samp class="n">verify</samp><samp class="p" data-group-id="8851893370-3">(</samp><samp class="n">secret</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">namespace</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">invalid</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">max_age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">86400</samp><samp class="p" data-group-id="8851893370-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8851893370-4">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:invalid</samp><samp class="p" data-group-id="8851893370-4">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Token</samp><samp class="o">.</samp><samp class="n">verify</samp><samp class="p" data-group-id="8851893370-5">(</samp><samp class="n">secret</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">namespace</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="no">nil</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">max_age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">86400</samp><samp class="p" data-group-id="8851893370-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8851893370-6">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:missing</samp><samp class="p" data-group-id="8851893370-6">}</samp></code></pre><h2 id="verify/4-options" class="section-heading">
+  <a href="#verify/4-options" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Options</span>
+</h2>
+<ul><li><code class="inline">:key_iterations</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to 1000</li><li><code class="inline">:key_length</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to 32</li><li><code class="inline">:key_digest</code> - option passed to <a href="https://hexdocs.pm/plug_crypto/2.0.0/Plug.Crypto.KeyGenerator.html"><code class="inline">Plug.Crypto.KeyGenerator</code></a>
+when generating the encryption and signing keys. Defaults to <code class="inline">:sha256</code></li><li><code class="inline">:max_age</code> - verifies the token only if it has been generated
+&quot;max age&quot; ago in seconds. Defaults to the max age signed in the
+token by <a href="#sign/4"><code class="inline">sign/4</code></a>.</li></ul>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

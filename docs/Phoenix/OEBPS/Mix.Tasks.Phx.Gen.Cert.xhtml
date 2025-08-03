@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>mix phx.gen.cert - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+mix phx.gen.cert 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Generates a self-signed certificate for HTTPS testing.</p><pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">mix phx.gen.cert
+</samp><samp class="gp unselectable">$ </samp><samp class="">mix phx.gen.cert my-app my-app.local my-app.internal.example.com
+</samp></code></pre><p>Creates a private key and a self-signed certificate in PEM format. These
+files can be referenced in the <code class="inline">certfile</code> and <code class="inline">keyfile</code> parameters of an
+HTTPS Endpoint.</p><p>WARNING: only use the generated certificate for testing in a closed network
+environment, such as running a development server on <code class="inline">localhost</code>.
+For production, staging, or testing servers on the public internet, obtain a
+proper certificate, for example from <a href="https://letsencrypt.org">Let's Encrypt</a>.</p><p>NOTE: when using Google Chrome, open chrome://flags/#allow-insecure-localhost
+to enable the use of self-signed certificates on <code class="inline">localhost</code>.</p><h2 id="module-arguments" class="section-heading">
+  <a href="#module-arguments" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Arguments</span>
+</h2>
+<p>The list of hostnames, if none are specified, defaults to:</p><ul><li>localhost</li></ul><p>Other (optional) arguments:</p><ul><li><code class="inline">--output</code> (<code class="inline">-o</code>): the path and base filename for the certificate and
+key (default: priv/cert/selfsigned)</li><li><code class="inline">--name</code> (<code class="inline">-n</code>): the Common Name value in certificate's subject
+(default: &quot;Self-signed test certificate&quot;)</li></ul><p>Requires OTP 21.3 or later.</p>
+      </section>
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.Naming - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.Naming 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Conveniences for inflecting and working with names in Phoenix.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#camelize/1" data-no-tooltip="" translate="no">camelize(value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts a string to camel case.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#camelize/2" data-no-tooltip="" translate="no">camelize(value, atom)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#humanize/1" data-no-tooltip="" translate="no">humanize(atom)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts an attribute/form field into its humanize version.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#resource_name/2" data-no-tooltip="" translate="no">resource_name(alias, suffix \\ &quot;&quot;)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Extracts the resource name from an alias.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#underscore/1" data-no-tooltip="" translate="no">underscore(value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts a string to underscore case.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#unsuffix/2" data-no-tooltip="" translate="no">unsuffix(value, suffix)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Removes the given suffix from the name if it exists.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="camelize/1">
+
+  <div class="detail-header">
+    <a href="#camelize/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">camelize(value)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/naming.ex#L94" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> camelize(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Converts a string to camel case.</p><p>Takes an optional <code class="inline">:lower</code> flag to return lowerCamelCase.</p><h2 id="camelize/1-examples" class="section-heading">
+  <a href="#camelize/1-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">camelize</samp><samp class="p" data-group-id="0764522184-1">(</samp><samp class="s">&quot;my_app&quot;</samp><samp class="p" data-group-id="0764522184-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;MyApp&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">camelize</samp><samp class="p" data-group-id="0764522184-2">(</samp><samp class="s">&quot;my_app&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:lower</samp><samp class="p" data-group-id="0764522184-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;myApp&quot;</samp></code></pre><p>In general, <code class="inline">camelize</code> can be thought of as the reverse of
+<code class="inline">underscore</code>, however, in some cases formatting may be lost:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">underscore</samp><samp class="w"> </samp><samp class="s">&quot;SAPExample&quot;</samp><samp class="w">  </samp><samp class="c1">#=&gt; &quot;sap_example&quot;</samp><samp class="w">
+</samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">camelize</samp><samp class="w">   </samp><samp class="s">&quot;sap_example&quot;</samp><samp class="w"> </samp><samp class="c1">#=&gt; &quot;SapExample&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="camelize/2">
+
+  <div class="detail-header">
+    <a href="#camelize/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">camelize(value, atom)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/naming.ex#L97" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> camelize(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), :lower) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="humanize/1">
+
+  <div class="detail-header">
+    <a href="#humanize/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">humanize(atom)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/naming.ex#L120" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> humanize(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Converts an attribute/form field into its humanize version.</p><h2 id="humanize/1-examples" class="section-heading">
+  <a href="#humanize/1-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">humanize</samp><samp class="p" data-group-id="0994986609-1">(</samp><samp class="ss">:username</samp><samp class="p" data-group-id="0994986609-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;Username&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">humanize</samp><samp class="p" data-group-id="0994986609-2">(</samp><samp class="ss">:created_at</samp><samp class="p" data-group-id="0994986609-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;Created at&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">humanize</samp><samp class="p" data-group-id="0994986609-3">(</samp><samp class="s">&quot;user_id&quot;</samp><samp class="p" data-group-id="0994986609-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;User&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="resource_name/2">
+
+    <span id="resource_name/1"></span>
+
+  <div class="detail-header">
+    <a href="#resource_name/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">resource_name(alias, suffix \\ &quot;&quot;)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/naming.ex#L19" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> resource_name(<a href="https://hexdocs.pm/elixir/String.Chars.html#t:t/0">String.Chars.t</a>(), <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Extracts the resource name from an alias.</p><h2 id="resource_name/2-examples" class="section-heading">
+  <a href="#resource_name/2-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">resource_name</samp><samp class="p" data-group-id="9644613162-1">(</samp><samp class="nc">MyApp.User</samp><samp class="p" data-group-id="9644613162-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;user&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">resource_name</samp><samp class="p" data-group-id="9644613162-2">(</samp><samp class="nc">MyApp.UserView</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;View&quot;</samp><samp class="p" data-group-id="9644613162-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;user&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="underscore/1">
+
+  <div class="detail-header">
+    <a href="#underscore/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">underscore(value)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/naming.ex#L68" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> underscore(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Converts a string to underscore case.</p><h2 id="underscore/1-examples" class="section-heading">
+  <a href="#underscore/1-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">underscore</samp><samp class="p" data-group-id="7626463915-1">(</samp><samp class="s">&quot;MyApp&quot;</samp><samp class="p" data-group-id="7626463915-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;my_app&quot;</samp></code></pre><p>In general, <code class="inline">underscore</code> can be thought of as the reverse of
+<code class="inline">camelize</code>, however, in some cases formatting may be lost:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">underscore</samp><samp class="w"> </samp><samp class="s">&quot;SAPExample&quot;</samp><samp class="w">  </samp><samp class="c1">#=&gt; &quot;sap_example&quot;</samp><samp class="w">
+</samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">camelize</samp><samp class="w">   </samp><samp class="s">&quot;sap_example&quot;</samp><samp class="w"> </samp><samp class="c1">#=&gt; &quot;SapExample&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="unsuffix/2">
+
+  <div class="detail-header">
+    <a href="#unsuffix/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">unsuffix(value, suffix)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix/blob/v1.7.21/lib/phoenix/naming.ex#L41" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> unsuffix(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Removes the given suffix from the name if it exists.</p><h2 id="unsuffix/2-examples" class="section-heading">
+  <a href="#unsuffix/2-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">unsuffix</samp><samp class="p" data-group-id="1860246485-1">(</samp><samp class="s">&quot;MyApp.User&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;View&quot;</samp><samp class="p" data-group-id="1860246485-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;MyApp.User&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.Naming</samp><samp class="o">.</samp><samp class="n">unsuffix</samp><samp class="p" data-group-id="1860246485-2">(</samp><samp class="s">&quot;MyApp.UserView&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;View&quot;</samp><samp class="p" data-group-id="1860246485-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;MyApp.User&quot;</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>mix phx.server - Phoenix v1.7.21</title>
+    <meta name="generator" content="ExDoc v0.37.3" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+mix phx.server 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Starts the application by configuring all endpoints servers to run.</p><p>Note: to start the endpoint without using this mix task you must set
+<code class="inline">server: true</code> in your <a href="Phoenix.Endpoint.xhtml"><code class="inline">Phoenix.Endpoint</code></a> configuration.</p><h2 id="module-command-line-options" class="section-heading">
+  <a href="#module-command-line-options" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Command line options</span>
+</h2>
+<ul><li><code class="inline">--open</code> - open browser window for each started endpoint</li></ul><p>Furthermore, this task accepts the same command-line options as
+<a href="https://hexdocs.pm/mix/Mix.Tasks.Run.html"><code class="inline">mix run</code></a>.</p><p>For example, to run <code class="inline">phx.server</code> without recompiling:</p><pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">mix phx.server --no-compile
+</samp></code></pre><p>The <code class="inline">--no-halt</code> flag is automatically added.</p><p>Note that the <code class="inline">--no-deps-check</code> flag cannot be used this way,
+because Mix needs to check dependencies to find <code class="inline">phx.server</code>.</p><p>To run <code class="inline">phx.server</code> without checking dependencies, you can run:</p><pre><code class="makeup shell" translate="no"><samp class="gp unselectable">$ </samp><samp class="">mix do deps.loadpaths --no-deps-check, phx.server
+</samp></code></pre>
+      </section>
+
+
+
+
+  </body>
+</html>
