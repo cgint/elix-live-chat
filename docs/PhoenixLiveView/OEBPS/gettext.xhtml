@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Gettext for internationalization - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Gettext for internationalization</h1>
+<p>For internationalization with <a href="https://hexdocs.pm/gettext/Gettext.html">gettext</a>,
+you must call <code class="inline">Gettext.put_locale/2</code> on the LiveView mount callback to instruct
+the LiveView which locale should be used for rendering the page.</p><p>However, one question that has to be answered is how to retrieve the locale in
+the first place. There are many approaches to solve this problem:</p><ol><li>The locale could be stored in the URL as a parameter</li><li>The locale could be stored in the session</li><li>The locale could be stored in the database</li></ol><p>We will briefly cover these approaches to provide some direction.</p><h2 id="locale-from-parameters">Locale from parameters</h2><p>You can say all URLs have a locale parameter. In your router:</p><pre><code class="makeup elixir" translate="no"><span class="n">scope</span><span class="w"> </span><span class="s">&quot;/:locale&quot;</span><span class="w"> </span><span class="k" data-group-id="1066151495-1">do</span><span class="w">
+  </span><span class="n">live</span><span class="w"> </span><span class="n">...</span><span class="w">
+  </span><span class="n">get</span><span class="w"> </span><span class="n">...</span><span class="w">
+</span><span class="k" data-group-id="1066151495-1">end</span></code></pre><p>Accessing a page without a locale should automatically redirect
+to a URL with locale (the best locale could be fetched from
+HTTP headers, which is outside of the scope of this guide).</p><p>Then, assuming all URLs have a locale, you can set the Gettext
+locale accordingly:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">mount</span><span class="p" data-group-id="6508451882-1">(</span><span class="p" data-group-id="6508451882-2">%{</span><span class="s">&quot;locale&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">locale</span><span class="p" data-group-id="6508451882-2">}</span><span class="p">,</span><span class="w"> </span><span class="c">_session</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="6508451882-1">)</span><span class="w"> </span><span class="k" data-group-id="6508451882-3">do</span><span class="w">
+  </span><span class="nc">Gettext</span><span class="o">.</span><span class="n">put_locale</span><span class="p" data-group-id="6508451882-4">(</span><span class="nc">MyApp.Gettext</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p" data-group-id="6508451882-4">)</span><span class="w">
+  </span><span class="p" data-group-id="6508451882-5">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="6508451882-5">}</span><span class="w">
+</span><span class="k" data-group-id="6508451882-3">end</span></code></pre><p>You can also use the <a href="Phoenix.LiveView.xhtml#on_mount/1"><code class="inline">on_mount</code></a> hook to
+automatically restore the locale for every LiveView in your application:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyAppWeb.RestoreLocale</span><span class="w"> </span><span class="k" data-group-id="1544372428-1">do</span><span class="w">
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">on_mount</span><span class="p" data-group-id="1544372428-2">(</span><span class="ss">:default</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="1544372428-3">%{</span><span class="s">&quot;locale&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">locale</span><span class="p" data-group-id="1544372428-3">}</span><span class="p">,</span><span class="w"> </span><span class="c">_session</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="1544372428-2">)</span><span class="w"> </span><span class="k" data-group-id="1544372428-4">do</span><span class="w">
+    </span><span class="nc">Gettext</span><span class="o">.</span><span class="n">put_locale</span><span class="p" data-group-id="1544372428-5">(</span><span class="nc">MyApp.Gettext</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p" data-group-id="1544372428-5">)</span><span class="w">
+    </span><span class="p" data-group-id="1544372428-6">{</span><span class="ss">:cont</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="1544372428-6">}</span><span class="w">
+  </span><span class="k" data-group-id="1544372428-4">end</span><span class="w">
+
+  </span><span class="c1"># catch-all case</span><span class="w">
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">on_mount</span><span class="p" data-group-id="1544372428-7">(</span><span class="ss">:default</span><span class="p">,</span><span class="w"> </span><span class="c">_params</span><span class="p">,</span><span class="w"> </span><span class="c">_session</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="1544372428-7">)</span><span class="p">,</span><span class="w"> </span><span class="ss">do</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="1544372428-8">{</span><span class="ss">:cont</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="1544372428-8">}</span><span class="w">
+</span><span class="k" data-group-id="1544372428-1">end</span></code></pre><p>Then, add this hook to <code class="inline">def live_view</code> under <code class="inline">MyAppWeb</code>, to run it on all
+LiveViews by default:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">live_view</span><span class="w"> </span><span class="k" data-group-id="6465186607-1">do</span><span class="w">
+  </span><span class="k">quote</span><span class="w"> </span><span class="k" data-group-id="6465186607-2">do</span><span class="w">
+    </span><span class="kn">use</span><span class="w"> </span><span class="nc">Phoenix.LiveView</span><span class="w">
+
+    </span><span class="n">on_mount</span><span class="w"> </span><span class="nc">MyAppWeb.RestoreLocale</span><span class="w">
+    </span><span class="k">unquote</span><span class="p" data-group-id="6465186607-3">(</span><span class="n">view_helpers</span><span class="p" data-group-id="6465186607-4">(</span><span class="p" data-group-id="6465186607-4">)</span><span class="p" data-group-id="6465186607-3">)</span><span class="w">
+  </span><span class="k" data-group-id="6465186607-2">end</span><span class="w">
+</span><span class="k" data-group-id="6465186607-1">end</span></code></pre><p>Note that, because the Gettext locale is not stored in the assigns, if you
+want to change the locale, you must use <code class="inline">&lt;.link navigate={...} /&gt;</code>, instead
+of simply patching the page.</p><h2 id="locale-from-session">Locale from session</h2><p>You may also store the locale in the Plug session. For example, in a controller
+you might do:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">put_user_session</span><span class="p" data-group-id="1073148014-1">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">current_user</span><span class="p" data-group-id="1073148014-1">)</span><span class="w"> </span><span class="k" data-group-id="1073148014-2">do</span><span class="w">
+  </span><span class="nc">Gettext</span><span class="o">.</span><span class="n">put_locale</span><span class="p" data-group-id="1073148014-3">(</span><span class="nc">MyApp.Gettext</span><span class="p">,</span><span class="w"> </span><span class="n">current_user</span><span class="o">.</span><span class="n">locale</span><span class="p" data-group-id="1073148014-3">)</span><span class="w">
+
+  </span><span class="n">conn</span><span class="w">
+  </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">put_session</span><span class="p" data-group-id="1073148014-4">(</span><span class="ss">:user_id</span><span class="p">,</span><span class="w"> </span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p" data-group-id="1073148014-4">)</span><span class="w">
+  </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">put_session</span><span class="p" data-group-id="1073148014-5">(</span><span class="ss">:locale</span><span class="p">,</span><span class="w"> </span><span class="n">current_user</span><span class="o">.</span><span class="n">locale</span><span class="p" data-group-id="1073148014-5">)</span><span class="w">
+</span><span class="k" data-group-id="1073148014-2">end</span></code></pre><p>and then restore the locale from session within your LiveView mount:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">mount</span><span class="p" data-group-id="6526543364-1">(</span><span class="c">_params</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6526543364-2">%{</span><span class="s">&quot;locale&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">locale</span><span class="p" data-group-id="6526543364-2">}</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="6526543364-1">)</span><span class="w"> </span><span class="k" data-group-id="6526543364-3">do</span><span class="w">
+  </span><span class="nc">Gettext</span><span class="o">.</span><span class="n">put_locale</span><span class="p" data-group-id="6526543364-4">(</span><span class="nc">MyApp.Gettext</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p" data-group-id="6526543364-4">)</span><span class="w">
+  </span><span class="p" data-group-id="6526543364-5">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="6526543364-5">}</span><span class="w">
+</span><span class="k" data-group-id="6526543364-3">end</span></code></pre><p>You can also encapsulate this in a hook, as done in the previous section.</p><p>However, if the locale is stored in the session, you can only change it
+by using regular controller requests. Therefore you should always use
+<code class="inline">&lt;.link to={...} /&gt;</code> to point to a controller that change the session
+accordingly, reloading any LiveView.</p><h2 id="locale-from-database">Locale from database</h2><p>You may also allow users to store their locale configuration in the database.
+Then, on <code class="inline">mount/3</code>, you can retrieve the user id from the session and load
+the locale:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">mount</span><span class="p" data-group-id="4383772609-1">(</span><span class="c">_params</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="4383772609-2">%{</span><span class="s">&quot;user_id&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">user_id</span><span class="p" data-group-id="4383772609-2">}</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="4383772609-1">)</span><span class="w"> </span><span class="k" data-group-id="4383772609-3">do</span><span class="w">
+  </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Users</span><span class="o">.</span><span class="n">get_user!</span><span class="p" data-group-id="4383772609-4">(</span><span class="n">user_id</span><span class="p" data-group-id="4383772609-4">)</span><span class="w">
+  </span><span class="nc">Gettext</span><span class="o">.</span><span class="n">put_locale</span><span class="p" data-group-id="4383772609-5">(</span><span class="nc">MyApp.Gettext</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="o">.</span><span class="n">locale</span><span class="p" data-group-id="4383772609-5">)</span><span class="w">
+  </span><span class="p" data-group-id="4383772609-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="4383772609-6">}</span><span class="w">
+</span><span class="k" data-group-id="4383772609-3">end</span></code></pre><p>In practice, you may end-up mixing more than one approach listed here.
+For example, reading from the database is great once the user is logged in
+but, before that happens, you may need to store the locale in the session
+or in the URL.</p><p>Similarly, you can keep the locale in the URL, but change the URL accordingly
+to the user preferred locale once they sign in. Hopefully this guide gives
+some suggestions on how to move forward and explore the best approach for your
+application.</p>
+
+  </body>
+</html>

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Enumerable - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Enumerable <small>protocol</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Enumerable protocol used by <a href="Enum.xhtml"><code class="inline">Enum</code></a> and <a href="Stream.xhtml"><code class="inline">Stream</code></a> modules.</p><p>When you invoke a function in the <a href="Enum.xhtml"><code class="inline">Enum</code></a> module, the first argument
+is usually a collection that must implement this protocol.
+For example, the expression <code class="inline">Enum.map([1, 2, 3], &amp;(&amp;1 * 2))</code>
+invokes <a href="#reduce/3"><code class="inline">Enumerable.reduce/3</code></a> to perform the reducing operation that
+builds a mapped list by calling the mapping function <code class="inline">&amp;(&amp;1 * 2)</code> on
+every element in the collection and consuming the element with an
+accumulated list.</p><p>Internally, <a href="Enum.xhtml#map/2"><code class="inline">Enum.map/2</code></a> is implemented as follows:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">map</samp><samp class="p" data-group-id="2962336909-1">(</samp><samp class="n">enumerable</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">fun</samp><samp class="p" data-group-id="2962336909-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="2962336909-2">do</samp><samp class="w">
+  </samp><samp class="n">reducer</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="k" data-group-id="2962336909-3">fn</samp><samp class="w"> </samp><samp class="n">x</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">acc</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="2962336909-4">{</samp><samp class="ss">:cont</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2962336909-5">[</samp><samp class="n">fun</samp><samp class="o">.</samp><samp class="p" data-group-id="2962336909-6">(</samp><samp class="n">x</samp><samp class="p" data-group-id="2962336909-6">)</samp><samp class="w"> </samp><samp class="o">|</samp><samp class="w"> </samp><samp class="n">acc</samp><samp class="p" data-group-id="2962336909-5">]</samp><samp class="p" data-group-id="2962336909-4">}</samp><samp class="w"> </samp><samp class="k" data-group-id="2962336909-3">end</samp><samp class="w">
+  </samp><samp class="nc">Enumerable</samp><samp class="o">.</samp><samp class="n">reduce</samp><samp class="p" data-group-id="2962336909-7">(</samp><samp class="n">enumerable</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2962336909-8">{</samp><samp class="ss">:cont</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2962336909-9">[</samp><samp class="p" data-group-id="2962336909-9">]</samp><samp class="p" data-group-id="2962336909-8">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">reducer</samp><samp class="p" data-group-id="2962336909-7">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">elem</samp><samp class="p" data-group-id="2962336909-10">(</samp><samp class="mi">1</samp><samp class="p" data-group-id="2962336909-10">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">:lists</samp><samp class="o">.</samp><samp class="n">reverse</samp><samp class="p" data-group-id="2962336909-11">(</samp><samp class="p" data-group-id="2962336909-11">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="2962336909-2">end</samp></code></pre><p>Note that the user-supplied function is wrapped into a <a href="#t:reducer/0"><code class="inline">reducer/0</code></a> function.
+The <a href="#t:reducer/0"><code class="inline">reducer/0</code></a> function must return a tagged tuple after each step,
+as described in the <a href="#t:acc/0"><code class="inline">acc/0</code></a> type. At the end, <a href="#reduce/3"><code class="inline">Enumerable.reduce/3</code></a>
+returns <a href="#t:result/0"><code class="inline">result/0</code></a>.</p><p>This protocol uses tagged tuples to exchange information between the
+reducer function and the data type that implements the protocol. This
+allows enumeration of resources, such as files, to be done efficiently
+while also guaranteeing the resource will be closed at the end of the
+enumeration. This protocol also allows suspension of the enumeration,
+which is useful when interleaving between many enumerables is required
+(as in the <code class="inline">zip/1</code> and <code class="inline">zip/2</code> functions).</p><p>This protocol requires four functions to be implemented, <a href="#reduce/3"><code class="inline">reduce/3</code></a>,
+<a href="#count/1"><code class="inline">count/1</code></a>, <a href="#member?/2"><code class="inline">member?/2</code></a>, and <a href="#slice/1"><code class="inline">slice/1</code></a>. The core of the protocol is the
+<a href="#reduce/3"><code class="inline">reduce/3</code></a> function. All other functions exist as optimizations paths
+for data structures that can implement certain properties in better
+than linear time.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:acc/0" data-no-tooltip="" translate="no">acc()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The accumulator value for each step.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:continuation/0" data-no-tooltip="" translate="no">continuation()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A partially applied reduce function.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:reducer/0" data-no-tooltip="" translate="no">reducer()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The reducer function.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:result/0" data-no-tooltip="" translate="no">result()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The result of the reduce operation.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:slicing_fun/0" data-no-tooltip="" translate="no">slicing_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A slicing function that receives the initial position,
+the number of elements in the slice, and the step.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>All the types that implement this protocol.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/1" data-no-tooltip="" translate="no">t(_element)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>An enumerable of elements of type <code class="inline">element</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:to_list_fun/0" data-no-tooltip="" translate="no">to_list_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Receives an enumerable and returns a list.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#count/1" data-no-tooltip="" translate="no">count(enumerable)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Retrieves the number of elements in the <code class="inline">enumerable</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#member?/2" data-no-tooltip="" translate="no">member?(enumerable, element)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Checks if an <code class="inline">element</code> exists within the <code class="inline">enumerable</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#reduce/3" data-no-tooltip="" translate="no">reduce(enumerable, acc, fun)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Reduces the <code class="inline">enumerable</code> into an element.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#slice/1" data-no-tooltip="" translate="no">slice(enumerable)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a function that slices the data structure contiguously.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:acc/0">
+
+  <div class="detail-header">
+    <a href="#t:acc/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">acc()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L73" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> acc() :: {:cont, <a href="typespecs.xhtml#built-in-types">term</a>()} | {:halt, <a href="typespecs.xhtml#built-in-types">term</a>()} | {:suspend, <a href="typespecs.xhtml#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>The accumulator value for each step.</p><p>It must be a tagged tuple with one of the following &quot;tags&quot;:</p><ul><li><code class="inline">:cont</code>    - the enumeration should continue</li><li><code class="inline">:halt</code>    - the enumeration should halt immediately</li><li><code class="inline">:suspend</code> - the enumeration should be suspended immediately</li></ul><p>Depending on the accumulator value, the result returned by
+<a href="#reduce/3"><code class="inline">Enumerable.reduce/3</code></a> will change. Please check the <a href="#t:result/0"><code class="inline">result/0</code></a>
+type documentation for more information.</p><p>In case a <a href="#t:reducer/0"><code class="inline">reducer/0</code></a> function returns a <code class="inline">:suspend</code> accumulator,
+it must be explicitly handled by the caller and never leak.</p>
+  </section>
+</section>
+<section class="detail" id="t:continuation/0">
+
+  <div class="detail-header">
+    <a href="#t:continuation/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">continuation()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L122" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> continuation() :: (<a href="#t:acc/0">acc</a>() -&gt; <a href="#t:result/0">result</a>())</pre>
+
+      </div>
+
+<p>A partially applied reduce function.</p><p>The continuation is the closure returned as a result when
+the enumeration is suspended. When invoked, it expects
+a new accumulator and it returns the result.</p><p>A continuation can be trivially implemented as long as the reduce
+function is defined in a tail recursive fashion. If the function
+is tail recursive, all the state is passed as arguments, so
+the continuation is the reducing function partially applied.</p>
+  </section>
+</section>
+<section class="detail" id="t:reducer/0">
+
+  <div class="detail-header">
+    <a href="#t:reducer/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">reducer()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L83" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> reducer() :: (element :: <a href="typespecs.xhtml#built-in-types">term</a>(), element_acc :: <a href="typespecs.xhtml#built-in-types">term</a>() -&gt; <a href="#t:acc/0">acc</a>())</pre>
+
+      </div>
+
+<p>The reducer function.</p><p>Should be called with the <code class="inline">enumerable</code> element and the
+accumulator contents.</p><p>Returns the accumulator for the next enumeration step.</p>
+  </section>
+</section>
+<section class="detail" id="t:result/0">
+
+  <div class="detail-header">
+    <a href="#t:result/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">result()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L105" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> result() ::
+  {:done, <a href="typespecs.xhtml#built-in-types">term</a>()} | {:halted, <a href="typespecs.xhtml#built-in-types">term</a>()} | {:suspended, <a href="typespecs.xhtml#built-in-types">term</a>(), <a href="#t:continuation/0">continuation</a>()}</pre>
+
+      </div>
+
+<p>The result of the reduce operation.</p><p>It may be <em>done</em> when the enumeration is finished by reaching
+its end, or <em>halted</em>/<em>suspended</em> when the enumeration was halted
+or suspended by the tagged accumulator.</p><p>In case the tagged <code class="inline">:halt</code> accumulator is given, the <code class="inline">:halted</code> tuple
+with the accumulator must be returned. Functions like <a href="Enum.xhtml#take_while/2"><code class="inline">Enum.take_while/2</code></a>
+use <code class="inline">:halt</code> underneath and can be used to test halting enumerables.</p><p>In case the tagged <code class="inline">:suspend</code> accumulator is given, the caller must
+return the <code class="inline">:suspended</code> tuple with the accumulator and a continuation.
+The caller is then responsible of managing the continuation and the
+caller must always call the continuation, eventually halting or continuing
+until the end. <a href="Enum.xhtml#zip/2"><code class="inline">Enum.zip/2</code></a> uses suspension, so it can be used to test
+whether your implementation handles suspension correctly. You can also use
+<a href="Stream.xhtml#zip/2"><code class="inline">Stream.zip/2</code></a> with <a href="Enum.xhtml#take_while/2"><code class="inline">Enum.take_while/2</code></a> to test the combination of
+<code class="inline">:suspend</code> with <code class="inline">:halt</code>.</p>
+  </section>
+</section>
+<section class="detail" id="t:slicing_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:slicing_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">slicing_fun()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L136" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> slicing_fun() :: (start :: <a href="typespecs.xhtml#basic-types">non_neg_integer</a>(),
+                  length :: <a href="typespecs.xhtml#basic-types">pos_integer</a>(),
+                  step :: <a href="typespecs.xhtml#basic-types">pos_integer</a>() -&gt;
+                    [<a href="typespecs.xhtml#built-in-types">term</a>()])</pre>
+
+      </div>
+
+<p>A slicing function that receives the initial position,
+the number of elements in the slice, and the step.</p><p>The <code class="inline">start</code> position is a number <code class="inline">&gt;= 0</code> and guaranteed to
+exist in the <code class="inline">enumerable</code>. The length is a number <code class="inline">&gt;= 1</code>
+in a way that <code class="inline">start + length * step &lt;= count</code>, where
+<code class="inline">count</code> is the maximum amount of elements in the enumerable.</p><p>The function should return a non empty list where
+the amount of elements is equal to <code class="inline">length</code>.</p>
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L1" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: <a href="typespecs.xhtml#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>All the types that implement this protocol.</p>
+  </section>
+</section>
+<section class="detail" id="t:t/1">
+
+  <div class="detail-header">
+    <a href="#t:t/1" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t(_element)</h1>
+
+        <span class="note">(since 1.14.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L55" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t(_element) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>An enumerable of elements of type <code class="inline">element</code>.</p><p>This type is equivalent to <a href="#t:t/0"><code class="inline">t/0</code></a> but is especially useful for documentation.</p><p>For example, imagine you define a function that expects an enumerable of
+integers and returns an enumerable of strings:</p><pre><code class="makeup elixir" translate="no"><samp class="na">@spec</samp><samp class="w"> </samp><samp class="n">integers_to_strings</samp><samp class="p" data-group-id="2433985278-1">(</samp><samp class="nc">Enumerable</samp><samp class="o">.</samp><samp class="n">t</samp><samp class="p" data-group-id="2433985278-2">(</samp><samp class="n">integer</samp><samp class="p" data-group-id="2433985278-3">(</samp><samp class="p" data-group-id="2433985278-3">)</samp><samp class="p" data-group-id="2433985278-2">)</samp><samp class="p" data-group-id="2433985278-1">)</samp><samp class="w"> </samp><samp class="o">::</samp><samp class="w"> </samp><samp class="nc">Enumerable</samp><samp class="o">.</samp><samp class="n">t</samp><samp class="p" data-group-id="2433985278-4">(</samp><samp class="nc">String</samp><samp class="o">.</samp><samp class="n">t</samp><samp class="p" data-group-id="2433985278-5">(</samp><samp class="p" data-group-id="2433985278-5">)</samp><samp class="p" data-group-id="2433985278-4">)</samp><samp class="w">
+</samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">integers_to_strings</samp><samp class="p" data-group-id="2433985278-6">(</samp><samp class="n">integers</samp><samp class="p" data-group-id="2433985278-6">)</samp><samp class="w"> </samp><samp class="k" data-group-id="2433985278-7">do</samp><samp class="w">
+  </samp><samp class="nc">Stream</samp><samp class="o">.</samp><samp class="n">map</samp><samp class="p" data-group-id="2433985278-8">(</samp><samp class="n">integers</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="o">/</samp><samp class="mi">1</samp><samp class="p" data-group-id="2433985278-8">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="2433985278-7">end</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="t:to_list_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:to_list_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_list_fun()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L142" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> to_list_fun() :: (<a href="#t:t/0">t</a>() -&gt; [<a href="typespecs.xhtml#built-in-types">term</a>()])</pre>
+
+      </div>
+
+<p>Receives an enumerable and returns a list.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="count/1">
+
+  <div class="detail-header">
+    <a href="#count/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">count(enumerable)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L178" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> count(<a href="#t:t/0">t</a>()) :: {:ok, <a href="typespecs.xhtml#basic-types">non_neg_integer</a>()} | {:error, <a href="typespecs.xhtml#built-in-types">module</a>()}</pre>
+
+      </div>
+
+<p>Retrieves the number of elements in the <code class="inline">enumerable</code>.</p><p>It should return <code class="inline">{:ok, count}</code> if you can count the number of elements
+in <code class="inline">enumerable</code> in a faster way than fully traversing it.</p><p>Otherwise it should return <code class="inline">{:error, __MODULE__}</code> and a default algorithm
+built on top of <a href="#reduce/3"><code class="inline">reduce/3</code></a> that runs in linear time will be used.</p>
+  </section>
+</section>
+<section class="detail" id="member?/2">
+
+  <div class="detail-header">
+    <a href="#member?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">member?(enumerable, element)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L194" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> member?(<a href="#t:t/0">t</a>(), <a href="typespecs.xhtml#built-in-types">term</a>()) :: {:ok, <a href="typespecs.xhtml#built-in-types">boolean</a>()} | {:error, <a href="typespecs.xhtml#built-in-types">module</a>()}</pre>
+
+      </div>
+
+<p>Checks if an <code class="inline">element</code> exists within the <code class="inline">enumerable</code>.</p><p>It should return <code class="inline">{:ok, boolean}</code> if you can check the membership of a
+given element in <code class="inline">enumerable</code> with <a href="Kernel.xhtml#===/2"><code class="inline">===/2</code></a> without traversing the whole
+of it.</p><p>Otherwise it should return <code class="inline">{:error, __MODULE__}</code> and a default algorithm
+built on top of <a href="#reduce/3"><code class="inline">reduce/3</code></a> that runs in linear time will be used.</p><p>When called outside guards, the <a href="Kernel.xhtml#in/2"><code class="inline">in</code></a> and <a href="Kernel.xhtml#in/2"><code class="inline">not in</code></a>
+operators work by using this function.</p>
+  </section>
+</section>
+<section class="detail" id="reduce/3">
+
+  <div class="detail-header">
+    <a href="#reduce/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">reduce(enumerable, acc, fun)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L166" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> reduce(<a href="#t:t/0">t</a>(), <a href="#t:acc/0">acc</a>(), <a href="#t:reducer/0">reducer</a>()) :: <a href="#t:result/0">result</a>()</pre>
+
+      </div>
+
+<p>Reduces the <code class="inline">enumerable</code> into an element.</p><p>Most of the operations in <a href="Enum.xhtml"><code class="inline">Enum</code></a> are implemented in terms of reduce.
+This function should apply the given <a href="#t:reducer/0"><code class="inline">reducer/0</code></a> function to each
+element in the <code class="inline">enumerable</code> and proceed as expected by the returned
+accumulator.</p><p>See the documentation of the types <a href="#t:result/0"><code class="inline">result/0</code></a> and <a href="#t:acc/0"><code class="inline">acc/0</code></a> for
+more information.</p><h2 id="reduce/3-examples" class="section-heading"><a href="#reduce/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>As an example, here is the implementation of <code class="inline">reduce</code> for lists:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">reduce</samp><samp class="p" data-group-id="6999334587-1">(</samp><samp class="c">_list</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6999334587-2">{</samp><samp class="ss">:halt</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">acc</samp><samp class="p" data-group-id="6999334587-2">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_fun</samp><samp class="p" data-group-id="6999334587-1">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6999334587-3">{</samp><samp class="ss">:halted</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">acc</samp><samp class="p" data-group-id="6999334587-3">}</samp><samp class="w">
+</samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">reduce</samp><samp class="p" data-group-id="6999334587-4">(</samp><samp class="n">list</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6999334587-5">{</samp><samp class="ss">:suspend</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">acc</samp><samp class="p" data-group-id="6999334587-5">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">fun</samp><samp class="p" data-group-id="6999334587-4">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6999334587-6">{</samp><samp class="ss">:suspended</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">acc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="n">reduce</samp><samp class="p" data-group-id="6999334587-7">(</samp><samp class="n">list</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ni">&amp;1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">fun</samp><samp class="p" data-group-id="6999334587-7">)</samp><samp class="p" data-group-id="6999334587-6">}</samp><samp class="w">
+</samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">reduce</samp><samp class="p" data-group-id="6999334587-8">(</samp><samp class="p" data-group-id="6999334587-9">[</samp><samp class="p" data-group-id="6999334587-9">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6999334587-10">{</samp><samp class="ss">:cont</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">acc</samp><samp class="p" data-group-id="6999334587-10">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_fun</samp><samp class="p" data-group-id="6999334587-8">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6999334587-11">{</samp><samp class="ss">:done</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">acc</samp><samp class="p" data-group-id="6999334587-11">}</samp><samp class="w">
+</samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">reduce</samp><samp class="p" data-group-id="6999334587-12">(</samp><samp class="p" data-group-id="6999334587-13">[</samp><samp class="n">head</samp><samp class="w"> </samp><samp class="o">|</samp><samp class="w"> </samp><samp class="n">tail</samp><samp class="p" data-group-id="6999334587-13">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6999334587-14">{</samp><samp class="ss">:cont</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">acc</samp><samp class="p" data-group-id="6999334587-14">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">fun</samp><samp class="p" data-group-id="6999334587-12">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">reduce</samp><samp class="p" data-group-id="6999334587-15">(</samp><samp class="n">tail</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">fun</samp><samp class="o">.</samp><samp class="p" data-group-id="6999334587-16">(</samp><samp class="n">head</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">acc</samp><samp class="p" data-group-id="6999334587-16">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">fun</samp><samp class="p" data-group-id="6999334587-15">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="slice/1">
+
+  <div class="detail-header">
+    <a href="#slice/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">slice(enumerable)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/enum.ex#L230" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> slice(<a href="#t:t/0">t</a>()) ::
+  {:ok, size :: <a href="typespecs.xhtml#basic-types">non_neg_integer</a>(), <a href="#t:slicing_fun/0">slicing_fun</a>() | <a href="#t:to_list_fun/0">to_list_fun</a>()}
+  | {:error, <a href="typespecs.xhtml#built-in-types">module</a>()}</pre>
+
+      </div>
+
+<p>Returns a function that slices the data structure contiguously.</p><p>It should return either:</p><ul><li><p><code class="inline">{:ok, size, slicing_fun}</code> - if the <code class="inline">enumerable</code> has a known
+bound and can access a position in the <code class="inline">enumerable</code> without
+traversing all previous elements. The <code class="inline">slicing_fun</code> will receive
+a <code class="inline">start</code> position, the <code class="inline">amount</code> of elements to fetch, and a
+<code class="inline">step</code>.</p></li><li><p><code class="inline">{:ok, size, to_list_fun}</code> - if the <code class="inline">enumerable</code> has a known bound
+and can access a position in the <code class="inline">enumerable</code> by first converting
+it to a list via <code class="inline">to_list_fun</code>.</p></li><li><p><code class="inline">{:error, __MODULE__}</code> - the enumerable cannot be sliced efficiently
+and a default algorithm built on top of <a href="#reduce/3"><code class="inline">reduce/3</code></a> that runs in
+linear time will be used.</p></li></ul><h2 id="slice/1-differences-to-count-1" class="section-heading"><a href="#slice/1-differences-to-count-1" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Differences to <a href="#count/1"><code class="inline">count/1</code></a></span></h2><p>The <code class="inline">size</code> value returned by this function is used for boundary checks,
+therefore it is extremely important that this function only returns <code class="inline">:ok</code>
+if retrieving the <code class="inline">size</code> of the <code class="inline">enumerable</code> is cheap, fast, and takes
+constant time. Otherwise the simplest of operations, such as
+<code class="inline">Enum.at(enumerable, 0)</code>, will become too expensive.</p><p>On the other hand, the <a href="#count/1"><code class="inline">count/1</code></a> function in this protocol should be
+implemented whenever you can count the number of elements in the collection
+without traversing it.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

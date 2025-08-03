@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Info - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Info 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>General introspection helpers for Ash applications.</p><p>Use <code class="inline">Ash.Info.mermaid_overview(otp_app)</code> to generate a mermaid chart of the application's domains and resources.
+This offers a high level view, but will not include information from extensions. Use <code class="inline">resource_report/2</code>
+for a detailed report of a resource.</p><p>Use <code class="inline">Ash.Info.mermaid_overview(otp_app, type: :entity_relationship)</code> to get a simplified entity relationship diagram.</p><p>Use <code class="inline">Ash.Info.domains_and_resources(otp_app)</code> to get a map where the keys are the domains, and the value is the list
+of resources for that domain.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#domains/1" data-no-tooltip="" translate="no">domains(otp_app)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#domains_and_resources/1" data-no-tooltip="" translate="no">domains_and_resources(otp_app)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a map where the keys are the domains, and the value is the list of resources for that domain.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#mermaid_overview/2" data-no-tooltip="" translate="no">mermaid_overview(otp_app, type \\ :class)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generate a mermaid chart of the application's domains and resources.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="domains/1">
+
+  <div class="detail-header">
+    <a href="#domains/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">domains(otp_app)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/info.ex#L16" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> domains(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) :: [<a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()]</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="domains_and_resources/1">
+
+  <div class="detail-header">
+    <a href="#domains_and_resources/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">domains_and_resources(otp_app)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/info.ex#L24" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> domains_and_resources(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) :: %{
+  required(<a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()) =&gt; [<a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()]
+}</pre>
+
+      </div>
+
+<p>Returns a map where the keys are the domains, and the value is the list of resources for that domain.</p>
+  </section>
+</section>
+<section class="detail" id="mermaid_overview/2">
+
+    <span id="mermaid_overview/1"></span>
+
+  <div class="detail-header">
+    <a href="#mermaid_overview/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">mermaid_overview(otp_app, type \\ :class)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/info.ex#L35" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Generate a mermaid chart of the application's domains and resources.</p><p>This offers a high level view, but will not include information from extensions.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

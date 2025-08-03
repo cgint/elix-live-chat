@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Changeset.ManagedRelationshipHelpers - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Changeset.ManagedRelationshipHelpers 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Tools for introspecting managed relationships.</p><p>Extensions can use this to look at an argument that will be passed
+to a <code class="inline">manage_relationship</code> change and determine what their behavior
+should be. For example, AshAdmin uses these to find out what kind of
+nested form it should offer for each argument that manages a relationship.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#could_create?/1" data-no-tooltip="" translate="no">could_create?(opts)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#could_handle_missing?/1" data-no-tooltip="" translate="no">could_handle_missing?(opts)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#could_lookup?/1" data-no-tooltip="" translate="no">could_lookup?(opts)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#could_update?/1" data-no-tooltip="" translate="no">could_update?(opts)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#must_load?/2" data-no-tooltip="" translate="no">must_load?(opts, must_load_opts \\ [])</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#on_lookup_read_action/2" data-no-tooltip="" translate="no">on_lookup_read_action(opts, relationship)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#on_lookup_update_action/2" data-no-tooltip="" translate="no">on_lookup_update_action(opts, relationship)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#on_match_destination_actions/2" data-no-tooltip="" translate="no">on_match_destination_actions(opts, relationship)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#on_missing_destination_actions/2" data-no-tooltip="" translate="no">on_missing_destination_actions(opts, relationship)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#on_no_match_destination_actions/2" data-no-tooltip="" translate="no">on_no_match_destination_actions(opts, relationship)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#sanitize_opts/2" data-no-tooltip="" translate="no">sanitize_opts(relationship, opts)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="could_create?/1">
+
+  <div class="detail-header">
+    <a href="#could_create?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">could_create?(opts)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/changeset/managed_relationship_helpers.ex#L284" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="could_handle_missing?/1">
+
+  <div class="detail-header">
+    <a href="#could_handle_missing?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">could_handle_missing?(opts)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/changeset/managed_relationship_helpers.ex#L276" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="could_lookup?/1">
+
+  <div class="detail-header">
+    <a href="#could_lookup?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">could_lookup?(opts)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/changeset/managed_relationship_helpers.ex#L280" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="could_update?/1">
+
+  <div class="detail-header">
+    <a href="#could_update?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">could_update?(opts)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/changeset/managed_relationship_helpers.ex#L288" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="must_load?/2">
+
+    <span id="must_load?/1"></span>
+
+  <div class="detail-header">
+    <a href="#must_load?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">must_load?(opts, must_load_opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/changeset/managed_relationship_helpers.ex#L292" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="on_lookup_read_action/2">
+
+  <div class="detail-header">
+    <a href="#on_lookup_read_action/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">on_lookup_read_action(opts, relationship)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/changeset/managed_relationship_helpers.ex#L248" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="on_lookup_update_action/2">
+
+  <div class="detail-header">
+    <a href="#on_lookup_update_action/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">on_lookup_update_action(opts, relationship)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/changeset/managed_relationship_helpers.ex#L229" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="on_match_destination_actions/2">
+
+  <div class="detail-header">
+    <a href="#on_match_destination_actions/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">on_match_destination_actions(opts, relationship)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/changeset/managed_relationship_helpers.ex#L151" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="on_missing_destination_actions/2">
+
+  <div class="detail-header">
+    <a href="#on_missing_destination_actions/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">on_missing_destination_actions(opts, relationship)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/changeset/managed_relationship_helpers.ex#L205" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="on_no_match_destination_actions/2">
+
+  <div class="detail-header">
+    <a href="#on_no_match_destination_actions/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">on_no_match_destination_actions(opts, relationship)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/changeset/managed_relationship_helpers.ex#L187" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="sanitize_opts/2">
+
+  <div class="detail-header">
+    <a href="#sanitize_opts/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">sanitize_opts(relationship, opts)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/changeset/managed_relationship_helpers.ex#L11" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

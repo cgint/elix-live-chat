@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Collectable - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Collectable <small>protocol</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A protocol to traverse data structures.</p><p>The <a href="Enum.xhtml#into/2"><code class="inline">Enum.into/2</code></a> function uses this protocol to insert an
+enumerable into a collection:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">into</samp><samp class="p" data-group-id="7505294782-1">(</samp><samp class="p" data-group-id="7505294782-2">[</samp><samp class="ss">a</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">b</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="7505294782-2">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="7505294782-3">%{</samp><samp class="p" data-group-id="7505294782-3">}</samp><samp class="p" data-group-id="7505294782-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7505294782-4">%{</samp><samp class="ss">a</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">b</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="7505294782-4">}</samp></code></pre><h2 id="module-why-collectable">Why Collectable?</h2><p>The <a href="Enumerable.xhtml"><code class="inline">Enumerable</code></a> protocol is useful to take values out of a collection.
+In order to support a wide range of values, the functions provided by
+the <a href="Enumerable.xhtml"><code class="inline">Enumerable</code></a> protocol do not keep shape. For example, passing a
+map to <a href="Enum.xhtml#map/2"><code class="inline">Enum.map/2</code></a> always returns a list.</p><p>This design is intentional. <a href="Enumerable.xhtml"><code class="inline">Enumerable</code></a> was designed to support infinite
+collections, resources and other structures with fixed shape. For example,
+it doesn't make sense to insert values into a <a href="Range.xhtml"><code class="inline">Range</code></a>, as it has a
+fixed shape where only the range limits and step are stored.</p><p>The <a href="Collectable.xhtml"><code class="inline">Collectable</code></a> module was designed to fill the gap left by the
+<a href="Enumerable.xhtml"><code class="inline">Enumerable</code></a> protocol. <a href="#into/1"><code class="inline">Collectable.into/1</code></a> can be seen as the opposite of
+<a href="Enumerable.xhtml#reduce/3"><code class="inline">Enumerable.reduce/3</code></a>. If the functions in <a href="Enumerable.xhtml"><code class="inline">Enumerable</code></a> are about taking values out,
+then <a href="#into/1"><code class="inline">Collectable.into/1</code></a> is about collecting those values into a structure.</p><h2 id="module-examples">Examples</h2><p>To show how to manually use the <a href="Collectable.xhtml"><code class="inline">Collectable</code></a> protocol, let's play with a
+simplified implementation for <a href="MapSet.xhtml"><code class="inline">MapSet</code></a>.</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="9462917907-1">{</samp><samp class="n">initial_acc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">collector_fun</samp><samp class="p" data-group-id="9462917907-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Collectable</samp><samp class="o">.</samp><samp class="n">into</samp><samp class="p" data-group-id="9462917907-2">(</samp><samp class="nc">MapSet</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="9462917907-3">(</samp><samp class="p" data-group-id="9462917907-3">)</samp><samp class="p" data-group-id="9462917907-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">updated_acc</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">reduce</samp><samp class="p" data-group-id="9462917907-4">(</samp><samp class="p" data-group-id="9462917907-5">[</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="9462917907-5">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">initial_acc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="9462917907-6">fn</samp><samp class="w"> </samp><samp class="n">elem</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">acc</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">collector_fun</samp><samp class="o">.</samp><samp class="p" data-group-id="9462917907-7">(</samp><samp class="n">acc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9462917907-8">{</samp><samp class="ss">:cont</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">elem</samp><samp class="p" data-group-id="9462917907-8">}</samp><samp class="p" data-group-id="9462917907-7">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="9462917907-6">end</samp><samp class="p" data-group-id="9462917907-4">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">collector_fun</samp><samp class="o">.</samp><samp class="p" data-group-id="9462917907-9">(</samp><samp class="n">updated_acc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:done</samp><samp class="p" data-group-id="9462917907-9">)</samp><samp class="w">
+</samp><samp class="nc">MapSet</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="9462917907-10">(</samp><samp class="p" data-group-id="9462917907-11">[</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="9462917907-11">]</samp><samp class="p" data-group-id="9462917907-10">)</samp></code></pre><p>To show how the protocol can be implemented, we can again look at the
+simplified implementation for <a href="MapSet.xhtml"><code class="inline">MapSet</code></a>. In this implementation &quot;collecting&quot; elements
+simply means inserting them in the set through <a href="MapSet.xhtml#put/2"><code class="inline">MapSet.put/2</code></a>.</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Collectable</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">for</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MapSet</samp><samp class="w"> </samp><samp class="k" data-group-id="0031986421-1">do</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">into</samp><samp class="p" data-group-id="0031986421-2">(</samp><samp class="n">map_set</samp><samp class="p" data-group-id="0031986421-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="0031986421-3">do</samp><samp class="w">
+    </samp><samp class="n">collector_fun</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="k" data-group-id="0031986421-4">fn</samp><samp class="w">
+      </samp><samp class="n">map_set_acc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0031986421-5">{</samp><samp class="ss">:cont</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">elem</samp><samp class="p" data-group-id="0031986421-5">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+        </samp><samp class="nc">MapSet</samp><samp class="o">.</samp><samp class="n">put</samp><samp class="p" data-group-id="0031986421-6">(</samp><samp class="n">map_set_acc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">elem</samp><samp class="p" data-group-id="0031986421-6">)</samp><samp class="w">
+
+      </samp><samp class="n">map_set_acc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:done</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+        </samp><samp class="n">map_set_acc</samp><samp class="w">
+
+      </samp><samp class="c">_map_set_acc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:halt</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+        </samp><samp class="ss">:ok</samp><samp class="w">
+    </samp><samp class="k" data-group-id="0031986421-4">end</samp><samp class="w">
+
+    </samp><samp class="n">initial_acc</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">map_set</samp><samp class="w">
+
+    </samp><samp class="p" data-group-id="0031986421-7">{</samp><samp class="n">initial_acc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">collector_fun</samp><samp class="p" data-group-id="0031986421-7">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="0031986421-3">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="0031986421-1">end</samp></code></pre><p>So now we can call <a href="Enum.xhtml#into/2"><code class="inline">Enum.into/2</code></a>:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">into</samp><samp class="p" data-group-id="6190418111-1">(</samp><samp class="p" data-group-id="6190418111-2">[</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="6190418111-2">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MapSet</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="6190418111-3">(</samp><samp class="p" data-group-id="6190418111-3">)</samp><samp class="p" data-group-id="6190418111-1">)</samp><samp class="w">
+</samp><samp class="nc">MapSet</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="6190418111-4">(</samp><samp class="p" data-group-id="6190418111-5">[</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="6190418111-5">]</samp><samp class="p" data-group-id="6190418111-4">)</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:command/0" data-no-tooltip="" translate="no">command()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>All the types that implement this protocol.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#into/1" data-no-tooltip="" translate="no">into(collectable)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns an initial accumulator and a &quot;collector&quot; function.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:command/0">
+
+  <div class="detail-header">
+    <a href="#t:command/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">command()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/collectable.ex#L70" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> command() :: {:cont, <a href="typespecs.xhtml#built-in-types">term</a>()} | :done | :halt</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/collectable.ex#L1" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: <a href="typespecs.xhtml#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>All the types that implement this protocol.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="into/1">
+
+  <div class="detail-header">
+    <a href="#into/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">into(collectable)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/collectable.ex#L92" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> into(<a href="#t:t/0">t</a>()) ::
+  {initial_acc :: <a href="typespecs.xhtml#built-in-types">term</a>(), collector :: (<a href="typespecs.xhtml#built-in-types">term</a>(), <a href="#t:command/0">command</a>() -&gt; <a href="#t:t/0">t</a>() | <a href="typespecs.xhtml#built-in-types">term</a>())}</pre>
+
+      </div>
+
+<p>Returns an initial accumulator and a &quot;collector&quot; function.</p><p>Receives a <code class="inline">collectable</code> which can be used as the initial accumulator that will
+be passed to the function.</p><p>The collector function receives a term and a command and injects the term into
+the collectable accumulator on every <code class="inline">{:cont, term}</code> command.</p><p><code class="inline">:done</code> is passed as a command when no further values will be injected. This
+is useful when there's a need to close resources or normalizing values. A
+collectable must be returned when the command is <code class="inline">:done</code>.</p><p>If injection is suddenly interrupted, <code class="inline">:halt</code> is passed and the function
+can return any value as it won't be used.</p><p>For examples on how to use the <a href="Collectable.xhtml"><code class="inline">Collectable</code></a> protocol and <a href="#into/1"><code class="inline">into/1</code></a> see the
+module documentation.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

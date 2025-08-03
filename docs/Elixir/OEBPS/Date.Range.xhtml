@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Date.Range - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Date.Range 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Returns an inclusive range between dates.</p><p>Ranges must be created with the <a href="Date.xhtml#range/2"><code class="inline">Date.range/2</code></a> or <a href="Date.xhtml#range/3"><code class="inline">Date.range/3</code></a> function.</p><p>The following fields are public:</p><ul><li><code class="inline">:first</code> - the initial date on the range</li><li><code class="inline">:last</code> - the last date on the range</li><li><code class="inline">:step</code> - (since v1.12.0) the step</li></ul><p>The remaining fields are private and should not be accessed.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date_range.ex#L16" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %Date.Range{
+  first: <a href="Date.xhtml#t:t/0">Date.t</a>(),
+  first_in_iso_days: days(),
+  last: <a href="Date.xhtml#t:t/0">Date.t</a>(),
+  last_in_iso_days: days(),
+  step: <a href="typespecs.xhtml#basic-types">pos_integer</a>() | <a href="typespecs.xhtml#basic-types">neg_integer</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

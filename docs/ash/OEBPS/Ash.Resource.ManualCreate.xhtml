@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Resource.ManualCreate - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Resource.ManualCreate <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A module to implement manual create actions.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:bulk_create/3" data-no-tooltip="" translate="no">bulk_create(changesets, opts, context)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:create/3" data-no-tooltip="" translate="no">create(changeset, opts, context)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:bulk_create/3">
+
+  <div class="detail-header">
+    <a href="#c:bulk_create/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">bulk_create(changesets, opts, context)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/manual_actions/manual_create.ex#L89" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> bulk_create(
+  changesets :: <a href="https://hexdocs.pm/elixir/Enumerable.html#t:t/1">Enumerable.t</a>(<a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>()),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="Ash.Resource.ManualCreate.Context.xhtml#t:t/0">Ash.Resource.ManualCreate.Context.t</a>()
+) :: [
+  :ok
+  | {:ok, <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()}
+  | {:ok, <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>(),
+     %{notifications: [<a href="Ash.Notifier.Notification.xhtml#t:t/0">Ash.Notifier.Notification.t</a>()]}}
+  | {:ok, <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>(), [<a href="Ash.Notifier.Notification.xhtml#t:t/0">Ash.Notifier.Notification.t</a>()]}
+  | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}
+  | {:notifications, [<a href="Ash.Notifier.Notification.xhtml#t:t/0">Ash.Notifier.Notification.t</a>()]}
+]</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:create/3">
+
+  <div class="detail-header">
+    <a href="#c:create/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">create(changeset, opts, context)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/manual_actions/manual_create.ex#L80" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> create(
+  changeset :: <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="Ash.Resource.ManualCreate.Context.xhtml#t:t/0">Ash.Resource.ManualCreate.Context.t</a>()
+) ::
+  {:ok, <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()}
+  | {:ok, <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>(),
+     %{notifications: [<a href="Ash.Notifier.Notification.xhtml#t:t/0">Ash.Notifier.Notification.t</a>()]}}
+  | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

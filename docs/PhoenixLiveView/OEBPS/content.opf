@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf"
+         unique-identifier="project-Phoenix LiveView"
+         version="3.0">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:title>Phoenix LiveView - 1.1.2</dc:title>
+    <dc:identifier id="project-Phoenix LiveView">urn:uuid:32c30dfd-ebb6-4123-11f7-4d3bc5435590</dc:identifier>
+    <dc:language>en</dc:language>
+
+    <meta property="dcterms:modified">2025-07-31T20:08:14Z</meta>
+
+  </metadata>
+  <manifest>
+    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav scripted"/>
+    <item id="cover" href="title.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="changelog" href="changelog.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="welcome" href="welcome.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="assigns-eex" href="assigns-eex.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="deployments" href="deployments.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="error-handling" href="error-handling.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="gettext" href="gettext.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="live-layouts" href="live-layouts.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="live-navigation" href="live-navigation.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="security-model" href="security-model.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="telemetry" href="telemetry.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="uploads" href="uploads.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="bindings" href="bindings.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="external-uploads" href="external-uploads.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="form-bindings" href="form-bindings.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="js-interop" href="js-interop.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="syncing-changes" href="syncing-changes.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="html-attrs" href="html-attrs.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+
+      <item id="Phoenix.Component" href="Phoenix.Component.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveComponent" href="Phoenix.LiveComponent.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView" href="Phoenix.LiveView.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.AsyncResult" href="Phoenix.LiveView.AsyncResult.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.ColocatedHook" href="Phoenix.LiveView.ColocatedHook.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.ColocatedJS" href="Phoenix.LiveView.ColocatedJS.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.Controller" href="Phoenix.LiveView.Controller.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.Debug" href="Phoenix.LiveView.Debug.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.JS" href="Phoenix.LiveView.JS.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.Router" href="Phoenix.LiveView.Router.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveViewTest" href="Phoenix.LiveViewTest.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.HTMLFormatter" href="Phoenix.LiveView.HTMLFormatter.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.Logger" href="Phoenix.LiveView.Logger.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.Socket" href="Phoenix.LiveView.Socket.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveViewTest.Element" href="Phoenix.LiveViewTest.Element.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveViewTest.Upload" href="Phoenix.LiveViewTest.Upload.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveViewTest.View" href="Phoenix.LiveViewTest.View.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.UploadConfig" href="Phoenix.LiveView.UploadConfig.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.UploadEntry" href="Phoenix.LiveView.UploadEntry.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.UploadWriter" href="Phoenix.LiveView.UploadWriter.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveComponent.CID" href="Phoenix.LiveComponent.CID.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.Component" href="Phoenix.LiveView.Component.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.Comprehension" href="Phoenix.LiveView.Comprehension.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.Engine" href="Phoenix.LiveView.Engine.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.HTMLEngine" href="Phoenix.LiveView.HTMLEngine.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.Rendered" href="Phoenix.LiveView.Rendered.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.TagEngine" href="Phoenix.LiveView.TagEngine.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Phoenix.LiveView.ReloadError" href="Phoenix.LiveView.ReloadError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Mix.Tasks.Compile.PhoenixLiveView" href="Mix.Tasks.Compile.PhoenixLiveView.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+
+      <item id="epub-4wip524f-js" href="dist/epub-4WIP524F.js" media-type="text/javascript"/>
+
+      <item id="epub-elixir-fnuukfp7-css" href="dist/epub-elixir-FNUUKFP7.css" media-type="text/css"/>
+
+
+
+  </manifest>
+  <spine>
+    <itemref idref="cover"/>
+    <itemref idref="nav"/>
+
+      <itemref idref="changelog"/>
+
+      <itemref idref="welcome"/>
+
+      <itemref idref="assigns-eex"/>
+
+      <itemref idref="deployments"/>
+
+      <itemref idref="error-handling"/>
+
+      <itemref idref="gettext"/>
+
+      <itemref idref="live-layouts"/>
+
+      <itemref idref="live-navigation"/>
+
+      <itemref idref="security-model"/>
+
+      <itemref idref="telemetry"/>
+
+      <itemref idref="uploads"/>
+
+      <itemref idref="bindings"/>
+
+      <itemref idref="external-uploads"/>
+
+      <itemref idref="form-bindings"/>
+
+      <itemref idref="js-interop"/>
+
+      <itemref idref="syncing-changes"/>
+
+      <itemref idref="html-attrs"/>
+
+
+      <itemref idref="Phoenix.Component"/>
+
+      <itemref idref="Phoenix.LiveComponent"/>
+
+      <itemref idref="Phoenix.LiveView"/>
+
+      <itemref idref="Phoenix.LiveView.AsyncResult"/>
+
+      <itemref idref="Phoenix.LiveView.ColocatedHook"/>
+
+      <itemref idref="Phoenix.LiveView.ColocatedJS"/>
+
+      <itemref idref="Phoenix.LiveView.Controller"/>
+
+      <itemref idref="Phoenix.LiveView.Debug"/>
+
+      <itemref idref="Phoenix.LiveView.JS"/>
+
+      <itemref idref="Phoenix.LiveView.Router"/>
+
+      <itemref idref="Phoenix.LiveViewTest"/>
+
+      <itemref idref="Phoenix.LiveView.HTMLFormatter"/>
+
+      <itemref idref="Phoenix.LiveView.Logger"/>
+
+      <itemref idref="Phoenix.LiveView.Socket"/>
+
+      <itemref idref="Phoenix.LiveViewTest.Element"/>
+
+      <itemref idref="Phoenix.LiveViewTest.Upload"/>
+
+      <itemref idref="Phoenix.LiveViewTest.View"/>
+
+      <itemref idref="Phoenix.LiveView.UploadConfig"/>
+
+      <itemref idref="Phoenix.LiveView.UploadEntry"/>
+
+      <itemref idref="Phoenix.LiveView.UploadWriter"/>
+
+      <itemref idref="Phoenix.LiveComponent.CID"/>
+
+      <itemref idref="Phoenix.LiveView.Component"/>
+
+      <itemref idref="Phoenix.LiveView.Comprehension"/>
+
+      <itemref idref="Phoenix.LiveView.Engine"/>
+
+      <itemref idref="Phoenix.LiveView.HTMLEngine"/>
+
+      <itemref idref="Phoenix.LiveView.Rendered"/>
+
+      <itemref idref="Phoenix.LiveView.TagEngine"/>
+
+      <itemref idref="Phoenix.LiveView.ReloadError"/>
+
+      <itemref idref="Mix.Tasks.Compile.PhoenixLiveView"/>
+
+  </spine>
+</package>

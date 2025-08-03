@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>MissingApplicationsError - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+MissingApplicationsError <small>exception</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>An exception that is raised when an application depends on one or more
+missing applications.</p><p>This exception is used by Mix and other tools. It can also be used by library authors
+when their library only requires an external application (like a dependency) for a subset
+of features.</p><p>The fields of this exception are public. See <a href="#t:t/0"><code class="inline">t/0</code></a>.</p><p><em>Available since v1.18.0.</em></p><h2 id="module-examples">Examples</h2><pre><code class="makeup elixir" translate="no"><samp class="k">unless</samp><samp class="w"> </samp><samp class="nc">Application</samp><samp class="o">.</samp><samp class="n">spec</samp><samp class="p" data-group-id="0926034614-1">(</samp><samp class="ss">:plug</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:vsn</samp><samp class="p" data-group-id="0926034614-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="0926034614-2">do</samp><samp class="w">
+  </samp><samp class="k">raise</samp><samp class="w"> </samp><samp class="nc">MissingApplicationsError</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">description</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;application :plug is required for testing Plug-related functionality&quot;</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">apps</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0926034614-3">[</samp><samp class="p" data-group-id="0926034614-4">{</samp><samp class="ss">:plug</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;~&gt; 1.0&quot;</samp><samp class="p" data-group-id="0926034614-4">}</samp><samp class="p" data-group-id="0926034614-3">]</samp><samp class="w">
+</samp><samp class="k" data-group-id="0926034614-2">end</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+        <span class="note">(since 1.18.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/exception.ex#L2186" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %MissingApplicationsError{
+  __exception__: true,
+  apps: [{<a href="Application.xhtml#t:app/0">Application.app</a>(), <a href="Version.xhtml#t:requirement/0">Version.requirement</a>()}, ...],
+  description: <a href="String.xhtml#t:t/0">String.t</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

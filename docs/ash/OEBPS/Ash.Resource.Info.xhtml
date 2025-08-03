@@ -1,0 +1,3072 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Resource.Info - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Resource.Info 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Introspection for resources</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#action/3" data-no-tooltip="" translate="no">action(resource, name, type \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the action with the matching name and type on the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#action_input?/3" data-no-tooltip="" translate="no">action_input?(resource, action, input)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true or false if the input is accepted by the action, as an argument or an attribute</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#action_inputs/2" data-no-tooltip="" translate="no">action_inputs(resource, action)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the list of possible accepted keys by an action</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#action_select/2" data-no-tooltip="" translate="no">action_select(resource, action)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the list of attributes that must be selected for an action invocation</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#actions/1" data-no-tooltip="" translate="no">actions(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all actions of a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#aggregate/2" data-no-tooltip="" translate="no">aggregate(resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get an aggregate by name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#aggregate_type/2" data-no-tooltip="" translate="no">aggregate_type(resource, aggregate)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the type of an aggregate for a given resource.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#aggregates/1" data-no-tooltip="" translate="no">aggregates(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all aggregates of a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#always_selected_attribute_names/1" data-no-tooltip="" translate="no">always_selected_attribute_names(resource)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#attribute/2" data-no-tooltip="" translate="no">attribute(resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get an attribute name from the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#attribute_names/1" data-no-tooltip="" translate="no">attribute_names(resource)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#attributes/1" data-no-tooltip="" translate="no">attributes(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all attributes of a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#attributes_to_require/1" data-no-tooltip="" translate="no">attributes_to_require(resource)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#attributes_to_require/2" data-no-tooltip="" translate="no">attributes_to_require(resource, action_name)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#authorizers/1" data-no-tooltip="" translate="no">authorizers(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A list of authorizers to be used when accessing</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#base_filter/1" data-no-tooltip="" translate="no">base_filter(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The base filter of the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#calculation/2" data-no-tooltip="" translate="no">calculation(resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get a calculation by name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#calculation_interface/2" data-no-tooltip="" translate="no">calculation_interface(resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get an calculation interface by name from the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#calculation_interfaces/1" data-no-tooltip="" translate="no">calculation_interfaces(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The list of code interface calculation definitions.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#calculations/1" data-no-tooltip="" translate="no">calculations(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all calculations of a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#changes/1" data-no-tooltip="" translate="no">changes(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A list of all changes for the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#changes/2" data-no-tooltip="" translate="no">changes(resource, type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A list of all changes for the resource for a given action type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#code_interface_domain/1" data-no-tooltip="" translate="no">code_interface_domain(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The domain to define the interface for, when defining it in the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#data_layer/1" data-no-tooltip="" translate="no">data_layer(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The data layer of the resource, or nil if it does not have one</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#default_actions/1" data-no-tooltip="" translate="no">default_actions(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the configured default actions</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#default_context/1" data-no-tooltip="" translate="no">default_context(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The default context of the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#define_interface?/1" data-no-tooltip="" translate="no">define_interface?(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not to define the interface on the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#description/1" data-no-tooltip="" translate="no">description(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The description of the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#domain/1" data-no-tooltip="" translate="no">domain(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the statically configured domain for the resource.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#embedded?/1" data-no-tooltip="" translate="no">embedded?(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not the resource is an embedded resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#field/2" data-no-tooltip="" translate="no">field(resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get a field from a resource by name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#fields/2" data-no-tooltip="" translate="no">fields(resource, types \\ [:attributes, :aggregates, :calculations, :relationships])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all attributes, aggregates, calculations and relationships of a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#hide_inspect_fields/1" data-no-tooltip="" translate="no">hide_inspect_fields(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A deny-list of fields to hide from the inspect output.
+Takes precedence over <code class="inline">show_inspect_fields</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#identities/1" data-no-tooltip="" translate="no">identities(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A list of identities for the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#identity/2" data-no-tooltip="" translate="no">identity(resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get an identity by name from the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#inspect_private_fields?/1" data-no-tooltip="" translate="no">inspect_private_fields?(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether to include private fields in the inspect output.
+<code class="inline">show_inspect_fields</code> takes precedence over this option.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#interface/2" data-no-tooltip="" translate="no">interface(resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get an interface by name from the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#interfaces/1" data-no-tooltip="" translate="no">interfaces(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The list of code interface definitions.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#lazy_matching_default_attributes/2" data-no-tooltip="" translate="no">lazy_matching_default_attributes(resource, atom)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all attributes of a resource with lazy matching defaults</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#lazy_non_matching_default_attributes/2" data-no-tooltip="" translate="no">lazy_non_matching_default_attributes(resource, atom)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all attributes of a resource with lazy non-matching-defaults</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#multitenancy_attribute/1" data-no-tooltip="" translate="no">multitenancy_attribute(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The multitenancy attribute for a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#multitenancy_global?/1" data-no-tooltip="" translate="no">multitenancy_global?(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The MFA to parse the tenant from the attribute</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#multitenancy_parse_attribute/1" data-no-tooltip="" translate="no">multitenancy_parse_attribute(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The function to parse the tenant from the attribute</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#multitenancy_strategy/1" data-no-tooltip="" translate="no">multitenancy_strategy(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The multitenancy strategy for a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#multitenancy_template/1" data-no-tooltip="" translate="no">multitenancy_template(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The template for creating the tenant name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#notifiers/1" data-no-tooltip="" translate="no">notifiers(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A list of notifiers to be used when accessing</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#plural_name/1" data-no-tooltip="" translate="no">plural_name(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The plural_name of the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#preparations/2" data-no-tooltip="" translate="no">preparations(resource, type \\ :read)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#primary_action/2" data-no-tooltip="" translate="no">primary_action(resource, type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the primary action of a given type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#primary_action!/2" data-no-tooltip="" translate="no">primary_action!(resource, type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the primary action of the given type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#primary_key/1" data-no-tooltip="" translate="no">primary_key(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A list of field names corresponding to the primary key</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#primary_key_simple_equality?/1" data-no-tooltip="" translate="no">primary_key_simple_equality?(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not all primary key attributes can be compared with simple_equality</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#public_aggregate/2" data-no-tooltip="" translate="no">public_aggregate(resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get an aggregate by name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#public_aggregates/1" data-no-tooltip="" translate="no">public_aggregates(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all public aggregates of a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#public_attribute/2" data-no-tooltip="" translate="no">public_attribute(resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get a public attribute name from the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#public_attributes/1" data-no-tooltip="" translate="no">public_attributes(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all public attributes of a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#public_calculation/2" data-no-tooltip="" translate="no">public_calculation(resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get a public calculation by name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#public_calculations/1" data-no-tooltip="" translate="no">public_calculations(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all public calculations of a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#public_field/2" data-no-tooltip="" translate="no">public_field(resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get a public field from a resource by name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#public_fields/1" data-no-tooltip="" translate="no">public_fields(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all public attributes, aggregates, calculations and relationships of a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#public_relationship/2" data-no-tooltip="" translate="no">public_relationship(resource, relationship_name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get a public relationship by name or path</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#public_relationships/1" data-no-tooltip="" translate="no">public_relationships(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all public relationships of a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#related/2" data-no-tooltip="" translate="no">related(resource, relationship)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#relationship/2" data-no-tooltip="" translate="no">relationship(resource, relationship_name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Get a relationship by name or path</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#relationships/1" data-no-tooltip="" translate="no">relationships(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all relationships of a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#required_belongs_to_relationships/1" data-no-tooltip="" translate="no">required_belongs_to_relationships(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The required belongs_to relationships</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#resource?/1" data-no-tooltip="" translate="no">resource?(module)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not a given module is a resource module</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#reverse_relationship/3" data-no-tooltip="" translate="no">reverse_relationship(resource, path, acc \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Retrieves a relationship path from the resource related by path, to the provided resource.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#selected_by_default_attribute_names/1" data-no-tooltip="" translate="no">selected_by_default_attribute_names(resource)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#short_name/1" data-no-tooltip="" translate="no">short_name(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The short_name of the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#show_inspect_fields/1" data-no-tooltip="" translate="no">show_inspect_fields(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>An allow-list of fields to show in the inspect output.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#simple_notifiers/1" data-no-tooltip="" translate="no">simple_notifiers(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A list of simple notifiers (require no DSL, used to avoid compile time dependencies)</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#sortable?/3" data-no-tooltip="" translate="no">sortable?(resource, name, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Determine if a field is sortable by name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#static_default_attributes/2" data-no-tooltip="" translate="no">static_default_attributes(resource, atom)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns all attributes of a resource with static defaults</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#trace_name/1" data-no-tooltip="" translate="no">trace_name(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The trace_name of the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#unique_keys/1" data-no-tooltip="" translate="no">unique_keys(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A list of unique keys and information for a resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#validations/1" data-no-tooltip="" translate="no">validations(resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A list of all validations for the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#validations/2" data-no-tooltip="" translate="no">validations(resource, type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A list of all validations for the resource for a given action type</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="action/3">
+
+    <span id="action/2"></span>
+
+  <div class="detail-header">
+    <a href="#action/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">action(resource, name, type \\ nil)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L628" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> action(
+  <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(),
+  <a href="Ash.Resource.Actions.xhtml#t:action_type/0">Ash.Resource.Actions.action_type</a>() | nil
+) ::
+  <a href="Ash.Resource.Actions.xhtml#t:action/0">Ash.Resource.Actions.action</a>() | nil</pre>
+
+      </div>
+
+<p>Returns the action with the matching name and type on the resource</p>
+  </section>
+</section>
+<section class="detail" id="action_input?/3">
+
+  <div class="detail-header">
+    <a href="#action_input?/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">action_input?(resource, action, input)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L658" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> action_input?(<a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), action :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), input :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) ::
+  <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Returns true or false if the input is accepted by the action, as an argument or an attribute</p>
+  </section>
+</section>
+<section class="detail" id="action_inputs/2">
+
+  <div class="detail-header">
+    <a href="#action_inputs/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">action_inputs(resource, action)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L670" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> action_inputs(<a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), action :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) :: <a href="https://hexdocs.pm/elixir/MapSet.html#t:t/0">MapSet.t</a>()</pre>
+
+      </div>
+
+<p>Returns the list of possible accepted keys by an action</p>
+  </section>
+</section>
+<section class="detail" id="action_select/2">
+
+  <div class="detail-header">
+    <a href="#action_select/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">action_select(resource, action)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L677" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> action_select(
+  <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  action :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="Ash.Resource.Actions.xhtml#t:action/0">Ash.Resource.Actions.action</a>()
+) ::
+  [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()] | nil</pre>
+
+      </div>
+
+<p>Returns the list of attributes that must be selected for an action invocation</p>
+  </section>
+</section>
+<section class="detail" id="actions/1">
+
+  <div class="detail-header">
+    <a href="#actions/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">actions(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L621" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> actions(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="Ash.Resource.Actions.xhtml#t:action/0">Ash.Resource.Actions.action</a>()]</pre>
+
+      </div>
+
+<p>Returns all actions of a resource</p>
+  </section>
+</section>
+<section class="detail" id="aggregate/2">
+
+  <div class="detail-header">
+    <a href="#aggregate/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">aggregate(resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L542" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> aggregate(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) ::
+  <a href="Ash.Resource.Aggregate.xhtml#t:t/0">Ash.Resource.Aggregate.t</a>() | nil</pre>
+
+      </div>
+
+<p>Get an aggregate by name</p>
+  </section>
+</section>
+<section class="detail" id="aggregate_type/2">
+
+  <div class="detail-header">
+    <a href="#aggregate_type/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">aggregate_type(resource, aggregate)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L503" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> aggregate_type(
+  <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  <a href="Ash.Resource.Aggregate.xhtml#t:t/0">Ash.Resource.Aggregate.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()
+) ::
+  {:ok, <a href="Ash.Type.xhtml#t:t/0">Ash.Type.t</a>()} | {:error, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()}</pre>
+
+      </div>
+
+<p>Gets the type of an aggregate for a given resource.</p>
+  </section>
+</section>
+<section class="detail" id="aggregates/1">
+
+  <div class="detail-header">
+    <a href="#aggregates/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">aggregates(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L535" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> aggregates(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="Ash.Resource.Aggregate.xhtml#t:t/0">Ash.Resource.Aggregate.t</a>()]</pre>
+
+      </div>
+
+<p>Returns all aggregates of a resource</p>
+  </section>
+</section>
+<section class="detail" id="always_selected_attribute_names/1">
+
+  <div class="detail-header">
+    <a href="#always_selected_attribute_names/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">always_selected_attribute_names(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L817" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> always_selected_attribute_names(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/MapSet.html#t:t/0">MapSet.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="attribute/2">
+
+  <div class="detail-header">
+    <a href="#attribute/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">attribute(resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L771" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> attribute(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  <a href="Ash.Resource.Attribute.xhtml#t:t/0">Ash.Resource.Attribute.t</a>() | nil</pre>
+
+      </div>
+
+<p>Get an attribute name from the resource</p>
+  </section>
+</section>
+<section class="detail" id="attribute_names/1">
+
+  <div class="detail-header">
+    <a href="#attribute_names/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">attribute_names(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L692" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> attribute_names(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/MapSet.html#t:t/0">MapSet.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="attributes/1">
+
+  <div class="detail-header">
+    <a href="#attributes/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">attributes(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L687" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> attributes(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="Ash.Resource.Attribute.xhtml#t:t/0">Ash.Resource.Attribute.t</a>()]</pre>
+
+      </div>
+
+<p>Returns all attributes of a resource</p>
+  </section>
+</section>
+<section class="detail" id="attributes_to_require/1">
+
+  <div class="detail-header">
+    <a href="#attributes_to_require/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">attributes_to_require(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L383" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="attributes_to_require/2">
+
+  <div class="detail-header">
+    <a href="#attributes_to_require/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">attributes_to_require(resource, action_name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L387" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="authorizers/1">
+
+  <div class="detail-header">
+    <a href="#authorizers/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">authorizers(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L245" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> authorizers(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()]</pre>
+
+      </div>
+
+<p>A list of authorizers to be used when accessing</p>
+  </section>
+</section>
+<section class="detail" id="base_filter/1">
+
+  <div class="detail-header">
+    <a href="#base_filter/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">base_filter(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L217" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> base_filter(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>The base filter of the resource</p>
+  </section>
+</section>
+<section class="detail" id="calculation/2">
+
+  <div class="detail-header">
+    <a href="#calculation/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">calculation(resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L460" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> calculation(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) ::
+  <a href="Ash.Resource.Calculation.xhtml#t:t/0">Ash.Resource.Calculation.t</a>() | nil</pre>
+
+      </div>
+
+<p>Get a calculation by name</p>
+  </section>
+</section>
+<section class="detail" id="calculation_interface/2">
+
+  <div class="detail-header">
+    <a href="#calculation_interface/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">calculation_interface(resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L107" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> calculation_interface(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  <a href="Ash.Resource.CalculationInterface.xhtml#t:t/0">Ash.Resource.CalculationInterface.t</a>() | nil</pre>
+
+      </div>
+
+<p>Get an calculation interface by name from the resource</p>
+  </section>
+</section>
+<section class="detail" id="calculation_interfaces/1">
+
+  <div class="detail-header">
+    <a href="#calculation_interfaces/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">calculation_interfaces(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L92" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> calculation_interfaces(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [
+  <a href="Ash.Resource.CalculationInterface.xhtml#t:t/0">Ash.Resource.CalculationInterface.t</a>()
+]</pre>
+
+      </div>
+
+<p>The list of code interface calculation definitions.</p>
+  </section>
+</section>
+<section class="detail" id="calculations/1">
+
+  <div class="detail-header">
+    <a href="#calculations/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">calculations(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L453" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> calculations(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="Ash.Resource.Calculation.xhtml#t:t/0">Ash.Resource.Calculation.t</a>()]</pre>
+
+      </div>
+
+<p>Returns all calculations of a resource</p>
+  </section>
+</section>
+<section class="detail" id="changes/1">
+
+  <div class="detail-header">
+    <a href="#changes/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">changes(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L288" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> changes(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [
+  <a href="Ash.Resource.Validation.xhtml#t:t/0">Ash.Resource.Validation.t</a>() | <a href="Ash.Resource.Change.xhtml#t:t/0">Ash.Resource.Change.t</a>()
+]</pre>
+
+      </div>
+
+<p>A list of all changes for the resource</p>
+  </section>
+</section>
+<section class="detail" id="changes/2">
+
+  <div class="detail-header">
+    <a href="#changes/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">changes(resource, type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L278" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> changes(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), :create | :update | :destroy) :: [
+  <a href="Ash.Resource.Validation.xhtml#t:t/0">Ash.Resource.Validation.t</a>() | <a href="Ash.Resource.Change.xhtml#t:t/0">Ash.Resource.Change.t</a>()
+]</pre>
+
+      </div>
+
+<p>A list of all changes for the resource for a given action type</p>
+  </section>
+</section>
+<section class="detail" id="code_interface_domain/1">
+
+  <div class="detail-header">
+    <a href="#code_interface_domain/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">code_interface_domain(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L117" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> code_interface_domain(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | nil</pre>
+
+      </div>
+
+<p>The domain to define the interface for, when defining it in the resource</p>
+  </section>
+</section>
+<section class="detail" id="data_layer/1">
+
+  <div class="detail-header">
+    <a href="#data_layer/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">data_layer(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L936" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> data_layer(<a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="Ash.DataLayer.xhtml#t:t/0">Ash.DataLayer.t</a>() | nil</pre>
+
+      </div>
+
+<p>The data layer of the resource, or nil if it does not have one</p>
+  </section>
+</section>
+<section class="detail" id="default_actions/1">
+
+  <div class="detail-header">
+    <a href="#default_actions/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">default_actions(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L602" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> default_actions(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [
+  :create | :read | :update | :destroy
+]</pre>
+
+      </div>
+
+<p>Returns the configured default actions</p>
+  </section>
+</section>
+<section class="detail" id="default_context/1">
+
+  <div class="detail-header">
+    <a href="#default_context/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">default_context(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L225" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> default_context(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>The default context of the resource</p>
+  </section>
+</section>
+<section class="detail" id="define_interface?/1">
+
+  <div class="detail-header">
+    <a href="#define_interface?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">define_interface?(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L125" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> define_interface?(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not to define the interface on the resource</p>
+  </section>
+</section>
+<section class="detail" id="description/1">
+
+  <div class="detail-header">
+    <a href="#description/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">description(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L141" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> description(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>The description of the resource</p>
+  </section>
+</section>
+<section class="detail" id="domain/1">
+
+  <div class="detail-header">
+    <a href="#domain/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">domain(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L9" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns the statically configured domain for the resource.</p>
+  </section>
+</section>
+<section class="detail" id="embedded?/1">
+
+  <div class="detail-header">
+    <a href="#embedded?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">embedded?(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L133" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> embedded?(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not the resource is an embedded resource</p>
+  </section>
+</section>
+<section class="detail" id="field/2">
+
+  <div class="detail-header">
+    <a href="#field/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">field(resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L847" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> field(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  <a href="Ash.Resource.Attribute.xhtml#t:t/0">Ash.Resource.Attribute.t</a>()
+  | <a href="Ash.Resource.Aggregate.xhtml#t:t/0">Ash.Resource.Aggregate.t</a>()
+  | <a href="Ash.Resource.Calculation.xhtml#t:t/0">Ash.Resource.Calculation.t</a>()
+  | <a href="Ash.Resource.Relationships.xhtml#t:relationship/0">Ash.Resource.Relationships.relationship</a>()
+  | nil</pre>
+
+      </div>
+
+<p>Get a field from a resource by name</p>
+  </section>
+</section>
+<section class="detail" id="fields/2">
+
+    <span id="fields/1"></span>
+
+  <div class="detail-header">
+    <a href="#fields/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">fields(resource, types \\ [:attributes, :aggregates, :calculations, :relationships])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L836" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> fields(
+  <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  types :: [:attributes | :aggregates | :calculations | :relationships]
+) :: [
+  <a href="Ash.Resource.Attribute.xhtml#t:t/0">Ash.Resource.Attribute.t</a>()
+  | <a href="Ash.Resource.Aggregate.xhtml#t:t/0">Ash.Resource.Aggregate.t</a>()
+  | <a href="Ash.Resource.Calculation.xhtml#t:t/0">Ash.Resource.Calculation.t</a>()
+  | <a href="Ash.Resource.Relationships.xhtml#t:relationship/0">Ash.Resource.Relationships.relationship</a>()
+]</pre>
+
+      </div>
+
+<p>Returns all attributes, aggregates, calculations and relationships of a resource</p>
+  </section>
+</section>
+<section class="detail" id="hide_inspect_fields/1">
+
+  <div class="detail-header">
+    <a href="#hide_inspect_fields/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">hide_inspect_fields(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L194" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> hide_inspect_fields(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()]</pre>
+
+      </div>
+
+<p>A deny-list of fields to hide from the inspect output.
+Takes precedence over <code class="inline">show_inspect_fields</code>.</p>
+  </section>
+</section>
+<section class="detail" id="identities/1">
+
+  <div class="detail-header">
+    <a href="#identities/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">identities(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L231" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> identities(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="Ash.Resource.Identity.xhtml#t:t/0">Ash.Resource.Identity.t</a>()]</pre>
+
+      </div>
+
+<p>A list of identities for the resource</p>
+  </section>
+</section>
+<section class="detail" id="identity/2">
+
+  <div class="detail-header">
+    <a href="#identity/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">identity(resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L237" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> identity(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  <a href="Ash.Resource.Identity.xhtml#t:t/0">Ash.Resource.Identity.t</a>() | nil</pre>
+
+      </div>
+
+<p>Get an identity by name from the resource</p>
+  </section>
+</section>
+<section class="detail" id="inspect_private_fields?/1">
+
+  <div class="detail-header">
+    <a href="#inspect_private_fields?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">inspect_private_fields?(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L185" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> inspect_private_fields?(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether to include private fields in the inspect output.
+<code class="inline">show_inspect_fields</code> takes precedence over this option.</p>
+  </section>
+</section>
+<section class="detail" id="interface/2">
+
+  <div class="detail-header">
+    <a href="#interface/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">interface(resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L80" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> interface(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  <a href="Ash.Resource.Interface.xhtml#t:t/0">Ash.Resource.Interface.t</a>() | nil</pre>
+
+      </div>
+
+<p>Get an interface by name from the resource</p>
+  </section>
+</section>
+<section class="detail" id="interfaces/1">
+
+  <div class="detail-header">
+    <a href="#interfaces/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">interfaces(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L66" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> interfaces(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="Ash.Resource.Interface.xhtml#t:t/0">Ash.Resource.Interface.t</a>()]</pre>
+
+      </div>
+
+<p>The list of code interface definitions.</p>
+  </section>
+</section>
+<section class="detail" id="lazy_matching_default_attributes/2">
+
+  <div class="detail-header">
+    <a href="#lazy_matching_default_attributes/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">lazy_matching_default_attributes(resource, atom)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L749" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> lazy_matching_default_attributes(
+  <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  type :: :create | :update
+) :: [<a href="Ash.Resource.Attribute.xhtml#t:t/0">Ash.Resource.Attribute.t</a>()]</pre>
+
+      </div>
+
+<p>Returns all attributes of a resource with lazy matching defaults</p>
+  </section>
+</section>
+<section class="detail" id="lazy_non_matching_default_attributes/2">
+
+  <div class="detail-header">
+    <a href="#lazy_non_matching_default_attributes/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">lazy_non_matching_default_attributes(resource, atom)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L701" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> lazy_non_matching_default_attributes(
+  <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  type :: :create | :update
+) :: [<a href="Ash.Resource.Attribute.xhtml#t:t/0">Ash.Resource.Attribute.t</a>()]</pre>
+
+      </div>
+
+<p>Returns all attributes of a resource with lazy non-matching-defaults</p>
+  </section>
+</section>
+<section class="detail" id="multitenancy_attribute/1">
+
+  <div class="detail-header">
+    <a href="#multitenancy_attribute/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">multitenancy_attribute(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L421" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> multitenancy_attribute(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | nil</pre>
+
+      </div>
+
+<p>The multitenancy attribute for a resource</p>
+  </section>
+</section>
+<section class="detail" id="multitenancy_global?/1">
+
+  <div class="detail-header">
+    <a href="#multitenancy_global?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">multitenancy_global?(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L441" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> multitenancy_global?(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | nil</pre>
+
+      </div>
+
+<p>The MFA to parse the tenant from the attribute</p>
+  </section>
+</section>
+<section class="detail" id="multitenancy_parse_attribute/1">
+
+  <div class="detail-header">
+    <a href="#multitenancy_parse_attribute/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">multitenancy_parse_attribute(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L427" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> multitenancy_parse_attribute(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) ::
+  {<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()]}</pre>
+
+      </div>
+
+<p>The function to parse the tenant from the attribute</p>
+  </section>
+</section>
+<section class="detail" id="multitenancy_strategy/1">
+
+  <div class="detail-header">
+    <a href="#multitenancy_strategy/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">multitenancy_strategy(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L415" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> multitenancy_strategy(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) ::
+  :context | :attribute | nil</pre>
+
+      </div>
+
+<p>The multitenancy strategy for a resource</p>
+  </section>
+</section>
+<section class="detail" id="multitenancy_template/1">
+
+  <div class="detail-header">
+    <a href="#multitenancy_template/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">multitenancy_template(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L447" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> multitenancy_template(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | nil</pre>
+
+      </div>
+
+<p>The template for creating the tenant name</p>
+  </section>
+</section>
+<section class="detail" id="notifiers/1">
+
+  <div class="detail-header">
+    <a href="#notifiers/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">notifiers(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L251" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> notifiers(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()]</pre>
+
+      </div>
+
+<p>A list of notifiers to be used when accessing</p>
+  </section>
+</section>
+<section class="detail" id="plural_name/1">
+
+  <div class="detail-header">
+    <a href="#plural_name/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">plural_name(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L209" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>The plural_name of the resource</p>
+  </section>
+</section>
+<section class="detail" id="preparations/2">
+
+    <span id="preparations/1"></span>
+
+  <div class="detail-header">
+    <a href="#preparations/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">preparations(resource, type \\ :read)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L294" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> preparations(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), action_type :: :read | :action) ::
+  [
+    <a href="Ash.Resource.Preparation.xhtml#t:t/0">Ash.Resource.Preparation.t</a>()
+  ]</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="primary_action/2">
+
+  <div class="detail-header">
+    <a href="#primary_action/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">primary_action(resource, type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L593" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> primary_action(
+  <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  <a href="Ash.Resource.Actions.xhtml#t:action_type/0">Ash.Resource.Actions.action_type</a>()
+) ::
+  <a href="Ash.Resource.Actions.xhtml#t:action/0">Ash.Resource.Actions.action</a>() | nil</pre>
+
+      </div>
+
+<p>Returns the primary action of a given type</p>
+  </section>
+</section>
+<section class="detail" id="primary_action!/2">
+
+  <div class="detail-header">
+    <a href="#primary_action!/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">primary_action!(resource, type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L580" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> primary_action!(
+  <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  <a href="Ash.Resource.Actions.xhtml#t:action_type/0">Ash.Resource.Actions.action_type</a>()
+) ::
+  <a href="Ash.Resource.Actions.xhtml#t:action/0">Ash.Resource.Actions.action</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">no_return</a>()</pre>
+
+      </div>
+
+<p>Returns the primary action of the given type</p>
+  </section>
+</section>
+<section class="detail" id="primary_key/1">
+
+  <div class="detail-header">
+    <a href="#primary_key/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">primary_key(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L309" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> primary_key(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()]</pre>
+
+      </div>
+
+<p>A list of field names corresponding to the primary key</p>
+  </section>
+</section>
+<section class="detail" id="primary_key_simple_equality?/1">
+
+  <div class="detail-header">
+    <a href="#primary_key_simple_equality?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">primary_key_simple_equality?(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L322" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> primary_key_simple_equality?(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not all primary key attributes can be compared with simple_equality</p>
+  </section>
+</section>
+<section class="detail" id="public_aggregate/2">
+
+  <div class="detail-header">
+    <a href="#public_aggregate/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">public_aggregate(resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L565" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> public_aggregate(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) ::
+  <a href="Ash.Resource.Aggregate.xhtml#t:t/0">Ash.Resource.Aggregate.t</a>() | nil</pre>
+
+      </div>
+
+<p>Get an aggregate by name</p>
+  </section>
+</section>
+<section class="detail" id="public_aggregates/1">
+
+  <div class="detail-header">
+    <a href="#public_aggregates/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">public_aggregates(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L556" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> public_aggregates(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [
+  <a href="Ash.Resource.Aggregate.xhtml#t:t/0">Ash.Resource.Aggregate.t</a>()
+]</pre>
+
+      </div>
+
+<p>Returns all public aggregates of a resource</p>
+  </section>
+</section>
+<section class="detail" id="public_attribute/2">
+
+  <div class="detail-header">
+    <a href="#public_attribute/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">public_attribute(resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L794" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> public_attribute(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  <a href="Ash.Resource.Attribute.xhtml#t:t/0">Ash.Resource.Attribute.t</a>() | nil</pre>
+
+      </div>
+
+<p>Get a public attribute name from the resource</p>
+  </section>
+</section>
+<section class="detail" id="public_attributes/1">
+
+  <div class="detail-header">
+    <a href="#public_attributes/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">public_attributes(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L785" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> public_attributes(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [
+  <a href="Ash.Resource.Attribute.xhtml#t:t/0">Ash.Resource.Attribute.t</a>()
+]</pre>
+
+      </div>
+
+<p>Returns all public attributes of a resource</p>
+  </section>
+</section>
+<section class="detail" id="public_calculation/2">
+
+  <div class="detail-header">
+    <a href="#public_calculation/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">public_calculation(resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L486" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> public_calculation(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) ::
+  <a href="Ash.Resource.Calculation.xhtml#t:t/0">Ash.Resource.Calculation.t</a>() | nil</pre>
+
+      </div>
+
+<p>Get a public calculation by name</p>
+  </section>
+</section>
+<section class="detail" id="public_calculations/1">
+
+  <div class="detail-header">
+    <a href="#public_calculations/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">public_calculations(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L477" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> public_calculations(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [
+  <a href="Ash.Resource.Calculation.xhtml#t:t/0">Ash.Resource.Calculation.t</a>()
+]</pre>
+
+      </div>
+
+<p>Returns all public calculations of a resource</p>
+  </section>
+</section>
+<section class="detail" id="public_field/2">
+
+  <div class="detail-header">
+    <a href="#public_field/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">public_field(resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L874" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> public_field(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  <a href="Ash.Resource.Attribute.xhtml#t:t/0">Ash.Resource.Attribute.t</a>()
+  | <a href="Ash.Resource.Aggregate.xhtml#t:t/0">Ash.Resource.Aggregate.t</a>()
+  | <a href="Ash.Resource.Calculation.xhtml#t:t/0">Ash.Resource.Calculation.t</a>()
+  | <a href="Ash.Resource.Relationships.xhtml#t:relationship/0">Ash.Resource.Relationships.relationship</a>()
+  | nil</pre>
+
+      </div>
+
+<p>Get a public field from a resource by name</p>
+  </section>
+</section>
+<section class="detail" id="public_fields/1">
+
+  <div class="detail-header">
+    <a href="#public_fields/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">public_fields(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L861" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> public_fields(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [
+  <a href="Ash.Resource.Attribute.xhtml#t:t/0">Ash.Resource.Attribute.t</a>()
+  | <a href="Ash.Resource.Aggregate.xhtml#t:t/0">Ash.Resource.Aggregate.t</a>()
+  | <a href="Ash.Resource.Calculation.xhtml#t:t/0">Ash.Resource.Calculation.t</a>()
+  | <a href="Ash.Resource.Relationships.xhtml#t:relationship/0">Ash.Resource.Relationships.relationship</a>()
+]</pre>
+
+      </div>
+
+<p>Returns all public attributes, aggregates, calculations and relationships of a resource</p>
+  </section>
+</section>
+<section class="detail" id="public_relationship/2">
+
+  <div class="detail-header">
+    <a href="#public_relationship/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">public_relationship(resource, relationship_name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L392" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Get a public relationship by name or path</p>
+  </section>
+</section>
+<section class="detail" id="public_relationships/1">
+
+  <div class="detail-header">
+    <a href="#public_relationships/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">public_relationships(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L368" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> public_relationships(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [
+  <a href="Ash.Resource.Relationships.xhtml#t:relationship/0">Ash.Resource.Relationships.relationship</a>()
+]</pre>
+
+      </div>
+
+<p>Returns all public relationships of a resource</p>
+  </section>
+</section>
+<section class="detail" id="related/2">
+
+  <div class="detail-header">
+    <a href="#related/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">related(resource, relationship)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L803" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> related(
+  <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()]
+) ::
+  <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>() | nil</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="relationship/2">
+
+  <div class="detail-header">
+    <a href="#relationship/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">relationship(resource, relationship_name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L336" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> relationship(
+  <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()]
+) ::
+  <a href="Ash.Resource.Relationships.xhtml#t:relationship/0">Ash.Resource.Relationships.relationship</a>() | nil</pre>
+
+      </div>
+
+<p>Get a relationship by name or path</p>
+  </section>
+</section>
+<section class="detail" id="relationships/1">
+
+  <div class="detail-header">
+    <a href="#relationships/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">relationships(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L329" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> relationships(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [
+  <a href="Ash.Resource.Relationships.xhtml#t:relationship/0">Ash.Resource.Relationships.relationship</a>()
+]</pre>
+
+      </div>
+
+<p>Returns all relationships of a resource</p>
+  </section>
+</section>
+<section class="detail" id="required_belongs_to_relationships/1">
+
+  <div class="detail-header">
+    <a href="#required_belongs_to_relationships/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">required_belongs_to_relationships(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L375" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>The required belongs_to relationships</p>
+  </section>
+</section>
+<section class="detail" id="resource?/1">
+
+  <div class="detail-header">
+    <a href="#resource?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">resource?(module)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L301" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> resource?(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not a given module is a resource module</p>
+  </section>
+</section>
+<section class="detail" id="reverse_relationship/3">
+
+    <span id="reverse_relationship/2"></span>
+
+  <div class="detail-header">
+    <a href="#reverse_relationship/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">reverse_relationship(resource, path, acc \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L16" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Retrieves a relationship path from the resource related by path, to the provided resource.</p>
+  </section>
+</section>
+<section class="detail" id="selected_by_default_attribute_names/1">
+
+  <div class="detail-header">
+    <a href="#selected_by_default_attribute_names/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">selected_by_default_attribute_names(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L822" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> selected_by_default_attribute_names(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) ::
+  <a href="https://hexdocs.pm/elixir/MapSet.html#t:t/0">MapSet.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="short_name/1">
+
+  <div class="detail-header">
+    <a href="#short_name/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">short_name(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L166" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> short_name(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | nil</pre>
+
+      </div>
+
+<p>The short_name of the resource</p>
+  </section>
+</section>
+<section class="detail" id="show_inspect_fields/1">
+
+  <div class="detail-header">
+    <a href="#show_inspect_fields/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">show_inspect_fields(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L202" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> show_inspect_fields(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()] | nil</pre>
+
+      </div>
+
+<p>An allow-list of fields to show in the inspect output.</p>
+  </section>
+</section>
+<section class="detail" id="simple_notifiers/1">
+
+  <div class="detail-header">
+    <a href="#simple_notifiers/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">simple_notifiers(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L149" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> simple_notifiers(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()]</pre>
+
+      </div>
+
+<p>A list of simple notifiers (require no DSL, used to avoid compile time dependencies)</p>
+  </section>
+</section>
+<section class="detail" id="sortable?/3">
+
+    <span id="sortable?/2"></span>
+
+  <div class="detail-header">
+    <a href="#sortable?/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">sortable?(resource, name, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L887" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> sortable?(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(),
+  pagination_type: <a href="Ash.Page.xhtml#t:type/0">Ash.Page.type</a>(),
+  include_private?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()
+) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Determine if a field is sortable by name</p>
+  </section>
+</section>
+<section class="detail" id="static_default_attributes/2">
+
+  <div class="detail-header">
+    <a href="#static_default_attributes/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">static_default_attributes(resource, atom)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L722" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> static_default_attributes(
+  <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  type :: :create | :update
+) :: [<a href="Ash.Resource.Attribute.xhtml#t:t/0">Ash.Resource.Attribute.t</a>()]</pre>
+
+      </div>
+
+<p>Returns all attributes of a resource with static defaults</p>
+  </section>
+</section>
+<section class="detail" id="trace_name/1">
+
+  <div class="detail-header">
+    <a href="#trace_name/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">trace_name(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L157" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> trace_name(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>The trace_name of the resource</p>
+  </section>
+</section>
+<section class="detail" id="unique_keys/1">
+
+  <div class="detail-header">
+    <a href="#unique_keys/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">unique_keys(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L316" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> unique_keys(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [
+  %{type: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), keys: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()], nils_distinct?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()}
+]</pre>
+
+      </div>
+
+<p>A list of unique keys and information for a resource</p>
+  </section>
+</section>
+<section class="detail" id="validations/1">
+
+  <div class="detail-header">
+    <a href="#validations/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">validations(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L268" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> validations(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: [<a href="Ash.Resource.Validation.xhtml#t:t/0">Ash.Resource.Validation.t</a>()]</pre>
+
+      </div>
+
+<p>A list of all validations for the resource</p>
+  </section>
+</section>
+<section class="detail" id="validations/2">
+
+  <div class="detail-header">
+    <a href="#validations/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">validations(resource, type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/info.ex#L259" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> validations(
+  <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  :create | :update | :destroy | :read
+) :: [
+  <a href="Ash.Resource.Validation.xhtml#t:t/0">Ash.Resource.Validation.t</a>()
+]</pre>
+
+      </div>
+
+<p>A list of all validations for the resource for a given action type</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Resource.Change.CascadeUpdate - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Resource.Change.CascadeUpdate 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Cascade a resource's update action to a related resource's update action.</p><p>Adds an after-action hook that explicitly calls update on any records related
+via the named relationship.  It will optimise for bulk updates where
+possible.</p><p>Allows you to copy fields from the arguments or changes to the destination,
+this way you can cascade a bunch of changes downstream.</p><section role="note" class="admonition warning"><h4 class="admonition-title warning">Beware database constraints</h4><p>Think carefully before using this change with data layers which enforce
+referential integrity (ie PostgreSQL and SQLite) and you may need to defer
+constraints for the relationship in question.</p><p>See also:</p><ol><li><a href="https://hexdocs.pm/ash_postgres/dsl-ashpostgres-datalayer.html#postgres-references-reference-deferrable"><code class="inline">postgres.references.reference.deferrable</code> DSL</a></li><li><a href="https://hexdocs.pm/ash_sqlite/dsl-ashsqlite-datalayer.html#sqlite-references-reference-deferrable"><code class="inline">sqlite.references.reference.deferrable</code> DSL</a></li><li><a href="https://www.postgresql.org/docs/current/sql-set-constraints.html">PostgreSQL's <code class="inline">SET CONSTRAINTS</code> documentation</a></li><li><a href="https://www.sqlite.org/pragma.html#pragma_defer_foreign_keys">SQLite's <code class="inline">PRAGMA defer_foreign_keys</code> documentation</a></li></ol></section><section role="note" class="admonition tip"><h4 class="admonition-title tip">Cascading notifications</h4><p>By default notifications are disabled for the related updates. This is to avoid potentially sending a <strong>lot</strong> of notifications for high-cardinality relationships.</p></section><h2 id="module-options">Options</h2><ul><li><p><code class="inline">:relationship</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a>) - Required. The name of the relationship to work on</p></li><li><p><code class="inline">:action</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a>) - The name of the update action to call on the related resource. Uses the primary update by default.</p></li><li><p><code class="inline">:copy_inputs</code> (list of <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a>) - A list of fields to copy &amp; pass on to the downstream update. The source action cannot be atomic. The default value is <code class="inline">[]</code>.</p></li><li><p><code class="inline">:read_action</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a>) - The name of the read action to call on the related resource to find results to be updated</p></li><li><p><code class="inline">:return_notifications?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Return notifications for all updated records? The default value is <code class="inline">false</code>.</p></li></ul><h2 id="module-example">Example</h2><pre><code class="makeup elixir" translate="no"><samp class="n">change</samp><samp class="w"> </samp><samp class="p" data-group-id="2773983681-1">{</samp><samp class="nc">Ash.Resource.Change.CascadeUpdate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">relationship</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:comments</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">action</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:update_all</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">copy_inputs</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2773983681-2">[</samp><samp class="ss">:name</samp><samp class="p" data-group-id="2773983681-2">]</samp><samp class="p" data-group-id="2773983681-1">}</samp><samp class="w">
+
+</samp><samp class="ow">or</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">equivalently</samp><samp class="w"> </samp><samp class="n">using</samp><samp class="w"> </samp><samp class="err">`</samp><samp class="nc">Ash.Resource.Change.Builtins</samp><samp class="o">.</samp><samp class="n">cascade_update</samp><samp class="o">/</samp><samp class="mi">2</samp><samp class="err">`</samp><samp class="p">:</samp><samp class="w">
+
+</samp><samp class="n">change</samp><samp class="w"> </samp><samp class="n">cascade_update</samp><samp class="p" data-group-id="2773983681-3">(</samp><samp class="ss">:comments</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">action</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:update_all</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">copy_inputs</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2773983681-4">[</samp><samp class="ss">:name</samp><samp class="p" data-group-id="2773983681-4">]</samp><samp class="p" data-group-id="2773983681-3">)</samp></code></pre>
+      </section>
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Filter.Predicate - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Filter.Predicate <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Represents a predicate which can be simplified and/or compared with other predicates</p><p>Simplification and comparison will need more documentation, but ultimately it
+is the logic that allows us to have a flexible and powerful authorization
+system.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:comparison/0" data-no-tooltip="" translate="no">comparison()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:predicate/0" data-no-tooltip="" translate="no">predicate()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:bulk_compare/1" data-no-tooltip="" translate="no">bulk_compare(list)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>As long as at least one predicate of the type defined in your module,
+(and this callback is implemented), it will be called with all of the
+other predicates present in a filter. The return value is relatively
+complex, but it should be a list of boolean statements. E.g.
+<code class="inline">{op, left, right}</code> and <code class="inline">{:not, predicate}</code> (nested as deep as necessary).</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:compare/2" data-no-tooltip="" translate="no">compare(predicate, predicate)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Compare two predicates. If possible, use <a><code class="inline">bulk_compare/1</code></a> instead</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:simplify/1" data-no-tooltip="" translate="no">simplify(predicate)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Simplify to a more primitive statement.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#compare/2" data-no-tooltip="" translate="no">compare(same, same)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Checks with each predicate module to see if it has a comparison
+with</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:comparison/0">
+
+  <div class="detail-header">
+    <a href="#t:comparison/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">comparison()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/filter/predicate.ex#L12" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> comparison() ::
+  :unknown
+  | :right_includes_left
+  | :left_includes_right
+  | :mutually_inclusive
+  | :mutually_exclusive</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:predicate/0">
+
+  <div class="detail-header">
+    <a href="#t:predicate/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">predicate()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/filter/predicate.ex#L10" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> predicate() :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">struct</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:bulk_compare/1">
+
+  <div class="detail-header">
+    <a href="#c:bulk_compare/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">bulk_compare(list)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/filter/predicate.ex#L33" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> bulk_compare([<a href="#t:predicate/0">predicate</a>()]) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>As long as at least one predicate of the type defined in your module,
+(and this callback is implemented), it will be called with all of the
+other predicates present in a filter. The return value is relatively
+complex, but it should be a list of boolean statements. E.g.
+<code class="inline">{op, left, right}</code> and <code class="inline">{:not, predicate}</code> (nested as deep as necessary).</p><p>The best way to do it is to find lists of predicates that are mutually
+exclusive or mutually inclusive, and pass those lists into
+<a href="Ash.SatSolver.xhtml#mutually_exclusive/1"><code class="inline">Ash.SatSolver.mutually_exclusive/1</code></a> and <a href="Ash.SatSolver.xhtml#mutually_inclusive/1"><code class="inline">Ash.SatSolver.mutually_inclusive/1</code></a></p>
+  </section>
+</section>
+<section class="detail" id="c:compare/2">
+
+  <div class="detail-header">
+    <a href="#c:compare/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">compare(predicate, predicate)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/filter/predicate.ex#L20" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> compare(<a href="#t:predicate/0">predicate</a>(), <a href="#t:predicate/0">predicate</a>()) :: <a href="#t:comparison/0">comparison</a>()</pre>
+
+      </div>
+
+<p>Compare two predicates. If possible, use <a href="#c:bulk_compare/1"><code class="inline">bulk_compare/1</code></a> instead</p>
+  </section>
+</section>
+<section class="detail" id="c:simplify/1">
+
+  <div class="detail-header">
+    <a href="#c:simplify/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">simplify(predicate)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/filter/predicate.ex#L42" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> simplify(<a href="#t:predicate/0">predicate</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>Simplify to a more primitive statement.</p><p>For example, <code class="inline">x in [1, 2]</code> simplifies to <code class="inline">x == 1 or x == 2</code>.
+Simplifying to filter expressions that already have comparisons
+lets you avoid writing that logic for a given predicate.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="compare/2">
+
+  <div class="detail-header">
+    <a href="#compare/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">compare(same, same)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/filter/predicate.ex#L50" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Checks with each predicate module to see if it has a comparison
+with</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

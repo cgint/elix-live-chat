@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Page.Keyset - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Page.Keyset 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A page of results from <code class="inline">keyset</code> based pagination.</p><p>The results are generated with a <code class="inline">keyset</code> metadata,
+which can be used to fetch the next/previous pages.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:page_opts/0" data-no-tooltip="" translate="no">page_opts()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:page_opts_opts/0" data-no-tooltip="" translate="no">page_opts_opts()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:page_opts_type/0" data-no-tooltip="" translate="no">page_opts_type()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#data_with_keyset/3" data-no-tooltip="" translate="no">data_with_keyset(results, resource, sort)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Appends keyset info to results.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#filter/4" data-no-tooltip="" translate="no">filter(query, values, sort, after_or_before)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates filters on the query using the query for the Keyset.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new/6" data-no-tooltip="" translate="no">new(results, count, sort, original_query, more?, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates a new <code class="inline">Ash.Page.Keyset.t</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#non_executable_binary_to_term/2" data-no-tooltip="" translate="no">non_executable_binary_to_term(binary, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A restricted version of <a><code class="inline">:erlang.binary_to_term/2</code></a> that forbids
+<em>executable</em> terms, such as anonymous functions.
+The <code class="inline">opts</code> are given to the underlying <a><code class="inline">:erlang.binary_to_term/2</code></a>
+call, with an empty list as a default.
+By default this function does not restrict atoms, as an atom
+interned in one node may not yet have been interned on another
+(except for releases, which preload all code).
+If you want to avoid atoms from being created, then you can pass
+<code class="inline">[:safe]</code> as options, as that will also enable the safety mechanisms
+from <a><code class="inline">:erlang.binary_to_term/2</code></a> itself.
+Ripped from <a>https://github.com/elixir-plug/plug_crypto/blob/v1.2.0/lib/plug/crypto.ex</a></p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:page_opts/0">
+
+  <div class="detail-header">
+    <a href="#t:page_opts/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">page_opts()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/page/keyset.ex#L24" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> page_opts() :: [
+  before: <a href="#t:page_opts_opts/0">page_opts_opts</a>(),
+  after: <a href="#t:page_opts_opts/0">page_opts_opts</a>(),
+  limit: <a href="#t:page_opts_opts/0">page_opts_opts</a>(),
+  filter: <a href="#t:page_opts_opts/0">page_opts_opts</a>(),
+  count: <a href="#t:page_opts_opts/0">page_opts_opts</a>()
+]</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:page_opts_opts/0">
+
+  <div class="detail-header">
+    <a href="#t:page_opts_opts/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">page_opts_opts()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/page/keyset.ex#L23" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> page_opts_opts() :: [type: <a href="#t:page_opts_type/0">page_opts_type</a>(), doc: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()]</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:page_opts_type/0">
+
+  <div class="detail-header">
+    <a href="#t:page_opts_type/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">page_opts_type()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/page/keyset.ex#L22" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> page_opts_type() :: :non_neg_integer | :pos_integer | :any | :boolean</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/page/keyset.ex#L12" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %Ash.Page.Keyset{
+  after: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>() | nil,
+  before: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>() | nil,
+  count: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">non_neg_integer</a>(),
+  limit: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>(),
+  more?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>(),
+  rerun: {<a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>(), <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()},
+  results: [<a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()]
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="data_with_keyset/3">
+
+  <div class="detail-header">
+    <a href="#data_with_keyset/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">data_with_keyset(results, resource, sort)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/page/keyset.ex#L96" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> data_with_keyset([<a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()], <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: [
+  <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()
+]</pre>
+
+      </div>
+
+<p>Appends keyset info to results.</p>
+  </section>
+</section>
+<section class="detail" id="filter/4">
+
+  <div class="detail-header">
+    <a href="#filter/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">filter(query, values, sort, after_or_before)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/page/keyset.ex#L111" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> filter(<a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>(), [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()], <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), :after | :before) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>Creates filters on the query using the query for the Keyset.</p>
+  </section>
+</section>
+<section class="detail" id="new/6">
+
+  <div class="detail-header">
+    <a href="#new/6" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(results, count, sort, original_query, more?, opts)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/page/keyset.ex#L80" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> new(
+  [<a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()],
+  <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">non_neg_integer</a>(),
+  <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  <a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>(),
+  <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>(),
+  <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Creates a new <code class="inline">Ash.Page.Keyset.t</code>.</p>
+  </section>
+</section>
+<section class="detail" id="non_executable_binary_to_term/2">
+
+  <div class="detail-header">
+    <a href="#non_executable_binary_to_term/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">non_executable_binary_to_term(binary, opts)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/page/keyset.ex#L284" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>A restricted version of <a href="https://www.erlang.org/doc/apps/erts/erlang.html#binary_to_term/2"><code class="inline">:erlang.binary_to_term/2</code></a> that forbids
+<em>executable</em> terms, such as anonymous functions.
+The <code class="inline">opts</code> are given to the underlying <a href="https://www.erlang.org/doc/apps/erts/erlang.html#binary_to_term/2"><code class="inline">:erlang.binary_to_term/2</code></a>
+call, with an empty list as a default.
+By default this function does not restrict atoms, as an atom
+interned in one node may not yet have been interned on another
+(except for releases, which preload all code).
+If you want to avoid atoms from being created, then you can pass
+<code class="inline">[:safe]</code> as options, as that will also enable the safety mechanisms
+from <a href="https://www.erlang.org/doc/apps/erts/erlang.html#binary_to_term/2"><code class="inline">:erlang.binary_to_term/2</code></a> itself.
+Ripped from <a href="https://github.com/elixir-plug/plug_crypto/blob/v1.2.0/lib/plug/crypto.ex">https://github.com/elixir-plug/plug_crypto/blob/v1.2.0/lib/plug/crypto.ex</a></p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

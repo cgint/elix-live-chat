@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Type.File.Implementation - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Type.File.Implementation <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Behaviour for file implementations that are compatible with <a href="Ash.Type.File.xhtml"><code class="inline">Ash.Type.File</code></a>.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:error/0" data-no-tooltip="" translate="no">error()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Errors returned by the implementation.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:source/0" data-no-tooltip="" translate="no">source()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The source of the file the implementation operates on.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Any <code class="inline">module()</code> implementing the <a><code class="inline">Ash.Type.File.Implementation</code></a> behaviour.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:open/2" data-no-tooltip="" translate="no">open(file, modes)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Open <code class="inline">IO.device()</code> for the file.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:path/1" data-no-tooltip="" translate="no">path(file)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Return path of the file on disk.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:error/0">
+
+  <div class="detail-header">
+    <a href="#t:error/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">error()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/file/implementation.ex#L13" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> error() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>Errors returned by the implementation.</p>
+  </section>
+</section>
+<section class="detail" id="t:source/0">
+
+  <div class="detail-header">
+    <a href="#t:source/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">source()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/file/implementation.ex#L10" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> source() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>The source of the file the implementation operates on.</p>
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/file/implementation.ex#L7" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()</pre>
+
+      </div>
+
+<p>Any <code class="inline">module()</code> implementing the <a href="Ash.Type.File.Implementation.xhtml"><code class="inline">Ash.Type.File.Implementation</code></a> behaviour.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:open/2">
+
+  <div class="detail-header">
+    <a href="#c:open/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">open(file, modes)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/file/implementation.ex#L34" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> open(file :: <a href="#t:source/0">source</a>(), modes :: [<a href="https://hexdocs.pm/elixir/File.html#t:mode/0">File.mode</a>()]) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/IO.html#t:device/0">IO.device</a>()} | {:error, <a href="#t:error/0">error</a>()}</pre>
+
+      </div>
+
+<p>Open <code class="inline">IO.device()</code> for the file.</p><p>See <a href="Ash.Type.File.xhtml#open/2"><code class="inline">Ash.Type.File.open/2</code></a></p><p>The return pid must point to a process following the
+<a href="https://www.erlang.org/doc/apps/stdlib/io_protocol.html">Erlang I/O Protocol</a>
+like <a href="https://hexdocs.pm/elixir/StringIO.html"><code class="inline">StringIO</code></a> or <a href="https://hexdocs.pm/elixir/File.html"><code class="inline">File</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="c:path/1">
+
+  <div class="detail-header">
+    <a href="#c:path/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">path(file)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/file/implementation.ex#L23" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> path(file :: <a href="#t:source/0">source</a>()) :: {:ok, <a href="https://hexdocs.pm/elixir/Path.html#t:t/0">Path.t</a>()} | {:error, <a href="#t:error/0">error</a>()}</pre>
+
+      </div>
+
+<p>Return path of the file on disk.</p><p>See: <a href="Ash.Type.File.xhtml#path/1"><code class="inline">Ash.Type.File.path/1</code></a></p><p>This callback is optional. If the file is not stored on disk, this callback
+can be omitted.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

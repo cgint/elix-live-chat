@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Comp - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Comp 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Provides utilities to implement and work with <a href="Comparable.xhtml"><code class="inline">Comparable</code></a> types</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:left/0" data-no-tooltip="" translate="no">left()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:right/0" data-no-tooltip="" translate="no">right()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#compare/2" data-no-tooltip="" translate="no">compare(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Compare left and right term</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#defcomparable/3" data-no-tooltip="" translate="no">defcomparable(arg1, arg2, list)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Helper to define ordering relation for pair of types,
+accepts two <code class="inline">term :: type</code> pairs
+and block of code where relation is described.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#eq/0" data-no-tooltip="" translate="no">eq()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#equal?/2" data-no-tooltip="" translate="no">equal?(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Is left term equal to right term?</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#greater_or_equal?/2" data-no-tooltip="" translate="no">greater_or_equal?(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Is left term greater or equal to right term?</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#greater_than?/2" data-no-tooltip="" translate="no">greater_than?(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Is left term greater than right term?</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#gt/0" data-no-tooltip="" translate="no">gt()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#less_or_equal?/2" data-no-tooltip="" translate="no">less_or_equal?(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Is left term less or equal to right term?</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#less_than?/2" data-no-tooltip="" translate="no">less_than?(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Is left term less than right term?</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#lt/0" data-no-tooltip="" translate="no">lt()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#max/2" data-no-tooltip="" translate="no">max(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the biggest of the two given terms, if terms are equal - then the first one is returned</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#min/2" data-no-tooltip="" translate="no">min(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the smallest of the two given terms, if terms are equal - then the first one is returned</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#not_equal?/2" data-no-tooltip="" translate="no">not_equal?(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Is left term not equal to right term?</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#type_of/1" data-no-tooltip="" translate="no">type_of(v)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:left/0">
+
+  <div class="detail-header">
+    <a href="#t:left/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">left()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L7" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> left() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:right/0">
+
+  <div class="detail-header">
+    <a href="#t:right/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">right()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L8" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> right() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="compare/2">
+
+  <div class="detail-header">
+    <a href="#compare/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">compare(left, right)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L308" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> compare(<a href="#t:left/0">left</a>(), <a href="#t:right/0">right</a>()) :: <a href="Comparable.xhtml#t:ord/0">Comparable.ord</a>()</pre>
+
+      </div>
+
+<p>Compare left and right term</p><h2 id="compare/2-examples" class="section-heading"><a href="#compare/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">compare</samp><samp class="p" data-group-id="9273459794-1">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9273459794-1">)</samp><samp class="w">
+</samp><samp class="ss">:lt</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">compare</samp><samp class="p" data-group-id="9273459794-2">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9273459794-2">)</samp><samp class="w">
+</samp><samp class="ss">:gt</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">compare</samp><samp class="p" data-group-id="9273459794-3">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9273459794-3">)</samp><samp class="w">
+</samp><samp class="ss">:eq</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="defcomparable/3">
+
+  <div class="detail-header">
+    <a href="#defcomparable/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">defcomparable(arg1, arg2, list)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L65" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Helper to define ordering relation for pair of types,
+accepts two <code class="inline">term :: type</code> pairs
+and block of code where relation is described.</p><h2 id="defcomparable/3-examples" class="section-heading"><a href="#defcomparable/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="k">quote</samp><samp class="w"> </samp><samp class="k" data-group-id="3203986736-1">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Comp</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">Foo</samp><samp class="w"> </samp><samp class="k" data-group-id="3203986736-2">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="kd">defstruct</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-3">[</samp><samp class="ss">:value</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:meta</samp><samp class="p" data-group-id="3203986736-3">]</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="3203986736-2">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">Bar</samp><samp class="w"> </samp><samp class="k" data-group-id="3203986736-4">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="kd">defstruct</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-5">[</samp><samp class="ss">:value</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:meta</samp><samp class="p" data-group-id="3203986736-5">]</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="3203986736-4">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">defcomparable</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-6">%</samp><samp class="nc" data-group-id="3203986736-6">Foo</samp><samp class="p" data-group-id="3203986736-6">{</samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">left</samp><samp class="p" data-group-id="3203986736-6">}</samp><samp class="w"> </samp><samp class="o">::</samp><samp class="w"> </samp><samp class="nc">Foo</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-7">%</samp><samp class="nc" data-group-id="3203986736-7">Foo</samp><samp class="p" data-group-id="3203986736-7">{</samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">right</samp><samp class="p" data-group-id="3203986736-7">}</samp><samp class="w"> </samp><samp class="o">::</samp><samp class="w"> </samp><samp class="nc">Foo</samp><samp class="w"> </samp><samp class="k" data-group-id="3203986736-8">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">compare</samp><samp class="p" data-group-id="3203986736-9">(</samp><samp class="n">left</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">right</samp><samp class="p" data-group-id="3203986736-9">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="3203986736-8">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">defcomparable</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-10">%</samp><samp class="nc" data-group-id="3203986736-10">Foo</samp><samp class="p" data-group-id="3203986736-10">{</samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">left</samp><samp class="p" data-group-id="3203986736-10">}</samp><samp class="w"> </samp><samp class="o">::</samp><samp class="w"> </samp><samp class="nc">Foo</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-11">%</samp><samp class="nc" data-group-id="3203986736-11">Bar</samp><samp class="p" data-group-id="3203986736-11">{</samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">right</samp><samp class="p" data-group-id="3203986736-11">}</samp><samp class="w"> </samp><samp class="o">::</samp><samp class="w"> </samp><samp class="nc">Bar</samp><samp class="w"> </samp><samp class="k" data-group-id="3203986736-12">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">compare</samp><samp class="p" data-group-id="3203986736-13">(</samp><samp class="n">left</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">right</samp><samp class="p" data-group-id="3203986736-13">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="3203986736-12">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">defcomparable</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-14">%</samp><samp class="nc" data-group-id="3203986736-14">Foo</samp><samp class="p" data-group-id="3203986736-14">{</samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">left</samp><samp class="p" data-group-id="3203986736-14">}</samp><samp class="w"> </samp><samp class="o">::</samp><samp class="w"> </samp><samp class="nc">Foo</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">right</samp><samp class="w"> </samp><samp class="o">::</samp><samp class="w"> </samp><samp class="nc">Integer</samp><samp class="w"> </samp><samp class="k" data-group-id="3203986736-15">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">compare</samp><samp class="p" data-group-id="3203986736-16">(</samp><samp class="n">left</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">right</samp><samp class="p" data-group-id="3203986736-16">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="3203986736-15">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="3203986736-1">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Code</samp><samp class="o">.</samp><samp class="n">compile_quoted</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="k">quote</samp><samp class="w"> </samp><samp class="k" data-group-id="3203986736-17">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">x</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-18">%</samp><samp class="nc" data-group-id="3203986736-18">Foo</samp><samp class="p" data-group-id="3203986736-18">{</samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">meta</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="3203986736-18">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">y</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-19">%</samp><samp class="nc" data-group-id="3203986736-19">Foo</samp><samp class="p" data-group-id="3203986736-19">{</samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">meta</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="3203986736-19">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">equal?</samp><samp class="p" data-group-id="3203986736-20">(</samp><samp class="n">x</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">y</samp><samp class="p" data-group-id="3203986736-20">)</samp><samp class="w"> </samp><samp class="o">&amp;&amp;</samp><samp class="w"> </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">equal?</samp><samp class="p" data-group-id="3203986736-21">(</samp><samp class="n">y</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">x</samp><samp class="p" data-group-id="3203986736-21">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="3203986736-17">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Code</samp><samp class="o">.</samp><samp class="n">eval_quoted</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">elem</samp><samp class="p" data-group-id="3203986736-22">(</samp><samp class="mi">0</samp><samp class="p" data-group-id="3203986736-22">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="k">quote</samp><samp class="w"> </samp><samp class="k" data-group-id="3203986736-23">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">x</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-24">%</samp><samp class="nc" data-group-id="3203986736-24">Foo</samp><samp class="p" data-group-id="3203986736-24">{</samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">meta</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="3203986736-24">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">y</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-25">%</samp><samp class="nc" data-group-id="3203986736-25">Bar</samp><samp class="p" data-group-id="3203986736-25">{</samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">meta</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="3203986736-25">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">equal?</samp><samp class="p" data-group-id="3203986736-26">(</samp><samp class="n">x</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">y</samp><samp class="p" data-group-id="3203986736-26">)</samp><samp class="w"> </samp><samp class="o">&amp;&amp;</samp><samp class="w"> </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">equal?</samp><samp class="p" data-group-id="3203986736-27">(</samp><samp class="n">y</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">x</samp><samp class="p" data-group-id="3203986736-27">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="3203986736-23">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Code</samp><samp class="o">.</samp><samp class="n">eval_quoted</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">elem</samp><samp class="p" data-group-id="3203986736-28">(</samp><samp class="mi">0</samp><samp class="p" data-group-id="3203986736-28">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="k">quote</samp><samp class="w"> </samp><samp class="k" data-group-id="3203986736-29">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">x</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="3203986736-30">%</samp><samp class="nc" data-group-id="3203986736-30">Foo</samp><samp class="p" data-group-id="3203986736-30">{</samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">meta</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="3203986736-30">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">y</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">equal?</samp><samp class="p" data-group-id="3203986736-31">(</samp><samp class="n">x</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">y</samp><samp class="p" data-group-id="3203986736-31">)</samp><samp class="w"> </samp><samp class="o">&amp;&amp;</samp><samp class="w"> </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">equal?</samp><samp class="p" data-group-id="3203986736-32">(</samp><samp class="n">y</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">x</samp><samp class="p" data-group-id="3203986736-32">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="3203986736-29">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Code</samp><samp class="o">.</samp><samp class="n">eval_quoted</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">elem</samp><samp class="p" data-group-id="3203986736-33">(</samp><samp class="mi">0</samp><samp class="p" data-group-id="3203986736-33">)</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="eq/0">
+
+  <div class="detail-header">
+    <a href="#eq/0" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">eq()</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L12" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="equal?/2">
+
+  <div class="detail-header">
+    <a href="#equal?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">equal?(left, right)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L135" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> equal?(<a href="#t:left/0">left</a>(), <a href="#t:right/0">right</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Is left term equal to right term?</p><h2 id="equal?/2-examples" class="section-heading"><a href="#equal?/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">equal?</samp><samp class="p" data-group-id="0469162298-1">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="0469162298-1">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">equal?</samp><samp class="p" data-group-id="0469162298-2">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:hello</samp><samp class="p" data-group-id="0469162298-2">)</samp><samp class="w">
+</samp><samp class="no">false</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="greater_or_equal?/2">
+
+  <div class="detail-header">
+    <a href="#greater_or_equal?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">greater_or_equal?(left, right)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L209" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> greater_or_equal?(<a href="#t:left/0">left</a>(), <a href="#t:right/0">right</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Is left term greater or equal to right term?</p><h2 id="greater_or_equal?/2-examples" class="section-heading"><a href="#greater_or_equal?/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">greater_or_equal?</samp><samp class="p" data-group-id="3849853330-1">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="3849853330-1">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">greater_or_equal?</samp><samp class="p" data-group-id="3849853330-2">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="3849853330-2">)</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">greater_or_equal?</samp><samp class="p" data-group-id="3849853330-3">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="3849853330-3">)</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="greater_than?/2">
+
+  <div class="detail-header">
+    <a href="#greater_than?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">greater_than?(left, right)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L171" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> greater_than?(<a href="#t:left/0">left</a>(), <a href="#t:right/0">right</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Is left term greater than right term?</p><h2 id="greater_than?/2-examples" class="section-heading"><a href="#greater_than?/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">greater_than?</samp><samp class="p" data-group-id="1197310359-1">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="1197310359-1">)</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">greater_than?</samp><samp class="p" data-group-id="1197310359-2">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="1197310359-2">)</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">greater_than?</samp><samp class="p" data-group-id="1197310359-3">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="1197310359-3">)</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="gt/0">
+
+  <div class="detail-header">
+    <a href="#gt/0" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">gt()</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L10" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="less_or_equal?/2">
+
+  <div class="detail-header">
+    <a href="#less_or_equal?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">less_or_equal?(left, right)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L228" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> less_or_equal?(<a href="#t:left/0">left</a>(), <a href="#t:right/0">right</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Is left term less or equal to right term?</p><h2 id="less_or_equal?/2-examples" class="section-heading"><a href="#less_or_equal?/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">less_or_equal?</samp><samp class="p" data-group-id="3659628297-1">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="3659628297-1">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">less_or_equal?</samp><samp class="p" data-group-id="3659628297-2">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="3659628297-2">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">less_or_equal?</samp><samp class="p" data-group-id="3659628297-3">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="3659628297-3">)</samp><samp class="w">
+</samp><samp class="no">false</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="less_than?/2">
+
+  <div class="detail-header">
+    <a href="#less_than?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">less_than?(left, right)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L190" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> less_than?(<a href="#t:left/0">left</a>(), <a href="#t:right/0">right</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Is left term less than right term?</p><h2 id="less_than?/2-examples" class="section-heading"><a href="#less_than?/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">less_than?</samp><samp class="p" data-group-id="7720266565-1">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="7720266565-1">)</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">less_than?</samp><samp class="p" data-group-id="7720266565-2">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="7720266565-2">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">less_than?</samp><samp class="p" data-group-id="7720266565-3">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="7720266565-3">)</samp><samp class="w">
+</samp><samp class="no">false</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="lt/0">
+
+  <div class="detail-header">
+    <a href="#lt/0" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">lt()</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L11" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="max/2">
+
+  <div class="detail-header">
+    <a href="#max/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">max(left, right)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L247" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> max(<a href="#t:left/0">left</a>(), <a href="#t:right/0">right</a>()) :: <a href="#t:left/0">left</a>() | <a href="#t:right/0">right</a>()</pre>
+
+      </div>
+
+<p>Returns the biggest of the two given terms, if terms are equal - then the first one is returned</p><h2 id="max/2-examples" class="section-heading"><a href="#max/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">max</samp><samp class="p" data-group-id="7516612611-1">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="7516612611-1">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">max</samp><samp class="p" data-group-id="7516612611-2">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="7516612611-2">)</samp><samp class="w">
+</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">max</samp><samp class="p" data-group-id="7516612611-3">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="7516612611-3">)</samp><samp class="w">
+</samp><samp class="mi">2</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="min/2">
+
+  <div class="detail-header">
+    <a href="#min/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">min(left, right)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L271" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> min(<a href="#t:left/0">left</a>(), <a href="#t:right/0">right</a>()) :: <a href="#t:left/0">left</a>() | <a href="#t:right/0">right</a>()</pre>
+
+      </div>
+
+<p>Returns the smallest of the two given terms, if terms are equal - then the first one is returned</p><h2 id="min/2-examples" class="section-heading"><a href="#min/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">min</samp><samp class="p" data-group-id="9208464504-1">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9208464504-1">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">min</samp><samp class="p" data-group-id="9208464504-2">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9208464504-2">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">min</samp><samp class="p" data-group-id="9208464504-3">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9208464504-3">)</samp><samp class="w">
+</samp><samp class="mi">1</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="not_equal?/2">
+
+  <div class="detail-header">
+    <a href="#not_equal?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">not_equal?(left, right)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L152" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> not_equal?(<a href="#t:left/0">left</a>(), <a href="#t:right/0">right</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Is left term not equal to right term?</p><h2 id="not_equal?/2-examples" class="section-heading"><a href="#not_equal?/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">not_equal?</samp><samp class="p" data-group-id="4027961915-1">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="4027961915-1">)</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Comp</samp><samp class="o">.</samp><samp class="n">not_equal?</samp><samp class="p" data-group-id="4027961915-2">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:hello</samp><samp class="p" data-group-id="4027961915-2">)</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="type_of/1">
+
+  <div class="detail-header">
+    <a href="#type_of/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">type_of(v)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/comparable/comp.ex#L282" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

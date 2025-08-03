@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.Engine - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.Engine 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>An <a href="https://hexdocs.pm/eex/EEx.html"><code class="inline">EEx</code></a> template engine that tracks changes.</p><p>This is often used by <a href="Phoenix.LiveView.TagEngine.xhtml"><code class="inline">Phoenix.LiveView.TagEngine</code></a> which also adds
+HTML validation. In the documentation below, we will explain how it
+works internally. For user-facing documentation, see <a href="Phoenix.LiveView.xhtml"><code class="inline">Phoenix.LiveView</code></a>.</p><h2 id="module-phoenix-liveview-rendered">Phoenix.LiveView.Rendered</h2><p>Whenever you render a live template, it returns a
+<a href="Phoenix.LiveView.Rendered.xhtml"><code class="inline">Phoenix.LiveView.Rendered</code></a> structure. This structure has
+three fields: <code class="inline">:static</code>, <code class="inline">:dynamic</code> and <code class="inline">:fingerprint</code>.</p><p>The <code class="inline">:static</code> field is a list of literal strings. This
+allows the Elixir compiler to optimize this list and avoid
+allocating its strings on every render.</p><p>The <code class="inline">:dynamic</code> field contains a function that takes a boolean argument
+(see &quot;Tracking changes&quot; below), and returns a list of dynamic content.
+Each element in the list is either one of:</p><ol><li>iodata - which is the dynamic content</li><li>nil - the dynamic content did not change</li><li>another <a href="Phoenix.LiveView.Rendered.xhtml"><code class="inline">Phoenix.LiveView.Rendered</code></a> struct, see &quot;Nesting and fingerprinting&quot; below</li><li>a <a href="Phoenix.LiveView.Comprehension.xhtml"><code class="inline">Phoenix.LiveView.Comprehension</code></a> struct, see &quot;Comprehensions&quot; below</li><li>a <a href="Phoenix.LiveView.Component.xhtml"><code class="inline">Phoenix.LiveView.Component</code></a> struct, see &quot;Component&quot; below</li></ol><p>When you render a live template, you can convert the
+rendered structure to iodata by alternating the static
+and dynamic fields, always starting with a static entry
+followed by a dynamic entry. The last entry will always
+be static too. So the following structure:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="3394170124-1">%</samp><samp class="nc" data-group-id="3394170124-1">Phoenix.LiveView.Rendered</samp><samp class="p" data-group-id="3394170124-1">{</samp><samp class="w">
+  </samp><samp class="ss">static</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3394170124-2">[</samp><samp class="s">&quot;foo&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;bar&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;baz&quot;</samp><samp class="p" data-group-id="3394170124-2">]</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">dynamic</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="k" data-group-id="3394170124-3">fn</samp><samp class="w"> </samp><samp class="n">track_changes?</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="3394170124-4">[</samp><samp class="s">&quot;left&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;right&quot;</samp><samp class="p" data-group-id="3394170124-4">]</samp><samp class="w"> </samp><samp class="k" data-group-id="3394170124-3">end</samp><samp class="w">
+</samp><samp class="p" data-group-id="3394170124-1">}</samp></code></pre><p>Results in the following content to be sent over the wire
+as iodata:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="7793159938-1">[</samp><samp class="s">&quot;foo&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;left&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;bar&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;right&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;baz&quot;</samp><samp class="p" data-group-id="7793159938-1">]</samp></code></pre><p>This is also what calling <a href="https://hexdocs.pm/phoenix_html/4.2.1/Phoenix.HTML.Safe.html#to_iodata/1"><code class="inline">Phoenix.HTML.Safe.to_iodata/1</code></a>
+with a <a href="Phoenix.LiveView.Rendered.xhtml"><code class="inline">Phoenix.LiveView.Rendered</code></a> structure returns.</p><p>Of course, the benefit of live templates is exactly
+that you do not need to send both static and dynamic
+segments every time. So let's talk about tracking changes.</p><h2 id="module-tracking-changes">Tracking changes</h2><p>By default, a live template does not track changes.
+Change tracking can be enabled by including a changed
+map in the assigns with the key <code class="inline">__changed__</code> and passing
+<code class="inline">true</code> to the dynamic parts. The map should contain
+the name of any changed field as key and the boolean
+true as value. If a field is not listed in <code class="inline">__changed__</code>,
+then it is always considered unchanged.</p><p>If a field is unchanged and live believes a dynamic
+expression no longer needs to be computed, its value
+in the <code class="inline">dynamic</code> list will be <code class="inline">nil</code>. This information
+can be leveraged to avoid sending data to the client.</p><h2 id="module-nesting-and-fingerprinting">Nesting and fingerprinting</h2><p><a href="Phoenix.LiveView.xhtml"><code class="inline">Phoenix.LiveView</code></a> also tracks changes across live
+templates. Therefore, if your view has this:</p><pre><code class="makeup heex" translate="no"><samp class="p" data-group-id="2497615664-1">{</samp><samp class="n">render</samp><samp class="p" data-group-id="2497615664-ex-1">(</samp><samp class="s">&quot;form.html&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">assigns</samp><samp class="p" data-group-id="2497615664-ex-1">)</samp><samp class="p" data-group-id="2497615664-1">}</samp></code></pre><p>Phoenix will be able to track what is static and dynamic
+across templates, as well as what changed. A rendered
+nested <code class="inline">live</code> template will appear in the <code class="inline">dynamic</code>
+list as another <a href="Phoenix.LiveView.Rendered.xhtml"><code class="inline">Phoenix.LiveView.Rendered</code></a> structure,
+which must be handled recursively.</p><p>However, because the rendering of live templates can
+be dynamic in itself, it is important to distinguish
+which live template was rendered. For example,
+imagine this code:</p><pre><code class="makeup heex" translate="no"><samp class="p" data-group-id="8166570114-1">&lt;%=</samp><samp class="w"> </samp><samp class="k">if</samp><samp class="w"> </samp><samp class="n">something?</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">render</samp><samp class="p" data-group-id="8166570114-ex-1">(</samp><samp class="s">&quot;one.html&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">assigns</samp><samp class="p" data-group-id="8166570114-ex-1">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">else</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">render</samp><samp class="p" data-group-id="8166570114-ex-2">(</samp><samp class="s">&quot;other.html&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">assigns</samp><samp class="p" data-group-id="8166570114-ex-2">)</samp><samp class="w"> </samp><samp class="p" data-group-id="8166570114-1">%&gt;</samp></code></pre><p>To solve this, all <a href="Phoenix.LiveView.Rendered.xhtml"><code class="inline">Phoenix.LiveView.Rendered</code></a> structs
+also contain a fingerprint field that uniquely identifies
+it. If the fingerprints are equal, you have the same
+template, and therefore it is possible to only transmit
+its changes.</p><h2 id="module-comprehensions">Comprehensions</h2><p>Another optimization done by live templates is to
+track comprehensions. If your code has this:</p><pre><code class="makeup heex" translate="no"><samp class="p" data-group-id="2131282620-1">&lt;%=</samp><samp class="w"> </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="n">point</samp><samp class="w"> </samp><samp class="o">&lt;-</samp><samp class="w"> </samp><samp class="na">@points</samp><samp class="w"> </samp><samp class="k" data-group-id="2131282620-ex-1">do</samp><samp class="w"> </samp><samp class="p" data-group-id="2131282620-1">%&gt;</samp><samp class="w">
+</samp><samp class="n">  x: </samp><samp class="p" data-group-id="2131282620-2">{</samp><samp class="n">point</samp><samp class="o">.</samp><samp class="n">x</samp><samp class="p" data-group-id="2131282620-2">}</samp><samp class="n">
+</samp><samp class="n">  y: </samp><samp class="p" data-group-id="2131282620-3">{</samp><samp class="n">point</samp><samp class="o">.</samp><samp class="n">y</samp><samp class="p" data-group-id="2131282620-3">}</samp><samp class="n">
+</samp><samp class="p" data-group-id="2131282620-4">&lt;%</samp><samp class="w"> </samp><samp class="k" data-group-id="2131282620-ex-1">end</samp><samp class="w"> </samp><samp class="p" data-group-id="2131282620-4">%&gt;</samp></code></pre><p>Instead of rendering all points with both static and
+dynamic parts, it returns a <a href="Phoenix.LiveView.Comprehension.xhtml"><code class="inline">Phoenix.LiveView.Comprehension</code></a>
+struct with the static parts, that are shared across all
+points, and a list of entries with a render function for the
+dynamics inside. If <code class="inline">@points</code> is a list with <code class="inline">%{x: 1, y: 2}</code>
+and <code class="inline">%{x: 3, y: 4}</code>, the above expression would return:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="9176643366-1">%</samp><samp class="nc" data-group-id="9176643366-1">Phoenix.LiveView.Comprehension</samp><samp class="p" data-group-id="9176643366-1">{</samp><samp class="w">
+  </samp><samp class="ss">static</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9176643366-2">[</samp><samp class="s">&quot;</samp><samp class="se">\n</samp><samp class="s">  x: &quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;</samp><samp class="se">\n</samp><samp class="s">  y: &quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;</samp><samp class="se">\n</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="9176643366-2">]</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">entries</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9176643366-3">[</samp><samp class="w">
+    </samp><samp class="p" data-group-id="9176643366-4">{</samp><samp class="no">nil</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9176643366-5">%{</samp><samp class="ss">point</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9176643366-6">%{</samp><samp class="ss">x</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">y</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9176643366-6">}</samp><samp class="p" data-group-id="9176643366-5">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="9176643366-7">fn</samp><samp class="w"> </samp><samp class="n">vars_changed</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">track_changes?</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="w"> </samp><samp class="k" data-group-id="9176643366-7">end</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="p" data-group-id="9176643366-8">{</samp><samp class="no">nil</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9176643366-9">%{</samp><samp class="ss">point</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9176643366-10">%{</samp><samp class="ss">x</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">y</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="9176643366-10">}</samp><samp class="p" data-group-id="9176643366-9">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="9176643366-11">fn</samp><samp class="w"> </samp><samp class="n">vars_changed</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">track_changes?</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="w"> </samp><samp class="k" data-group-id="9176643366-11">end</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="p">]</samp><samp class="w">
+</samp><samp class="p" data-group-id="9176643366-8">}</samp></code></pre><p>This allows live templates to send the static parts only once,
+regardless of the number of items. Moreover, the diff algorithm
+also tracks the variables introduced by the comprehension as part
+of the entries and calculates which variables changed between renders.</p><p>In HEEx templates, a <code class="inline">:key</code> attribute can be provided when using <code class="inline">:for</code>
+on a tag to make the diffing more efficient. By default, the index
+of each item is used for diffing, which means that if an element is
+prepended to the list, the whole collection is sent again.</p><h2 id="module-components">Components</h2><p>Live also supports stateful components defined with
+<a href="Phoenix.LiveComponent.xhtml"><code class="inline">Phoenix.LiveComponent</code></a>. Since they are stateful, they are always
+handled lazily by the diff algorithm.</p>
+      </section>
+
+
+
+
+  </body>
+</html>

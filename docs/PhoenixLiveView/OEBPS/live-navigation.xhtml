@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Live navigation - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Live navigation</h1>
+<p>LiveView provides functionality to allow page navigation using the
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API">browser's pushState API</a>.
+With live navigation, the page is updated without a full page reload.</p><p>You can trigger live navigation in two ways:</p><ul><li><p>From the client - this is done by passing either <code class="inline">patch={url}</code> or <code class="inline">navigate={url}</code>
+to the <a href="Phoenix.Component.xhtml#link/1"><code class="inline">Phoenix.Component.link/1</code></a> component.</p></li><li><p>From the server - this is done by <a href="Phoenix.LiveView.xhtml#push_patch/2"><code class="inline">Phoenix.LiveView.push_patch/2</code></a> or <a href="Phoenix.LiveView.xhtml#push_navigate/2"><code class="inline">Phoenix.LiveView.push_navigate/2</code></a>.</p></li></ul><p>For example, instead of writing the following in a template:</p><pre><code class="makeup heex" translate="no"><span class="p">&lt;</span><span class="nf">.link</span><span class="w"> </span><span class="na">href</span><span class="p">=</span><span class="p" data-group-id="1589254322-1">{</span><span class="sx">~p&quot;/pages/</span><span class="si" data-group-id="1589254322-ex-1">#{</span><span class="na">@page</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si" data-group-id="1589254322-ex-1">}</span><span class="sx">&quot;</span><span class="p" data-group-id="1589254322-1">}</span><span class="p">&gt;</span><span class="n">Next</span><span class="p">&lt;/</span><span class="nf">.link</span><span class="p">&gt;</span></code></pre><p>You would write:</p><pre><code class="makeup heex" translate="no"><span class="p">&lt;</span><span class="nf">.link</span><span class="w"> </span><span class="na">patch</span><span class="p">=</span><span class="p" data-group-id="0615726262-1">{</span><span class="sx">~p&quot;/pages/</span><span class="si" data-group-id="0615726262-ex-1">#{</span><span class="na">@page</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si" data-group-id="0615726262-ex-1">}</span><span class="sx">&quot;</span><span class="p" data-group-id="0615726262-1">}</span><span class="p">&gt;</span><span class="n">Next</span><span class="p">&lt;/</span><span class="nf">.link</span><span class="p">&gt;</span></code></pre><p>Or in a LiveView:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="8186665494-1">{</span><span class="ss">:noreply</span><span class="p">,</span><span class="w"> </span><span class="n">push_patch</span><span class="p" data-group-id="8186665494-2">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">to</span><span class="p">:</span><span class="w"> </span><span class="sx">~p&quot;/pages/</span><span class="si" data-group-id="8186665494-3">#{</span><span class="na">@page</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si" data-group-id="8186665494-3">}</span><span class="sx">&quot;</span><span class="p" data-group-id="8186665494-2">)</span><span class="p" data-group-id="8186665494-1">}</span></code></pre><p>The &quot;patch&quot; operations must be used when you want to navigate to the
+current LiveView, simply updating the URL and the current parameters,
+without mounting a new LiveView. When patch is used, the
+<a href="Phoenix.LiveView.xhtml#c:handle_params/3"><code class="inline">handle_params/3</code></a> callback is
+invoked and the minimal set of changes are sent to the client.
+See the next section for more information.</p><p>The &quot;navigate&quot; operations must be used when you want to dismount the
+current LiveView and mount a new one. You can only &quot;navigate&quot; between
+LiveViews in the same session. While redirecting, a <code class="inline">phx-loading</code> class
+is added to the LiveView, which can be used to indicate to the user a
+new page is being loaded.</p><p>If you attempt to patch to another LiveView or navigate across live sessions,
+a full page reload is triggered. This means your application continues to work,
+in case your application structure changes and that's not reflected in the navigation.</p><p>Here is a quick breakdown:</p><ul><li><p><code class="inline">&lt;.link href={...}&gt;</code> and <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Phoenix.Controller.html#redirect/2"><code class="inline">redirect/2</code></a>
+are HTTP-based, work everywhere, and perform full page reloads</p></li><li><p><code class="inline">&lt;.link navigate={...}&gt;</code> and <a href="Phoenix.LiveView.xhtml#push_navigate/2"><code class="inline">push_navigate/2</code></a>
+work across LiveViews in the same session. They mount a new LiveView
+while keeping the current layout</p></li><li><p><code class="inline">&lt;.link patch={...}&gt;</code> and <a href="Phoenix.LiveView.xhtml#push_patch/2"><code class="inline">push_patch/2</code></a>
+updates the current LiveView and sends only the minimal diff while also
+maintaining the scroll position</p></li></ul><h2 id="handle_params-3"><code class="inline">handle_params/3</code></h2><p>The <a href="Phoenix.LiveView.xhtml#c:handle_params/3"><code class="inline">handle_params/3</code></a> callback is invoked
+after <a href="Phoenix.LiveView.xhtml#c:mount/3"><code class="inline">mount/3</code></a> and before the initial render.
+It is also invoked every time <code class="inline">&lt;.link patch={...}&gt;</code>
+or <a href="Phoenix.LiveView.xhtml#push_patch/2"><code class="inline">push_patch/2</code></a> are used.
+It receives the request parameters as first argument, the url as second,
+and the socket as third.</p><p>For example, imagine you have a <code class="inline">UserTable</code> LiveView to show all users in
+the system and you define it in the router as:</p><pre><code class="makeup elixir" translate="no"><span class="n">live</span><span class="w"> </span><span class="s">&quot;/users&quot;</span><span class="p">,</span><span class="w"> </span><span class="nc">UserTable</span></code></pre><p>Now to add live sorting, you could do:</p><pre><code class="makeup heex" translate="no"><span class="p">&lt;</span><span class="nf">.link</span><span class="w"> </span><span class="na">patch</span><span class="p">=</span><span class="p" data-group-id="1621539705-1">{</span><span class="sx">~p&quot;/users?sort_by=name&quot;</span><span class="p" data-group-id="1621539705-1">}</span><span class="p">&gt;</span><span class="n">Sort by name</span><span class="p">&lt;/</span><span class="nf">.link</span><span class="p">&gt;</span></code></pre><p>When clicked, since we are navigating to the current LiveView,
+<a href="Phoenix.LiveView.xhtml#c:handle_params/3"><code class="inline">handle_params/3</code></a> will be invoked.
+Remember you should never trust the received params, so you must use the callback to
+validate the user input and change the state accordingly:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">handle_params</span><span class="p" data-group-id="9364398177-1">(</span><span class="n">params</span><span class="p">,</span><span class="w"> </span><span class="c">_uri</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="9364398177-1">)</span><span class="w"> </span><span class="k" data-group-id="9364398177-2">do</span><span class="w">
+  </span><span class="n">socket</span><span class="w"> </span><span class="o">=</span><span class="w">
+    </span><span class="k">case</span><span class="w"> </span><span class="n">params</span><span class="p" data-group-id="9364398177-3">[</span><span class="s">&quot;sort_by&quot;</span><span class="p" data-group-id="9364398177-3">]</span><span class="w"> </span><span class="k" data-group-id="9364398177-4">do</span><span class="w">
+      </span><span class="n">sort_by</span><span class="w"> </span><span class="ow">when</span><span class="w"> </span><span class="n">sort_by</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="sx">~w(name company)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">assign</span><span class="p" data-group-id="9364398177-5">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">sort_by</span><span class="p">:</span><span class="w"> </span><span class="n">sort_by</span><span class="p" data-group-id="9364398177-5">)</span><span class="w">
+      </span><span class="bp">_</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">socket</span><span class="w">
+    </span><span class="k" data-group-id="9364398177-4">end</span><span class="w">
+
+  </span><span class="p" data-group-id="9364398177-6">{</span><span class="ss">:noreply</span><span class="p">,</span><span class="w"> </span><span class="n">load_users</span><span class="p" data-group-id="9364398177-7">(</span><span class="n">socket</span><span class="p" data-group-id="9364398177-7">)</span><span class="p" data-group-id="9364398177-6">}</span><span class="w">
+</span><span class="k" data-group-id="9364398177-2">end</span></code></pre><p>Note we returned <code class="inline">{:noreply, socket}</code>, where <code class="inline">:noreply</code> means no
+additional information is sent to the client. As with other <code class="inline">handle_*</code>
+callbacks, changes to the state inside
+<a href="Phoenix.LiveView.xhtml#c:handle_params/3"><code class="inline">handle_params/3</code></a> will trigger
+a new server render.</p><p>Note the parameters given to <a href="Phoenix.LiveView.xhtml#c:handle_params/3"><code class="inline">handle_params/3</code></a>
+are the same as the ones given to <a href="Phoenix.LiveView.xhtml#c:mount/3"><code class="inline">mount/3</code></a>.
+So how do you decide which callback to use to load data?
+Generally speaking, data should always be loaded on <a href="Phoenix.LiveView.xhtml#c:mount/3"><code class="inline">mount/3</code></a>,
+since <a href="Phoenix.LiveView.xhtml#c:mount/3"><code class="inline">mount/3</code></a> is invoked once per LiveView life-cycle.
+Only the params you expect to be changed via
+<code class="inline">&lt;.link patch={...}&gt;</code> or
+<a href="Phoenix.LiveView.xhtml#push_patch/2"><code class="inline">push_patch/2</code></a> must be loaded on
+<a href="Phoenix.LiveView.xhtml#c:handle_params/3"><code class="inline">handle_params/3</code></a>.</p><p>For example, imagine you have a blog. The URL for a single post is:
+&quot;/blog/posts/:post_id&quot;. In the post page, you have comments and they are paginated.
+You use <code class="inline">&lt;.link patch={...}&gt;</code> to update the shown
+comments every time the user paginates, updating the URL to &quot;/blog/posts/:post_id?page=X&quot;.
+In this example, you will access <code class="inline">&quot;post_id&quot;</code> on <a href="Phoenix.LiveView.xhtml#c:mount/3"><code class="inline">mount/3</code></a> and
+the page of comments on <a href="Phoenix.LiveView.xhtml#c:handle_params/3"><code class="inline">handle_params/3</code></a>.</p><h2 id="replace-page-address">Replace page address</h2><p>LiveView also allows the current browser URL to be replaced. This is useful when you
+want certain events to change the URL but without polluting the browser's history.
+This can be done by passing the <code class="inline">&lt;.link replace&gt;</code> option to any of the navigation helpers.</p><h2 id="multiple-liveviews-in-the-same-page">Multiple LiveViews in the same page</h2><p>LiveView allows you to have multiple LiveViews in the same page by calling
+<a href="Phoenix.Component.xhtml#live_render/3"><code class="inline">Phoenix.Component.live_render/3</code></a> in your templates. However, only
+the LiveViews defined directly in your router can use the &quot;Live Navigation&quot;
+functionality described here. This is important because LiveViews work
+closely with your router, guaranteeing you can only navigate to known
+routes.</p>
+
+  </body>
+</html>

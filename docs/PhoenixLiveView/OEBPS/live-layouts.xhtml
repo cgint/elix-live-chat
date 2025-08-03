@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Live layouts - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Live layouts</h1>
+<p>Your LiveView applications can be made of two layouts:</p><ul><li><p>the root layout - this layout typically contains the <code class="inline">&lt;html&gt;</code>
+definition alongside the head and body tags. Any content defined
+in the root layout will remain the same, even as you live navigate
+across LiveViews. The root layout is typically declared on the
+router with <code class="inline">put_root_layout</code> and defined as &quot;root.html.heex&quot;
+in your layouts folder. It calls <code class="inline">{@inner_content}</code> to inject the
+content rendered by the layout</p></li><li><p>the app layout - this is the dynamic layout part of your application,
+it often includes the menu, sidebar, flash messages, and more.
+From Phoenix v1.8, this layout is explicitly rendered in your templates
+by calling the <code class="inline">&lt;Layouts.app /&gt;</code> component. In Phoenix v1.7 and earlier,
+the layout was typically configured as part of the <code class="inline">lib/my_app_web.ex</code>
+file, such as <code class="inline">use Phoenix.LiveView, layout: ...</code></p></li></ul><p>Overall, those layouts are found in <code class="inline">components/layouts</code> and are
+embedded within <code class="inline">MyAppWeb.Layouts</code>.</p><h2 id="root-layout">Root layout</h2><p>The &quot;root&quot; layout is rendered only on the initial request and
+therefore it has access to the <code class="inline">@conn</code> assign. The root layout
+is typically defined in your router:</p><pre><code class="makeup elixir" translate="no"><span class="n">plug</span><span class="w"> </span><span class="ss">:put_root_layout</span><span class="p">,</span><span class="w"> </span><span class="ss">html</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="5807602352-1">{</span><span class="nc">MyAppWeb.Layouts</span><span class="p">,</span><span class="w"> </span><span class="ss">:root</span><span class="p" data-group-id="5807602352-1">}</span></code></pre><p>The root layout can also be set via the <code class="inline">:root_layout</code> option
+in your router via <a href="Phoenix.LiveView.Router.xhtml#live_session/2"><code class="inline">Phoenix.LiveView.Router.live_session/2</code></a>.</p><h2 id="updating-document-title">Updating document title</h2><p>Because the root layout from the Plug pipeline is rendered outside of
+LiveView, the contents cannot be dynamically changed. The one exception
+is the <code class="inline">&lt;title&gt;</code> of the HTML document. Phoenix LiveView special cases
+the <code class="inline">@page_title</code> assign to allow dynamically updating the title of the
+page, which is useful when using live navigation, or annotating the browser
+tab with a notification. For example, to update the user's notification
+count in the browser's title bar, first set the <code class="inline">page_title</code> assign on
+mount:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">mount</span><span class="p" data-group-id="9568066097-1">(</span><span class="c">_params</span><span class="p">,</span><span class="w"> </span><span class="c">_session</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="9568066097-1">)</span><span class="w"> </span><span class="k" data-group-id="9568066097-2">do</span><span class="w">
+  </span><span class="n">socket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">assign</span><span class="p" data-group-id="9568066097-3">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">page_title</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Latest Posts&quot;</span><span class="p" data-group-id="9568066097-3">)</span><span class="w">
+  </span><span class="p" data-group-id="9568066097-4">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="9568066097-4">}</span><span class="w">
+</span><span class="k" data-group-id="9568066097-2">end</span></code></pre><p>Then access <code class="inline">@page_title</code> in the root layout:</p><pre><code class="makeup heex" translate="no"><span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span><span class="p" data-group-id="4628585471-1">{</span><span class="na">@page_title</span><span class="p" data-group-id="4628585471-1">}</span><span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span></code></pre><p>You can also use the <a href="Phoenix.Component.xhtml#live_title/1"><code class="inline">Phoenix.Component.live_title/1</code></a> component to support
+adding automatic prefix and suffix to the page title when rendered and
+on subsequent updates:</p><pre><code class="makeup heex" translate="no"><span class="p">&lt;</span><span class="nc">Phoenix.Component</span><span class="o">.</span><span class="n">live_title</span><span class="w"> </span><span class="na">default</span><span class="p">=</span><span class="p">&quot;</span><span class="s2">Welcome</span><span class="p">&quot;</span><span class="w"> </span><span class="na">prefix</span><span class="p">=</span><span class="p">&quot;</span><span class="s2">MyApp – </span><span class="p">&quot;</span><span class="p">&gt;</span><span class="w">
+</span><span class="w">  </span><span class="p" data-group-id="6810943413-1">{</span><span class="n">assigns</span><span class="p" data-group-id="6810943413-ex-1">[</span><span class="ss">:page_title</span><span class="p" data-group-id="6810943413-ex-1">]</span><span class="p" data-group-id="6810943413-1">}</span><span class="w">
+</span><span class="p">&lt;/</span><span class="nc">Phoenix.Component</span><span class="o">.</span><span class="n">live_title</span><span class="p">&gt;</span></code></pre><p>Although the root layout is not updated by LiveView, by simply assigning
+to <code class="inline">page_title</code>, LiveView knows you want the title to be updated:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">handle_info</span><span class="p" data-group-id="1907111539-1">(</span><span class="p" data-group-id="1907111539-2">{</span><span class="ss">:new_messages</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p" data-group-id="1907111539-2">}</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="1907111539-1">)</span><span class="w"> </span><span class="k" data-group-id="1907111539-3">do</span><span class="w">
+  </span><span class="p" data-group-id="1907111539-4">{</span><span class="ss">:noreply</span><span class="p">,</span><span class="w"> </span><span class="n">assign</span><span class="p" data-group-id="1907111539-5">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">page_title</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Latest Posts (</span><span class="si" data-group-id="1907111539-6">#{</span><span class="n">count</span><span class="si" data-group-id="1907111539-6">}</span><span class="s"> new)&quot;</span><span class="p" data-group-id="1907111539-5">)</span><span class="p" data-group-id="1907111539-4">}</span><span class="w">
+</span><span class="k" data-group-id="1907111539-3">end</span></code></pre><p><em>Note</em>: If you find yourself needing to dynamically patch other parts of the
+base layout, such as injecting new scripts or styles into the <code class="inline">&lt;head&gt;</code> during
+live navigation, <em>then a regular, non-live, page navigation should be used
+instead</em>. Assigning the <code class="inline">@page_title</code> updates the <code class="inline">document.title</code> directly,
+and therefore cannot be used to update any other part of the base layout.</p>
+
+  </body>
+</html>

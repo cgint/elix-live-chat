@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Bitwise - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Bitwise 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A set of functions that perform calculations on bits.</p><p>All bitwise functions work only on integers, otherwise an
+<a href="ArithmeticError.xhtml"><code class="inline">ArithmeticError</code></a> is raised. The functions <a href="#band/2"><code class="inline">band/2</code></a>,
+<a href="#bor/2"><code class="inline">bor/2</code></a>, <a href="#bsl/2"><code class="inline">bsl/2</code></a>, and <a href="#bsr/2"><code class="inline">bsr/2</code></a> also have operators,
+respectively: <a href="#&&&/2"><code class="inline">&amp;&amp;&amp;/2</code></a>, <a href="#%7C%7C%7C/2"><code class="inline">|||/2</code></a>, <a href="#%3C%3C%3C/2"><code class="inline">&lt;&lt;&lt;/2</code></a>, and <a href="#%3E%3E%3E/2"><code class="inline">&gt;&gt;&gt;/2</code></a>.</p><h2 id="module-guards">Guards</h2><p>All bitwise functions can be used in guards:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">odd?</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="k" data-group-id="4240608918-1">fn</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">int</samp><samp class="w"> </samp><samp class="ow">when</samp><samp class="w"> </samp><samp class="nc">Bitwise</samp><samp class="o">.</samp><samp class="n">band</samp><samp class="p" data-group-id="4240608918-2">(</samp><samp class="n">int</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="4240608918-2">)</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="bp">_</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="no">false</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="4240608918-1">end</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">odd?</samp><samp class="o">.</samp><samp class="p" data-group-id="4240608918-3">(</samp><samp class="mi">1</samp><samp class="p" data-group-id="4240608918-3">)</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre><p>All functions in this module are inlined by the compiler.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-guards summary">
+  <h2>
+    <a href="#guards">Guards</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#&&&/2" data-no-tooltip="" translate="no">left &amp;&amp;&amp; right</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Bitwise AND operator.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#%3C%3C%3C/2" data-no-tooltip="" translate="no">left &lt;&lt;&lt; right</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Arithmetic left bitshift operator.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#%3E%3E%3E/2" data-no-tooltip="" translate="no">left &gt;&gt;&gt; right</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Arithmetic right bitshift operator.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#band/2" data-no-tooltip="" translate="no">band(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the bitwise AND of its arguments.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#bnot/1" data-no-tooltip="" translate="no">bnot(expr)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the bitwise NOT of the argument.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#bor/2" data-no-tooltip="" translate="no">bor(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the bitwise OR of its arguments.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#bsl/2" data-no-tooltip="" translate="no">bsl(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the result of an arithmetic left bitshift.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#bsr/2" data-no-tooltip="" translate="no">bsr(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the result of an arithmetic right bitshift.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#bxor/2" data-no-tooltip="" translate="no">bxor(left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the bitwise XOR of its arguments.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#%7C%7C%7C/2" data-no-tooltip="" translate="no">left ||| right</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Bitwise OR operator.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="guards" class="details-list">
+        <h1 class="section-heading">Guards</h1>
+
+        <div class="guards-list">
+<section class="detail" id="&&&/2">
+
+  <div class="detail-header">
+    <a href="#&&&/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">left &amp;&amp;&amp; right</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/bitwise.ex#L101" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> <a href="typespecs.xhtml#basic-types">integer</a>() &amp;&amp;&amp; <a href="typespecs.xhtml#basic-types">integer</a>() :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Bitwise AND operator.</p><p>Calculates the bitwise AND of its arguments.</p><p>Allowed in guard tests. Inlined by the compiler.</p><h2 id="&&&/2-examples" class="section-heading"><a href="#&&&/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="mi">9</samp><samp class="w"> </samp><samp class="o">&amp;&amp;&amp;</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="w">
+</samp><samp class="mi">1</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="%3C%3C%3C/2">
+
+  <div class="detail-header">
+    <a href="#%3C%3C%3C/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">left &lt;&lt;&lt; right</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/bitwise.ex#L213" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> <a href="typespecs.xhtml#basic-types">integer</a>() &lt;&lt;&lt; <a href="typespecs.xhtml#basic-types">integer</a>() :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Arithmetic left bitshift operator.</p><p>Calculates the result of an arithmetic left bitshift.</p><p>Allowed in guard tests. Inlined by the compiler.</p><h2 id="%3C%3C%3C/2-examples" class="section-heading"><a href="#%3C%3C%3C/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="o">&lt;&lt;&lt;</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="mi">4</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="o">&lt;&lt;&lt;</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="mi">0</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="o">&lt;&lt;&lt;</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">4</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="o">&lt;&lt;&lt;</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">1</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="%3E%3E%3E/2">
+
+  <div class="detail-header">
+    <a href="#%3E%3E%3E/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">left &gt;&gt;&gt; right</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/bitwise.ex#L267" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> <a href="typespecs.xhtml#basic-types">integer</a>() &gt;&gt;&gt; <a href="typespecs.xhtml#basic-types">integer</a>() :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Arithmetic right bitshift operator.</p><p>Calculates the result of an arithmetic right bitshift.</p><p>Allowed in guard tests. Inlined by the compiler.</p><h2 id="%3E%3E%3E/2-examples" class="section-heading"><a href="#%3E%3E%3E/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="o">&gt;&gt;&gt;</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="mi">0</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="o">&gt;&gt;&gt;</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="mi">4</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="o">&gt;&gt;&gt;</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="o">&gt;&gt;&gt;</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">4</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="band/2">
+
+  <div class="detail-header">
+    <a href="#band/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">band(left, right)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/bitwise.ex#L82" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> band(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">integer</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Calculates the bitwise AND of its arguments.</p><p>Allowed in guard tests. Inlined by the compiler.</p><h2 id="band/2-examples" class="section-heading"><a href="#band/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">band</samp><samp class="p" data-group-id="2714509991-1">(</samp><samp class="mi">9</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="2714509991-1">)</samp><samp class="w">
+</samp><samp class="mi">1</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="bnot/1">
+
+  <div class="detail-header">
+    <a href="#bnot/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">bnot(expr)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/bitwise.ex#L60" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> bnot(<a href="typespecs.xhtml#basic-types">integer</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Calculates the bitwise NOT of the argument.</p><p>Allowed in guard tests. Inlined by the compiler.</p><h2 id="bnot/1-examples" class="section-heading"><a href="#bnot/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">bnot</samp><samp class="p" data-group-id="3196223928-1">(</samp><samp class="mi">2</samp><samp class="p" data-group-id="3196223928-1">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">3</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">bnot</samp><samp class="p" data-group-id="3196223928-2">(</samp><samp class="mi">2</samp><samp class="p" data-group-id="3196223928-2">)</samp><samp class="w"> </samp><samp class="o">&amp;&amp;&amp;</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="w">
+</samp><samp class="mi">1</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="bor/2">
+
+  <div class="detail-header">
+    <a href="#bor/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">bor(left, right)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/bitwise.ex#L118" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> bor(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">integer</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Calculates the bitwise OR of its arguments.</p><p>Allowed in guard tests. Inlined by the compiler.</p><h2 id="bor/2-examples" class="section-heading"><a href="#bor/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">bor</samp><samp class="p" data-group-id="4734344224-1">(</samp><samp class="mi">9</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="4734344224-1">)</samp><samp class="w">
+</samp><samp class="mi">11</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="bsl/2">
+
+  <div class="detail-header">
+    <a href="#bsl/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">bsl(left, right)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/bitwise.ex#L185" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> bsl(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">integer</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Calculates the result of an arithmetic left bitshift.</p><p>Allowed in guard tests. Inlined by the compiler.</p><h2 id="bsl/2-examples" class="section-heading"><a href="#bsl/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">bsl</samp><samp class="p" data-group-id="9041103912-1">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9041103912-1">)</samp><samp class="w">
+</samp><samp class="mi">4</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">bsl</samp><samp class="p" data-group-id="9041103912-2">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="p" data-group-id="9041103912-2">)</samp><samp class="w">
+</samp><samp class="mi">0</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">bsl</samp><samp class="p" data-group-id="9041103912-3">(</samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9041103912-3">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">4</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">bsl</samp><samp class="p" data-group-id="9041103912-4">(</samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="p" data-group-id="9041103912-4">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">1</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="bsr/2">
+
+  <div class="detail-header">
+    <a href="#bsr/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">bsr(left, right)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/bitwise.ex#L239" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> bsr(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">integer</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Calculates the result of an arithmetic right bitshift.</p><p>Allowed in guard tests. Inlined by the compiler.</p><h2 id="bsr/2-examples" class="section-heading"><a href="#bsr/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">bsr</samp><samp class="p" data-group-id="3369480248-1">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="3369480248-1">)</samp><samp class="w">
+</samp><samp class="mi">0</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">bsr</samp><samp class="p" data-group-id="3369480248-2">(</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="p" data-group-id="3369480248-2">)</samp><samp class="w">
+</samp><samp class="mi">4</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">bsr</samp><samp class="p" data-group-id="3369480248-3">(</samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="3369480248-3">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">bsr</samp><samp class="p" data-group-id="3369480248-4">(</samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="p" data-group-id="3369480248-4">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">4</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="bxor/2">
+
+  <div class="detail-header">
+    <a href="#bxor/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">bxor(left, right)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/bitwise.ex#L154" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> bxor(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">integer</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Calculates the bitwise XOR of its arguments.</p><p>Allowed in guard tests. Inlined by the compiler.</p><h2 id="bxor/2-examples" class="section-heading"><a href="#bxor/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">bxor</samp><samp class="p" data-group-id="0795411042-1">(</samp><samp class="mi">9</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="0795411042-1">)</samp><samp class="w">
+</samp><samp class="mi">10</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="%7C%7C%7C/2">
+
+  <div class="detail-header">
+    <a href="#%7C%7C%7C/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">left ||| right</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/bitwise.ex#L137" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> <a href="typespecs.xhtml#basic-types">integer</a>() ||| <a href="typespecs.xhtml#basic-types">integer</a>() :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Bitwise OR operator.</p><p>Calculates the bitwise OR of its arguments.</p><p>Allowed in guard tests. Inlined by the compiler.</p><h2 id="%7C%7C%7C/2-examples" class="section-heading"><a href="#%7C%7C%7C/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="mi">9</samp><samp class="w"> </samp><samp class="o">|||</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="w">
+</samp><samp class="mi">11</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

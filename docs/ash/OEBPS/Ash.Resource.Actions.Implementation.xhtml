@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Resource.Actions.Implementation - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Resource.Actions.Implementation <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>An implementation of a <a href="generic-actions.xhtml">generic action</a>.</p><h3 id="module-example">Example</h3><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">YourModule</samp><samp class="w"> </samp><samp class="k" data-group-id="1128458161-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Ash.Resource.Actions.Implementation</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">run</samp><samp class="p" data-group-id="1128458161-2">(</samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">context</samp><samp class="p" data-group-id="1128458161-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="1128458161-3">do</samp><samp class="w">
+    </samp><samp class="p" data-group-id="1128458161-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="p" data-group-id="1128458161-4">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="1128458161-3">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="1128458161-1">end</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:run/3" data-no-tooltip="" translate="no">run(t, opts, t)</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#run/4" data-no-tooltip="" translate="no">run(module, action_input, opts, context)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:run/3">
+
+  <div class="detail-header">
+    <a href="#c:run/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">run(t, opts, t)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/actions/action/implementation.ex#L44" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> run(
+  <a href="Ash.ActionInput.xhtml#t:t/0">Ash.ActionInput.t</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  <a href="Ash.Resource.Actions.Implementation.Context.xhtml#t:t/0">Ash.Resource.Actions.Implementation.Context.t</a>()
+) ::
+  :ok
+  | {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}
+  | {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), [<a href="Ash.Notifier.Notification.xhtml#t:t/0">Ash.Notifier.Notification.t</a>()]}
+  | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="run/4">
+
+  <div class="detail-header">
+    <a href="#run/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">run(module, action_input, opts, context)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/actions/action/implementation.ex#L20" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

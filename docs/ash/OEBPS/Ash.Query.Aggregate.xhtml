@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Query.Aggregate - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Query.Aggregate 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Represents an aggregated association value</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:kind/0" data-no-tooltip="" translate="no">kind()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#default_value/1" data-no-tooltip="" translate="no">default_value(atom)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new/4" data-no-tooltip="" translate="no">new(resource, name, kind, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Create a new aggregate, used with <code class="inline">Query.aggregate</code> or <code class="inline">Ash.aggregate</code></p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new!/4" data-no-tooltip="" translate="no">new!(resource, name, kind, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Create a new aggregate, used with <code class="inline">Query.aggregate</code> or <code class="inline">Ash.aggregate</code>, raising on errors.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:kind/0">
+
+  <div class="detail-header">
+    <a href="#t:kind/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">kind()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/aggregate.ex#L30" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> kind() ::
+  :custom | :exists | :avg | :min | :max | :list | :sum | :first | :count</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/aggregate.ex#L27" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %Ash.Query.Aggregate{
+  agg_name: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  authorize?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  constraints: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  context: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  default_value: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  field: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  filterable?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  implementation: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  include_nil?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  join_filters: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  kind: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  load: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  name: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  query: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  read_action: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  relationship_path: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  resource: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  sensitive?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  sortable?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  type: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  uniq?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="default_value/1">
+
+  <div class="detail-header">
+    <a href="#default_value/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">default_value(atom)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/aggregate.ex#L516" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="new/4">
+
+    <span id="new/3"></span>
+
+  <div class="detail-header">
+    <a href="#new/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(resource, name, kind, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/aggregate.ex#L192" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Create a new aggregate, used with <code class="inline">Query.aggregate</code> or <code class="inline">Ash.aggregate</code></p><h3 id="new/4-options" class="section-heading"><a href="#new/4-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h3><ul><li><p><code class="inline">:path</code> (list of <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a>) - The relationship path to aggregate over. Only used when adding aggregates to a query. The default value is <code class="inline">[]</code>.</p></li><li><p><code class="inline">:query</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - A base query to use for the aggregate, or a keyword list to be passed to <a href="Ash.Query.xhtml#build/2"><code class="inline">Ash.Query.build/2</code></a></p></li><li><p><code class="inline">:field</code> - The field to use for the aggregate. Not necessary for all aggregate types.</p></li><li><p><code class="inline">:expr</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - An expression to aggregate, cannot be used with <code class="inline">field</code>.</p></li><li><p><code class="inline">:expr_type</code> - The type of the expression, required if <code class="inline">expr</code> is used.</p></li><li><p><code class="inline">:arguments</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">map/0</code></a>) - Arguments to pass to the field, if field is a calculation.</p></li><li><p><code class="inline">:default</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - A default value to use for the aggregate if it returns <code class="inline">nil</code>.</p></li><li><p><code class="inline">:filterable?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not this aggregate may be used in filters. The default value is <code class="inline">true</code>.</p></li><li><p><code class="inline">:sortable?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not this aggregate may be used in sorts. The default value is <code class="inline">true</code>.</p></li><li><p><code class="inline">:type</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - A type to use for the aggregate.</p></li><li><p><code class="inline">:constraints</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - Type constraints to use for the aggregate. The default value is <code class="inline">[]</code>.</p></li><li><p><code class="inline">:implementation</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - The implementation for any custom aggregates.</p></li><li><p><code class="inline">:read_action</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a>) - The read action to use for the aggregate, defaults to the primary read action.</p></li><li><p><code class="inline">:uniq?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not to only consider unique values. Only relevant for <code class="inline">count</code> and <code class="inline">list</code> aggregates. The default value is <code class="inline">false</code>.</p></li><li><p><code class="inline">:include_nil?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not to include <code class="inline">nil</code> values in the aggregate. Only relevant for <code class="inline">list</code> and <code class="inline">first</code> aggregates. The default value is <code class="inline">false</code>.</p></li><li><p><code class="inline">:join_filters</code> (map of one or a list of <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a> keys and <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a> values) - A map of relationship paths (an atom or list of atoms), to an expression to apply when fetching the aggregate data. See the aggregates guide for more. The default value is <code class="inline">%{}</code>.</p></li><li><p><code class="inline">:sensitive?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not references to this aggregate will be considered sensitive The default value is <code class="inline">false</code>.</p></li><li><p><code class="inline">:tenant</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - The tenant to use for the aggregate, if applicable. The default value is <code class="inline">nil</code>.</p></li><li><p><code class="inline">:authorize?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not the aggregate query should authorize based on the target action.<br/>See <code class="inline">d:Ash.Resource.Dsl.aggregates|count</code> for more information. The default value is <code class="inline">true</code>.</p></li></ul>
+  </section>
+</section>
+<section class="detail" id="new!/4">
+
+    <span id="new!/3"></span>
+
+  <div class="detail-header">
+    <a href="#new!/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new!(resource, name, kind, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/aggregate.ex#L175" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Create a new aggregate, used with <code class="inline">Query.aggregate</code> or <code class="inline">Ash.aggregate</code>, raising on errors.</p><p>See <a href="#new/4"><code class="inline">new/4</code></a> for more information.</p><h3 id="new!/4-options" class="section-heading"><a href="#new!/4-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h3><ul><li><p><code class="inline">:path</code> (list of <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a>) - The relationship path to aggregate over. Only used when adding aggregates to a query. The default value is <code class="inline">[]</code>.</p></li><li><p><code class="inline">:query</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - A base query to use for the aggregate, or a keyword list to be passed to <a href="Ash.Query.xhtml#build/2"><code class="inline">Ash.Query.build/2</code></a></p></li><li><p><code class="inline">:field</code> - The field to use for the aggregate. Not necessary for all aggregate types.</p></li><li><p><code class="inline">:expr</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - An expression to aggregate, cannot be used with <code class="inline">field</code>.</p></li><li><p><code class="inline">:expr_type</code> - The type of the expression, required if <code class="inline">expr</code> is used.</p></li><li><p><code class="inline">:arguments</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">map/0</code></a>) - Arguments to pass to the field, if field is a calculation.</p></li><li><p><code class="inline">:default</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - A default value to use for the aggregate if it returns <code class="inline">nil</code>.</p></li><li><p><code class="inline">:filterable?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not this aggregate may be used in filters. The default value is <code class="inline">true</code>.</p></li><li><p><code class="inline">:sortable?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not this aggregate may be used in sorts. The default value is <code class="inline">true</code>.</p></li><li><p><code class="inline">:type</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - A type to use for the aggregate.</p></li><li><p><code class="inline">:constraints</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - Type constraints to use for the aggregate. The default value is <code class="inline">[]</code>.</p></li><li><p><code class="inline">:implementation</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - The implementation for any custom aggregates.</p></li><li><p><code class="inline">:read_action</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a>) - The read action to use for the aggregate, defaults to the primary read action.</p></li><li><p><code class="inline">:uniq?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not to only consider unique values. Only relevant for <code class="inline">count</code> and <code class="inline">list</code> aggregates. The default value is <code class="inline">false</code>.</p></li><li><p><code class="inline">:include_nil?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not to include <code class="inline">nil</code> values in the aggregate. Only relevant for <code class="inline">list</code> and <code class="inline">first</code> aggregates. The default value is <code class="inline">false</code>.</p></li><li><p><code class="inline">:join_filters</code> (map of one or a list of <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a> keys and <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a> values) - A map of relationship paths (an atom or list of atoms), to an expression to apply when fetching the aggregate data. See the aggregates guide for more. The default value is <code class="inline">%{}</code>.</p></li><li><p><code class="inline">:sensitive?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not references to this aggregate will be considered sensitive The default value is <code class="inline">false</code>.</p></li><li><p><code class="inline">:tenant</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - The tenant to use for the aggregate, if applicable. The default value is <code class="inline">nil</code>.</p></li><li><p><code class="inline">:authorize?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not the aggregate query should authorize based on the target action.<br/>See <code class="inline">d:Ash.Resource.Dsl.aggregates|count</code> for more information. The default value is <code class="inline">true</code>.</p></li></ul>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

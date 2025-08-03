@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Record - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Record 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Module to work with, define, and import records.</p><p>Records are simply tuples where the first element is an atom:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">is_record</samp><samp class="p" data-group-id="7963043356-1">(</samp><samp class="p" data-group-id="7963043356-2">{</samp><samp class="nc">User</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;john&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">27</samp><samp class="p" data-group-id="7963043356-2">}</samp><samp class="p" data-group-id="7963043356-1">)</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre><p>This module provides conveniences for working with records at
+compilation time, where compile-time field names are used to
+manipulate the tuples, providing fast operations on top of
+the tuples' compact structure.</p><p>In Elixir, records are used mostly in two situations:</p><ol><li>to work with short, internal data</li><li>to interface with Erlang records</li></ol><p>The macros <a href="#defrecord/3"><code class="inline">defrecord/3</code></a> and <a href="#defrecordp/3"><code class="inline">defrecordp/3</code></a> can be used to create records
+while <a href="#extract/2"><code class="inline">extract/2</code></a> and <a href="#extract_all/1"><code class="inline">extract_all/1</code></a> can be used to extract records from
+Erlang files.</p><h2 id="module-types">Types</h2><p>Types can be defined for tuples with the <code class="inline">record/2</code> macro (only available in
+typespecs). This macro will expand to a tuple as seen in the example below:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyModule</samp><samp class="w"> </samp><samp class="k" data-group-id="6956420825-1">do</samp><samp class="w">
+  </samp><samp class="kn">require</samp><samp class="w"> </samp><samp class="nc">Record</samp><samp class="w">
+  </samp><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">defrecord</samp><samp class="p" data-group-id="6956420825-2">(</samp><samp class="ss">:user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;john&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">25</samp><samp class="p" data-group-id="6956420825-2">)</samp><samp class="w">
+
+  </samp><samp class="na">@type</samp><samp class="w"> </samp><samp class="n">user</samp><samp class="w"> </samp><samp class="o">::</samp><samp class="w"> </samp><samp class="n">record</samp><samp class="p" data-group-id="6956420825-3">(</samp><samp class="ss">:user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">String</samp><samp class="o">.</samp><samp class="n">t</samp><samp class="p" data-group-id="6956420825-4">(</samp><samp class="p" data-group-id="6956420825-4">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">integer</samp><samp class="p" data-group-id="6956420825-3">)</samp><samp class="w">
+  </samp><samp class="c1"># expands to: &quot;@type user :: {:user, String.t(), integer}&quot;</samp><samp class="w">
+</samp><samp class="k" data-group-id="6956420825-1">end</samp></code></pre><h2 id="module-reflection">Reflection</h2><p>The record tag and its fields are stored as metadata in the &quot;Docs&quot; chunk
+of the record definition macro. You can retrieve the documentation for
+a module by calling <a href="Code.xhtml#fetch_docs/1"><code class="inline">Code.fetch_docs/1</code></a>.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-guards summary">
+  <h2>
+    <a href="#guards">Guards</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#is_record/1" data-no-tooltip="" translate="no">is_record(data)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Checks if the given <code class="inline">data</code> is a record.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#is_record/2" data-no-tooltip="" translate="no">is_record(data, kind)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Checks if the given <code class="inline">data</code> is a record of kind <code class="inline">kind</code>.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#defrecord/3" data-no-tooltip="" translate="no">defrecord(name, tag \\ nil, kv)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Defines a set of macros to create, access, and pattern match
+on a record.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#defrecordp/3" data-no-tooltip="" translate="no">defrecordp(name, tag \\ nil, kv)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Same as <a><code class="inline">defrecord/3</code></a> but generates private macros.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#extract/2" data-no-tooltip="" translate="no">extract(name, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Extracts record information from an Erlang file.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#extract_all/1" data-no-tooltip="" translate="no">extract_all(opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Extracts all records information from an Erlang file.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="guards" class="details-list">
+        <h1 class="section-heading">Guards</h1>
+
+        <div class="guards-list">
+<section class="detail" id="is_record/1">
+
+  <div class="detail-header">
+    <a href="#is_record/1" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">is_record(data)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/record.ex#L153" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Checks if the given <code class="inline">data</code> is a record.</p><p>This is implemented as a macro so it can be used in guard clauses.</p><h2 id="is_record/1-examples" class="section-heading"><a href="#is_record/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">is_record</samp><samp class="p" data-group-id="1810600422-1">(</samp><samp class="p" data-group-id="1810600422-2">{</samp><samp class="nc">User</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;john&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">27</samp><samp class="p" data-group-id="1810600422-2">}</samp><samp class="p" data-group-id="1810600422-1">)</samp><samp class="w">
+</samp><samp class="c1">#=&gt; true</samp><samp class="w">
+
+</samp><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">is_record</samp><samp class="p" data-group-id="1810600422-3">(</samp><samp class="p" data-group-id="1810600422-4">{</samp><samp class="p" data-group-id="1810600422-4">}</samp><samp class="p" data-group-id="1810600422-3">)</samp><samp class="w">
+</samp><samp class="c1">#=&gt; false</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="is_record/2">
+
+  <div class="detail-header">
+    <a href="#is_record/2" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">is_record(data, kind)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/record.ex#L135" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Checks if the given <code class="inline">data</code> is a record of kind <code class="inline">kind</code>.</p><p>This is implemented as a macro so it can be used in guard clauses.</p><h2 id="is_record/2-examples" class="section-heading"><a href="#is_record/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">record</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="2492057233-1">{</samp><samp class="nc">User</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;john&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">27</samp><samp class="p" data-group-id="2492057233-1">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">is_record</samp><samp class="p" data-group-id="2492057233-2">(</samp><samp class="n">record</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">User</samp><samp class="p" data-group-id="2492057233-2">)</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="defrecord/3">
+
+    <span id="defrecord/2"></span>
+
+  <div class="detail-header">
+    <a href="#defrecord/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">defrecord(name, tag \\ nil, kv)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/record.ex#L250" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Defines a set of macros to create, access, and pattern match
+on a record.</p><p>The name of the generated macros will be <code class="inline">name</code> (which has to be an
+atom). <code class="inline">tag</code> is also an atom and is used as the &quot;tag&quot; for the record (i.e.,
+the first element of the record tuple); by default (if <code class="inline">nil</code>), it's the same
+as <code class="inline">name</code>. <code class="inline">kv</code> is a keyword list of <code class="inline">name: default_value</code> fields for the
+new record.</p><p>The following macros are generated:</p><ul><li><code class="inline">name/0</code> to create a new record with default values for all fields</li><li><code class="inline">name/1</code> to create a new record with the given fields and values,
+to get the zero-based index of the given field in a record or to
+convert the given record to a keyword list</li><li><code class="inline">name/2</code> to update an existing record with the given fields and values
+or to access a given field in a given record</li></ul><p>All these macros are public macros (as defined by <code class="inline">defmacro</code>).</p><p>See the &quot;Examples&quot; section for examples on how to use these macros.</p><h2 id="defrecord/3-examples" class="section-heading"><a href="#defrecord/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">User</samp><samp class="w"> </samp><samp class="k" data-group-id="5843955198-1">do</samp><samp class="w">
+  </samp><samp class="kn">require</samp><samp class="w"> </samp><samp class="nc">Record</samp><samp class="w">
+  </samp><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">defrecord</samp><samp class="p" data-group-id="5843955198-2">(</samp><samp class="ss">:user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;meg&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;25&quot;</samp><samp class="p" data-group-id="5843955198-2">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="5843955198-1">end</samp></code></pre><p>In the example above, a set of macros named <code class="inline">user</code> but with different
+arities will be defined to manipulate the underlying record.</p><pre><code class="makeup elixir" translate="no"><samp class="c1"># Import the module to make the user macros locally available</samp><samp class="w">
+</samp><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">User</samp><samp class="w">
+
+</samp><samp class="c1"># To create records</samp><samp class="w">
+</samp><samp class="n">record</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">user</samp><samp class="p" data-group-id="5508721366-1">(</samp><samp class="p" data-group-id="5508721366-1">)</samp><samp class="w">        </samp><samp class="c1">#=&gt; {:user, &quot;meg&quot;, 25}</samp><samp class="w">
+</samp><samp class="n">record</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">user</samp><samp class="p" data-group-id="5508721366-2">(</samp><samp class="ss">age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">26</samp><samp class="p" data-group-id="5508721366-2">)</samp><samp class="w"> </samp><samp class="c1">#=&gt; {:user, &quot;meg&quot;, 26}</samp><samp class="w">
+
+</samp><samp class="c1"># To get a field from the record</samp><samp class="w">
+</samp><samp class="n">user</samp><samp class="p" data-group-id="5508721366-3">(</samp><samp class="n">record</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:name</samp><samp class="p" data-group-id="5508721366-3">)</samp><samp class="w"> </samp><samp class="c1">#=&gt; &quot;meg&quot;</samp><samp class="w">
+
+</samp><samp class="c1"># To update the record</samp><samp class="w">
+</samp><samp class="n">user</samp><samp class="p" data-group-id="5508721366-4">(</samp><samp class="n">record</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">26</samp><samp class="p" data-group-id="5508721366-4">)</samp><samp class="w"> </samp><samp class="c1">#=&gt; {:user, &quot;meg&quot;, 26}</samp><samp class="w">
+
+</samp><samp class="c1"># To get the zero-based index of the field in record tuple</samp><samp class="w">
+</samp><samp class="c1"># (index 0 is occupied by the record &quot;tag&quot;)</samp><samp class="w">
+</samp><samp class="n">user</samp><samp class="p" data-group-id="5508721366-5">(</samp><samp class="ss">:name</samp><samp class="p" data-group-id="5508721366-5">)</samp><samp class="w"> </samp><samp class="c1">#=&gt; 1</samp><samp class="w">
+
+</samp><samp class="c1"># Convert a record to a keyword list</samp><samp class="w">
+</samp><samp class="n">user</samp><samp class="p" data-group-id="5508721366-6">(</samp><samp class="n">record</samp><samp class="p" data-group-id="5508721366-6">)</samp><samp class="w"> </samp><samp class="c1">#=&gt; [name: &quot;meg&quot;, age: 26]</samp></code></pre><p>The generated macros can also be used in order to pattern match on records and
+to bind variables during the match:</p><pre><code class="makeup elixir" translate="no"><samp class="n">record</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">user</samp><samp class="p" data-group-id="6357972356-1">(</samp><samp class="p" data-group-id="6357972356-1">)</samp><samp class="w"> </samp><samp class="c1">#=&gt; {:user, &quot;meg&quot;, 25}</samp><samp class="w">
+
+</samp><samp class="n">user</samp><samp class="p" data-group-id="6357972356-2">(</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">name</samp><samp class="p" data-group-id="6357972356-2">)</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">record</samp><samp class="w">
+</samp><samp class="n">name</samp><samp class="w"> </samp><samp class="c1">#=&gt; &quot;meg&quot;</samp></code></pre><p>By default, Elixir uses the record name as the first element of the tuple (the &quot;tag&quot;).
+However, a different tag can be specified when defining a record,
+as in the following example, in which we use <code class="inline">Customer</code> as the second argument of <a href="#defrecord/3"><code class="inline">defrecord/3</code></a>:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">User</samp><samp class="w"> </samp><samp class="k" data-group-id="5614702090-1">do</samp><samp class="w">
+  </samp><samp class="kn">require</samp><samp class="w"> </samp><samp class="nc">Record</samp><samp class="w">
+  </samp><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">defrecord</samp><samp class="p" data-group-id="5614702090-2">(</samp><samp class="ss">:user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Customer</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">nil</samp><samp class="p" data-group-id="5614702090-2">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="5614702090-1">end</samp><samp class="w">
+
+</samp><samp class="kn">require</samp><samp class="w"> </samp><samp class="nc">User</samp><samp class="w">
+</samp><samp class="nc">User</samp><samp class="o">.</samp><samp class="n">user</samp><samp class="p" data-group-id="5614702090-3">(</samp><samp class="p" data-group-id="5614702090-3">)</samp><samp class="w"> </samp><samp class="c1">#=&gt; {Customer, nil}</samp></code></pre><h2 id="defrecord/3-defining-extracted-records-with-anonymous-functions-in-the-values" class="section-heading"><a href="#defrecord/3-defining-extracted-records-with-anonymous-functions-in-the-values" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Defining extracted records with anonymous functions in the values</span></h2><p>If a record defines an anonymous function in the default values, an
+<a href="ArgumentError.xhtml"><code class="inline">ArgumentError</code></a> will be raised. This can happen unintentionally when defining
+a record after extracting it from an Erlang library that uses anonymous
+functions for defaults.</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">defrecord</samp><samp class="p" data-group-id="4886514441-1">(</samp><samp class="ss">:my_rec</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">extract</samp><samp class="p" data-group-id="4886514441-2">(</samp><samp class="n">...</samp><samp class="p" data-group-id="4886514441-2">)</samp><samp class="p" data-group-id="4886514441-1">)</samp><samp class="w">
+</samp><samp class="gt">** (ArgumentError) invalid value for record field fun_field,
+    cannot escape #Function&lt;12.90072148/2 in :erl_eval.expr/5&gt;.</samp></code></pre><p>To work around this error, redefine the field with your own &amp;M.f/a function,
+like so:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyRec</samp><samp class="w"> </samp><samp class="k" data-group-id="5862411423-1">do</samp><samp class="w">
+  </samp><samp class="kn">require</samp><samp class="w"> </samp><samp class="nc">Record</samp><samp class="w">
+  </samp><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">defrecord</samp><samp class="p" data-group-id="5862411423-2">(</samp><samp class="ss">:my_rec</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">extract</samp><samp class="p" data-group-id="5862411423-3">(</samp><samp class="n">...</samp><samp class="p" data-group-id="5862411423-3">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Keyword</samp><samp class="o">.</samp><samp class="n">merge</samp><samp class="p" data-group-id="5862411423-4">(</samp><samp class="ss">fun_field</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="bp">__MODULE__</samp><samp class="o">.</samp><samp class="n">foo</samp><samp class="o">/</samp><samp class="mi">2</samp><samp class="p" data-group-id="5862411423-4">)</samp><samp class="p" data-group-id="5862411423-2">)</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">foo</samp><samp class="p" data-group-id="5862411423-5">(</samp><samp class="n">bar</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">baz</samp><samp class="p" data-group-id="5862411423-5">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">IO</samp><samp class="o">.</samp><samp class="n">inspect</samp><samp class="p" data-group-id="5862411423-6">(</samp><samp class="p" data-group-id="5862411423-7">{</samp><samp class="n">bar</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">baz</samp><samp class="p" data-group-id="5862411423-7">}</samp><samp class="p" data-group-id="5862411423-6">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="5862411423-1">end</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="defrecordp/3">
+
+    <span id="defrecordp/2"></span>
+
+  <div class="detail-header">
+    <a href="#defrecordp/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">defrecordp(name, tag \\ nil, kv)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/record.ex#L269" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Same as <a href="#defrecord/3"><code class="inline">defrecord/3</code></a> but generates private macros.</p>
+  </section>
+</section>
+<section class="detail" id="extract/2">
+
+  <div class="detail-header">
+    <a href="#extract/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">extract(name, opts)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/record.ex#L102" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> extract(
+  name :: <a href="typespecs.xhtml#basic-types">atom</a>(),
+  <a href="typespecs.xhtml#built-in-types">keyword</a>()
+) :: <a href="typespecs.xhtml#built-in-types">keyword</a>()</pre>
+
+      </div>
+
+<p>Extracts record information from an Erlang file.</p><p>Returns a quoted expression containing the fields as a list
+of tuples.</p><p><code class="inline">name</code>, which is the name of the extracted record, is expected to be an atom
+<em>at compile time</em>.</p><h2 id="extract/2-options" class="section-heading"><a href="#extract/2-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><p>This function requires one of the following options, which are exclusive to each
+other (i.e., only one of them can be used in the same call):</p><ul><li><p><code class="inline">:from</code> - (binary representing a path to a file) path to the Erlang file
+that contains the record definition to extract; with this option, this
+function uses the same path lookup used by the <code class="inline">-include</code> attribute used in
+Erlang modules.</p></li><li><p><code class="inline">:from_lib</code> - (binary representing a path to a file) path to the Erlang
+file that contains the record definition to extract; with this option,
+this function uses the same path lookup used by the <code class="inline">-include_lib</code>
+attribute used in Erlang modules.</p></li></ul><p>It additionally accepts the following optional, non-exclusive options:</p><ul><li><p><code class="inline">:includes</code> - (a list of directories as binaries) if the record being
+extracted depends on relative includes, this option allows developers
+to specify the directory where those relative includes exist.</p></li><li><p><code class="inline">:macros</code> - (keyword list of macro names and values) if the record
+being extracted depends on the values of macros, this option allows
+the value of those macros to be set.</p></li></ul><p>These options are expected to be literals (including the binary values) at
+compile time.</p><h2 id="extract/2-examples" class="section-heading"><a href="#extract/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Record</samp><samp class="o">.</samp><samp class="n">extract</samp><samp class="p" data-group-id="5146725570-1">(</samp><samp class="ss">:file_info</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">from_lib</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;kernel/include/file.hrl&quot;</samp><samp class="p" data-group-id="5146725570-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5146725570-2">[</samp><samp class="w">
+  </samp><samp class="ss">size</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">access</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">atime</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">mtime</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">ctime</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">mode</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">links</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">major_device</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">minor_device</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">inode</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">uid</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">gid</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:undefined</samp><samp class="w">
+</samp><samp class="p" data-group-id="5146725570-2">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="extract_all/1">
+
+  <div class="detail-header">
+    <a href="#extract_all/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">extract_all(opts)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/record.ex#L119" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> extract_all(<a href="typespecs.xhtml#built-in-types">keyword</a>()) :: [{name :: <a href="typespecs.xhtml#basic-types">atom</a>(), <a href="typespecs.xhtml#built-in-types">keyword</a>()}]</pre>
+
+      </div>
+
+<p>Extracts all records information from an Erlang file.</p><p>Returns a keyword list of <code class="inline">{record_name, fields}</code> tuples where <code class="inline">record_name</code>
+is the name of an extracted record and <code class="inline">fields</code> is a list of <code class="inline">{field, value}</code>
+tuples representing the fields for that record.</p><h2 id="extract_all/1-options" class="section-heading"><a href="#extract_all/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><p>Accepts the same options as listed for <a href="#extract/2"><code class="inline">Record.extract/2</code></a>.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

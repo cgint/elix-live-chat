@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.JS - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.JS 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Provides commands for executing JavaScript utility operations on the client.</p><p>JS commands support a variety of utility operations for common client-side
+needs, such as adding or removing CSS classes, setting or removing tag attributes,
+showing or hiding content, and transitioning in and out with animations.
+While these operations can be accomplished via client-side hooks,
+JS commands are DOM-patch aware, so operations applied
+by the JS APIs will stick to elements across patches from the server.</p><p>In addition to purely client-side utilities, the JS commands include a
+rich <code class="inline">push</code> API, for extending the default <code class="inline">phx-</code> binding pushes with
+options to customize targets, loading states, and additional payload values.</p><p>If you need to trigger these commands via JavaScript, see <a href="js-interop.xhtml#js-commands">JavaScript interoperability</a>.</p><h2 id="module-client-utility-commands">Client Utility Commands</h2><p>The following utilities are included:</p><ul><li><code class="inline">add_class</code> - Add classes to elements, with optional transitions</li><li><code class="inline">remove_class</code> - Remove classes from elements, with optional transitions</li><li><code class="inline">toggle_class</code> - Sets or removes classes from elements, with optional transitions</li><li><code class="inline">set_attribute</code> - Set an attribute on elements</li><li><code class="inline">remove_attribute</code> - Remove an attribute from elements</li><li><code class="inline">toggle_attribute</code> - Sets or removes element attribute based on attribute presence.</li><li><code class="inline">ignore_attributes</code> - Marks attributes as ignored, skipping them when patching the DOM.</li><li><code class="inline">show</code> - Show elements, with optional transitions</li><li><code class="inline">hide</code> - Hide elements, with optional transitions</li><li><code class="inline">toggle</code> - Shows or hides elements based on visibility, with optional transitions</li><li><code class="inline">transition</code> - Apply a temporary transition to elements for animations</li><li><code class="inline">dispatch</code> - Dispatch a DOM event to elements</li></ul><p>For example, the following modal component can be shown or hidden on the
+client without a trip to the server:</p><pre><code class="makeup elixir" translate="no"><samp class="kn">alias</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveView.JS</samp><samp class="w">
+
+</samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">hide_modal</samp><samp class="p" data-group-id="5938344582-1">(</samp><samp class="n">js</samp><samp class="w"> </samp><samp class="o">\\</samp><samp class="w"> </samp><samp class="p" data-group-id="5938344582-2">%</samp><samp class="nc" data-group-id="5938344582-2">JS</samp><samp class="p" data-group-id="5938344582-2">{</samp><samp class="p" data-group-id="5938344582-2">}</samp><samp class="p" data-group-id="5938344582-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5938344582-3">do</samp><samp class="w">
+  </samp><samp class="n">js</samp><samp class="w">
+  </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">hide</samp><samp class="p" data-group-id="5938344582-4">(</samp><samp class="ss">transition</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;fade-out&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#modal&quot;</samp><samp class="p" data-group-id="5938344582-4">)</samp><samp class="w">
+  </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">hide</samp><samp class="p" data-group-id="5938344582-5">(</samp><samp class="ss">transition</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;fade-out-scale&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#modal-content&quot;</samp><samp class="p" data-group-id="5938344582-5">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="5938344582-3">end</samp><samp class="w">
+
+</samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">modal</samp><samp class="p" data-group-id="5938344582-6">(</samp><samp class="n">assigns</samp><samp class="p" data-group-id="5938344582-6">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5938344582-7">do</samp><samp class="w">
+  </samp><samp class="sx">~H&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">m</samp><samp class="s2">o</samp><samp class="s2">d</samp><samp class="s2">a</samp><samp class="s2">l</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">class</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">p</samp><samp class="s2">h</samp><samp class="s2">x</samp><samp class="s2">-</samp><samp class="s2">m</samp><samp class="s2">o</samp><samp class="s2">d</samp><samp class="s2">a</samp><samp class="s2">l</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">phx-remove</samp><samp class="p">=</samp><samp class="p" data-group-id="2003712611-1">{</samp><samp class="n">hide_modal</samp><samp class="p" data-group-id="5938344582-8">(</samp><samp class="p" data-group-id="5938344582-8">)</samp><samp class="p" data-group-id="2003712611-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w">
+</samp><samp class="w">      </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">m</samp><samp class="s2">o</samp><samp class="s2">d</samp><samp class="s2">a</samp><samp class="s2">l</samp><samp class="s2">-</samp><samp class="s2">c</samp><samp class="s2">o</samp><samp class="s2">n</samp><samp class="s2">t</samp><samp class="s2">e</samp><samp class="s2">n</samp><samp class="s2">t</samp><samp class="p">&quot;</samp><samp class="w">
+</samp><samp class="w">      </samp><samp class="na">class</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">p</samp><samp class="s2">h</samp><samp class="s2">x</samp><samp class="s2">-</samp><samp class="s2">m</samp><samp class="s2">o</samp><samp class="s2">d</samp><samp class="s2">a</samp><samp class="s2">l</samp><samp class="s2">-</samp><samp class="s2">c</samp><samp class="s2">o</samp><samp class="s2">n</samp><samp class="s2">t</samp><samp class="s2">e</samp><samp class="s2">n</samp><samp class="s2">t</samp><samp class="p">&quot;</samp><samp class="w">
+</samp><samp class="w">      </samp><samp class="na">phx-click-away</samp><samp class="p">=</samp><samp class="p" data-group-id="2003712611-2">{</samp><samp class="n">hide_modal</samp><samp class="p" data-group-id="5938344582-9">(</samp><samp class="p" data-group-id="5938344582-9">)</samp><samp class="p" data-group-id="2003712611-2">}</samp><samp class="w">
+</samp><samp class="w">      </samp><samp class="na">phx-window-keydown</samp><samp class="p">=</samp><samp class="p" data-group-id="2003712611-3">{</samp><samp class="n">hide_modal</samp><samp class="p" data-group-id="5938344582-10">(</samp><samp class="p" data-group-id="5938344582-10">)</samp><samp class="p" data-group-id="2003712611-3">}</samp><samp class="w">
+</samp><samp class="w">      </samp><samp class="na">phx-key</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">escape</samp><samp class="p">&quot;</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">      </samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">class</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">p</samp><samp class="s2">h</samp><samp class="s2">x</samp><samp class="s2">-</samp><samp class="s2">m</samp><samp class="s2">o</samp><samp class="s2">d</samp><samp class="s2">a</samp><samp class="s2">l</samp><samp class="s2">-</samp><samp class="s2">c</samp><samp class="s2">l</samp><samp class="s2">o</samp><samp class="s2">s</samp><samp class="s2">e</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="2003712611-4">{</samp><samp class="n">hide_modal</samp><samp class="p" data-group-id="5938344582-11">(</samp><samp class="p" data-group-id="5938344582-11">)</samp><samp class="p" data-group-id="2003712611-4">}</samp><samp class="p">&gt;</samp><samp class="n">✖</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">      </samp><samp class="p">&lt;</samp><samp class="nt">p</samp><samp class="p">&gt;</samp><samp class="p" data-group-id="2003712611-5">{</samp><samp class="na">@text</samp><samp class="p" data-group-id="2003712611-5">}</samp><samp class="p">&lt;/</samp><samp class="nt">p</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="sx">&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="k" data-group-id="5938344582-7">end</samp></code></pre><h2 id="module-enhanced-push-events">Enhanced push events</h2><p>The <a href="#push/1"><code class="inline">push/1</code></a> command allows you to extend the built-in pushed event handling
+when a <code class="inline">phx-</code> event is pushed to the server. For example, you may wish to
+target a specific component, specify additional payload values to include
+with the event, apply loading states to external elements, etc. For example,
+given this basic <code class="inline">phx-click</code> event:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">inc</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="n">+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre><p>Imagine you need to target your current component, and apply a loading state
+to the parent container while the client awaits the server acknowledgement:</p><pre><code class="makeup elixir" translate="no"><samp class="kn">alias</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveView.JS</samp><samp class="w">
+
+</samp><samp class="sx">~H&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="6975789845-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">push</samp><samp class="p" data-group-id="0574182402-1">(</samp><samp class="s">&quot;inc&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">loading</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;.thermo&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">target</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="na">@myself</samp><samp class="p" data-group-id="0574182402-1">)</samp><samp class="p" data-group-id="6975789845-1">}</samp><samp class="p">&gt;</samp><samp class="n">+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="sx">&quot;&quot;&quot;</samp></code></pre><p>Push commands also compose with all other utilities. For example,
+to add a class when pushing:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="2387879744-1">{</samp><samp class="w">
+  </samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">push</samp><samp class="p" data-group-id="2387879744-ex-1">(</samp><samp class="s">&quot;inc&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">loading</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;.thermo&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">target</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="na">@myself</samp><samp class="p" data-group-id="2387879744-ex-1">)</samp><samp class="w">
+  </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">add_class</samp><samp class="p" data-group-id="2387879744-ex-2">(</samp><samp class="s">&quot;warmer&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;.thermo&quot;</samp><samp class="p" data-group-id="2387879744-ex-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="2387879744-1">}</samp><samp class="p">&gt;</samp><samp class="n">+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre><p>Any <code class="inline">phx-value-*</code> attributes will also be included in the payload, their
+values will be overwritten by values given directly to <a href="#push/1"><code class="inline">push/1</code></a>. Any
+<code class="inline">phx-target</code> attribute will also be used, and overwritten.</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="7466401543-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">push</samp><samp class="p" data-group-id="7466401543-ex-1">(</samp><samp class="s">&quot;inc&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7466401543-ex-2">%{</samp><samp class="ss">limit</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">40</samp><samp class="p" data-group-id="7466401543-ex-2">}</samp><samp class="p" data-group-id="7466401543-ex-1">)</samp><samp class="p" data-group-id="7466401543-1">}</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="na">phx-value-room</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">bedroom</samp><samp class="p">&quot;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="na">phx-value-limit</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">this value will be 40</samp><samp class="p">&quot;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="na">phx-target</samp><samp class="p">=</samp><samp class="p" data-group-id="7466401543-2">{</samp><samp class="na">@myself</samp><samp class="p" data-group-id="7466401543-2">}</samp><samp class="w">
+</samp><samp class="p">&gt;</samp><samp class="n">+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre><h2 id="module-dom-selectors">DOM Selectors</h2><p>The client utility commands in this module all take an optional DOM selector
+using the <code class="inline">:to</code> option.</p><p>This can be a string for a regular DOM selector such as:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">add_class</samp><samp class="p" data-group-id="1643368584-1">(</samp><samp class="s">&quot;warmer&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;.thermo&quot;</samp><samp class="p" data-group-id="1643368584-1">)</samp><samp class="w">
+</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">hide</samp><samp class="p" data-group-id="1643368584-2">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#modal&quot;</samp><samp class="p" data-group-id="1643368584-2">)</samp><samp class="w">
+</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">show</samp><samp class="p" data-group-id="1643368584-3">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;body a:nth-child(2)&quot;</samp><samp class="p" data-group-id="1643368584-3">)</samp></code></pre><p>It is also possible to provide scopes to the DOM selector. The following scopes
+are available:</p><ul><li><code class="inline">{:inner, &quot;selector&quot;}</code> To target an element within the interacted element.</li><li><code class="inline">{:closest, &quot;selector&quot;}</code> To target the closest element from the interacted
+element upwards.</li></ul><p> For example, if building a dropdown component, the button could use the <code class="inline">:inner</code>
+ scope:</p><pre><code class="makeup heex" translate="no"><samp class="w"> </samp><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="3899272924-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">show</samp><samp class="p" data-group-id="3899272924-ex-1">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3899272924-ex-2">{</samp><samp class="ss">:inner</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;.menu&quot;</samp><samp class="p" data-group-id="3899272924-ex-2">}</samp><samp class="p" data-group-id="3899272924-ex-1">)</samp><samp class="p" data-group-id="3899272924-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">   </samp><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="n">Open me</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">   </samp><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">class</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">m</samp><samp class="s2">e</samp><samp class="s2">n</samp><samp class="s2">u </samp><samp class="s2">h</samp><samp class="s2">i</samp><samp class="s2">d</samp><samp class="s2">d</samp><samp class="s2">e</samp><samp class="s2">n</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">phx-click-away</samp><samp class="p">=</samp><samp class="p" data-group-id="3899272924-2">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">hide</samp><samp class="p" data-group-id="3899272924-ex-3">(</samp><samp class="p" data-group-id="3899272924-ex-3">)</samp><samp class="p" data-group-id="3899272924-2">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">     I&#39;m in the dropdown menu
+</samp><samp class="w">   </samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w"> </samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp></code></pre><h2 id="module-custom-js-events-with-js-dispatch-1-and-window-addeventlistener">Custom JS events with <code class="inline">JS.dispatch/1</code> and <code class="inline">window.addEventListener</code></h2><p><a href="#dispatch/1"><code class="inline">dispatch/1</code></a> can be used to dispatch custom JavaScript events to
+elements. For example, you can use <code class="inline">JS.dispatch(&quot;click&quot;, to: &quot;#foo&quot;)</code>,
+to dispatch a click event to an element.</p><p>This also means you can augment your elements with custom events,
+by using JavaScript's <code class="inline">window.addEventListener</code> and invoking them
+with <a href="#dispatch/1"><code class="inline">dispatch/1</code></a>. For example, imagine you want to provide
+a copy-to-clipboard functionality in your application. You can
+add a custom event for it:</p><pre><code class="makeup javascript" translate="no"><samp class="nb">window</samp><samp class="p">.</samp><samp class="nf">addEventListener</samp><samp class="p">(</samp><samp class="p">&quot;</samp><samp class="s2">my_app:clipcopy</samp><samp class="p">&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p">(</samp><samp class="nv">event</samp><samp class="p">)</samp><samp class="w"> </samp><samp class="kt">=&gt;</samp><samp class="w"> </samp><samp class="p">{</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="k">if</samp><samp class="w"> </samp><samp class="p">(</samp><samp class="p">&quot;</samp><samp class="s2">clipboard</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="o">in</samp><samp class="w"> </samp><samp class="nb">navigator</samp><samp class="p">)</samp><samp class="w"> </samp><samp class="p">{</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="kt">const</samp><samp class="w"> </samp><samp class="nv">text</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nv">event</samp><samp class="p">.</samp><samp class="n">target</samp><samp class="p">.</samp><samp class="n">textContent</samp><samp class="p">;</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="nb">navigator</samp><samp class="p">.</samp><samp class="n">clipboard</samp><samp class="p">.</samp><samp class="nf">writeText</samp><samp class="p">(</samp><samp class="nv">text</samp><samp class="p">)</samp><samp class="p">;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p">}</samp><samp class="w"> </samp><samp class="k">else</samp><samp class="w"> </samp><samp class="p">{</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="nf">alert</samp><samp class="p">(</samp><samp class="p">&quot;</samp><samp class="s2">Sorry, your browser does not support clipboard copy.</samp><samp class="p">&quot;</samp><samp class="p">)</samp><samp class="p">;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p">}</samp><samp class="w">
+</samp><samp class="p">}</samp><samp class="p">)</samp><samp class="p">;</samp></code></pre><p>Now you can have a button like this:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="2714465984-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">dispatch</samp><samp class="p" data-group-id="2714465984-ex-1">(</samp><samp class="s">&quot;my_app:clipcopy&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#element-with-text-to-copy&quot;</samp><samp class="p" data-group-id="2714465984-ex-1">)</samp><samp class="p" data-group-id="2714465984-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  Copy content
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre><p>The combination of <a href="#dispatch/1"><code class="inline">dispatch/1</code></a> with <code class="inline">window.addEventListener</code> is
+a powerful mechanism to increase the amount of actions you can trigger
+client-side from your LiveView code.</p><p>You can also use <code class="inline">window.addEventListener</code> to listen to events pushed
+from the server. You can learn more in our <a href="js-interop.xhtml">JS interoperability guide</a>.</p><h2 id="module-composing-js-commands">Composing JS commands</h2><p>All the functions in this module optionally accept an existing <code class="inline">%JS{}</code> struct as the first argument,
+allowing you to chain multiple commands, like pushing an event to the server and optimistically hiding
+a modal:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">m</samp><samp class="s2">o</samp><samp class="s2">d</samp><samp class="s2">a</samp><samp class="s2">l</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">class</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">m</samp><samp class="s2">o</samp><samp class="s2">d</samp><samp class="s2">a</samp><samp class="s2">l</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  My Modal
+</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="4125460186-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">push</samp><samp class="p" data-group-id="4125460186-ex-1">(</samp><samp class="s">&quot;modal-closed&quot;</samp><samp class="p" data-group-id="4125460186-ex-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">remove_class</samp><samp class="p" data-group-id="4125460186-ex-2">(</samp><samp class="s">&quot;show&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#modal&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">transition</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;fade-out&quot;</samp><samp class="p" data-group-id="4125460186-ex-2">)</samp><samp class="p" data-group-id="4125460186-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  hide modal
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre><p>Note that the commands themselves are executed on the client in the order they are composed
+and the client does not wait for a confirmation before executing the next command. If you chain
+<code class="inline">JS.push(...) |&gt; JS.hide(...)</code>, since hide is a fully client-side command, it hides immediately
+after pushing the event, not waiting for the server to respond.</p><p>JS commands interacting with the server are documented as such. If you chain multiple commands that
+interact with the server, those are also guaranteed to be executed in the order they are composed,
+since a LiveView can only handle one event at a time. Therefore, if you do something like</p><pre><code class="makeup elixir" translate="no"><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">push</samp><samp class="p" data-group-id="1672661755-1">(</samp><samp class="s">&quot;my-event&quot;</samp><samp class="p" data-group-id="1672661755-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">patch</samp><samp class="p" data-group-id="1672661755-2">(</samp><samp class="s">&quot;/my-path?foo=bar&quot;</samp><samp class="p" data-group-id="1672661755-2">)</samp></code></pre><p>it is guaranteed that the event will be pushed first and the patch will only be handled after
+the first event was handled by the LiveView.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:internal/0" data-no-tooltip="" translate="no">internal()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_class/1" data-no-tooltip="" translate="no">add_class(names)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds classes to elements.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_class/2" data-no-tooltip="" translate="no">add_class(js, names)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">add_class/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_class/3" data-no-tooltip="" translate="no">add_class(js, names, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">add_class/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#concat/2" data-no-tooltip="" translate="no">concat(js1, js2)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Combines two JS commands, appending the second to the first.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#dispatch/2" data-no-tooltip="" translate="no">dispatch(js \\ %JS{}, event)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Dispatches an event to the DOM.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#dispatch/3" data-no-tooltip="" translate="no">dispatch(js, event, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">dispatch/2</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#exec/1" data-no-tooltip="" translate="no">exec(attr)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Executes JS commands located in an element's attribute.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#exec/2" data-no-tooltip="" translate="no">exec(attr, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">exec/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#exec/3" data-no-tooltip="" translate="no">exec(js, attr, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">exec/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#focus/1" data-no-tooltip="" translate="no">focus(opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends focus to a selector.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#focus/2" data-no-tooltip="" translate="no">focus(js, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">focus/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#focus_first/1" data-no-tooltip="" translate="no">focus_first(opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends focus to the first focusable child in selector.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#focus_first/2" data-no-tooltip="" translate="no">focus_first(js, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">focus_first/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#hide/1" data-no-tooltip="" translate="no">hide(opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Hides elements.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#hide/2" data-no-tooltip="" translate="no">hide(js, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">hide/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ignore_attributes/1" data-no-tooltip="" translate="no">ignore_attributes(attrs)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Mark attributes as ignored, skipping them when patching the DOM.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ignore_attributes/2" data-no-tooltip="" translate="no">ignore_attributes(attrs, opts)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ignore_attributes/3" data-no-tooltip="" translate="no">ignore_attributes(js, attrs, opts)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#navigate/1" data-no-tooltip="" translate="no">navigate(href)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a navigation event to the server and updates the browser's pushState history.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#navigate/2" data-no-tooltip="" translate="no">navigate(href, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">navigate/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#navigate/3" data-no-tooltip="" translate="no">navigate(js, href, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">navigate/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#patch/1" data-no-tooltip="" translate="no">patch(href)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a patch event to the server and updates the browser's pushState history.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#patch/2" data-no-tooltip="" translate="no">patch(href, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">patch/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#patch/3" data-no-tooltip="" translate="no">patch(js, href, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">patch/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#pop_focus/1" data-no-tooltip="" translate="no">pop_focus(js \\ %JS{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Focuses the last pushed element.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#push/1" data-no-tooltip="" translate="no">push(event)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Pushes an event to the server.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#push/2" data-no-tooltip="" translate="no">push(event, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">push/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#push/3" data-no-tooltip="" translate="no">push(js, event, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">push/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#push_focus/1" data-no-tooltip="" translate="no">push_focus(opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Pushes focus from the source element to be later popped.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#push_focus/2" data-no-tooltip="" translate="no">push_focus(js, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">push_focus/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#remove_attribute/1" data-no-tooltip="" translate="no">remove_attribute(attr)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Removes an attribute from elements.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#remove_attribute/2" data-no-tooltip="" translate="no">remove_attribute(attr, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">remove_attribute/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#remove_attribute/3" data-no-tooltip="" translate="no">remove_attribute(js, attr, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">remove_attribute/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#remove_class/1" data-no-tooltip="" translate="no">remove_class(names)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Removes classes from elements.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#remove_class/2" data-no-tooltip="" translate="no">remove_class(js, names)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">remove_class/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#remove_class/3" data-no-tooltip="" translate="no">remove_class(js, names, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">remove_class/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_attribute/1" data-no-tooltip="" translate="no">set_attribute(arg)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets an attribute on elements.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_attribute/2" data-no-tooltip="" translate="no">set_attribute(js, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">set_attribute/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_attribute/3" data-no-tooltip="" translate="no">set_attribute(js, arg, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">set_attribute/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#show/1" data-no-tooltip="" translate="no">show(opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Shows elements.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#show/2" data-no-tooltip="" translate="no">show(js, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">show/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#toggle/1" data-no-tooltip="" translate="no">toggle(opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Toggles element visibility.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#toggle/2" data-no-tooltip="" translate="no">toggle(js, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">toggle/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#toggle_attribute/1" data-no-tooltip="" translate="no">toggle_attribute(arg)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets or removes element attribute based on attribute presence.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#toggle_attribute/2" data-no-tooltip="" translate="no">toggle_attribute(js, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">toggle_attribute/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#toggle_attribute/3" data-no-tooltip="" translate="no">toggle_attribute(js, arg, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">toggle_attribute/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#toggle_class/1" data-no-tooltip="" translate="no">toggle_class(names)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds or removes element classes based on presence.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#toggle_class/2" data-no-tooltip="" translate="no">toggle_class(js, names)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#toggle_class/3" data-no-tooltip="" translate="no">toggle_class(js, names, opts)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#transition/1" data-no-tooltip="" translate="no">transition(transition)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Transitions elements.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#transition/2" data-no-tooltip="" translate="no">transition(transition, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">transition/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#transition/3" data-no-tooltip="" translate="no">transition(js, transition, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a><code class="inline">transition/1</code></a>.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:internal/0">
+
+  <div class="detail-header">
+    <a href="#t:internal/0" class="detail-link" data-no-tooltip="" aria-label="Link to this opaque">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">internal()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L214" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@opaque</span> internal()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L215" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %Phoenix.LiveView.JS{ops: <a href="#t:internal/0">internal</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="add_class/1">
+
+  <div class="detail-header">
+    <a href="#add_class/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_class(names)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L587" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds classes to elements.</p><ul><li><code class="inline">names</code> - A string with one or more class names to add.</li></ul><h2 id="add_class/1-options" class="section-heading"><a href="#add_class/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to add classes to.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li><li><code class="inline">:transition</code> - A string of classes to apply before adding classes or
+a 3-tuple containing the transition class, the class to apply
+to start the transition, and the ending transition class, such as:
+<code class="inline">{&quot;ease-out duration-300&quot;, &quot;opacity-0&quot;, &quot;opacity-100&quot;}</code></li><li><code class="inline">:time</code> - The time in milliseconds to apply the transition from <code class="inline">:transition</code>.
+Defaults to 200.</li><li><code class="inline">:blocking</code> - A boolean flag to block the UI during the transition. Defaults <code class="inline">true</code>.</li></ul><h2 id="add_class/1-examples" class="section-heading"><a href="#add_class/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">i</samp><samp class="s2">t</samp><samp class="s2">e</samp><samp class="s2">m</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="n">My Item</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="9425460618-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">add_class</samp><samp class="p" data-group-id="9425460618-ex-1">(</samp><samp class="s">&quot;highlight underline&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#item&quot;</samp><samp class="p" data-group-id="9425460618-ex-1">)</samp><samp class="p" data-group-id="9425460618-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  highlight!
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="add_class/2">
+
+  <div class="detail-header">
+    <a href="#add_class/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_class(js, names)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L590" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#add_class/1"><code class="inline">add_class/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="add_class/3">
+
+  <div class="detail-header">
+    <a href="#add_class/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_class(js, names, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L599" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#add_class/1"><code class="inline">add_class/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="concat/2">
+
+  <div class="detail-header">
+    <a href="#concat/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">concat(js1, js2)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1123" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Combines two JS commands, appending the second to the first.</p>
+  </section>
+</section>
+<section class="detail" id="dispatch/2">
+
+    <span id="dispatch/1"></span>
+
+  <div class="detail-header">
+    <a href="#dispatch/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">dispatch(js \\ %JS{}, event)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L316" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Dispatches an event to the DOM.</p><ul><li><code class="inline">event</code> - The string event name to dispatch.</li></ul><p><em>Note</em>: All events dispatched are of a type
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent">CustomEvent</a>,
+with the exception of <code class="inline">&quot;click&quot;</code>. For a <code class="inline">&quot;click&quot;</code>, a
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent">MouseEvent</a>
+is dispatched to properly simulate a UI click.</p><p>For emitted <code class="inline">CustomEvent</code>'s, the event detail will contain a <code class="inline">dispatcher</code>,
+which references the DOM node that dispatched the JS event to the target
+element.</p><h2 id="dispatch/2-options" class="section-heading"><a href="#dispatch/2-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to dispatch the event to.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li><li><code class="inline">:detail</code> - An optional detail map to dispatch along
+with the client event. The details will be available in the
+<code class="inline">event.detail</code> attribute for event listeners.</li><li><code class="inline">:bubbles</code> – A boolean flag to bubble the event or not. Defaults to <code class="inline">true</code>.</li><li><code class="inline">:blocking</code> - A boolean flag to block the UI until the event handler calls <code class="inline">event.detail.done()</code>.
+The done function is injected by LiveView and <em>must</em> be called eventually to unblock the UI.
+This is useful to integrate with third party JavaScript based animation libraries.</li></ul><h2 id="dispatch/2-examples" class="section-heading"><a href="#dispatch/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup javascript" translate="no"><samp class="nb">window</samp><samp class="p">.</samp><samp class="nf">addEventListener</samp><samp class="p">(</samp><samp class="p">&quot;</samp><samp class="s2">click</samp><samp class="p">&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nv">e</samp><samp class="w"> </samp><samp class="kt">=&gt;</samp><samp class="w"> </samp><samp class="nb">console</samp><samp class="p">.</samp><samp class="nf">log</samp><samp class="p">(</samp><samp class="p">&quot;</samp><samp class="s2">clicked!</samp><samp class="p">&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nv">e</samp><samp class="p">.</samp><samp class="n">detail</samp><samp class="p">)</samp><samp class="p">)</samp></code></pre><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="9898343285-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">dispatch</samp><samp class="p" data-group-id="9898343285-ex-1">(</samp><samp class="s">&quot;click&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;.nav&quot;</samp><samp class="p" data-group-id="9898343285-ex-1">)</samp><samp class="p" data-group-id="9898343285-1">}</samp><samp class="p">&gt;</samp><samp class="n">Click me!</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="dispatch/3">
+
+  <div class="detail-header">
+    <a href="#dispatch/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">dispatch(js, event, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L321" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#dispatch/2"><code class="inline">dispatch/2</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="exec/1">
+
+  <div class="detail-header">
+    <a href="#exec/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">exec(attr)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1101" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Executes JS commands located in an element's attribute.</p><ul><li><code class="inline">attr</code> - The string attribute where the JS command is specified</li></ul><h2 id="exec/1-options" class="section-heading"><a href="#exec/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to fetch the attribute from.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li></ul><h2 id="exec/1-examples" class="section-heading"><a href="#exec/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">m</samp><samp class="s2">o</samp><samp class="s2">d</samp><samp class="s2">a</samp><samp class="s2">l</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">phx-remove</samp><samp class="p">=</samp><samp class="p" data-group-id="9289196206-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">hide</samp><samp class="p" data-group-id="9289196206-ex-1">(</samp><samp class="s">&quot;#modal&quot;</samp><samp class="p" data-group-id="9289196206-ex-1">)</samp><samp class="p" data-group-id="9289196206-1">}</samp><samp class="p">&gt;</samp><samp class="n">...</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="9289196206-2">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">exec</samp><samp class="p" data-group-id="9289196206-ex-2">(</samp><samp class="s">&quot;phx-remove&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#modal&quot;</samp><samp class="p" data-group-id="9289196206-ex-2">)</samp><samp class="p" data-group-id="9289196206-2">}</samp><samp class="p">&gt;</samp><samp class="n">close</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="exec/2">
+
+  <div class="detail-header">
+    <a href="#exec/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">exec(attr, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1106" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#exec/1"><code class="inline">exec/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="exec/3">
+
+  <div class="detail-header">
+    <a href="#exec/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">exec(js, attr, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1115" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#exec/1"><code class="inline">exec/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="focus/1">
+
+    <span id="focus/0"></span>
+
+  <div class="detail-header">
+    <a href="#focus/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">focus(opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L955" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends focus to a selector.</p><h2 id="focus/1-options" class="section-heading"><a href="#focus/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to send focus to.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li></ul><h2 id="focus/1-examples" class="section-heading"><a href="#focus/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">focus</samp><samp class="p" data-group-id="3677757452-1">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;main&quot;</samp><samp class="p" data-group-id="3677757452-1">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="focus/2">
+
+  <div class="detail-header">
+    <a href="#focus/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">focus(js, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L960" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#focus/1"><code class="inline">focus/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="focus_first/1">
+
+    <span id="focus_first/0"></span>
+
+  <div class="detail-header">
+    <a href="#focus_first/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">focus_first(opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L978" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends focus to the first focusable child in selector.</p><h2 id="focus_first/1-options" class="section-heading"><a href="#focus_first/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to focus.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li></ul><h2 id="focus_first/1-examples" class="section-heading"><a href="#focus_first/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">focus_first</samp><samp class="p" data-group-id="9616328507-1">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#modal&quot;</samp><samp class="p" data-group-id="9616328507-1">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="focus_first/2">
+
+  <div class="detail-header">
+    <a href="#focus_first/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">focus_first(js, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L983" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#focus_first/1"><code class="inline">focus_first/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="hide/1">
+
+    <span id="hide/0"></span>
+
+  <div class="detail-header">
+    <a href="#hide/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">hide(opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L542" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Hides elements.</p><p><em>Note</em>: Only targets elements that are visible, meaning they have a height and/or width greater than zero.</p><h2 id="hide/1-options" class="section-heading"><a href="#hide/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to hide.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li><li><code class="inline">:transition</code> - A string of classes to apply before hiding or
+a 3-tuple containing the transition class, the class to apply
+to start the transition, and the ending transition class, such as:
+<code class="inline">{&quot;ease-out duration-300&quot;, &quot;opacity-100&quot;, &quot;opacity-0&quot;}</code></li><li><code class="inline">:time</code> - The time in milliseconds to apply the transition from <code class="inline">:transition</code>.
+Defaults to 200.</li><li><code class="inline">:blocking</code> - A boolean flag to block the UI during the transition. Defaults <code class="inline">true</code>.</li></ul><p>During the process, the following events will be dispatched to the hidden elements:</p><ul><li>When the action is triggered on the client, <code class="inline">phx:hide-start</code> is dispatched.</li><li>After the time specified by <code class="inline">:time</code>, <code class="inline">phx:hide-end</code> is dispatched.</li></ul><h2 id="hide/1-examples" class="section-heading"><a href="#hide/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">i</samp><samp class="s2">t</samp><samp class="s2">e</samp><samp class="s2">m</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="n">My Item</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="8072297892-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">hide</samp><samp class="p" data-group-id="8072297892-ex-1">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#item&quot;</samp><samp class="p" data-group-id="8072297892-ex-1">)</samp><samp class="p" data-group-id="8072297892-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  hide!
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="8072297892-2">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">hide</samp><samp class="p" data-group-id="8072297892-ex-2">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#item&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">transition</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;fade-out-scale&quot;</samp><samp class="p" data-group-id="8072297892-ex-2">)</samp><samp class="p" data-group-id="8072297892-2">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  hide fancy!
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="hide/2">
+
+  <div class="detail-header">
+    <a href="#hide/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">hide(js, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L547" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#hide/1"><code class="inline">hide/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="ignore_attributes/1">
+
+  <div class="detail-header">
+    <a href="#ignore_attributes/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ignore_attributes(attrs)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L924" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Mark attributes as ignored, skipping them when patching the DOM.</p><p>Accepts a single attribute name or a list of attribute names.
+An asterisk <code class="inline">*</code> can be used as a wildcard.</p><p>Once set, the given attributes will not be patched across LiveView updates.
+This includes attributes that are removed by the server.</p><p>If you need to &quot;unmark&quot; an attribute, you need to call <a href="#ignore_attributes/1"><code class="inline">ignore_attributes/1</code></a> again
+with an updated list of attributes.</p><p>This is mostly useful in combination with the <code class="inline">phx-mounted</code> binding, for example:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">dialog</samp><samp class="w"> </samp><samp class="na">phx-mounted</samp><samp class="p">=</samp><samp class="p" data-group-id="0314635443-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">ignore_attributes</samp><samp class="p" data-group-id="0314635443-ex-1">(</samp><samp class="s">&quot;open&quot;</samp><samp class="p" data-group-id="0314635443-ex-1">)</samp><samp class="p" data-group-id="0314635443-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  ...
+</samp><samp class="p">&lt;/</samp><samp class="nt">dialog</samp><samp class="p">&gt;</samp></code></pre><h2 id="ignore_attributes/1-options" class="section-heading"><a href="#ignore_attributes/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to select the target element.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li></ul><h2 id="ignore_attributes/1-examples" class="section-heading"><a href="#ignore_attributes/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">ignore_attributes</samp><samp class="p" data-group-id="5979171696-1">(</samp><samp class="p" data-group-id="5979171696-2">[</samp><samp class="s">&quot;open&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;data-*&quot;</samp><samp class="p" data-group-id="5979171696-2">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#my-dialog&quot;</samp><samp class="p" data-group-id="5979171696-1">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="ignore_attributes/2">
+
+  <div class="detail-header">
+    <a href="#ignore_attributes/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ignore_attributes(attrs, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L927" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="ignore_attributes/3">
+
+  <div class="detail-header">
+    <a href="#ignore_attributes/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ignore_attributes(js, attrs, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L930" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="navigate/1">
+
+  <div class="detail-header">
+    <a href="#navigate/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">navigate(href)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1034" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a navigation event to the server and updates the browser's pushState history.</p><h2 id="navigate/1-options" class="section-heading"><a href="#navigate/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:replace</code> - Whether to replace the browser's pushState history. Defaults to <code class="inline">false</code>.</li></ul><h2 id="navigate/1-examples" class="section-heading"><a href="#navigate/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">navigate</samp><samp class="p" data-group-id="9910556913-1">(</samp><samp class="s">&quot;/my-path&quot;</samp><samp class="p" data-group-id="9910556913-1">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="navigate/2">
+
+  <div class="detail-header">
+    <a href="#navigate/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">navigate(href, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1039" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#navigate/1"><code class="inline">navigate/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="navigate/3">
+
+  <div class="detail-header">
+    <a href="#navigate/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">navigate(js, href, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1048" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#navigate/1"><code class="inline">navigate/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="patch/1">
+
+  <div class="detail-header">
+    <a href="#patch/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">patch(href)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1064" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a patch event to the server and updates the browser's pushState history.</p><h2 id="patch/1-options" class="section-heading"><a href="#patch/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:replace</code> - Whether to replace the browser's pushState history. Defaults to <code class="inline">false</code>.</li></ul><h2 id="patch/1-examples" class="section-heading"><a href="#patch/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">patch</samp><samp class="p" data-group-id="7193290771-1">(</samp><samp class="s">&quot;/my-path&quot;</samp><samp class="p" data-group-id="7193290771-1">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="patch/2">
+
+  <div class="detail-header">
+    <a href="#patch/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">patch(href, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1069" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#patch/1"><code class="inline">patch/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="patch/3">
+
+  <div class="detail-header">
+    <a href="#patch/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">patch(js, href, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1078" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#patch/1"><code class="inline">patch/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="pop_focus/1">
+
+    <span id="pop_focus/0"></span>
+
+  <div class="detail-header">
+    <a href="#pop_focus/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">pop_focus(js \\ %JS{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1019" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Focuses the last pushed element.</p><h2 id="pop_focus/1-examples" class="section-heading"><a href="#pop_focus/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">pop_focus</samp><samp class="p" data-group-id="1122986895-1">(</samp><samp class="p" data-group-id="1122986895-1">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="push/1">
+
+  <div class="detail-header">
+    <a href="#push/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">push(event)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L254" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Pushes an event to the server.</p><ul><li><code class="inline">event</code> - The string event name to push.</li></ul><h2 id="push/1-options" class="section-heading"><a href="#push/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:target</code> - A selector or component ID to push to. This value will
+overwrite any <code class="inline">phx-target</code> attribute present on the element.</li><li><code class="inline">:loading</code> - A selector to apply the phx loading classes to,
+such as <code class="inline">phx-click-loading</code> in case the event was triggered by
+<code class="inline">phx-click</code>. The element will be locked from server updates
+until the push is acknowledged by the server.</li><li><code class="inline">:page_loading</code> - Boolean to trigger the phx:page-loading-start and
+phx:page-loading-stop events for this push. Defaults to <code class="inline">false</code>.</li><li><code class="inline">:value</code> - A map of values to send to the server. These values will be
+merged over any <code class="inline">phx-value-*</code> attributes that are present on the element.
+All keys will be treated as strings when merging. When used on a form event
+like <code class="inline">phx-change</code> or <code class="inline">phx-submit</code>, the precedence is
+<code class="inline">JS.push value &gt; phx-value-* &gt; input value</code>.</li></ul><h2 id="push/1-examples" class="section-heading"><a href="#push/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="0348805337-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">push</samp><samp class="p" data-group-id="0348805337-ex-1">(</samp><samp class="s">&quot;clicked&quot;</samp><samp class="p" data-group-id="0348805337-ex-1">)</samp><samp class="p" data-group-id="0348805337-1">}</samp><samp class="p">&gt;</samp><samp class="n">click me!</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="0348805337-2">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">push</samp><samp class="p" data-group-id="0348805337-ex-2">(</samp><samp class="s">&quot;clicked&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0348805337-ex-3">%{</samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="na">@id</samp><samp class="p" data-group-id="0348805337-ex-3">}</samp><samp class="p" data-group-id="0348805337-ex-2">)</samp><samp class="p" data-group-id="0348805337-2">}</samp><samp class="p">&gt;</samp><samp class="n">click me!</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="0348805337-3">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">push</samp><samp class="p" data-group-id="0348805337-ex-4">(</samp><samp class="s">&quot;clicked&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">page_loading</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p" data-group-id="0348805337-ex-4">)</samp><samp class="p" data-group-id="0348805337-3">}</samp><samp class="p">&gt;</samp><samp class="n">click me!</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="push/2">
+
+  <div class="detail-header">
+    <a href="#push/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">push(event, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L259" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#push/1"><code class="inline">push/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="push/3">
+
+  <div class="detail-header">
+    <a href="#push/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">push(js, event, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L268" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#push/1"><code class="inline">push/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="push_focus/1">
+
+    <span id="push_focus/0"></span>
+
+  <div class="detail-header">
+    <a href="#push_focus/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">push_focus(opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1002" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Pushes focus from the source element to be later popped.</p><h2 id="push_focus/1-options" class="section-heading"><a href="#push_focus/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to push focus to.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li></ul><h2 id="push_focus/1-examples" class="section-heading"><a href="#push_focus/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">push_focus</samp><samp class="p" data-group-id="4265639690-1">(</samp><samp class="p" data-group-id="4265639690-1">)</samp><samp class="w">
+</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">push_focus</samp><samp class="p" data-group-id="4265639690-2">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#my-button&quot;</samp><samp class="p" data-group-id="4265639690-2">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="push_focus/2">
+
+  <div class="detail-header">
+    <a href="#push_focus/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">push_focus(js, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L1007" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#push_focus/1"><code class="inline">push_focus/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="remove_attribute/1">
+
+  <div class="detail-header">
+    <a href="#remove_attribute/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">remove_attribute(attr)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L825" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Removes an attribute from elements.</p><ul><li><code class="inline">attr</code> - The string attribute name to remove.</li></ul><h2 id="remove_attribute/1-options" class="section-heading"><a href="#remove_attribute/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to remove attributes from.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li></ul><h2 id="remove_attribute/1-examples" class="section-heading"><a href="#remove_attribute/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="9379617087-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">remove_attribute</samp><samp class="p" data-group-id="9379617087-ex-1">(</samp><samp class="s">&quot;aria-expanded&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#dropdown&quot;</samp><samp class="p" data-group-id="9379617087-ex-1">)</samp><samp class="p" data-group-id="9379617087-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  hide
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="remove_attribute/2">
+
+  <div class="detail-header">
+    <a href="#remove_attribute/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">remove_attribute(attr, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L828" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#remove_attribute/1"><code class="inline">remove_attribute/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="remove_attribute/3">
+
+  <div class="detail-header">
+    <a href="#remove_attribute/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">remove_attribute(js, attr, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L834" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#remove_attribute/1"><code class="inline">remove_attribute/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="remove_class/1">
+
+  <div class="detail-header">
+    <a href="#remove_class/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">remove_class(names)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L689" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Removes classes from elements.</p><ul><li><code class="inline">names</code> - A string with one or more class names to remove.</li></ul><h2 id="remove_class/1-options" class="section-heading"><a href="#remove_class/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to remove classes from.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li><li><code class="inline">:transition</code> - A string of classes to apply before removing classes or
+a 3-tuple containing the transition class, the class to apply
+to start the transition, and the ending transition class, such as:
+<code class="inline">{&quot;ease-out duration-300&quot;, &quot;opacity-0&quot;, &quot;opacity-100&quot;}</code></li><li><code class="inline">:time</code> - The time in milliseconds to apply the transition from <code class="inline">:transition</code>.
+Defaults to 200.</li><li><code class="inline">:blocking</code> - A boolean flag to block the UI during the transition. Defaults <code class="inline">true</code>.</li></ul><h2 id="remove_class/1-examples" class="section-heading"><a href="#remove_class/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">i</samp><samp class="s2">t</samp><samp class="s2">e</samp><samp class="s2">m</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="n">My Item</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="5520390427-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">remove_class</samp><samp class="p" data-group-id="5520390427-ex-1">(</samp><samp class="s">&quot;highlight underline&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#item&quot;</samp><samp class="p" data-group-id="5520390427-ex-1">)</samp><samp class="p" data-group-id="5520390427-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  remove highlight!
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="remove_class/2">
+
+  <div class="detail-header">
+    <a href="#remove_class/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">remove_class(js, names)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L692" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#remove_class/1"><code class="inline">remove_class/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="remove_class/3">
+
+  <div class="detail-header">
+    <a href="#remove_class/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">remove_class(js, names, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L701" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#remove_class/1"><code class="inline">remove_class/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="set_attribute/1">
+
+  <div class="detail-header">
+    <a href="#set_attribute/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_attribute(arg)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L792" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sets an attribute on elements.</p><p>Accepts a tuple containing the string attribute name/value pair.</p><h2 id="set_attribute/1-options" class="section-heading"><a href="#set_attribute/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to add attributes to.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li></ul><h2 id="set_attribute/1-examples" class="section-heading"><a href="#set_attribute/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="3899612986-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">set_attribute</samp><samp class="p" data-group-id="3899612986-ex-1">(</samp><samp class="p" data-group-id="3899612986-ex-2">{</samp><samp class="s">&quot;aria-expanded&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;true&quot;</samp><samp class="p" data-group-id="3899612986-ex-2">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#dropdown&quot;</samp><samp class="p" data-group-id="3899612986-ex-1">)</samp><samp class="p" data-group-id="3899612986-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  show
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="set_attribute/2">
+
+  <div class="detail-header">
+    <a href="#set_attribute/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_attribute(js, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L795" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#set_attribute/1"><code class="inline">set_attribute/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="set_attribute/3">
+
+  <div class="detail-header">
+    <a href="#set_attribute/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_attribute(js, arg, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L801" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#set_attribute/1"><code class="inline">set_attribute/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="show/1">
+
+    <span id="show/0"></span>
+
+  <div class="detail-header">
+    <a href="#show/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">show(opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L486" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Shows elements.</p><p><em>Note</em>: Only targets elements that are hidden, meaning they have a height and/or width equal to zero.</p><h2 id="show/1-options" class="section-heading"><a href="#show/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to show.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li><li><code class="inline">:transition</code> - A string of classes to apply before showing or
+a 3-tuple containing the transition class, the class to apply
+to start the transition, and the ending transition class, such as:
+<code class="inline">{&quot;ease-out duration-300&quot;, &quot;opacity-0&quot;, &quot;opacity-100&quot;}</code></li><li><code class="inline">:time</code> - The time in milliseconds to apply the transition from <code class="inline">:transition</code>.
+Defaults to 200.</li><li><code class="inline">:blocking</code> - A boolean flag to block the UI during the transition. Defaults <code class="inline">true</code>.</li><li><code class="inline">:display</code> - An optional display value to set when showing. Defaults to <code class="inline">&quot;block&quot;</code>.</li></ul><p>During the process, the following events will be dispatched to the shown elements:</p><ul><li>When the action is triggered on the client, <code class="inline">phx:show-start</code> is dispatched.</li><li>After the time specified by <code class="inline">:time</code>, <code class="inline">phx:show-end</code> is dispatched.</li></ul><h2 id="show/1-examples" class="section-heading"><a href="#show/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">i</samp><samp class="s2">t</samp><samp class="s2">e</samp><samp class="s2">m</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="n">My Item</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="6344814302-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">show</samp><samp class="p" data-group-id="6344814302-ex-1">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#item&quot;</samp><samp class="p" data-group-id="6344814302-ex-1">)</samp><samp class="p" data-group-id="6344814302-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  show!
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="6344814302-2">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">show</samp><samp class="p" data-group-id="6344814302-ex-2">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#item&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">transition</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;fade-in-scale&quot;</samp><samp class="p" data-group-id="6344814302-ex-2">)</samp><samp class="p" data-group-id="6344814302-2">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  show fancy!
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="show/2">
+
+  <div class="detail-header">
+    <a href="#show/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">show(js, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L491" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#show/1"><code class="inline">show/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="toggle/1">
+
+    <span id="toggle/0"></span>
+
+  <div class="detail-header">
+    <a href="#toggle/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">toggle(opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L427" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Toggles element visibility.</p><h2 id="toggle/1-options" class="section-heading"><a href="#toggle/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to toggle.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li><li><code class="inline">:in</code> - A string of classes to apply when toggling in, or
+a 3-tuple containing the transition class, the class to apply
+to start the transition, and the ending transition class, such as:
+<code class="inline">{&quot;ease-out duration-300&quot;, &quot;opacity-0&quot;, &quot;opacity-100&quot;}</code></li><li><code class="inline">:out</code> - A string of classes to apply when toggling out, or
+a 3-tuple containing the transition class, the class to apply
+to start the transition, and the ending transition class, such as:
+<code class="inline">{&quot;ease-out duration-300&quot;, &quot;opacity-100&quot;, &quot;opacity-0&quot;}</code></li><li><code class="inline">:time</code> - The time in milliseconds to apply the transition <code class="inline">:in</code> and <code class="inline">:out</code> classes.
+Defaults to 200.</li><li><code class="inline">:display</code> - An optional display value to set when toggling in. Defaults
+to <code class="inline">&quot;block&quot;</code>.</li><li><code class="inline">:blocking</code> - A boolean flag to block the UI during the transition. Defaults <code class="inline">true</code>.</li></ul><p>When the toggle is complete on the client, a <code class="inline">phx:show-start</code> or <code class="inline">phx:hide-start</code>, and
+<code class="inline">phx:show-end</code> or <code class="inline">phx:hide-end</code> event will be dispatched to the toggled elements.</p><h2 id="toggle/1-examples" class="section-heading"><a href="#toggle/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">i</samp><samp class="s2">t</samp><samp class="s2">e</samp><samp class="s2">m</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="n">My Item</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="7850408284-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">toggle</samp><samp class="p" data-group-id="7850408284-ex-1">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#item&quot;</samp><samp class="p" data-group-id="7850408284-ex-1">)</samp><samp class="p" data-group-id="7850408284-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  toggle item!
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="7850408284-2">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">toggle</samp><samp class="p" data-group-id="7850408284-ex-2">(</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#item&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">in</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;fade-in-scale&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">out</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;fade-out-scale&quot;</samp><samp class="p" data-group-id="7850408284-ex-2">)</samp><samp class="p" data-group-id="7850408284-2">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  toggle fancy!
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="toggle/2">
+
+  <div class="detail-header">
+    <a href="#toggle/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">toggle(js, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L432" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#toggle/1"><code class="inline">toggle/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="toggle_attribute/1">
+
+  <div class="detail-header">
+    <a href="#toggle_attribute/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">toggle_attribute(arg)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L866" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sets or removes element attribute based on attribute presence.</p><p>Accepts a two or three-element tuple:</p><ul><li><code class="inline">{attr, val}</code> - Sets the attribute to the given value or removes it</li><li><code class="inline">{attr, val1, val2}</code> - Toggles the attribute between <code class="inline">val1</code> and <code class="inline">val2</code></li></ul><h2 id="toggle_attribute/1-options" class="section-heading"><a href="#toggle_attribute/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to set or remove attributes from.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li></ul><h2 id="toggle_attribute/1-examples" class="section-heading"><a href="#toggle_attribute/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="9343478014-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">toggle_attribute</samp><samp class="p" data-group-id="9343478014-ex-1">(</samp><samp class="p" data-group-id="9343478014-ex-2">{</samp><samp class="s">&quot;aria-expanded&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;true&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;false&quot;</samp><samp class="p" data-group-id="9343478014-ex-2">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#dropdown&quot;</samp><samp class="p" data-group-id="9343478014-ex-1">)</samp><samp class="p" data-group-id="9343478014-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  toggle
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="9343478014-2">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">toggle_attribute</samp><samp class="p" data-group-id="9343478014-ex-3">(</samp><samp class="p" data-group-id="9343478014-ex-4">{</samp><samp class="s">&quot;open&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;true&quot;</samp><samp class="p" data-group-id="9343478014-ex-4">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#dialog&quot;</samp><samp class="p" data-group-id="9343478014-ex-3">)</samp><samp class="p" data-group-id="9343478014-2">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  toggle
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="toggle_attribute/2">
+
+  <div class="detail-header">
+    <a href="#toggle_attribute/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">toggle_attribute(js, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L870" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#toggle_attribute/1"><code class="inline">toggle_attribute/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="toggle_attribute/3">
+
+  <div class="detail-header">
+    <a href="#toggle_attribute/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">toggle_attribute(js, arg, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L882" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#toggle_attribute/1"><code class="inline">toggle_attribute/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="toggle_class/1">
+
+  <div class="detail-header">
+    <a href="#toggle_class/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">toggle_class(names)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L639" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds or removes element classes based on presence.</p><ul><li><code class="inline">names</code> - A string with one or more class names to toggle.</li></ul><h2 id="toggle_class/1-options" class="section-heading"><a href="#toggle_class/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to target.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li><li><code class="inline">:transition</code> - A string of classes to apply before adding classes or
+a 3-tuple containing the transition class, the class to apply
+to start the transition, and the ending transition class, such as:
+<code class="inline">{&quot;ease-out duration-300&quot;, &quot;opacity-0&quot;, &quot;opacity-100&quot;}</code></li><li><code class="inline">:time</code> - The time in milliseconds to apply the transition from <code class="inline">:transition</code>.
+Defaults to 200.</li><li><code class="inline">:blocking</code> - A boolean flag to block the UI during the transition. Defaults <code class="inline">true</code>.</li></ul><h2 id="toggle_class/1-examples" class="section-heading"><a href="#toggle_class/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">i</samp><samp class="s2">t</samp><samp class="s2">e</samp><samp class="s2">m</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="n">My Item</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="7398939977-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">toggle_class</samp><samp class="p" data-group-id="7398939977-ex-1">(</samp><samp class="s">&quot;active&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#item&quot;</samp><samp class="p" data-group-id="7398939977-ex-1">)</samp><samp class="p" data-group-id="7398939977-1">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  toggle active!
+</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="toggle_class/2">
+
+  <div class="detail-header">
+    <a href="#toggle_class/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">toggle_class(js, names)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L641" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="toggle_class/3">
+
+  <div class="detail-header">
+    <a href="#toggle_class/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">toggle_class(js, names, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L649" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="transition/1">
+
+  <div class="detail-header">
+    <a href="#transition/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">transition(transition)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L745" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Transitions elements.</p><ul><li><code class="inline">transition</code> - A string of classes to apply during the transition or
+a 3-tuple containing the transition class, the class to apply
+to start the transition, and the ending transition class, such as:
+<code class="inline">{&quot;ease-out duration-300&quot;, &quot;opacity-0&quot;, &quot;opacity-100&quot;}</code></li></ul><p>Transitions are useful for temporarily adding an animation class
+to elements, such as for highlighting content changes.</p><h2 id="transition/1-options" class="section-heading"><a href="#transition/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:to</code> - An optional DOM selector to apply transitions to.
+Defaults to the interacted element. See the <code class="inline">DOM selectors</code>
+section for details.</li><li><code class="inline">:time</code> - The time in milliseconds to apply the transition from <code class="inline">:transition</code>.
+Defaults to 200.</li><li><code class="inline">:blocking</code> - A boolean flag to block the UI during the transition. Defaults <code class="inline">true</code>.</li></ul><h2 id="transition/1-examples" class="section-heading"><a href="#transition/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">i</samp><samp class="s2">t</samp><samp class="s2">e</samp><samp class="s2">m</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="n">My Item</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">button</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p" data-group-id="5143610965-1">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">transition</samp><samp class="p" data-group-id="5143610965-ex-1">(</samp><samp class="s">&quot;shake&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;#item&quot;</samp><samp class="p" data-group-id="5143610965-ex-1">)</samp><samp class="p" data-group-id="5143610965-1">}</samp><samp class="p">&gt;</samp><samp class="n">Shake!</samp><samp class="p">&lt;/</samp><samp class="nt">button</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="w"> </samp><samp class="na">phx-mounted</samp><samp class="p">=</samp><samp class="p" data-group-id="5143610965-2">{</samp><samp class="nc">JS</samp><samp class="o">.</samp><samp class="n">transition</samp><samp class="p" data-group-id="5143610965-ex-2">(</samp><samp class="p" data-group-id="5143610965-ex-3">{</samp><samp class="s">&quot;ease-out duration-300&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;opacity-0&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;opacity-100&quot;</samp><samp class="p" data-group-id="5143610965-ex-3">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">time</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">300</samp><samp class="p" data-group-id="5143610965-ex-2">)</samp><samp class="p" data-group-id="5143610965-2">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">    duration-300 milliseconds matches time: 300 milliseconds
+</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="transition/2">
+
+  <div class="detail-header">
+    <a href="#transition/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">transition(transition, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L750" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#transition/1"><code class="inline">transition/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="transition/3">
+
+  <div class="detail-header">
+    <a href="#transition/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">transition(js, transition, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/js.ex#L760" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>See <a href="#transition/1"><code class="inline">transition/1</code></a>.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

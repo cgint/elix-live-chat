@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Integer - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Integer 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Functions for working with integers.</p><p>Some functions that work on integers are found in <a href="Kernel.xhtml"><code class="inline">Kernel</code></a>:</p><ul><li><a href="Kernel.xhtml#abs/1"><code class="inline">Kernel.abs/1</code></a></li><li><a href="Kernel.xhtml#div/2"><code class="inline">Kernel.div/2</code></a></li><li><a href="Kernel.xhtml#max/2"><code class="inline">Kernel.max/2</code></a></li><li><a href="Kernel.xhtml#min/2"><code class="inline">Kernel.min/2</code></a></li><li><a href="Kernel.xhtml#rem/2"><code class="inline">Kernel.rem/2</code></a></li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-guards summary">
+  <h2>
+    <a href="#guards">Guards</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#is_even/1" data-no-tooltip="" translate="no">is_even(integer)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Determines if an <code class="inline">integer</code> is even.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#is_odd/1" data-no-tooltip="" translate="no">is_odd(integer)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Determines if <code class="inline">integer</code> is odd.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#digits/2" data-no-tooltip="" translate="no">digits(integer, base \\ 10)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the ordered digits for the given <code class="inline">integer</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#extended_gcd/2" data-no-tooltip="" translate="no">extended_gcd(a, b)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the extended greatest common divisor of the two given integers.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#floor_div/2" data-no-tooltip="" translate="no">floor_div(dividend, divisor)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Performs a floored integer division.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#gcd/2" data-no-tooltip="" translate="no">gcd(integer1, integer2)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the greatest common divisor of the two given integers.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#mod/2" data-no-tooltip="" translate="no">mod(dividend, divisor)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Computes the modulo remainder of an integer division.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#parse/2" data-no-tooltip="" translate="no">parse(binary, base \\ 10)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Parses a text representation of an integer.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#pow/2" data-no-tooltip="" translate="no">pow(base, exponent)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Computes <code class="inline">base</code> raised to power of <code class="inline">exponent</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_charlist/2" data-no-tooltip="" translate="no">to_charlist(integer, base \\ 10)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a charlist which corresponds to the text representation
+of <code class="inline">integer</code> in the given <code class="inline">base</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_string/2" data-no-tooltip="" translate="no">to_string(integer, base \\ 10)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a binary which corresponds to the text representation
+of <code class="inline">integer</code> in the given <code class="inline">base</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#undigits/2" data-no-tooltip="" translate="no">undigits(digits, base \\ 10)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the integer represented by the ordered <code class="inline">digits</code>.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="guards" class="details-list">
+        <h1 class="section-heading">Guards</h1>
+
+        <div class="guards-list">
+<section class="detail" id="is_even/1">
+
+  <div class="detail-header">
+    <a href="#is_even/1" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">is_even(integer)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L65" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Determines if an <code class="inline">integer</code> is even.</p><p>Returns <code class="inline">true</code> if the given <code class="inline">integer</code> is an even number,
+otherwise it returns <code class="inline">false</code>.</p><p>Allowed in guard clauses.</p><h2 id="is_even/1-examples" class="section-heading"><a href="#is_even/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">is_even</samp><samp class="p" data-group-id="1673827835-1">(</samp><samp class="mi">10</samp><samp class="p" data-group-id="1673827835-1">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">is_even</samp><samp class="p" data-group-id="1673827835-2">(</samp><samp class="mi">5</samp><samp class="p" data-group-id="1673827835-2">)</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">is_even</samp><samp class="p" data-group-id="1673827835-3">(</samp><samp class="o">-</samp><samp class="mi">10</samp><samp class="p" data-group-id="1673827835-3">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">is_even</samp><samp class="p" data-group-id="1673827835-4">(</samp><samp class="mi">0</samp><samp class="p" data-group-id="1673827835-4">)</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="is_odd/1">
+
+  <div class="detail-header">
+    <a href="#is_odd/1" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">is_odd(integer)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L40" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Determines if <code class="inline">integer</code> is odd.</p><p>Returns <code class="inline">true</code> if the given <code class="inline">integer</code> is an odd number,
+otherwise it returns <code class="inline">false</code>.</p><p>Allowed in guard clauses.</p><h2 id="is_odd/1-examples" class="section-heading"><a href="#is_odd/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">is_odd</samp><samp class="p" data-group-id="8419498813-1">(</samp><samp class="mi">5</samp><samp class="p" data-group-id="8419498813-1">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">is_odd</samp><samp class="p" data-group-id="8419498813-2">(</samp><samp class="mi">6</samp><samp class="p" data-group-id="8419498813-2">)</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">is_odd</samp><samp class="p" data-group-id="8419498813-3">(</samp><samp class="o">-</samp><samp class="mi">5</samp><samp class="p" data-group-id="8419498813-3">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">is_odd</samp><samp class="p" data-group-id="8419498813-4">(</samp><samp class="mi">0</samp><samp class="p" data-group-id="8419498813-4">)</samp><samp class="w">
+</samp><samp class="no">false</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="digits/2">
+
+    <span id="digits/1"></span>
+
+  <div class="detail-header">
+    <a href="#digits/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">digits(integer, base \\ 10)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L190" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> digits(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">pos_integer</a>()) :: [<a href="typespecs.xhtml#basic-types">integer</a>(), ...]</pre>
+
+      </div>
+
+<p>Returns the ordered digits for the given <code class="inline">integer</code>.</p><p>An optional <code class="inline">base</code> value may be provided representing the radix for the returned
+digits. This one must be an integer &gt;= 2.</p><h2 id="digits/2-examples" class="section-heading"><a href="#digits/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">digits</samp><samp class="p" data-group-id="0159178660-1">(</samp><samp class="mi">123</samp><samp class="p" data-group-id="0159178660-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0159178660-2">[</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="0159178660-2">]</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">digits</samp><samp class="p" data-group-id="0159178660-3">(</samp><samp class="mi">170</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="0159178660-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0159178660-4">[</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="0159178660-4">]</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">digits</samp><samp class="p" data-group-id="0159178660-5">(</samp><samp class="o">-</samp><samp class="mi">170</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="0159178660-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0159178660-6">[</samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="0159178660-6">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="extended_gcd/2">
+
+  <div class="detail-header">
+    <a href="#extended_gcd/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">extended_gcd(a, b)</h1>
+
+        <span class="note">(since 1.12.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L467" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> extended_gcd(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">integer</a>()) :: {<a href="typespecs.xhtml#basic-types">non_neg_integer</a>(), <a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">integer</a>()}</pre>
+
+      </div>
+
+<p>Returns the extended greatest common divisor of the two given integers.</p><p>This function uses the extended Euclidean algorithm to return a three-element tuple with the <code class="inline">gcd</code>
+and the coefficients <code class="inline">m</code> and <code class="inline">n</code> of Bézout's identity such that:</p><pre><code class="makeup elixir" translate="no"><samp class="n">gcd</samp><samp class="p" data-group-id="8473237518-1">(</samp><samp class="n">a</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">b</samp><samp class="p" data-group-id="8473237518-1">)</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">m</samp><samp class="o">*</samp><samp class="n">a</samp><samp class="w"> </samp><samp class="o">+</samp><samp class="w"> </samp><samp class="n">n</samp><samp class="o">*</samp><samp class="n">b</samp></code></pre><p>By convention, <code class="inline">extended_gcd(0, 0)</code> returns <code class="inline">{0, 0, 0}</code>.</p><h2 id="extended_gcd/2-examples" class="section-heading"><a href="#extended_gcd/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">extended_gcd</samp><samp class="p" data-group-id="1812039615-1">(</samp><samp class="mi">240</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">46</samp><samp class="p" data-group-id="1812039615-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1812039615-2">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">9</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">47</samp><samp class="p" data-group-id="1812039615-2">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">extended_gcd</samp><samp class="p" data-group-id="1812039615-3">(</samp><samp class="mi">46</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">240</samp><samp class="p" data-group-id="1812039615-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1812039615-4">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">47</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">9</samp><samp class="p" data-group-id="1812039615-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">extended_gcd</samp><samp class="p" data-group-id="1812039615-5">(</samp><samp class="o">-</samp><samp class="mi">46</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">240</samp><samp class="p" data-group-id="1812039615-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1812039615-6">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">47</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">9</samp><samp class="p" data-group-id="1812039615-6">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">extended_gcd</samp><samp class="p" data-group-id="1812039615-7">(</samp><samp class="o">-</samp><samp class="mi">46</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">240</samp><samp class="p" data-group-id="1812039615-7">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1812039615-8">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">47</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">9</samp><samp class="p" data-group-id="1812039615-8">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">extended_gcd</samp><samp class="p" data-group-id="1812039615-9">(</samp><samp class="mi">14</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">21</samp><samp class="p" data-group-id="1812039615-9">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1812039615-10">{</samp><samp class="mi">7</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="1812039615-10">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">extended_gcd</samp><samp class="p" data-group-id="1812039615-11">(</samp><samp class="mi">10</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="1812039615-11">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1812039615-12">{</samp><samp class="mi">10</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="1812039615-12">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">extended_gcd</samp><samp class="p" data-group-id="1812039615-13">(</samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">10</samp><samp class="p" data-group-id="1812039615-13">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1812039615-14">{</samp><samp class="mi">10</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="1812039615-14">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">extended_gcd</samp><samp class="p" data-group-id="1812039615-15">(</samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="1812039615-15">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1812039615-16">{</samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="1812039615-16">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="floor_div/2">
+
+  <div class="detail-header">
+    <a href="#floor_div/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">floor_div(dividend, divisor)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L163" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> floor_div(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">neg_integer</a>() | <a href="typespecs.xhtml#basic-types">pos_integer</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Performs a floored integer division.</p><p>Raises an <a href="ArithmeticError.xhtml"><code class="inline">ArithmeticError</code></a> exception if one of the arguments is not an
+integer, or when the <code class="inline">divisor</code> is <code class="inline">0</code>.</p><p>This function performs a <em>floored</em> integer division, which means that
+the result will always be rounded towards negative infinity.</p><p>If you want to perform truncated integer division (rounding towards zero),
+use <a href="Kernel.xhtml#div/2"><code class="inline">Kernel.div/2</code></a> instead.</p><h2 id="floor_div/2-examples" class="section-heading"><a href="#floor_div/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">floor_div</samp><samp class="p" data-group-id="2804871045-1">(</samp><samp class="mi">5</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="2804871045-1">)</samp><samp class="w">
+</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">floor_div</samp><samp class="p" data-group-id="2804871045-2">(</samp><samp class="mi">6</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">4</samp><samp class="p" data-group-id="2804871045-2">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">floor_div</samp><samp class="p" data-group-id="2804871045-3">(</samp><samp class="o">-</samp><samp class="mi">99</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="2804871045-3">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">50</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="gcd/2">
+
+  <div class="detail-header">
+    <a href="#gcd/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">gcd(integer1, integer2)</h1>
+
+        <span class="note">(since 1.5.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L425" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> gcd(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">integer</a>()) :: <a href="typespecs.xhtml#basic-types">non_neg_integer</a>()</pre>
+
+      </div>
+
+<p>Returns the greatest common divisor of the two given integers.</p><p>The greatest common divisor (GCD) of <code class="inline">integer1</code> and <code class="inline">integer2</code> is the largest positive
+integer that divides both <code class="inline">integer1</code> and <code class="inline">integer2</code> without leaving a remainder.</p><p>By convention, <code class="inline">gcd(0, 0)</code> returns <code class="inline">0</code>.</p><h2 id="gcd/2-examples" class="section-heading"><a href="#gcd/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">gcd</samp><samp class="p" data-group-id="6434163727-1">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="6434163727-1">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">gcd</samp><samp class="p" data-group-id="6434163727-2">(</samp><samp class="mi">8</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">12</samp><samp class="p" data-group-id="6434163727-2">)</samp><samp class="w">
+</samp><samp class="mi">4</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">gcd</samp><samp class="p" data-group-id="6434163727-3">(</samp><samp class="mi">8</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">12</samp><samp class="p" data-group-id="6434163727-3">)</samp><samp class="w">
+</samp><samp class="mi">4</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">gcd</samp><samp class="p" data-group-id="6434163727-4">(</samp><samp class="mi">10</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="6434163727-4">)</samp><samp class="w">
+</samp><samp class="mi">10</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">gcd</samp><samp class="p" data-group-id="6434163727-5">(</samp><samp class="mi">7</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">7</samp><samp class="p" data-group-id="6434163727-5">)</samp><samp class="w">
+</samp><samp class="mi">7</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">gcd</samp><samp class="p" data-group-id="6434163727-6">(</samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="6434163727-6">)</samp><samp class="w">
+</samp><samp class="mi">0</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="mod/2">
+
+  <div class="detail-header">
+    <a href="#mod/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">mod(dividend, divisor)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L129" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> mod(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">neg_integer</a>() | <a href="typespecs.xhtml#basic-types">pos_integer</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Computes the modulo remainder of an integer division.</p><p>This function performs a <a href="#floor_div/2">floored division</a>, which means that
+the result will always have the sign of the <code class="inline">divisor</code>.</p><p>Raises an <a href="ArithmeticError.xhtml"><code class="inline">ArithmeticError</code></a> exception if one of the arguments is not an
+integer, or when the <code class="inline">divisor</code> is <code class="inline">0</code>.</p><h2 id="mod/2-examples" class="section-heading"><a href="#mod/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">mod</samp><samp class="p" data-group-id="9226000904-1">(</samp><samp class="mi">5</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9226000904-1">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">mod</samp><samp class="p" data-group-id="9226000904-2">(</samp><samp class="mi">6</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">4</samp><samp class="p" data-group-id="9226000904-2">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">2</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="parse/2">
+
+    <span id="parse/1"></span>
+
+  <div class="detail-header">
+    <a href="#parse/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">parse(binary, base \\ 10)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L276" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> parse(<a href="typespecs.xhtml#built-in-types">binary</a>(), 2..36) :: {<a href="typespecs.xhtml#basic-types">integer</a>(), remainder_of_binary :: <a href="typespecs.xhtml#built-in-types">binary</a>()} | :error</pre>
+
+      </div>
+
+<p>Parses a text representation of an integer.</p><p>An optional <code class="inline">base</code> to the corresponding integer can be provided.
+If <code class="inline">base</code> is not given, 10 will be used.</p><p>If successful, returns a tuple in the form of <code class="inline">{integer, remainder_of_binary}</code>.
+Otherwise <code class="inline">:error</code>.</p><p>Raises an error if <code class="inline">base</code> is less than 2 or more than 36.</p><p>If you want to convert a string-formatted integer directly to an integer,
+<a href="String.xhtml#to_integer/1"><code class="inline">String.to_integer/1</code></a> or <a href="String.xhtml#to_integer/2"><code class="inline">String.to_integer/2</code></a> can be used instead.</p><h2 id="parse/2-examples" class="section-heading"><a href="#parse/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="4346724407-1">(</samp><samp class="s">&quot;34&quot;</samp><samp class="p" data-group-id="4346724407-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4346724407-2">{</samp><samp class="mi">34</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;&quot;</samp><samp class="p" data-group-id="4346724407-2">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="4346724407-3">(</samp><samp class="s">&quot;34.5&quot;</samp><samp class="p" data-group-id="4346724407-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4346724407-4">{</samp><samp class="mi">34</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;.5&quot;</samp><samp class="p" data-group-id="4346724407-4">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="4346724407-5">(</samp><samp class="s">&quot;three&quot;</samp><samp class="p" data-group-id="4346724407-5">)</samp><samp class="w">
+</samp><samp class="ss">:error</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="4346724407-6">(</samp><samp class="s">&quot;34&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">10</samp><samp class="p" data-group-id="4346724407-6">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4346724407-7">{</samp><samp class="mi">34</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;&quot;</samp><samp class="p" data-group-id="4346724407-7">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="4346724407-8">(</samp><samp class="s">&quot;f4&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">16</samp><samp class="p" data-group-id="4346724407-8">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4346724407-9">{</samp><samp class="mi">244</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;&quot;</samp><samp class="p" data-group-id="4346724407-9">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="4346724407-10">(</samp><samp class="s">&quot;Awww++&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">36</samp><samp class="p" data-group-id="4346724407-10">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4346724407-11">{</samp><samp class="mi">509216</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;++&quot;</samp><samp class="p" data-group-id="4346724407-11">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="4346724407-12">(</samp><samp class="s">&quot;fab&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">10</samp><samp class="p" data-group-id="4346724407-12">)</samp><samp class="w">
+</samp><samp class="ss">:error</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="4346724407-13">(</samp><samp class="s">&quot;a2&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">38</samp><samp class="p" data-group-id="4346724407-13">)</samp><samp class="w">
+</samp><samp class="gt">** (ArgumentError) invalid base 38</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="pow/2">
+
+  <div class="detail-header">
+    <a href="#pow/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">pow(base, exponent)</h1>
+
+        <span class="note">(since 1.12.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L105" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> pow(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">non_neg_integer</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Computes <code class="inline">base</code> raised to power of <code class="inline">exponent</code>.</p><p>Both <code class="inline">base</code> and <code class="inline">exponent</code> must be integers.
+The exponent must be zero or positive.</p><p>See <a href="Float.xhtml#pow/2"><code class="inline">Float.pow/2</code></a> for exponentiation of negative
+exponents as well as floats.</p><h2 id="pow/2-examples" class="section-heading"><a href="#pow/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="5660853259-1">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="5660853259-1">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="5660853259-2">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="5660853259-2">)</samp><samp class="w">
+</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="5660853259-3">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">10</samp><samp class="p" data-group-id="5660853259-3">)</samp><samp class="w">
+</samp><samp class="mi">1024</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="5660853259-4">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">11</samp><samp class="p" data-group-id="5660853259-4">)</samp><samp class="w">
+</samp><samp class="mi">2048</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="5660853259-5">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">64</samp><samp class="p" data-group-id="5660853259-5">)</samp><samp class="w">
+</samp><samp class="mh">0x10000000000000000</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="5660853259-6">(</samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="5660853259-6">)</samp><samp class="w">
+</samp><samp class="mi">81</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="5660853259-7">(</samp><samp class="mi">4</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="5660853259-7">)</samp><samp class="w">
+</samp><samp class="mi">64</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="5660853259-8">(</samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="5660853259-8">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">8</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="5660853259-9">(</samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="5660853259-9">)</samp><samp class="w">
+</samp><samp class="mi">16</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="5660853259-10">(</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="p" data-group-id="5660853259-10">)</samp><samp class="w">
+</samp><samp class="gt">** (ArithmeticError) bad argument in arithmetic expression</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="to_charlist/2">
+
+    <span id="to_charlist/1"></span>
+
+  <div class="detail-header">
+    <a href="#to_charlist/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_charlist(integer, base \\ 10)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L390" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_charlist(<a href="typespecs.xhtml#basic-types">integer</a>(), 2..36) :: <a href="typespecs.xhtml#built-in-types">charlist</a>()</pre>
+
+      </div>
+
+<p>Returns a charlist which corresponds to the text representation
+of <code class="inline">integer</code> in the given <code class="inline">base</code>.</p><p><code class="inline">base</code> can be an integer between 2 and 36. If no <code class="inline">base</code> is given,
+it defaults to <code class="inline">10</code>.</p><p>Inlined by the compiler.</p><h2 id="to_charlist/2-examples" class="section-heading"><a href="#to_charlist/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_charlist</samp><samp class="p" data-group-id="5647096583-1">(</samp><samp class="mi">123</samp><samp class="p" data-group-id="5647096583-1">)</samp><samp class="w">
+</samp><samp class="s">~c&quot;123&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_charlist</samp><samp class="p" data-group-id="5647096583-2">(</samp><samp class="o">+</samp><samp class="mi">456</samp><samp class="p" data-group-id="5647096583-2">)</samp><samp class="w">
+</samp><samp class="s">~c&quot;456&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_charlist</samp><samp class="p" data-group-id="5647096583-3">(</samp><samp class="o">-</samp><samp class="mi">789</samp><samp class="p" data-group-id="5647096583-3">)</samp><samp class="w">
+</samp><samp class="s">~c&quot;-789&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_charlist</samp><samp class="p" data-group-id="5647096583-4">(</samp><samp class="mi">0123</samp><samp class="p" data-group-id="5647096583-4">)</samp><samp class="w">
+</samp><samp class="s">~c&quot;123&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_charlist</samp><samp class="p" data-group-id="5647096583-5">(</samp><samp class="mi">100</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">16</samp><samp class="p" data-group-id="5647096583-5">)</samp><samp class="w">
+</samp><samp class="s">~c&quot;64&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_charlist</samp><samp class="p" data-group-id="5647096583-6">(</samp><samp class="o">-</samp><samp class="mi">100</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">16</samp><samp class="p" data-group-id="5647096583-6">)</samp><samp class="w">
+</samp><samp class="s">~c&quot;-64&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_charlist</samp><samp class="p" data-group-id="5647096583-7">(</samp><samp class="mi">882_681_651</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">36</samp><samp class="p" data-group-id="5647096583-7">)</samp><samp class="w">
+</samp><samp class="s">~c&quot;ELIXIR&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="to_string/2">
+
+    <span id="to_string/1"></span>
+
+  <div class="detail-header">
+    <a href="#to_string/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_string(integer, base \\ 10)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L352" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_string(<a href="typespecs.xhtml#basic-types">integer</a>(), 2..36) :: <a href="String.xhtml#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Returns a binary which corresponds to the text representation
+of <code class="inline">integer</code> in the given <code class="inline">base</code>.</p><p><code class="inline">base</code> can be an integer between 2 and 36. If no <code class="inline">base</code> is given,
+it defaults to <code class="inline">10</code>.</p><p>Inlined by the compiler.</p><h2 id="to_string/2-examples" class="section-heading"><a href="#to_string/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="5840900673-1">(</samp><samp class="mi">123</samp><samp class="p" data-group-id="5840900673-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;123&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="5840900673-2">(</samp><samp class="o">+</samp><samp class="mi">456</samp><samp class="p" data-group-id="5840900673-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;456&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="5840900673-3">(</samp><samp class="o">-</samp><samp class="mi">789</samp><samp class="p" data-group-id="5840900673-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;-789&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="5840900673-4">(</samp><samp class="mi">0123</samp><samp class="p" data-group-id="5840900673-4">)</samp><samp class="w">
+</samp><samp class="s">&quot;123&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="5840900673-5">(</samp><samp class="mi">100</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">16</samp><samp class="p" data-group-id="5840900673-5">)</samp><samp class="w">
+</samp><samp class="s">&quot;64&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="5840900673-6">(</samp><samp class="o">-</samp><samp class="mi">100</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">16</samp><samp class="p" data-group-id="5840900673-6">)</samp><samp class="w">
+</samp><samp class="s">&quot;-64&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="5840900673-7">(</samp><samp class="mi">882_681_651</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">36</samp><samp class="p" data-group-id="5840900673-7">)</samp><samp class="w">
+</samp><samp class="s">&quot;ELIXIR&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="undigits/2">
+
+    <span id="undigits/1"></span>
+
+  <div class="detail-header">
+    <a href="#undigits/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">undigits(digits, base \\ 10)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/integer.ex#L222" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> undigits([<a href="typespecs.xhtml#basic-types">integer</a>()], <a href="typespecs.xhtml#basic-types">pos_integer</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Returns the integer represented by the ordered <code class="inline">digits</code>.</p><p>An optional <code class="inline">base</code> value may be provided representing the radix for the <code class="inline">digits</code>.
+Base has to be an integer greater than or equal to <code class="inline">2</code>.</p><h2 id="undigits/2-examples" class="section-heading"><a href="#undigits/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">undigits</samp><samp class="p" data-group-id="3107043607-1">(</samp><samp class="p" data-group-id="3107043607-2">[</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="3107043607-2">]</samp><samp class="p" data-group-id="3107043607-1">)</samp><samp class="w">
+</samp><samp class="mi">123</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">undigits</samp><samp class="p" data-group-id="3107043607-3">(</samp><samp class="p" data-group-id="3107043607-4">[</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="3107043607-4">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">16</samp><samp class="p" data-group-id="3107043607-3">)</samp><samp class="w">
+</samp><samp class="mi">20</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Integer</samp><samp class="o">.</samp><samp class="n">undigits</samp><samp class="p" data-group-id="3107043607-5">(</samp><samp class="p" data-group-id="3107043607-6">[</samp><samp class="p" data-group-id="3107043607-6">]</samp><samp class="p" data-group-id="3107043607-5">)</samp><samp class="w">
+</samp><samp class="mi">0</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

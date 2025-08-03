@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Policy.Info - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Policy.Info 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>An authorization extension for ash resources.</p><p>For more information, see <a href="Ash.Policy.Authorizer.xhtml"><code class="inline">Ash.Policy.Authorizer</code></a></p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#default_access_type/1" data-no-tooltip="" translate="no">default_access_type(resource)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#describe_resource/2" data-no-tooltip="" translate="no">describe_resource(domain, resource)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#field_policies/1" data-no-tooltip="" translate="no">field_policies(resource)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#field_policies_for_field/2" data-no-tooltip="" translate="no">field_policies_for_field(resource, field)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the field policies relevant to a given field</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#log_policy_breakdowns/0" data-no-tooltip="" translate="no">log_policy_breakdowns()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The log level at which Ash policy authorizer logs policy breakdowns. Defaults to none.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#log_successful_policy_breakdowns/0" data-no-tooltip="" translate="no">log_successful_policy_breakdowns()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The log level at which Ash policy authorizer logs successful policy breakdowns. Defaults to none.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#policies/2" data-no-tooltip="" translate="no">policies(domain \\ nil, resource)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#private_fields_policy/1" data-no-tooltip="" translate="no">private_fields_policy(resource)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#show_policy_breakdowns?/0" data-no-tooltip="" translate="no">show_policy_breakdowns?()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not Ash policy authorizer is configured to show policy breakdowns in error messages</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#strict_check/3" data-no-tooltip="" translate="no">strict_check(actor, query, domain)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A utility to determine if a given query/changeset would pass authorization.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="default_access_type/1">
+
+  <div class="detail-header">
+    <a href="#default_access_type/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">default_access_type(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/info.ex#L187" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="describe_resource/2">
+
+  <div class="detail-header">
+    <a href="#describe_resource/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">describe_resource(domain, resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/info.ex#L96" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="field_policies/1">
+
+  <div class="detail-header">
+    <a href="#field_policies/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">field_policies(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/info.ex#L140" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="field_policies_for_field/2">
+
+  <div class="detail-header">
+    <a href="#field_policies_for_field/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">field_policies_for_field(resource, field)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/info.ex#L26" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Gets the field policies relevant to a given field</p>
+  </section>
+</section>
+<section class="detail" id="log_policy_breakdowns/0">
+
+  <div class="detail-header">
+    <a href="#log_policy_breakdowns/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">log_policy_breakdowns()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/info.ex#L16" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>The log level at which Ash policy authorizer logs policy breakdowns. Defaults to none.</p>
+  </section>
+</section>
+<section class="detail" id="log_successful_policy_breakdowns/0">
+
+  <div class="detail-header">
+    <a href="#log_successful_policy_breakdowns/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">log_successful_policy_breakdowns()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/info.ex#L21" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>The log level at which Ash policy authorizer logs successful policy breakdowns. Defaults to none.</p>
+  </section>
+</section>
+<section class="detail" id="policies/2">
+
+    <span id="policies/1"></span>
+
+  <div class="detail-header">
+    <a href="#policies/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">policies(domain \\ nil, resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/info.ex#L158" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="private_fields_policy/1">
+
+  <div class="detail-header">
+    <a href="#private_fields_policy/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">private_fields_policy(resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/info.ex#L149" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="show_policy_breakdowns?/0">
+
+  <div class="detail-header">
+    <a href="#show_policy_breakdowns?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">show_policy_breakdowns?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/info.ex#L11" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Whether or not Ash policy authorizer is configured to show policy breakdowns in error messages</p>
+  </section>
+</section>
+<section class="detail" id="strict_check/3">
+
+  <div class="detail-header">
+    <a href="#strict_check/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">strict_check(actor, query, domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/info.ex#L35" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>A utility to determine if a given query/changeset would pass authorization.</p><p><em>This is still experimental.</em></p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

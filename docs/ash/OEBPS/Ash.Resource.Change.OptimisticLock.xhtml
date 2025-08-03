@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Resource.Change.OptimisticLock - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Resource.Change.OptimisticLock 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Apply an &quot;optimistic lock&quot; on a record being updated or destroyed.</p><h2 id="module-what-is-optimistic-locking">What is Optimistic Locking?</h2><p>Optimistic Locking is the process of only allowing an update to occur if the version of a record that you have in memory is the same as the version in the database.
+Otherwise, an error is returned. On success, it increments the version while performing the action.</p><p>Optimistic locking may used for two primary purposes:</p><h3 id="module-user-experience">User Experience</h3><p>For example, if a user is editing a form that contains <code class="inline">State</code> and <code class="inline">County</code> fields, and they change the <code class="inline">County</code>, while another user has used the form to change the <code class="inline">State</code>, you could end up with a mismatch between <code class="inline">State</code> and <code class="inline">County</code>.</p><p>With optimistic locking, the user will instead get an error message that the record has been changed since they last looked.</p><h3 id="module-concurrency-safety">Concurrency Safety</h3><p>Optimistic locking can make actions safe to run concurrently even if they can't be performed in a single query (atomically), by returning an error if the resource in the data layer does not have the same version as the one being edited.</p><p>This tells the user that they need to reload and try again.</p>
+      </section>
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Domains - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Domains</h1>
+<p>Domains serve three primary purposes:</p><ol><li>They group related resources together, providing organization and structure to your project.</li><li>They allow you to define a centralized <a href="code-interfaces.xhtml">code interface</a></li><li>They allow you to configure certain cross-cutting concerns of those resources in a single place.</li></ol><p>If you are familiar with a <a href="https://hexdocs.pm/phoenix/contexts.html">Phoenix Context</a>, you can think of a domain as the Ash equivalent.</p><h2 id="grouping-resources">Grouping Resources</h2><p>In an <a href="Ash.Domain.xhtml"><code class="inline">Ash.Domain</code></a>, you will typically see something like this:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Tweets</span><span class="w"> </span><span class="k" data-group-id="4265985897-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Domain</span><span class="w">
+
+  </span><span class="n">resources</span><span class="w"> </span><span class="k" data-group-id="4265985897-2">do</span><span class="w">
+    </span><span class="n">resource</span><span class="w"> </span><span class="nc">MyApp.Tweets.Tweet</span><span class="w">
+    </span><span class="n">resource</span><span class="w"> </span><span class="nc">MyApp.Tweets.Comment</span><span class="w">
+  </span><span class="k" data-group-id="4265985897-2">end</span><span class="w">
+</span><span class="k" data-group-id="4265985897-1">end</span></code></pre><p>With this definition, you can do things like placing all of these resources into a GraphQL Api with AshGraphql. You'd see a line like this:</p><pre><code class="makeup elixir" translate="no"><span class="kn">use</span><span class="w"> </span><span class="nc">AshGraphql</span><span class="p">,</span><span class="w"> </span><span class="ss">domains</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="5497735323-1">[</span><span class="nc">MyApp.Tweets</span><span class="p" data-group-id="5497735323-1">]</span></code></pre><h2 id="centralized-code-interface">Centralized <a href="code-interfaces.xhtml">Code Interface</a></h2><p>Working with our domain &amp; resources in code <em>can</em> be done the long form way, by building changesets/queries/action inputs and calling the relevant function in <a href="Ash.xhtml"><code class="inline">Ash</code></a>. However, we generally want to expose a well defined code API for working with our resources. This makes our code much clearer, and gives us nice things like auto complete and inline documentation.</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Tweets</span><span class="w"> </span><span class="k" data-group-id="3311488056-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Domain</span><span class="w">
+
+  </span><span class="n">resources</span><span class="w"> </span><span class="k" data-group-id="3311488056-2">do</span><span class="w">
+    </span><span class="n">resource</span><span class="w"> </span><span class="nc">MyApp.Tweets.Tweet</span><span class="w"> </span><span class="k" data-group-id="3311488056-3">do</span><span class="w">
+      </span><span class="c1"># define a function called `tweet` that uses</span><span class="w">
+      </span><span class="c1"># the `:create` action on MyApp.Tweets.Tweet</span><span class="w">
+      </span><span class="n">define</span><span class="w"> </span><span class="ss">:tweet</span><span class="p">,</span><span class="w"> </span><span class="ss">action</span><span class="p">:</span><span class="w"> </span><span class="ss">:create</span><span class="p">,</span><span class="w"> </span><span class="ss">args</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3311488056-4">[</span><span class="ss">:text</span><span class="p" data-group-id="3311488056-4">]</span><span class="w">
+    </span><span class="k" data-group-id="3311488056-3">end</span><span class="w">
+
+    </span><span class="n">resource</span><span class="w"> </span><span class="nc">MyApp.Tweets.Comment</span><span class="w"> </span><span class="k" data-group-id="3311488056-5">do</span><span class="w">
+      </span><span class="c1"># define a function called `comment` that uses</span><span class="w">
+      </span><span class="c1"># the `:create` action on MyApp.Tweets.Comment</span><span class="w">
+      </span><span class="n">define</span><span class="w"> </span><span class="ss">:comment</span><span class="p">,</span><span class="w"> </span><span class="ss">action</span><span class="p">:</span><span class="w"> </span><span class="ss">:create</span><span class="p">,</span><span class="w"> </span><span class="ss">args</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3311488056-6">[</span><span class="ss">:tweet_id</span><span class="p">,</span><span class="w"> </span><span class="ss">:text</span><span class="p" data-group-id="3311488056-6">]</span><span class="w">
+    </span><span class="k" data-group-id="3311488056-5">end</span><span class="w">
+  </span><span class="k" data-group-id="3311488056-2">end</span><span class="w">
+</span><span class="k" data-group-id="3311488056-1">end</span></code></pre><p>With these definitions, we can now do things like this:</p><pre><code class="makeup elixir" translate="no"><span class="n">tweet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">MyApp.Tweets</span><span class="o">.</span><span class="n">tweet!</span><span class="p" data-group-id="9690920189-1">(</span><span class="s">&quot;My first tweet!&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">actor</span><span class="p">:</span><span class="w"> </span><span class="n">user1</span><span class="p" data-group-id="9690920189-1">)</span><span class="w">
+</span><span class="n">comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">MyApp.Tweets</span><span class="o">.</span><span class="n">comment!</span><span class="p" data-group-id="9690920189-2">(</span><span class="n">tweet</span><span class="o">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;What a cool tweet!&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">actor</span><span class="p">:</span><span class="w"> </span><span class="n">user2</span><span class="p" data-group-id="9690920189-2">)</span></code></pre><h2 id="configuring-cross-cutting-concerns">Configuring Cross-cutting Concerns</h2><h3 id="built-in-configuration">Built in configuration</h3><p><a href="Ash.Domain.xhtml"><code class="inline">Ash.Domain</code></a> comes with a number of built-in configuration options. See <code class="inline">d:Ash.Domain</code> for more.</p><p>For example:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Tweets</span><span class="w"> </span><span class="k" data-group-id="7230992825-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Domain</span><span class="w">
+
+  </span><span class="n">resources</span><span class="w"> </span><span class="k" data-group-id="7230992825-2">do</span><span class="w">
+    </span><span class="n">resource</span><span class="w"> </span><span class="nc">MyApp.Tweets.Tweet</span><span class="w">
+    </span><span class="n">resource</span><span class="w"> </span><span class="nc">MyApp.Tweets.Comment</span><span class="w">
+  </span><span class="k" data-group-id="7230992825-2">end</span><span class="w">
+
+  </span><span class="n">execution</span><span class="w"> </span><span class="k" data-group-id="7230992825-3">do</span><span class="w">
+    </span><span class="c1"># raise the default timeout for all actions in this domain from 30s to 60s</span><span class="w">
+    </span><span class="n">timeout</span><span class="w"> </span><span class="nc">:timer</span><span class="o">.</span><span class="n">seconds</span><span class="p" data-group-id="7230992825-4">(</span><span class="mi">60</span><span class="p" data-group-id="7230992825-4">)</span><span class="w">
+  </span><span class="k" data-group-id="7230992825-3">end</span><span class="w">
+
+  </span><span class="n">authorization</span><span class="w"> </span><span class="k" data-group-id="7230992825-5">do</span><span class="w">
+    </span><span class="c1"># disable using the authorize?: false flag when calling actions</span><span class="w">
+    </span><span class="n">authorize</span><span class="w"> </span><span class="ss">:always</span><span class="w">
+  </span><span class="k" data-group-id="7230992825-5">end</span><span class="w">
+</span><span class="k" data-group-id="7230992825-1">end</span></code></pre><h3 id="extensions">Extensions</h3><p>Extensions will often come with &quot;domain extensions&quot; to allow you to configure the behavior of all resources within a domain, as it pertains to that extension. For example:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Tweets</span><span class="w"> </span><span class="k" data-group-id="2401413125-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Domain</span><span class="p">,</span><span class="w">
+    </span><span class="ss">extensions</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2401413125-2">[</span><span class="nc">AshGraphql.Domain</span><span class="p" data-group-id="2401413125-2">]</span><span class="w">
+
+  </span><span class="n">graphql</span><span class="w"> </span><span class="k" data-group-id="2401413125-3">do</span><span class="w">
+    </span><span class="c1"># skip authorization for these resources</span><span class="w">
+    </span><span class="n">authorize?</span><span class="w"> </span><span class="no">false</span><span class="w">
+  </span><span class="k" data-group-id="2401413125-3">end</span><span class="w">
+
+  </span><span class="n">resources</span><span class="w"> </span><span class="k" data-group-id="2401413125-4">do</span><span class="w">
+    </span><span class="n">resource</span><span class="w"> </span><span class="nc">MyApp.Tweets.Tweet</span><span class="w">
+    </span><span class="n">resource</span><span class="w"> </span><span class="nc">MyApp.Tweets.Comment</span><span class="w">
+  </span><span class="k" data-group-id="2401413125-4">end</span><span class="w">
+</span><span class="k" data-group-id="2401413125-1">end</span></code></pre><h3 id="policies">Policies</h3><p>You can also use <a href="Ash.Policy.Authorizer.xhtml"><code class="inline">Ash.Policy.Authorizer</code></a> on your domains. This allows you to add policies that apply to <em>all</em> actions using this domain. For example:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Tweets</span><span class="w"> </span><span class="k" data-group-id="0152602423-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Domain</span><span class="p">,</span><span class="w">
+    </span><span class="ss">extensions</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0152602423-2">[</span><span class="nc">Ash.Policy.Authorizer</span><span class="p" data-group-id="0152602423-2">]</span><span class="w">
+
+  </span><span class="n">resources</span><span class="w"> </span><span class="k" data-group-id="0152602423-3">do</span><span class="w">
+    </span><span class="n">resource</span><span class="w"> </span><span class="nc">MyApp.Tweets.Tweet</span><span class="w">
+    </span><span class="n">resource</span><span class="w"> </span><span class="nc">MyApp.Tweets.Comment</span><span class="w">
+  </span><span class="k" data-group-id="0152602423-3">end</span><span class="w">
+
+  </span><span class="n">policies</span><span class="w"> </span><span class="k" data-group-id="0152602423-4">do</span><span class="w">
+    </span><span class="c1"># add a bypass up front to allow administrators to do whatever they want</span><span class="w">
+    </span><span class="n">bypass</span><span class="w"> </span><span class="n">actor_attribute_equals</span><span class="p" data-group-id="0152602423-5">(</span><span class="ss">:is_admin</span><span class="p">,</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="0152602423-5">)</span><span class="w"> </span><span class="k" data-group-id="0152602423-6">do</span><span class="w">
+      </span><span class="n">authorize_if</span><span class="w"> </span><span class="n">always</span><span class="p" data-group-id="0152602423-7">(</span><span class="p" data-group-id="0152602423-7">)</span><span class="w">
+    </span><span class="k" data-group-id="0152602423-6">end</span><span class="w">
+
+    </span><span class="c1"># forbid all access from disabled users</span><span class="w">
+    </span><span class="n">policy</span><span class="w"> </span><span class="n">actor_attribute_equals</span><span class="p" data-group-id="0152602423-8">(</span><span class="ss">:disabled</span><span class="p">,</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="0152602423-8">)</span><span class="w"> </span><span class="k" data-group-id="0152602423-9">do</span><span class="w">
+      </span><span class="n">forbid_if</span><span class="w"> </span><span class="n">always</span><span class="p" data-group-id="0152602423-10">(</span><span class="p" data-group-id="0152602423-10">)</span><span class="w">
+    </span><span class="k" data-group-id="0152602423-9">end</span><span class="w">
+  </span><span class="k" data-group-id="0152602423-4">end</span><span class="w">
+</span><span class="k" data-group-id="0152602423-1">end</span></code></pre>
+
+  </body>
+</html>

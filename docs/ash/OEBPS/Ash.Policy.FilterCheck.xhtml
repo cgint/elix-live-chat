@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Policy.FilterCheck - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Policy.FilterCheck <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A type of check that is represented by a filter statement</p><p>You can customize what the &quot;negative&quot; filter looks like by defining <a href="#c:reject/3"><code class="inline">reject/3</code></a>. This is important for
+filters over related data. For example, given an <code class="inline">owner</code> relationship and a data layer like <code class="inline">ash_postgres</code>
+where <code class="inline">column != NULL</code> does <em>not</em> evaluate to true (see postgres docs on NULL for more):</p><pre><code class="makeup elixir" translate="no"><samp class="c1"># The opposite of</samp><samp class="w">
+</samp><samp class="err">`</samp><samp class="n">owner</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="err">`</samp><samp class="w">
+</samp><samp class="c1"># in most cases is not</samp><samp class="w">
+</samp><samp class="err">`</samp><samp class="ow">not</samp><samp class="p" data-group-id="4472507207-1">(</samp><samp class="n">owner</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="4472507207-1">)</samp><samp class="err">`</samp><samp class="w">
+</samp><samp class="c1"># because in postgres that would be `NOT (owner.id = NULL)` in cases where there was no owner</samp><samp class="w">
+</samp><samp class="c1"># A better opposite would be</samp><samp class="w">
+</samp><samp class="err">`</samp><samp class="n">owner</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="w"> </samp><samp class="o">!=</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="ow">or</samp><samp class="w"> </samp><samp class="n">is_nil</samp><samp class="p" data-group-id="4472507207-2">(</samp><samp class="n">owner</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="p" data-group-id="4472507207-2">)</samp><samp class="err">`</samp><samp class="w">
+</samp><samp class="c1"># alternatively</samp><samp class="w">
+</samp><samp class="err">`</samp><samp class="ow">not</samp><samp class="p" data-group-id="4472507207-3">(</samp><samp class="n">owner</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="4472507207-3">)</samp><samp class="w"> </samp><samp class="ow">or</samp><samp class="w"> </samp><samp class="n">is_nil</samp><samp class="p" data-group-id="4472507207-4">(</samp><samp class="n">owner</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="p" data-group-id="4472507207-4">)</samp><samp class="err">`</samp></code></pre><p>By being able to customize the <code class="inline">reject</code> filter, you can use related filters in your policies. Without it,
+they will likely have undesired effects.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:context/0" data-no-tooltip="" translate="no">context()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:options/0" data-no-tooltip="" translate="no">options()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:filter/3" data-no-tooltip="" translate="no">filter(actor, context, options)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:reject/3" data-no-tooltip="" translate="no">reject(actor, context, options)</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#is_filter_check?/1" data-no-tooltip="" translate="no">is_filter_check?(module)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:context/0">
+
+  <div class="detail-header">
+    <a href="#t:context/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">context()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/filter_check.ex#L23" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> context() :: %{
+  :action =&gt; <a href="Ash.Resource.Actions.xhtml#t:action/0">Ash.Resource.Actions.action</a>(),
+  :resource =&gt; <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  :domain =&gt; <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>(),
+  optional(:query) =&gt; <a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>(),
+  optional(:changeset) =&gt; <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>(),
+  optional(:action_input) =&gt; <a href="Ash.ActionInput.xhtml#t:t/0">Ash.ActionInput.t</a>(),
+  optional(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()) =&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:options/0">
+
+  <div class="detail-header">
+    <a href="#t:options/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">options()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/filter_check.ex#L22" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> options() :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:filter/3">
+
+  <div class="detail-header">
+    <a href="#c:filter/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">filter(actor, context, options)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/filter_check.ex#L33" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> filter(actor :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:context/0">context</a>(), <a href="#t:options/0">options</a>()) :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>() | <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:reject/3">
+
+  <div class="detail-header">
+    <a href="#c:reject/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">reject(actor, context, options)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/filter_check.ex#L34" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> reject(actor :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:context/0">context</a>(), <a href="#t:options/0">options</a>()) :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>() | <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="is_filter_check?/1">
+
+  <div class="detail-header">
+    <a href="#is_filter_check?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">is_filter_check?(module)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/policy/filter_check.ex#L402" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

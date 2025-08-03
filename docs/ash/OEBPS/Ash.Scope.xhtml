@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Scope - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Scope 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Determines how the <code class="inline">actor</code>, <code class="inline">tenant</code> and <code class="inline">context</code> are extracted from a data structure.</p><p>This is inspired by the same feature in <code class="inline">Phoenix</code>, however the <code class="inline">actor</code>, <code class="inline">tenant</code> and <code class="inline">context</code>
+options will always remain available, as they are standardized representations of things that
+actions can use to do their work.</p><p>When you have a scope, you can group up actor/tenant/context into one struct and pass that around,
+for example:</p><pre><code class="makeup elixir" translate="no"><samp class="n">scope</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="0244476635-1">%</samp><samp class="nc" data-group-id="0244476635-1">MyApp.Scope</samp><samp class="p" data-group-id="0244476635-1">{</samp><samp class="ss">current_user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">current_tenant</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">tenant</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">locale</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;en&quot;</samp><samp class="p" data-group-id="0244476635-1">}</samp><samp class="w">
+
+</samp><samp class="c1"># instead of</samp><samp class="w">
+</samp><samp class="nc">MyDomain</samp><samp class="o">.</samp><samp class="n">create_thing</samp><samp class="p" data-group-id="0244476635-2">(</samp><samp class="ss">actor</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">current_user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">tenant</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">tenant</samp><samp class="p" data-group-id="0244476635-2">)</samp><samp class="w">
+
+</samp><samp class="c1"># you can do</samp><samp class="w">
+</samp><samp class="nc">MyDomain</samp><samp class="o">.</samp><samp class="n">create_thing</samp><samp class="p" data-group-id="0244476635-3">(</samp><samp class="ss">scope</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">scope</samp><samp class="p" data-group-id="0244476635-3">)</samp></code></pre><section role="note" class="admonition info"><h3 id="module-scope-is-left-at-the-front-door" class="admonition-title info">Scope is left at the front door</h3><p>Your scope is &quot;left at the front door&quot;. That is, when you pass a scope to an action, the options
+are extracted and the scope is removed from those options. Within hooks, you are meant to use
+the <code class="inline">context</code> provided to your functions as the new <code class="inline">scope</code>. This is very important, because
+you don't want a bunch of your code or extension code having to switch on <code class="inline">if opts[:scope]</code>,
+extracting the things that it needs, etc.</p><p>See <a href="actions.xhtml#context">the actions guide</a> for more information.</p></section><h2 id="module-setup">Setup</h2><p>If you are using Phoenix, you will want to assign your <code class="inline">scope</code> module in a plug that runs
+after your plugs that determine actor/tenant/context. Then, you will want to add an <code class="inline">on_mount</code>
+hook for LiveViews that sets your <code class="inline">scope</code> assign. This is especially true for <code class="inline">AshAuthentication</code>,
+as it does not currently have a concept of scopes.</p><h2 id="module-passing-scope-and-options">Passing scope and options</h2><p>For the <code class="inline">actor</code>, <code class="inline">tenant</code> and <code class="inline">authorize?</code>, extracted from scopes, the values from the scope are <em>discarded</em> if also present in <code class="inline">opts</code>.</p><p>i.e <code class="inline">scope: scope, actor: nil</code> will remove the set actor. <code class="inline">scope: scope, actor: some_other_actor</code> will set the actor to <code class="inline">some_other_actor</code>.</p><p>For <code class="inline">context</code>, the values are deep merged.</p><p>For <code class="inline">tracer</code>, the value(s) are concatenated into a single list.</p><h2 id="module-example">Example</h2><p>You would implement <a href="Ash.Scope.ToOpts.xhtml"><code class="inline">Ash.Scope.ToOpts</code></a> for a module like so:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.Scope</samp><samp class="w"> </samp><samp class="k" data-group-id="0793082784-1">do</samp><samp class="w">
+  </samp><samp class="kd">defstruct</samp><samp class="w"> </samp><samp class="p" data-group-id="0793082784-2">[</samp><samp class="ss">:current_user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:current_tenant</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:locale</samp><samp class="p" data-group-id="0793082784-2">]</samp><samp class="w">
+
+  </samp><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Ash.Scope.ToOpts</samp><samp class="w"> </samp><samp class="k" data-group-id="0793082784-3">do</samp><samp class="w">
+    </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">get_actor</samp><samp class="p" data-group-id="0793082784-4">(</samp><samp class="p" data-group-id="0793082784-5">%{</samp><samp class="ss">current_user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">current_user</samp><samp class="p" data-group-id="0793082784-5">}</samp><samp class="p" data-group-id="0793082784-4">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0793082784-6">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">current_user</samp><samp class="p" data-group-id="0793082784-6">}</samp><samp class="w">
+    </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">get_tenant</samp><samp class="p" data-group-id="0793082784-7">(</samp><samp class="p" data-group-id="0793082784-8">%{</samp><samp class="ss">current_tenant</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">current_tenant</samp><samp class="p" data-group-id="0793082784-8">}</samp><samp class="p" data-group-id="0793082784-7">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0793082784-9">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">current_tenant</samp><samp class="p" data-group-id="0793082784-9">}</samp><samp class="w">
+    </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">get_context</samp><samp class="p" data-group-id="0793082784-10">(</samp><samp class="p" data-group-id="0793082784-11">%{</samp><samp class="ss">locale</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">locale</samp><samp class="p" data-group-id="0793082784-11">}</samp><samp class="p" data-group-id="0793082784-10">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0793082784-12">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0793082784-13">%{</samp><samp class="ss">shared</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0793082784-14">%{</samp><samp class="ss">locale</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">locale</samp><samp class="p" data-group-id="0793082784-14">}</samp><samp class="p" data-group-id="0793082784-13">}</samp><samp class="p" data-group-id="0793082784-12">}</samp><samp class="w">
+    </samp><samp class="c1"># You typically configure tracers in config giles</samp><samp class="w">
+    </samp><samp class="c1"># so this will typically return :error</samp><samp class="w">
+    </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">get_tracer</samp><samp class="p" data-group-id="0793082784-15">(</samp><samp class="bp">_</samp><samp class="p" data-group-id="0793082784-15">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:error</samp><samp class="w">
+
+    </samp><samp class="c1"># This should likely always return :error</samp><samp class="w">
+    </samp><samp class="c1"># unless you want a way to bypass authorization configured in your scope</samp><samp class="w">
+    </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">get_authorize?</samp><samp class="p" data-group-id="0793082784-16">(</samp><samp class="bp">_</samp><samp class="p" data-group-id="0793082784-16">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:error</samp><samp class="w">
+  </samp><samp class="k" data-group-id="0793082784-3">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="0793082784-1">end</samp></code></pre><p>For more on context, and what the <code class="inline">shared</code> key is used for, see the <a href="actions.xhtml#context">actions guide</a></p><p>You could then use this in various places by passing the <code class="inline">scope</code> option.</p><p>For example:</p><pre><code class="makeup elixir" translate="no"><samp class="n">scope</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="1245317700-1">%</samp><samp class="nc" data-group-id="1245317700-1">MyApp.Scope</samp><samp class="p" data-group-id="1245317700-1">{</samp><samp class="n">...</samp><samp class="p" data-group-id="1245317700-1">}</samp><samp class="w">
+</samp><samp class="c1"># with code interfaces</samp><samp class="w">
+</samp><samp class="nc">MyApp.Blog</samp><samp class="o">.</samp><samp class="n">create_post!</samp><samp class="p" data-group-id="1245317700-2">(</samp><samp class="s">&quot;new post&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">scope</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">scope</samp><samp class="p" data-group-id="1245317700-2">)</samp><samp class="w">
+
+</samp><samp class="c1"># with changesets and queries</samp><samp class="w">
+</samp><samp class="nc">MyApp.Blog</samp><samp class="w">
+</samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Changeset</samp><samp class="o">.</samp><samp class="n">for_create</samp><samp class="p" data-group-id="1245317700-3">(</samp><samp class="ss">:create</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1245317700-4">%{</samp><samp class="ss">title</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;new post&quot;</samp><samp class="p" data-group-id="1245317700-4">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">scope</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">scope</samp><samp class="p" data-group-id="1245317700-3">)</samp><samp class="w">
+</samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash</samp><samp class="o">.</samp><samp class="n">create!</samp><samp class="p" data-group-id="1245317700-5">(</samp><samp class="p" data-group-id="1245317700-5">)</samp><samp class="w">
+
+</samp><samp class="c1"># with the context structs that we provide</samp><samp class="w">
+
+</samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">change</samp><samp class="p" data-group-id="1245317700-6">(</samp><samp class="n">changeset</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">context</samp><samp class="p" data-group-id="1245317700-6">)</samp><samp class="w"> </samp><samp class="k" data-group-id="1245317700-7">do</samp><samp class="w">
+  </samp><samp class="nc">Ash.Changeset</samp><samp class="o">.</samp><samp class="n">after_action</samp><samp class="p" data-group-id="1245317700-8">(</samp><samp class="n">changeset</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="1245317700-9">fn</samp><samp class="w"> </samp><samp class="n">changeset</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+    </samp><samp class="nc">MyApp.Domain</samp><samp class="o">.</samp><samp class="n">do_something_else</samp><samp class="p" data-group-id="1245317700-10">(</samp><samp class="n">...</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">scope</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">context</samp><samp class="p" data-group-id="1245317700-10">)</samp><samp class="w">
+    </samp><samp class="c1"># if not using as a scope, the alternative is this</samp><samp class="w">
+    </samp><samp class="c1"># in the future this will be deprecated</samp><samp class="w">
+    </samp><samp class="nc">MyApp.Domain</samp><samp class="o">.</samp><samp class="n">do_somethign_else</samp><samp class="p" data-group-id="1245317700-11">(</samp><samp class="n">...</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Ash.Context</samp><samp class="o">.</samp><samp class="n">to_opts</samp><samp class="p" data-group-id="1245317700-12">(</samp><samp class="n">context</samp><samp class="p" data-group-id="1245317700-12">)</samp><samp class="p" data-group-id="1245317700-11">)</samp><samp class="w">
+  </samp><samp class="k" data-group-id="1245317700-9">end</samp><samp class="p" data-group-id="1245317700-8">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="1245317700-7">end</samp></code></pre><p>Extensions should not use this option, only end users.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_opts/2" data-no-tooltip="" translate="no">to_opts(scope, overrides \\ [])</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/scope.ex#L121" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: <a href="Ash.Scope.ToOpts.xhtml#t:t/0">Ash.Scope.ToOpts.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="to_opts/2">
+
+    <span id="to_opts/1"></span>
+
+  <div class="detail-header">
+    <a href="#to_opts/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_opts(scope, overrides \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/scope.ex#L103" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

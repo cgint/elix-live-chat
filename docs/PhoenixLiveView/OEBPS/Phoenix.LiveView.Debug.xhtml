@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.Debug - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.Debug 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Functions for runtime introspection and debugging of LiveViews.</p><p>This module provides utilities for inspecting and debugging LiveView processes
+at runtime. It allows you to:</p><ul><li>List all currently connected LiveViews</li><li>Check if a process is a LiveView</li><li>Get the socket of a LiveView process</li><li>Inspect LiveComponents rendered in a LiveView</li></ul><h2 id="module-examples">Examples</h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># List all LiveViews</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.LiveView.Debug</samp><samp class="o">.</samp><samp class="n">list_liveviews</samp><samp class="p" data-group-id="8851281381-1">(</samp><samp class="p" data-group-id="8851281381-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8851281381-2">[</samp><samp class="p" data-group-id="8851281381-3">%{</samp><samp class="ss">pid</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8851281381-4">#</samp><samp class="nc" data-group-id="8851281381-4">PID</samp><samp class="p" data-group-id="8851281381-4">&lt;</samp><samp class="mi">0</samp><samp class="o">.</samp><samp class="mi">123</samp><samp class="o">.</samp><samp class="mi">0</samp><samp class="p" data-group-id="8851281381-4">&gt;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">view</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.PostLive.Index</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">topic</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;lv:12345678&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">transport_pid</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8851281381-5">#</samp><samp class="nc" data-group-id="8851281381-5">PID</samp><samp class="p" data-group-id="8851281381-5">&lt;</samp><samp class="mi">0</samp><samp class="o">.</samp><samp class="mi">122</samp><samp class="o">.</samp><samp class="mi">0</samp><samp class="p" data-group-id="8851281381-5">&gt;</samp><samp class="p" data-group-id="8851281381-3">}</samp><samp class="p" data-group-id="8851281381-2">]</samp><samp class="w">
+
+</samp><samp class="c1"># Check if a process is a LiveView</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.LiveView.Debug</samp><samp class="o">.</samp><samp class="n">liveview_process?</samp><samp class="p" data-group-id="8851281381-6">(</samp><samp class="n">pid</samp><samp class="p" data-group-id="8851281381-7">(</samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="mi">0</samp><samp class="p" data-group-id="8851281381-7">)</samp><samp class="p" data-group-id="8851281381-6">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+
+</samp><samp class="c1"># Get the socket of a LiveView process</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.LiveView.Debug</samp><samp class="o">.</samp><samp class="n">socket</samp><samp class="p" data-group-id="8851281381-8">(</samp><samp class="n">pid</samp><samp class="p" data-group-id="8851281381-9">(</samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="mi">0</samp><samp class="p" data-group-id="8851281381-9">)</samp><samp class="p" data-group-id="8851281381-8">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8851281381-10">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8851281381-11">%</samp><samp class="nc" data-group-id="8851281381-11">Phoenix.LiveView.Socket</samp><samp class="p" data-group-id="8851281381-11">{</samp><samp class="n">...</samp><samp class="p" data-group-id="8851281381-11">}</samp><samp class="p" data-group-id="8851281381-10">}</samp><samp class="w">
+
+</samp><samp class="c1"># Get information about LiveComponents</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Phoenix.LiveView.Debug</samp><samp class="o">.</samp><samp class="n">live_components</samp><samp class="p" data-group-id="8851281381-12">(</samp><samp class="n">pid</samp><samp class="p" data-group-id="8851281381-13">(</samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="mi">0</samp><samp class="p" data-group-id="8851281381-13">)</samp><samp class="p" data-group-id="8851281381-12">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8851281381-14">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8851281381-15">[</samp><samp class="p" data-group-id="8851281381-16">%{</samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;component-1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">module</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.PostLive.Index.Component1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="8851281381-16">}</samp><samp class="p" data-group-id="8851281381-15">]</samp><samp class="p" data-group-id="8851281381-14">}</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#list_liveviews/0" data-no-tooltip="" translate="no">list_liveviews()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a list of all currently connected LiveView processes (on the current node).</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#live_components/1" data-no-tooltip="" translate="no">live_components(liveview_pid)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a list with information about all LiveComponents rendered in the LiveView.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#liveview_process?/1" data-no-tooltip="" translate="no">liveview_process?(pid)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Checks if the given pid is a LiveView process.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#socket/1" data-no-tooltip="" translate="no">socket(liveview_pid)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the socket of the LiveView process.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="list_liveviews/0">
+
+  <div class="detail-header">
+    <a href="#list_liveviews/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">list_liveviews()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/debug.ex#L51" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns a list of all currently connected LiveView processes (on the current node).</p><p>Each entry is a map with the following keys:</p><ul><li><code class="inline">pid</code>: The PID of the LiveView process.</li><li><code class="inline">view</code>: The module of the LiveView.</li><li><code class="inline">topic</code>: The topic of the LiveView's channel.</li><li><code class="inline">transport_pid</code>: The PID of the transport process.</li></ul><p>The <code class="inline">transport_pid</code> can be used to group LiveViews on the same page.</p><h2 id="list_liveviews/0-examples" class="section-heading"><a href="#list_liveviews/0-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">list_liveviews</samp><samp class="p" data-group-id="4509269353-1">(</samp><samp class="p" data-group-id="4509269353-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4509269353-2">[</samp><samp class="p" data-group-id="4509269353-3">%{</samp><samp class="ss">pid</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4509269353-4">#</samp><samp class="nc" data-group-id="4509269353-4">PID</samp><samp class="p" data-group-id="4509269353-4">&lt;</samp><samp class="mi">0</samp><samp class="o">.</samp><samp class="mi">123</samp><samp class="o">.</samp><samp class="mi">0</samp><samp class="p" data-group-id="4509269353-4">&gt;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">view</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.PostLive.Index</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">topic</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;lv:12345678&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">transport_pid</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4509269353-5">#</samp><samp class="nc" data-group-id="4509269353-5">PID</samp><samp class="p" data-group-id="4509269353-5">&lt;</samp><samp class="mi">0</samp><samp class="o">.</samp><samp class="mi">122</samp><samp class="o">.</samp><samp class="mi">0</samp><samp class="p" data-group-id="4509269353-5">&gt;</samp><samp class="p" data-group-id="4509269353-3">}</samp><samp class="p" data-group-id="4509269353-2">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="live_components/1">
+
+  <div class="detail-header">
+    <a href="#live_components/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">live_components(liveview_pid)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/debug.ex#L134" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns a list with information about all LiveComponents rendered in the LiveView.</p><h2 id="live_components/1-examples" class="section-heading"><a href="#live_components/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">live_components</samp><samp class="p" data-group-id="5139732702-1">(</samp><samp class="n">pid</samp><samp class="p" data-group-id="5139732702-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5139732702-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w">
+ </samp><samp class="p" data-group-id="5139732702-3">[</samp><samp class="w">
+   </samp><samp class="p" data-group-id="5139732702-4">%{</samp><samp class="w">
+     </samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;component-1&quot;</samp><samp class="p">,</samp><samp class="w">
+     </samp><samp class="ss">module</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.PostLive.Index.Component1</samp><samp class="p">,</samp><samp class="w">
+     </samp><samp class="ss">cid</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w">
+     </samp><samp class="ss">assigns</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5139732702-5">%{</samp><samp class="w">
+       </samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;component-1&quot;</samp><samp class="p">,</samp><samp class="w">
+       </samp><samp class="ss">__changed__</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5139732702-6">%{</samp><samp class="p" data-group-id="5139732702-6">}</samp><samp class="p">,</samp><samp class="w">
+       </samp><samp class="ss">flash</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5139732702-7">%{</samp><samp class="p" data-group-id="5139732702-7">}</samp><samp class="p">,</samp><samp class="w">
+       </samp><samp class="ss">myself</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5139732702-8">%</samp><samp class="nc" data-group-id="5139732702-8">Phoenix.LiveComponent.CID</samp><samp class="p" data-group-id="5139732702-8">{</samp><samp class="ss">cid</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="5139732702-8">}</samp><samp class="p">,</samp><samp class="w">
+       </samp><samp class="n">...</samp><samp class="w">
+     </samp><samp class="p" data-group-id="5139732702-5">}</samp><samp class="w">
+   </samp><samp class="p" data-group-id="5139732702-4">}</samp><samp class="w">
+ </samp><samp class="p" data-group-id="5139732702-3">]</samp><samp class="p" data-group-id="5139732702-2">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="liveview_process?/1">
+
+  <div class="detail-header">
+    <a href="#liveview_process?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">liveview_process?(pid)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/debug.ex#L89" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Checks if the given pid is a LiveView process.</p><h2 id="liveview_process?/1-examples" class="section-heading"><a href="#liveview_process?/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">list_liveviews</samp><samp class="p" data-group-id="2833408229-1">(</samp><samp class="p" data-group-id="2833408229-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">at</samp><samp class="p" data-group-id="2833408229-2">(</samp><samp class="mi">0</samp><samp class="p" data-group-id="2833408229-2">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">fetch!</samp><samp class="p" data-group-id="2833408229-3">(</samp><samp class="ss">:pid</samp><samp class="p" data-group-id="2833408229-3">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">liveview_process?</samp><samp class="p" data-group-id="2833408229-4">(</samp><samp class="p" data-group-id="2833408229-4">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">liveview_process?</samp><samp class="p" data-group-id="2833408229-5">(</samp><samp class="n">pid</samp><samp class="p" data-group-id="2833408229-6">(</samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="mi">456</samp><samp class="p">,</samp><samp class="mi">0</samp><samp class="p" data-group-id="2833408229-6">)</samp><samp class="p" data-group-id="2833408229-5">)</samp><samp class="w">
+</samp><samp class="no">false</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="socket/1">
+
+  <div class="detail-header">
+    <a href="#socket/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">socket(liveview_pid)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/debug.ex#L105" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns the socket of the LiveView process.</p><h2 id="socket/1-examples" class="section-heading"><a href="#socket/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">list_liveviews</samp><samp class="p" data-group-id="3261572528-1">(</samp><samp class="p" data-group-id="3261572528-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">at</samp><samp class="p" data-group-id="3261572528-2">(</samp><samp class="mi">0</samp><samp class="p" data-group-id="3261572528-2">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">fetch!</samp><samp class="p" data-group-id="3261572528-3">(</samp><samp class="ss">:pid</samp><samp class="p" data-group-id="3261572528-3">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="p" data-group-id="3261572528-4">(</samp><samp class="p" data-group-id="3261572528-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="3261572528-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3261572528-6">%</samp><samp class="nc" data-group-id="3261572528-6">Phoenix.LiveView.Socket</samp><samp class="p" data-group-id="3261572528-6">{</samp><samp class="n">...</samp><samp class="p" data-group-id="3261572528-6">}</samp><samp class="p" data-group-id="3261572528-5">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">socket</samp><samp class="p" data-group-id="3261572528-7">(</samp><samp class="n">pid</samp><samp class="p" data-group-id="3261572528-8">(</samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="mi">0</samp><samp class="p" data-group-id="3261572528-8">)</samp><samp class="p" data-group-id="3261572528-7">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="3261572528-9">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:not_alive_or_not_a_liveview</samp><samp class="p" data-group-id="3261572528-9">}</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

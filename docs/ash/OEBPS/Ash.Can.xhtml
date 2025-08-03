@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Can - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Can 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Contains the Ash.can function logic.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:subject/0" data-no-tooltip="" translate="no">subject()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#can/4" data-no-tooltip="" translate="no">can(action_or_query_or_changeset, domain, actor_or_scope, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a an ok tuple if the actor can perform the action, query, or changeset,
+an error tuple if an error happens, and a ok tuple with maybe if maybe is set to true
+or not set.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#can?/4" data-no-tooltip="" translate="no">can?(action_or_query_or_changeset, domain, actor, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns whether an actor can perform an action, query, or changeset.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:subject/0">
+
+  <div class="detail-header">
+    <a href="#t:subject/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">subject()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/can.ex#L9" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> subject() ::
+  <a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>()
+  | <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>()
+  | <a href="Ash.ActionInput.xhtml#t:t/0">Ash.ActionInput.t</a>()
+  | {<a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="Ash.Resource.Actions.xhtml#t:action/0">Ash.Resource.Actions.action</a>()}
+  | {<a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="Ash.Resource.Actions.xhtml#t:action/0">Ash.Resource.Actions.action</a>(), input :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()}
+  | {<a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="Ash.Resource.Actions.xhtml#t:action/0">Ash.Resource.Actions.action</a>()}
+  | {<a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="Ash.Resource.Actions.xhtml#t:action/0">Ash.Resource.Actions.action</a>(),
+     input :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="can/4">
+
+    <span id="can/3"></span>
+
+  <div class="detail-header">
+    <a href="#can/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">can(action_or_query_or_changeset, domain, actor_or_scope, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/can.ex#L69" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> can(<a href="#t:subject/0">subject</a>(), <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>(), <a href="Ash.xhtml#t:actor/0">Ash.actor</a>() | <a href="Ash.Scope.xhtml#t:t/0">Ash.Scope.t</a>(), <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>() | :maybe}
+  | {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}
+  | {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>(), <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>(), <a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>()}
+  | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}</pre>
+
+      </div>
+
+<p>Returns a an ok tuple if the actor can perform the action, query, or changeset,
+an error tuple if an error happens, and a ok tuple with maybe if maybe is set to true
+or not set.</p><p>You should prefer to use <a href="Ash.xhtml#can/3"><code class="inline">Ash.can/3</code></a> over this module, directly.</p><p>Note: <code class="inline">is_maybe</code> is set to <code class="inline">true</code>, if not set.</p>
+  </section>
+</section>
+<section class="detail" id="can?/4">
+
+    <span id="can?/3"></span>
+
+  <div class="detail-header">
+    <a href="#can?/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">can?(action_or_query_or_changeset, domain, actor, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/can.ex#L27" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> can?(<a href="#t:subject/0">subject</a>(), <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>(), <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>(), <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()) ::
+  <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">no_return</a>()</pre>
+
+      </div>
+
+<p>Returns whether an actor can perform an action, query, or changeset.</p><p>You should prefer to use <a href="Ash.xhtml#can?/3"><code class="inline">Ash.can?/3</code></a> over this module, directly.</p><p>Can raise an exception if return_forbidden_error is truthy in opts or there's an error.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

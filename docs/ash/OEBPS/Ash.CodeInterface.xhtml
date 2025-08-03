@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.CodeInterface - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.CodeInterface 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Used to define the functions of a code interface for a resource.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#define_interface/3" data-no-tooltip="" translate="no">define_interface(domain, resource, definitions \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Defines the code interface for a given resource + domain combination in the current module. For example</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#params_and_opts/3" data-no-tooltip="" translate="no">params_and_opts(params_or_opts, maybe_opts, post_process_opts_fn)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <code class="inline">params_and_opts/2</code>.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="define_interface/3">
+
+    <span id="define_interface/2"></span>
+
+  <div class="detail-header">
+    <a href="#define_interface/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">define_interface(domain, resource, definitions \\ nil)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/code_interface.ex#L345" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Defines the code interface for a given resource + domain combination in the current module. For example:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.Accounting</samp><samp class="w"> </samp><samp class="k" data-group-id="5303450773-1">do</samp><samp class="w">
+  </samp><samp class="kn">require</samp><samp class="w"> </samp><samp class="nc">Ash.CodeInterface</samp><samp class="w">
+
+  </samp><samp class="nc">Ash.CodeInterface</samp><samp class="o">.</samp><samp class="n">define_interface</samp><samp class="p" data-group-id="5303450773-2">(</samp><samp class="nc">MyApp.Accounting</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyApp.Accounting.Transaction</samp><samp class="p" data-group-id="5303450773-2">)</samp><samp class="w">
+  </samp><samp class="nc">Ash.CodeInterface</samp><samp class="o">.</samp><samp class="n">define_interface</samp><samp class="p" data-group-id="5303450773-3">(</samp><samp class="nc">MyApp.Accounting</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyApp.Accounting.Account</samp><samp class="p" data-group-id="5303450773-3">)</samp><samp class="w">
+  </samp><samp class="nc">Ash.CodeInterface</samp><samp class="o">.</samp><samp class="n">define_interface</samp><samp class="p" data-group-id="5303450773-4">(</samp><samp class="nc">MyApp.Accounting</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyApp.Accounting.Invoice</samp><samp class="p" data-group-id="5303450773-4">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="5303450773-1">end</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="params_and_opts/3">
+
+  <div class="detail-header">
+    <a href="#params_and_opts/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">params_and_opts(params_or_opts, maybe_opts, post_process_opts_fn)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/code_interface.ex#L270" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> params_and_opts(
+  params_or_opts :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>() | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()] | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>(),
+  <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>(),
+  (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>() -&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>())
+) :: {params :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>() | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()], opts :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>()}</pre>
+
+      </div>
+
+<p>See <code class="inline">params_and_opts/2</code>.</p><p>Adds a post process function that can takes the opts and can further process,
+validate, or transform them.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

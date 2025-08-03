@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Protocol.UndefinedError - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Protocol.UndefinedError <small>exception</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>An exception raised when a protocol is not implemented for a given value.</p><p>The following fields of this exception are public and can be accessed freely:</p><ul><li><code class="inline">:protocol</code> (<a href="typespecs.xhtml#built-in-types"><code class="inline">module/0</code></a>) - the protocol that is not implemented</li><li><code class="inline">:value</code> (<a href="typespecs.xhtml#built-in-types"><code class="inline">term/0</code></a>) - the value that does not implement the protocol</li></ul><p>For example, this code:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">at</samp><samp class="p" data-group-id="0271787482-1">(</samp><samp class="s">&quot;A string!&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="0271787482-1">)</samp></code></pre><p>would raise the following exception:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="5109710962-1">%</samp><samp class="nc" data-group-id="5109710962-1">Protocol.UndefinedError</samp><samp class="p" data-group-id="5109710962-1">{</samp><samp class="w">
+  </samp><samp class="ss">protocol</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Enumerable</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;A string!&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="c1"># ...</samp><samp class="w">
+</samp><samp class="p" data-group-id="5109710962-1">}</samp></code></pre>
+      </section>
+
+
+
+
+  </body>
+</html>

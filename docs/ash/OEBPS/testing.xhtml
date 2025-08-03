@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Testing - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Testing</h1>
+<p>Take a look at <a href="test-resources.xhtml">the how-to guide</a> for a practical look at writing tests</p><p>The configuration you likely want to add to your <code class="inline">config/test.exs</code> is:</p><pre><code class="makeup elixir" translate="no"><span class="c1"># config/test.exs</span><span class="w">
+</span><span class="n">config</span><span class="w"> </span><span class="ss">:ash</span><span class="p">,</span><span class="w"> </span><span class="ss">:disable_async?</span><span class="p">,</span><span class="w"> </span><span class="no">true</span><span class="w">
+</span><span class="n">config</span><span class="w"> </span><span class="ss">:ash</span><span class="p">,</span><span class="w"> </span><span class="ss">:missed_notifications</span><span class="p">,</span><span class="w"> </span><span class="ss">:ignore</span></code></pre><p>Each option is explained in more detail below.</p><h2 id="async-tests">Async tests</h2><p>The first thing you will likely want to do, especially if you are using <code class="inline">AshPostgres</code>, is to add the following config to your <code class="inline">config/test.exs</code>.</p><pre><code class="makeup elixir" translate="no"><span class="c1"># config/test.exs</span><span class="w">
+</span><span class="n">config</span><span class="w"> </span><span class="ss">:ash</span><span class="p">,</span><span class="w"> </span><span class="ss">:disable_async?</span><span class="p">,</span><span class="w"> </span><span class="no">true</span></code></pre><p>This ensures that Ash does not spawn tasks when executing your requests, which is necessary for doing transactional tests with <code class="inline">AshPostgres</code>.</p><h2 id="missed-notifications">Missed notifications</h2><p>If you are using Ecto's transactional features to ensure that your tests all run in a transaction, Ash will detect that it had notifications to send (if you have any notifiers set up) but couldn't because it was still in a transaction. The default behavior when notifications are missed is to warn. However, this can get pretty noisy in tests. So we suggest adding the following config to your <code class="inline">config/test.exs</code>.</p><pre><code class="makeup elixir" translate="no"><span class="c1"># config/test.exs</span><span class="w">
+</span><span class="n">config</span><span class="w"> </span><span class="ss">:ash</span><span class="p">,</span><span class="w"> </span><span class="ss">:missed_notifications</span><span class="p">,</span><span class="w"> </span><span class="ss">:ignore</span></code></pre>
+
+  </body>
+</html>

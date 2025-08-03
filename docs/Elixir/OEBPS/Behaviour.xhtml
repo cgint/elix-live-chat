@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Behaviour - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Behaviour 
+    </h1>
+
+      <div class="deprecated">
+        This module is deprecated. Use @callback and @macrocallback attributes instead.
+      </div>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Mechanism for handling behaviours.</p><p>This module is deprecated. Instead of <a href="#defcallback/1"><code class="inline">defcallback/1</code></a> and
+<a href="#defmacrocallback/1"><code class="inline">defmacrocallback/1</code></a>, the <code class="inline">@callback</code> and <code class="inline">@macrocallback</code>
+module attributes can be used respectively. See the
+documentation for <a href="Module.xhtml"><code class="inline">Module</code></a> for more information on these
+attributes.</p><p>Instead of <code class="inline">MyModule.__behaviour__(:callbacks)</code>,
+<code class="inline">MyModule.behaviour_info(:callbacks)</code> can be used. <code class="inline">behaviour_info/1</code>
+is documented in <a href="Module.xhtml"><code class="inline">Module</code></a>.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#defcallback/1" data-no-tooltip="" translate="no">defcallback(spec)</a>
+
+          <span class="deprecated" title="Use the @callback module attribute instead">deprecated</span>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Defines a function callback according to the given type specification.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#defmacrocallback/1" data-no-tooltip="" translate="no">defmacrocallback(spec)</a>
+
+          <span class="deprecated" title="Use the @macrocallback module attribute instead">deprecated</span>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Defines a macro callback according to the given type specification.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="defcallback/1">
+
+  <div class="detail-header">
+    <a href="#defcallback/1" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">defcallback(spec)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/behaviour.ex#L22" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+    <div class="deprecated">
+      This macro is deprecated. Use the @callback module attribute instead.
+    </div>
+
+  <section class="docstring">
+
+<p>Defines a function callback according to the given type specification.</p>
+  </section>
+</section>
+<section class="detail" id="defmacrocallback/1">
+
+  <div class="detail-header">
+    <a href="#defmacrocallback/1" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">defmacrocallback(spec)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/behaviour.ex#L30" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+    <div class="deprecated">
+      This macro is deprecated. Use the @macrocallback module attribute instead.
+    </div>
+
+  <section class="docstring">
+
+<p>Defines a macro callback according to the given type specification.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

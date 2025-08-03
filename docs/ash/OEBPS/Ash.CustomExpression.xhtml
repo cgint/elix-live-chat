@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.CustomExpression - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.CustomExpression <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A module for defining custom functions that can be called in Ash expressions.</p><p>For example:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.Expressions.LevenshteinDistance</samp><samp class="w"> </samp><samp class="k" data-group-id="7399624023-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Ash.CustomExpression</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:levenshtein</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">arguments</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7399624023-2">[</samp><samp class="w">
+      </samp><samp class="p" data-group-id="7399624023-3">[</samp><samp class="ss">:string</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p" data-group-id="7399624023-3">]</samp><samp class="w">
+    </samp><samp class="p" data-group-id="7399624023-2">]</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">expression</samp><samp class="p" data-group-id="7399624023-4">(</samp><samp class="nc">AshPostgres.DataLayer</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="7399624023-5">[</samp><samp class="n">left</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">right</samp><samp class="p" data-group-id="7399624023-5">]</samp><samp class="p" data-group-id="7399624023-4">)</samp><samp class="w"> </samp><samp class="k" data-group-id="7399624023-6">do</samp><samp class="w">
+    </samp><samp class="p" data-group-id="7399624023-7">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">expr</samp><samp class="p" data-group-id="7399624023-8">(</samp><samp class="n">fragment</samp><samp class="p" data-group-id="7399624023-9">(</samp><samp class="s">&quot;levenshtein(?, ?)&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">^</samp><samp class="n">left</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">^</samp><samp class="n">right</samp><samp class="p" data-group-id="7399624023-9">)</samp><samp class="p" data-group-id="7399624023-8">)</samp><samp class="p" data-group-id="7399624023-7">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="7399624023-6">end</samp><samp class="w">
+
+  </samp><samp class="c1"># It is good practice to always define an expression for `Ash.DataLayer.Simple`,</samp><samp class="w">
+  </samp><samp class="c1"># as that is what Ash will use to run your custom expression in Elixir.</samp><samp class="w">
+  </samp><samp class="c1"># This allows us to completely avoid communicating with the database in some cases.</samp><samp class="w">
+
+  </samp><samp class="c1"># Always use a fragment like this to evaluate code in simple data layers. The value you</samp><samp class="w">
+  </samp><samp class="c1"># get here for arguments may be expressions at this point.</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">expression</samp><samp class="p" data-group-id="7399624023-10">(</samp><samp class="n">data_layer</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="7399624023-11">[</samp><samp class="n">left</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">right</samp><samp class="p" data-group-id="7399624023-11">]</samp><samp class="p" data-group-id="7399624023-10">)</samp><samp class="w"> </samp><samp class="ow">when</samp><samp class="w"> </samp><samp class="n">data_layer</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="p" data-group-id="7399624023-12">[</samp><samp class="w">
+    </samp><samp class="nc">Ash.DataLayer.Ets</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="nc">Ash.DataLayer.Simple</samp><samp class="w">
+  </samp><samp class="p" data-group-id="7399624023-12">]</samp><samp class="w"> </samp><samp class="k" data-group-id="7399624023-13">do</samp><samp class="w">
+    </samp><samp class="p" data-group-id="7399624023-14">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">expr</samp><samp class="p" data-group-id="7399624023-15">(</samp><samp class="n">fragment</samp><samp class="p" data-group-id="7399624023-16">(</samp><samp class="o">&amp;</samp><samp class="bp">__MODULE__</samp><samp class="o">.</samp><samp class="n">levenshtein</samp><samp class="o">/</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">^</samp><samp class="n">left</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">^</samp><samp class="n">right</samp><samp class="p" data-group-id="7399624023-16">)</samp><samp class="p" data-group-id="7399624023-15">)</samp><samp class="p" data-group-id="7399624023-14">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="7399624023-13">end</samp><samp class="w">
+
+  </samp><samp class="c1"># always define this fallback clause as well</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">expression</samp><samp class="p" data-group-id="7399624023-17">(</samp><samp class="c">_data_layer</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_args</samp><samp class="p" data-group-id="7399624023-17">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unknown</samp><samp class="w">
+
+  </samp><samp class="na">@doc</samp><samp class="w"> </samp><samp class="s">&quot;Computes the levenshtein distance of two strings&quot;</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">levenshtein</samp><samp class="p" data-group-id="7399624023-18">(</samp><samp class="n">left</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">right</samp><samp class="p" data-group-id="7399624023-18">)</samp><samp class="w"> </samp><samp class="k" data-group-id="7399624023-19">do</samp><samp class="w">
+    </samp><samp class="c1"># ......</samp><samp class="w">
+  </samp><samp class="k" data-group-id="7399624023-19">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="7399624023-1">end</samp></code></pre><h3 id="module-options">Options</h3><ul><li><code class="inline">name</code> - The name of the custom expression. This is the name that will be used in Ash expressions.</li><li><code class="inline">arguments</code> - A list of lists of types that the custom expression accepts. Each list represents a set of arguments that the custom expression can accept.</li><li><code class="inline">predicate?</code> - Whether this expression can be exposed as a predicate in filter interfaces. Defaults to <code class="inline">false</code>.</li></ul><h3 id="module-registering-your-expression">Registering Your Expression</h3><p>Use compile-time configuration to register your custom expressions</p><pre><code class="makeup elixir" translate="no"><samp class="n">config</samp><samp class="w"> </samp><samp class="ss">:ash</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:custom_expressions</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4774383981-1">[</samp><samp class="nc">MyApp.Expressions.LevenshteinDistance</samp><samp class="p" data-group-id="4774383981-1">]</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:arguments/0" data-no-tooltip="" translate="no">arguments()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:expression/2" data-no-tooltip="" translate="no">expression(data_layer, arguments)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:name/0" data-no-tooltip="" translate="no">name()</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:arguments/0">
+
+  <div class="detail-header">
+    <a href="#c:arguments/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">arguments()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/custom_expression.ex#L75" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> arguments() :: [[<a href="Ash.Type.xhtml#t:t/0">Ash.Type.t</a>() | {<a href="Ash.Type.xhtml#t:t/0">Ash.Type.t</a>(), <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()}]]</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:expression/2">
+
+  <div class="detail-header">
+    <a href="#c:expression/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">expression(data_layer, arguments)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/custom_expression.ex#L67" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> expression(
+  data_layer :: <a href="Ash.DataLayer.xhtml#t:t/0">Ash.DataLayer.t</a>(),
+  arguments :: [<a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()]
+) :: {:ok, <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()} | :unknown</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:name/0">
+
+  <div class="detail-header">
+    <a href="#c:name/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">name()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/custom_expression.ex#L73" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> name() :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Type.CiString - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Type.CiString 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Stores a case insensitive string in the database</p><p>See <a href="Ash.CiString.xhtml"><code class="inline">Ash.CiString</code></a> for more information.</p><p>A builtin type that can be referenced via <code class="inline">:ci_string</code></p><h3 id="module-constraints">Constraints</h3><ul><li><p><code class="inline">:max_length</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">non_neg_integer/0</code></a>) - Enforces a maximum length on the value</p></li><li><p><code class="inline">:min_length</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">non_neg_integer/0</code></a>) - Enforces a minimum length on the value</p></li><li><p><code class="inline">:match</code> (<a href="https://hexdocs.pm/elixir/Regex.html#t:t/0"><code class="inline">Regex.t/0</code></a>) - Enforces that the string matches a passed in regex</p></li><li><p><code class="inline">:trim?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Trims the value. The default value is <code class="inline">true</code>.</p></li><li><p><code class="inline">:allow_empty?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Sets the value to <code class="inline">nil</code> if it's empty. The default value is <code class="inline">false</code>.</p></li><li><p><code class="inline">:casing</code> - Lowercases or uppercases the value, fully discarding case information.<br/>For example, if you don't set this, a value of <code class="inline">FrEd</code> could be saved to the data layer.
+<code class="inline">FrEd</code> and <code class="inline">fReD</code> would still compare as equal, but the original casing information  is retained.
+In many cases, this is what you want. In some cases, however, you want to remove all case information.
+For example, in an email, you may want to support a user inputting an upper case letter, but discard it
+when saved.
+ Valid values are :upper, :lower, nil The default value is <code class="inline">nil</code>.</p></li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_change?/0" data-no-tooltip="" translate="no">handle_change?()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#prepare_change?/0" data-no-tooltip="" translate="no">prepare_change?()</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="handle_change?/0">
+
+  <div class="detail-header">
+    <a href="#handle_change?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_change?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/ci_string.ex#L1" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="prepare_change?/0">
+
+  <div class="detail-header">
+    <a href="#prepare_change?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">prepare_change?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/ci_string.ex#L1" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSON.Encoder - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+JSON.Encoder <small>protocol</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A protocol for custom JSON encoding of data structures.</p><p>If you have a struct, you can derive the implementation of this protocol
+by specifying which fields should be encoded to JSON:</p><pre><code class="makeup elixir" translate="no"><samp class="w">  </samp><samp class="na">@derive</samp><samp class="w"> </samp><samp class="p" data-group-id="9808379596-1">{</samp><samp class="nc">JSON.Encoder</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">only</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9808379596-2">[</samp><samp class="n">...</samp><samp class="o">.</samp><samp class="p" data-group-id="9808379596-2">]</samp><samp class="p" data-group-id="9808379596-1">}</samp><samp class="w">
+  </samp><samp class="kd">defstruct</samp><samp class="w"> </samp><samp class="n">...</samp></code></pre><p>It is also possible to encode all fields or skip some fields via the
+<code class="inline">:except</code> option:</p><pre><code class="makeup elixir" translate="no"><samp class="na">@derive</samp><samp class="w"> </samp><samp class="nc">JSON.Encoder</samp><samp class="w">
+</samp><samp class="kd">defstruct</samp><samp class="w"> </samp><samp class="n">...</samp></code></pre><section role="note" class="admonition error"><h4 class="admonition-title error">Leaking Private Information</h4><p>The <code class="inline">:except</code> approach should be used carefully to avoid
+accidentally leaking private information when new fields are added.</p></section><p>Finally, if you don't own the struct you want to encode to JSON,
+you may use <a href="Protocol.xhtml#derive/3"><code class="inline">Protocol.derive/3</code></a> placed outside of any module:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Protocol</samp><samp class="o">.</samp><samp class="n">derive</samp><samp class="p" data-group-id="8131530927-1">(</samp><samp class="nc">JSON.Encoder</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">NameOfTheStruct</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">only</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8131530927-2">[</samp><samp class="n">...</samp><samp class="p" data-group-id="8131530927-2">]</samp><samp class="p" data-group-id="8131530927-1">)</samp><samp class="w">
+</samp><samp class="nc">Protocol</samp><samp class="o">.</samp><samp class="n">derive</samp><samp class="p" data-group-id="8131530927-3">(</samp><samp class="nc">JSON.Encoder</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">NameOfTheStruct</samp><samp class="p" data-group-id="8131530927-3">)</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>All the types that implement this protocol.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#encode/2" data-no-tooltip="" translate="no">encode(term, encoder)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A function invoked to encode the given term to <a><code class="inline">iodata/0</code></a>.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/json.ex#L1" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: <a href="typespecs.xhtml#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>All the types that implement this protocol.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="encode/2">
+
+  <div class="detail-header">
+    <a href="#encode/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">encode(term, encoder)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/json.ex#L109" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>A function invoked to encode the given term to <a href="typespecs.xhtml#built-in-types"><code class="inline">iodata/0</code></a>.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

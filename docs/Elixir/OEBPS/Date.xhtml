@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Date - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Date 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A Date struct and functions.</p><p>The Date struct contains the fields year, month, day and calendar.
+New dates can be built with the <a href="#new/3"><code class="inline">new/3</code></a> function or using the
+<code class="inline">~D</code> (see <a href="Kernel.xhtml#sigil_D/2"><code class="inline">sigil_D/2</code></a>) sigil:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="ld">~D[2000-01-01]</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-01]</samp></code></pre><p>Both <a href="#new/3"><code class="inline">new/3</code></a> and sigil return a struct where the date fields can
+be accessed directly:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">date</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="ld">~D[2000-01-01]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">date</samp><samp class="o">.</samp><samp class="n">year</samp><samp class="w">
+</samp><samp class="mi">2000</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">date</samp><samp class="o">.</samp><samp class="n">month</samp><samp class="w">
+</samp><samp class="mi">1</samp></code></pre><p>The functions on this module work with the <a href="Date.xhtml"><code class="inline">Date</code></a> struct as well
+as any struct that contains the same fields as the <a href="Date.xhtml"><code class="inline">Date</code></a> struct,
+such as <a href="NaiveDateTime.xhtml"><code class="inline">NaiveDateTime</code></a> and <a href="DateTime.xhtml"><code class="inline">DateTime</code></a>. Such functions expect
+<a href="Calendar.xhtml#t:date/0"><code class="inline">Calendar.date/0</code></a> in their typespecs (instead of <a href="#t:t/0"><code class="inline">t/0</code></a>).</p><p>Developers should avoid creating the Date structs directly
+and instead rely on the functions provided by this module as well
+as the ones in third-party calendar libraries.</p><h2 id="module-comparing-dates">Comparing dates</h2><p>Comparisons in Elixir using <a href="Kernel.xhtml#==/2"><code class="inline">==/2</code></a>, <a href="Kernel.xhtml#%3E/2"><code class="inline">&gt;/2</code></a>, <a href="Kernel.xhtml#%3C/2"><code class="inline">&lt;/2</code></a> and similar are structural
+and based on the <a href="Date.xhtml"><code class="inline">Date</code></a> struct fields. For proper comparison between
+dates, use the <a href="#compare/2"><code class="inline">compare/2</code></a> function. The existence of the <a href="#compare/2"><code class="inline">compare/2</code></a>
+function in this module also allows using <a href="Enum.xhtml#min/2"><code class="inline">Enum.min/2</code></a> and <a href="Enum.xhtml#max/2"><code class="inline">Enum.max/2</code></a>
+functions to get the minimum and maximum date of an <a href="Enum.xhtml"><code class="inline">Enum</code></a>. For example:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">min</samp><samp class="p" data-group-id="6247546059-1">(</samp><samp class="p" data-group-id="6247546059-2">[</samp><samp class="ld">~D[2017-03-31]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2017-04-01]</samp><samp class="p" data-group-id="6247546059-2">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Date</samp><samp class="p" data-group-id="6247546059-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2017-03-31]</samp></code></pre><h2 id="module-using-epochs">Using epochs</h2><p>The <a href="#add/2"><code class="inline">add/2</code></a>, <a href="#diff/2"><code class="inline">diff/2</code></a> and <a href="#shift/2"><code class="inline">shift/2</code></a> functions can be used for computing dates
+or retrieving the number of days between instants. For example, if there
+is an interest in computing the number of days from the Unix epoch
+(1970-01-01):</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">diff</samp><samp class="p" data-group-id="4653494180-1">(</samp><samp class="ld">~D[2010-04-17]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[1970-01-01]</samp><samp class="p" data-group-id="4653494180-1">)</samp><samp class="w">
+</samp><samp class="mi">14716</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">add</samp><samp class="p" data-group-id="4653494180-2">(</samp><samp class="ld">~D[1970-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">14716</samp><samp class="p" data-group-id="4653494180-2">)</samp><samp class="w">
+</samp><samp class="ld">~D[2010-04-17]</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="4653494180-3">(</samp><samp class="ld">~D[1970-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">40</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">week</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="4653494180-3">)</samp><samp class="w">
+</samp><samp class="ld">~D[2010-04-17]</samp></code></pre><p>Those functions are optimized to deal with common epochs, such
+as the Unix Epoch above or the Gregorian Epoch (0000-01-01).</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add/2" data-no-tooltip="" translate="no">add(date, days)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the number of days to the given <code class="inline">date</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#after?/2" data-no-tooltip="" translate="no">after?(date1, date2)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns <code class="inline">true</code> if the first date is strictly later than the second.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#before?/2" data-no-tooltip="" translate="no">before?(date1, date2)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns <code class="inline">true</code> if the first date is strictly earlier than the second.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#beginning_of_month/1" data-no-tooltip="" translate="no">beginning_of_month(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates a date that is the first day of the month for the given <code class="inline">date</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#beginning_of_week/2" data-no-tooltip="" translate="no">beginning_of_week(date, starting_on \\ :default)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates a date that is the first day of the week for the given <code class="inline">date</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#compare/2" data-no-tooltip="" translate="no">compare(date1, date2)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Compares two date structs.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#convert/2" data-no-tooltip="" translate="no">convert(date, calendar)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts the given <code class="inline">date</code> from its calendar to the given <code class="inline">calendar</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#convert!/2" data-no-tooltip="" translate="no">convert!(date, calendar)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Similar to <a><code class="inline">Date.convert/2</code></a>, but raises an <a><code class="inline">ArgumentError</code></a>
+if the conversion between the two calendars is not possible.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#day_of_era/1" data-no-tooltip="" translate="no">day_of_era(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the day-of-era and era for a given
+calendar <code class="inline">date</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#day_of_week/2" data-no-tooltip="" translate="no">day_of_week(date, starting_on \\ :default)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the day of the week of a given <code class="inline">date</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#day_of_year/1" data-no-tooltip="" translate="no">day_of_year(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the day of the year of a given <code class="inline">date</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#days_in_month/1" data-no-tooltip="" translate="no">days_in_month(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the number of days in the given <code class="inline">date</code> month.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#diff/2" data-no-tooltip="" translate="no">diff(date1, date2)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the difference between two dates, in a full number of days.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#end_of_month/1" data-no-tooltip="" translate="no">end_of_month(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates a date that is the last day of the month for the given <code class="inline">date</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#end_of_week/2" data-no-tooltip="" translate="no">end_of_week(date, starting_on \\ :default)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates a date that is the last day of the week for the given <code class="inline">date</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#from_erl/2" data-no-tooltip="" translate="no">from_erl(tuple, calendar \\ Calendar.ISO)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts an Erlang date tuple to a <a><code class="inline">Date</code></a> struct.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#from_erl!/2" data-no-tooltip="" translate="no">from_erl!(tuple, calendar \\ Calendar.ISO)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts an Erlang date tuple but raises for invalid dates.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#from_gregorian_days/2" data-no-tooltip="" translate="no">from_gregorian_days(days, calendar \\ Calendar.ISO)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts a number of gregorian days to a <a><code class="inline">Date</code></a> struct.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#from_iso8601/2" data-no-tooltip="" translate="no">from_iso8601(string, calendar \\ Calendar.ISO)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Parses the extended &quot;Dates&quot; format described by
+<a>ISO 8601:2019</a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#from_iso8601!/2" data-no-tooltip="" translate="no">from_iso8601!(string, calendar \\ Calendar.ISO)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Parses the extended &quot;Dates&quot; format described by
+<a>ISO 8601:2019</a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#leap_year?/1" data-no-tooltip="" translate="no">leap_year?(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns <code class="inline">true</code> if the year in the given <code class="inline">date</code> is a leap year.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#months_in_year/1" data-no-tooltip="" translate="no">months_in_year(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the number of months in the given <code class="inline">date</code> year.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new/4" data-no-tooltip="" translate="no">new(year, month, day, calendar \\ Calendar.ISO)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Builds a new ISO date.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new!/4" data-no-tooltip="" translate="no">new!(year, month, day, calendar \\ Calendar.ISO)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Builds a new ISO date.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#quarter_of_year/1" data-no-tooltip="" translate="no">quarter_of_year(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the quarter of the year of a given <code class="inline">date</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#range/2" data-no-tooltip="" translate="no">range(first, last)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a range of dates.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#range/3" data-no-tooltip="" translate="no">range(first, last, step)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a range of dates with a step.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#shift/2" data-no-tooltip="" translate="no">shift(date, duration)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Shifts given <code class="inline">date</code> by <code class="inline">duration</code> according to its calendar.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_erl/1" data-no-tooltip="" translate="no">to_erl(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts the given <code class="inline">date</code> to an Erlang date tuple.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_gregorian_days/1" data-no-tooltip="" translate="no">to_gregorian_days(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts a <code class="inline">date</code> struct to a number of gregorian days.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_iso8601/2" data-no-tooltip="" translate="no">to_iso8601(date, format \\ :extended)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts the given <code class="inline">date</code> to
+<a>ISO 8601:2019</a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_string/1" data-no-tooltip="" translate="no">to_string(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts the given date to a string according to its calendar.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#utc_today/1" data-no-tooltip="" translate="no">utc_today(calendar \\ Calendar.ISO)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the current date in UTC.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#year_of_era/1" data-no-tooltip="" translate="no">year_of_era(date)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calculates the year-of-era and era for a given
+calendar year.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L64" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %Date{
+  calendar: <a href="Calendar.xhtml#t:calendar/0">Calendar.calendar</a>(),
+  day: <a href="Calendar.xhtml#t:day/0">Calendar.day</a>(),
+  month: <a href="Calendar.xhtml#t:month/0">Calendar.month</a>(),
+  year: <a href="Calendar.xhtml#t:year/0">Calendar.year</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="add/2">
+
+  <div class="detail-header">
+    <a href="#add/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add(date, days)</h1>
+
+        <span class="note">(since 1.5.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L709" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> add(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), <a href="typespecs.xhtml#basic-types">integer</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds the number of days to the given <code class="inline">date</code>.</p><p>The days are counted as Gregorian days. The date is returned in the same
+calendar as it was given in.</p><p>To shift a date by a <a href="Duration.xhtml"><code class="inline">Duration</code></a> and according to its underlying calendar, use <a href="#shift/2"><code class="inline">Date.shift/2</code></a>.</p><h2 id="add/2-examples" class="section-heading"><a href="#add/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">add</samp><samp class="p" data-group-id="8917878972-1">(</samp><samp class="ld">~D[2000-01-03]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="p" data-group-id="8917878972-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-01]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">add</samp><samp class="p" data-group-id="8917878972-2">(</samp><samp class="ld">~D[2000-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="8917878972-2">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-03]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">add</samp><samp class="p" data-group-id="8917878972-3">(</samp><samp class="ld">~N[2000-01-01 09:00:00]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="8917878972-3">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-03]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">add</samp><samp class="p" data-group-id="8917878972-4">(</samp><samp class="ld">~D[-0010-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="p" data-group-id="8917878972-4">)</samp><samp class="w">
+</samp><samp class="ld">~D[-0011-12-30]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="after?/2">
+
+  <div class="detail-header">
+    <a href="#after?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">after?(date1, date2)</h1>
+
+        <span class="note">(since 1.15.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L617" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> after?(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), <a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="typespecs.xhtml#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Returns <code class="inline">true</code> if the first date is strictly later than the second.</p><h2 id="after?/2-examples" class="section-heading"><a href="#after?/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">after?</samp><samp class="p" data-group-id="1932863189-1">(</samp><samp class="ld">~D[2022-02-02]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2021-01-01]</samp><samp class="p" data-group-id="1932863189-1">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">after?</samp><samp class="p" data-group-id="1932863189-2">(</samp><samp class="ld">~D[2021-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2021-01-01]</samp><samp class="p" data-group-id="1932863189-2">)</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">after?</samp><samp class="p" data-group-id="1932863189-3">(</samp><samp class="ld">~D[2021-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2022-02-02]</samp><samp class="p" data-group-id="1932863189-3">)</samp><samp class="w">
+</samp><samp class="no">false</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="before?/2">
+
+  <div class="detail-header">
+    <a href="#before?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">before?(date1, date2)</h1>
+
+        <span class="note">(since 1.15.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L598" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> before?(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), <a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="typespecs.xhtml#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Returns <code class="inline">true</code> if the first date is strictly earlier than the second.</p><h2 id="before?/2-examples" class="section-heading"><a href="#before?/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">before?</samp><samp class="p" data-group-id="5111001085-1">(</samp><samp class="ld">~D[2021-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2022-02-02]</samp><samp class="p" data-group-id="5111001085-1">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">before?</samp><samp class="p" data-group-id="5111001085-2">(</samp><samp class="ld">~D[2021-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2021-01-01]</samp><samp class="p" data-group-id="5111001085-2">)</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">before?</samp><samp class="p" data-group-id="5111001085-3">(</samp><samp class="ld">~D[2022-02-02]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2021-01-01]</samp><samp class="p" data-group-id="5111001085-3">)</samp><samp class="w">
+</samp><samp class="no">false</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="beginning_of_month/1">
+
+  <div class="detail-header">
+    <a href="#beginning_of_month/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">beginning_of_month(date)</h1>
+
+        <span class="note">(since 1.11.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L1118" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> beginning_of_month(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Calculates a date that is the first day of the month for the given <code class="inline">date</code>.</p><h2 id="beginning_of_month/1-examples" class="section-heading"><a href="#beginning_of_month/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">beginning_of_month</samp><samp class="p" data-group-id="5889371060-1">(</samp><samp class="ld">~D[2000-01-31]</samp><samp class="p" data-group-id="5889371060-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-01]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">beginning_of_month</samp><samp class="p" data-group-id="5889371060-2">(</samp><samp class="ld">~D[2000-01-01]</samp><samp class="p" data-group-id="5889371060-2">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-01]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">beginning_of_month</samp><samp class="p" data-group-id="5889371060-3">(</samp><samp class="ld">~N[2000-01-31 01:23:45]</samp><samp class="p" data-group-id="5889371060-3">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-01]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="beginning_of_week/2">
+
+    <span id="beginning_of_week/1"></span>
+
+  <div class="detail-header">
+    <a href="#beginning_of_week/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">beginning_of_week(date, starting_on \\ :default)</h1>
+
+        <span class="note">(since 1.11.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L919" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> beginning_of_week(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), starting_on :: :default | <a href="typespecs.xhtml#basic-types">atom</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Calculates a date that is the first day of the week for the given <code class="inline">date</code>.</p><p>If the day is already the first day of the week, it returns the
+day itself. For the built-in ISO calendar, the week starts on Monday.
+A weekday rather than <code class="inline">:default</code> can be given as <code class="inline">starting_on</code>.</p><h2 id="beginning_of_week/2-examples" class="section-heading"><a href="#beginning_of_week/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">beginning_of_week</samp><samp class="p" data-group-id="5621736047-1">(</samp><samp class="ld">~D[2020-07-11]</samp><samp class="p" data-group-id="5621736047-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2020-07-06]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">beginning_of_week</samp><samp class="p" data-group-id="5621736047-2">(</samp><samp class="ld">~D[2020-07-06]</samp><samp class="p" data-group-id="5621736047-2">)</samp><samp class="w">
+</samp><samp class="ld">~D[2020-07-06]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">beginning_of_week</samp><samp class="p" data-group-id="5621736047-3">(</samp><samp class="ld">~D[2020-07-11]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:sunday</samp><samp class="p" data-group-id="5621736047-3">)</samp><samp class="w">
+</samp><samp class="ld">~D[2020-07-05]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">beginning_of_week</samp><samp class="p" data-group-id="5621736047-4">(</samp><samp class="ld">~D[2020-07-11]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:saturday</samp><samp class="p" data-group-id="5621736047-4">)</samp><samp class="w">
+</samp><samp class="ld">~D[2020-07-11]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">beginning_of_week</samp><samp class="p" data-group-id="5621736047-5">(</samp><samp class="ld">~N[2020-07-11 01:23:45]</samp><samp class="p" data-group-id="5621736047-5">)</samp><samp class="w">
+</samp><samp class="ld">~D[2020-07-06]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="compare/2">
+
+  <div class="detail-header">
+    <a href="#compare/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">compare(date1, date2)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L555" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> compare(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), <a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: :lt | :eq | :gt</pre>
+
+      </div>
+
+<p>Compares two date structs.</p><p>Returns <code class="inline">:gt</code> if first date is later than the second
+and <code class="inline">:lt</code> for vice versa. If the two dates are equal
+<code class="inline">:eq</code> is returned.</p><h2 id="compare/2-examples" class="section-heading"><a href="#compare/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">compare</samp><samp class="p" data-group-id="6691409096-1">(</samp><samp class="ld">~D[2016-04-16]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2016-04-28]</samp><samp class="p" data-group-id="6691409096-1">)</samp><samp class="w">
+</samp><samp class="ss">:lt</samp></code></pre><p>This function can also be used to compare across more
+complex calendar types by considering only the date fields:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">compare</samp><samp class="p" data-group-id="8342518116-1">(</samp><samp class="ld">~D[2016-04-16]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~N[2016-04-28 01:23:45]</samp><samp class="p" data-group-id="8342518116-1">)</samp><samp class="w">
+</samp><samp class="ss">:lt</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">compare</samp><samp class="p" data-group-id="8342518116-2">(</samp><samp class="ld">~D[2016-04-16]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~N[2016-04-16 01:23:45]</samp><samp class="p" data-group-id="8342518116-2">)</samp><samp class="w">
+</samp><samp class="ss">:eq</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">compare</samp><samp class="p" data-group-id="8342518116-3">(</samp><samp class="ld">~N[2016-04-16 12:34:56]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~N[2016-04-16 01:23:45]</samp><samp class="p" data-group-id="8342518116-3">)</samp><samp class="w">
+</samp><samp class="ss">:eq</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="convert/2">
+
+  <div class="detail-header">
+    <a href="#convert/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">convert(date, calendar)</h1>
+
+        <span class="note">(since 1.5.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L642" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> convert(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), <a href="Calendar.xhtml#t:calendar/0">Calendar.calendar</a>()) ::
+  {:ok, <a href="#t:t/0">t</a>()} | {:error, :incompatible_calendars}</pre>
+
+      </div>
+
+<p>Converts the given <code class="inline">date</code> from its calendar to the given <code class="inline">calendar</code>.</p><p>Returns <code class="inline">{:ok, date}</code> if the calendars are compatible,
+or <code class="inline">{:error, :incompatible_calendars}</code> if they are not.</p><p>See also <a href="Calendar.xhtml#compatible_calendars?/2"><code class="inline">Calendar.compatible_calendars?/2</code></a>.</p><h2 id="convert/2-examples" class="section-heading"><a href="#convert/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>Imagine someone implements <code class="inline">Calendar.Holocene</code>, a calendar based on the
+Gregorian calendar that adds exactly 10,000 years to the current Gregorian
+year:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">convert</samp><samp class="p" data-group-id="3095743818-1">(</samp><samp class="ld">~D[2000-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Calendar.Holocene</samp><samp class="p" data-group-id="3095743818-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="3095743818-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3095743818-3">%</samp><samp class="nc" data-group-id="3095743818-3">Date</samp><samp class="p" data-group-id="3095743818-3">{</samp><samp class="ss">calendar</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Calendar.Holocene</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">12000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="3095743818-3">}</samp><samp class="p" data-group-id="3095743818-2">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="convert!/2">
+
+  <div class="detail-header">
+    <a href="#convert!/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">convert!(date, calendar)</h1>
+
+        <span class="note">(since 1.5.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L675" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> convert!(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), <a href="Calendar.xhtml#t:calendar/0">Calendar.calendar</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Similar to <a href="#convert/2"><code class="inline">Date.convert/2</code></a>, but raises an <a href="ArgumentError.xhtml"><code class="inline">ArgumentError</code></a>
+if the conversion between the two calendars is not possible.</p><h2 id="convert!/2-examples" class="section-heading"><a href="#convert!/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>Imagine someone implements <code class="inline">Calendar.Holocene</code>, a calendar based on the
+Gregorian calendar that adds exactly 10,000 years to the current Gregorian
+year:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">convert!</samp><samp class="p" data-group-id="7869418582-1">(</samp><samp class="ld">~D[2000-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Calendar.Holocene</samp><samp class="p" data-group-id="7869418582-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7869418582-2">%</samp><samp class="nc" data-group-id="7869418582-2">Date</samp><samp class="p" data-group-id="7869418582-2">{</samp><samp class="ss">calendar</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Calendar.Holocene</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">12000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="7869418582-2">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="day_of_era/1">
+
+  <div class="detail-header">
+    <a href="#day_of_era/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">day_of_era(date)</h1>
+
+        <span class="note">(since 1.8.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L1097" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> day_of_era(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: {<a href="Calendar.xhtml#t:day/0">Calendar.day</a>(), <a href="typespecs.xhtml#basic-types">non_neg_integer</a>()}</pre>
+
+      </div>
+
+<p>Calculates the day-of-era and era for a given
+calendar <code class="inline">date</code>.</p><p>Returns a tuple <code class="inline">{day, era}</code> representing the
+day within the era and the era number.</p><h2 id="day_of_era/1-examples" class="section-heading"><a href="#day_of_era/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_era</samp><samp class="p" data-group-id="7353976144-1">(</samp><samp class="ld">~D[0001-01-01]</samp><samp class="p" data-group-id="7353976144-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7353976144-2">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="7353976144-2">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_era</samp><samp class="p" data-group-id="7353976144-3">(</samp><samp class="ld">~D[0000-12-31]</samp><samp class="p" data-group-id="7353976144-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7353976144-4">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="7353976144-4">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="day_of_week/2">
+
+    <span id="day_of_week/1"></span>
+
+  <div class="detail-header">
+    <a href="#day_of_week/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">day_of_week(date, starting_on \\ :default)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L889" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> day_of_week(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), starting_on :: :default | <a href="typespecs.xhtml#basic-types">atom</a>()) ::
+  <a href="Calendar.xhtml#t:day_of_week/0">Calendar.day_of_week</a>()</pre>
+
+      </div>
+
+<p>Calculates the day of the week of a given <code class="inline">date</code>.</p><p>Returns the day of the week as an integer. For the ISO 8601
+calendar (the default), it is an integer from 1 to 7, where
+1 is Monday and 7 is Sunday.</p><p>An optional <code class="inline">starting_on</code> value may be supplied, which
+configures the weekday the week starts on. The default value
+for it is <code class="inline">:default</code>, which translates to <code class="inline">:monday</code> for the
+built-in ISO calendar. Any other weekday may be given to.</p><h2 id="day_of_week/2-examples" class="section-heading"><a href="#day_of_week/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_week</samp><samp class="p" data-group-id="2684542400-1">(</samp><samp class="ld">~D[2016-10-31]</samp><samp class="p" data-group-id="2684542400-1">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_week</samp><samp class="p" data-group-id="2684542400-2">(</samp><samp class="ld">~D[2016-11-01]</samp><samp class="p" data-group-id="2684542400-2">)</samp><samp class="w">
+</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_week</samp><samp class="p" data-group-id="2684542400-3">(</samp><samp class="ld">~N[2016-11-01 01:23:45]</samp><samp class="p" data-group-id="2684542400-3">)</samp><samp class="w">
+</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_week</samp><samp class="p" data-group-id="2684542400-4">(</samp><samp class="ld">~D[-0015-10-30]</samp><samp class="p" data-group-id="2684542400-4">)</samp><samp class="w">
+</samp><samp class="mi">3</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_week</samp><samp class="p" data-group-id="2684542400-5">(</samp><samp class="ld">~D[2016-10-31]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:sunday</samp><samp class="p" data-group-id="2684542400-5">)</samp><samp class="w">
+</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_week</samp><samp class="p" data-group-id="2684542400-6">(</samp><samp class="ld">~D[2016-11-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:sunday</samp><samp class="p" data-group-id="2684542400-6">)</samp><samp class="w">
+</samp><samp class="mi">3</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_week</samp><samp class="p" data-group-id="2684542400-7">(</samp><samp class="ld">~N[2016-11-01 01:23:45]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:sunday</samp><samp class="p" data-group-id="2684542400-7">)</samp><samp class="w">
+</samp><samp class="mi">3</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_week</samp><samp class="p" data-group-id="2684542400-8">(</samp><samp class="ld">~D[-0015-10-30]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:sunday</samp><samp class="p" data-group-id="2684542400-8">)</samp><samp class="w">
+</samp><samp class="mi">4</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="day_of_year/1">
+
+  <div class="detail-header">
+    <a href="#day_of_year/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">day_of_year(date)</h1>
+
+        <span class="note">(since 1.8.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L1022" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> day_of_year(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="Calendar.xhtml#t:day/0">Calendar.day</a>()</pre>
+
+      </div>
+
+<p>Calculates the day of the year of a given <code class="inline">date</code>.</p><p>Returns the day of the year as an integer. For the ISO 8601
+calendar (the default), it is an integer from 1 to 366.</p><h2 id="day_of_year/1-examples" class="section-heading"><a href="#day_of_year/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_year</samp><samp class="p" data-group-id="8625709444-1">(</samp><samp class="ld">~D[2016-01-01]</samp><samp class="p" data-group-id="8625709444-1">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_year</samp><samp class="p" data-group-id="8625709444-2">(</samp><samp class="ld">~D[2016-11-01]</samp><samp class="p" data-group-id="8625709444-2">)</samp><samp class="w">
+</samp><samp class="mi">306</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_year</samp><samp class="p" data-group-id="8625709444-3">(</samp><samp class="ld">~D[-0015-10-30]</samp><samp class="p" data-group-id="8625709444-3">)</samp><samp class="w">
+</samp><samp class="mi">303</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">day_of_year</samp><samp class="p" data-group-id="8625709444-4">(</samp><samp class="ld">~D[2004-12-31]</samp><samp class="p" data-group-id="8625709444-4">)</samp><samp class="w">
+</samp><samp class="mi">366</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="days_in_month/1">
+
+  <div class="detail-header">
+    <a href="#days_in_month/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">days_in_month(date)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L236" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> days_in_month(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="Calendar.xhtml#t:day/0">Calendar.day</a>()</pre>
+
+      </div>
+
+<p>Returns the number of days in the given <code class="inline">date</code> month.</p><h2 id="days_in_month/1-examples" class="section-heading"><a href="#days_in_month/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">days_in_month</samp><samp class="p" data-group-id="2890009229-1">(</samp><samp class="ld">~D[1900-01-13]</samp><samp class="p" data-group-id="2890009229-1">)</samp><samp class="w">
+</samp><samp class="mi">31</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">days_in_month</samp><samp class="p" data-group-id="2890009229-2">(</samp><samp class="ld">~D[1900-02-09]</samp><samp class="p" data-group-id="2890009229-2">)</samp><samp class="w">
+</samp><samp class="mi">28</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">days_in_month</samp><samp class="p" data-group-id="2890009229-3">(</samp><samp class="ld">~N[2000-02-20 01:23:45]</samp><samp class="p" data-group-id="2890009229-3">)</samp><samp class="w">
+</samp><samp class="mi">29</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="diff/2">
+
+  <div class="detail-header">
+    <a href="#diff/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">diff(date1, date2)</h1>
+
+        <span class="note">(since 1.5.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L741" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> diff(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), <a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Calculates the difference between two dates, in a full number of days.</p><p>It returns the number of Gregorian days between the dates. Only <a href="Date.xhtml"><code class="inline">Date</code></a>
+structs that follow the same or compatible calendars can be compared
+this way. If two calendars are not compatible, it will raise.</p><h2 id="diff/2-examples" class="section-heading"><a href="#diff/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">diff</samp><samp class="p" data-group-id="3650222809-1">(</samp><samp class="ld">~D[2000-01-03]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2000-01-01]</samp><samp class="p" data-group-id="3650222809-1">)</samp><samp class="w">
+</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">diff</samp><samp class="p" data-group-id="3650222809-2">(</samp><samp class="ld">~D[2000-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2000-01-03]</samp><samp class="p" data-group-id="3650222809-2">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">diff</samp><samp class="p" data-group-id="3650222809-3">(</samp><samp class="ld">~D[0000-01-02]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[-0001-12-30]</samp><samp class="p" data-group-id="3650222809-3">)</samp><samp class="w">
+</samp><samp class="mi">3</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">diff</samp><samp class="p" data-group-id="3650222809-4">(</samp><samp class="ld">~D[2000-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~N[2000-01-03 09:00:00]</samp><samp class="p" data-group-id="3650222809-4">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mi">2</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="end_of_month/1">
+
+  <div class="detail-header">
+    <a href="#end_of_month/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">end_of_month(date)</h1>
+
+        <span class="note">(since 1.11.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L1139" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> end_of_month(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Calculates a date that is the last day of the month for the given <code class="inline">date</code>.</p><h2 id="end_of_month/1-examples" class="section-heading"><a href="#end_of_month/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">end_of_month</samp><samp class="p" data-group-id="7288828594-1">(</samp><samp class="ld">~D[2000-01-01]</samp><samp class="p" data-group-id="7288828594-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-31]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">end_of_month</samp><samp class="p" data-group-id="7288828594-2">(</samp><samp class="ld">~D[2000-01-31]</samp><samp class="p" data-group-id="7288828594-2">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-31]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">end_of_month</samp><samp class="p" data-group-id="7288828594-3">(</samp><samp class="ld">~N[2000-01-01 01:23:45]</samp><samp class="p" data-group-id="7288828594-3">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-31]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="end_of_week/2">
+
+    <span id="end_of_week/1"></span>
+
+  <div class="detail-header">
+    <a href="#end_of_week/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">end_of_week(date, starting_on \\ :default)</h1>
+
+        <span class="note">(since 1.11.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L972" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> end_of_week(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), starting_on :: :default | <a href="typespecs.xhtml#basic-types">atom</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Calculates a date that is the last day of the week for the given <code class="inline">date</code>.</p><p>If the day is already the last day of the week, it returns the
+day itself. For the built-in ISO calendar, the week ends on Sunday.
+A weekday rather than <code class="inline">:default</code> can be given as <code class="inline">starting_on</code>.</p><h2 id="end_of_week/2-examples" class="section-heading"><a href="#end_of_week/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">end_of_week</samp><samp class="p" data-group-id="5310458857-1">(</samp><samp class="ld">~D[2020-07-11]</samp><samp class="p" data-group-id="5310458857-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2020-07-12]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">end_of_week</samp><samp class="p" data-group-id="5310458857-2">(</samp><samp class="ld">~D[2020-07-05]</samp><samp class="p" data-group-id="5310458857-2">)</samp><samp class="w">
+</samp><samp class="ld">~D[2020-07-05]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">end_of_week</samp><samp class="p" data-group-id="5310458857-3">(</samp><samp class="ld">~D[2020-07-06]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:sunday</samp><samp class="p" data-group-id="5310458857-3">)</samp><samp class="w">
+</samp><samp class="ld">~D[2020-07-11]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">end_of_week</samp><samp class="p" data-group-id="5310458857-4">(</samp><samp class="ld">~D[2020-07-06]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:saturday</samp><samp class="p" data-group-id="5310458857-4">)</samp><samp class="w">
+</samp><samp class="ld">~D[2020-07-10]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">end_of_week</samp><samp class="p" data-group-id="5310458857-5">(</samp><samp class="ld">~N[2020-07-11 01:23:45]</samp><samp class="p" data-group-id="5310458857-5">)</samp><samp class="w">
+</samp><samp class="ld">~D[2020-07-12]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="from_erl/2">
+
+    <span id="from_erl/1"></span>
+
+  <div class="detail-header">
+    <a href="#from_erl/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">from_erl(tuple, calendar \\ Calendar.ISO)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L462" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> from_erl(<a href="https://www.erlang.org/doc/apps/stdlib/calendar.html#t:date/0">:calendar.date</a>(), <a href="Calendar.xhtml#t:calendar/0">Calendar.calendar</a>()) :: {:ok, <a href="#t:t/0">t</a>()} | {:error, <a href="typespecs.xhtml#basic-types">atom</a>()}</pre>
+
+      </div>
+
+<p>Converts an Erlang date tuple to a <a href="Date.xhtml"><code class="inline">Date</code></a> struct.</p><p>Only supports converting dates which are in the ISO calendar,
+or other calendars in which the days also start at midnight.
+Attempting to convert dates from other calendars will return an error tuple.</p><h2 id="from_erl/2-examples" class="section-heading"><a href="#from_erl/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_erl</samp><samp class="p" data-group-id="5970370950-1">(</samp><samp class="p" data-group-id="5970370950-2">{</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="5970370950-2">}</samp><samp class="p" data-group-id="5970370950-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5970370950-3">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2000-01-01]</samp><samp class="p" data-group-id="5970370950-3">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_erl</samp><samp class="p" data-group-id="5970370950-4">(</samp><samp class="p" data-group-id="5970370950-5">{</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">13</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="5970370950-5">}</samp><samp class="p" data-group-id="5970370950-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5970370950-6">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:invalid_date</samp><samp class="p" data-group-id="5970370950-6">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="from_erl!/2">
+
+    <span id="from_erl!/1"></span>
+
+  <div class="detail-header">
+    <a href="#from_erl!/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">from_erl!(tuple, calendar \\ Calendar.ISO)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L480" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> from_erl!(<a href="https://www.erlang.org/doc/apps/stdlib/calendar.html#t:date/0">:calendar.date</a>(), <a href="Calendar.xhtml#t:calendar/0">Calendar.calendar</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Converts an Erlang date tuple but raises for invalid dates.</p><h2 id="from_erl!/2-examples" class="section-heading"><a href="#from_erl!/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_erl!</samp><samp class="p" data-group-id="4818222812-1">(</samp><samp class="p" data-group-id="4818222812-2">{</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="4818222812-2">}</samp><samp class="p" data-group-id="4818222812-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-01]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_erl!</samp><samp class="p" data-group-id="4818222812-3">(</samp><samp class="p" data-group-id="4818222812-4">{</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">13</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="4818222812-4">}</samp><samp class="p" data-group-id="4818222812-3">)</samp><samp class="w">
+</samp><samp class="gt">** (ArgumentError) cannot convert {2000, 13, 1} to date, reason: :invalid_date</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="from_gregorian_days/2">
+
+    <span id="from_gregorian_days/1"></span>
+
+  <div class="detail-header">
+    <a href="#from_gregorian_days/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">from_gregorian_days(days, calendar \\ Calendar.ISO)</h1>
+
+        <span class="note">(since 1.11.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L506" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> from_gregorian_days(<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="Calendar.xhtml#t:calendar/0">Calendar.calendar</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Converts a number of gregorian days to a <a href="Date.xhtml"><code class="inline">Date</code></a> struct.</p><h2 id="from_gregorian_days/2-examples" class="section-heading"><a href="#from_gregorian_days/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_gregorian_days</samp><samp class="p" data-group-id="7656740395-1">(</samp><samp class="mi">1</samp><samp class="p" data-group-id="7656740395-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[0000-01-02]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_gregorian_days</samp><samp class="p" data-group-id="7656740395-2">(</samp><samp class="mi">730_485</samp><samp class="p" data-group-id="7656740395-2">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-01]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_gregorian_days</samp><samp class="p" data-group-id="7656740395-3">(</samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p" data-group-id="7656740395-3">)</samp><samp class="w">
+</samp><samp class="ld">~D[-0001-12-31]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="from_iso8601/2">
+
+    <span id="from_iso8601/1"></span>
+
+  <div class="detail-header">
+    <a href="#from_iso8601/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">from_iso8601(string, calendar \\ Calendar.ISO)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L356" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> from_iso8601(<a href="String.xhtml#t:t/0">String.t</a>(), <a href="Calendar.xhtml#t:calendar/0">Calendar.calendar</a>()) :: {:ok, <a href="#t:t/0">t</a>()} | {:error, <a href="typespecs.xhtml#basic-types">atom</a>()}</pre>
+
+      </div>
+
+<p>Parses the extended &quot;Dates&quot; format described by
+<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601:2019</a>.</p><p>The year parsed by this function is limited to four digits.</p><h2 id="from_iso8601/2-examples" class="section-heading"><a href="#from_iso8601/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_iso8601</samp><samp class="p" data-group-id="5004228981-1">(</samp><samp class="s">&quot;2015-01-23&quot;</samp><samp class="p" data-group-id="5004228981-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5004228981-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2015-01-23]</samp><samp class="p" data-group-id="5004228981-2">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_iso8601</samp><samp class="p" data-group-id="5004228981-3">(</samp><samp class="s">&quot;2015:01:23&quot;</samp><samp class="p" data-group-id="5004228981-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5004228981-4">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:invalid_format</samp><samp class="p" data-group-id="5004228981-4">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_iso8601</samp><samp class="p" data-group-id="5004228981-5">(</samp><samp class="s">&quot;2015-01-32&quot;</samp><samp class="p" data-group-id="5004228981-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5004228981-6">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:invalid_date</samp><samp class="p" data-group-id="5004228981-6">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="from_iso8601!/2">
+
+    <span id="from_iso8601!/1"></span>
+
+  <div class="detail-header">
+    <a href="#from_iso8601!/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">from_iso8601!(string, calendar \\ Calendar.ISO)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L377" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> from_iso8601!(<a href="String.xhtml#t:t/0">String.t</a>(), <a href="Calendar.xhtml#t:calendar/0">Calendar.calendar</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Parses the extended &quot;Dates&quot; format described by
+<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601:2019</a>.</p><p>Raises if the format is invalid.</p><h2 id="from_iso8601!/2-examples" class="section-heading"><a href="#from_iso8601!/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_iso8601!</samp><samp class="p" data-group-id="4938957408-1">(</samp><samp class="s">&quot;2015-01-23&quot;</samp><samp class="p" data-group-id="4938957408-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2015-01-23]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">from_iso8601!</samp><samp class="p" data-group-id="4938957408-2">(</samp><samp class="s">&quot;2015:01:23&quot;</samp><samp class="p" data-group-id="4938957408-2">)</samp><samp class="w">
+</samp><samp class="gt">** (ArgumentError) cannot parse &quot;2015:01:23&quot; as date, reason: :invalid_format</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="leap_year?/1">
+
+  <div class="detail-header">
+    <a href="#leap_year?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">leap_year?(date)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L215" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> leap_year?(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="typespecs.xhtml#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Returns <code class="inline">true</code> if the year in the given <code class="inline">date</code> is a leap year.</p><h2 id="leap_year?/1-examples" class="section-heading"><a href="#leap_year?/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">leap_year?</samp><samp class="p" data-group-id="6291852227-1">(</samp><samp class="ld">~D[2000-01-01]</samp><samp class="p" data-group-id="6291852227-1">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">leap_year?</samp><samp class="p" data-group-id="6291852227-2">(</samp><samp class="ld">~D[2001-01-01]</samp><samp class="p" data-group-id="6291852227-2">)</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">leap_year?</samp><samp class="p" data-group-id="6291852227-3">(</samp><samp class="ld">~D[2004-01-01]</samp><samp class="p" data-group-id="6291852227-3">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">leap_year?</samp><samp class="p" data-group-id="6291852227-4">(</samp><samp class="ld">~D[1900-01-01]</samp><samp class="p" data-group-id="6291852227-4">)</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">leap_year?</samp><samp class="p" data-group-id="6291852227-5">(</samp><samp class="ld">~N[2004-01-01 01:23:45]</samp><samp class="p" data-group-id="6291852227-5">)</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="months_in_year/1">
+
+  <div class="detail-header">
+    <a href="#months_in_year/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">months_in_year(date)</h1>
+
+        <span class="note">(since 1.7.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L253" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> months_in_year(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="Calendar.xhtml#t:month/0">Calendar.month</a>()</pre>
+
+      </div>
+
+<p>Returns the number of months in the given <code class="inline">date</code> year.</p><h2 id="months_in_year/1-example" class="section-heading"><a href="#months_in_year/1-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">months_in_year</samp><samp class="p" data-group-id="4234044455-1">(</samp><samp class="ld">~D[1900-01-13]</samp><samp class="p" data-group-id="4234044455-1">)</samp><samp class="w">
+</samp><samp class="mi">12</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="new/4">
+
+    <span id="new/3"></span>
+
+  <div class="detail-header">
+    <a href="#new/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(year, month, day, calendar \\ Calendar.ISO)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L282" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> new(<a href="Calendar.xhtml#t:year/0">Calendar.year</a>(), <a href="Calendar.xhtml#t:month/0">Calendar.month</a>(), <a href="Calendar.xhtml#t:day/0">Calendar.day</a>(), <a href="Calendar.xhtml#t:calendar/0">Calendar.calendar</a>()) ::
+  {:ok, <a href="#t:t/0">t</a>()} | {:error, <a href="typespecs.xhtml#basic-types">atom</a>()}</pre>
+
+      </div>
+
+<p>Builds a new ISO date.</p><p>Expects all values to be integers. Returns <code class="inline">{:ok, date}</code> if each
+entry fits its appropriate range, returns <code class="inline">{:error, reason}</code> otherwise.</p><h2 id="new/4-examples" class="section-heading"><a href="#new/4-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="7143530277-1">(</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="7143530277-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7143530277-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2000-01-01]</samp><samp class="p" data-group-id="7143530277-2">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="7143530277-3">(</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">13</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="7143530277-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7143530277-4">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:invalid_date</samp><samp class="p" data-group-id="7143530277-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="7143530277-5">(</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">29</samp><samp class="p" data-group-id="7143530277-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7143530277-6">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2000-02-29]</samp><samp class="p" data-group-id="7143530277-6">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="7143530277-7">(</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">30</samp><samp class="p" data-group-id="7143530277-7">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7143530277-8">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:invalid_date</samp><samp class="p" data-group-id="7143530277-8">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="7143530277-9">(</samp><samp class="mi">2001</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">29</samp><samp class="p" data-group-id="7143530277-9">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7143530277-10">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:invalid_date</samp><samp class="p" data-group-id="7143530277-10">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="new!/4">
+
+    <span id="new!/3"></span>
+
+  <div class="detail-header">
+    <a href="#new!/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new!(year, month, day, calendar \\ Calendar.ISO)</h1>
+
+        <span class="note">(since 1.11.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L307" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> new!(<a href="Calendar.xhtml#t:year/0">Calendar.year</a>(), <a href="Calendar.xhtml#t:month/0">Calendar.month</a>(), <a href="Calendar.xhtml#t:day/0">Calendar.day</a>(), <a href="Calendar.xhtml#t:calendar/0">Calendar.calendar</a>()) ::
+  <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Builds a new ISO date.</p><p>Expects all values to be integers. Returns <code class="inline">date</code> if each
+entry fits its appropriate range, raises if the date is invalid.</p><h2 id="new!/4-examples" class="section-heading"><a href="#new!/4-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="5756875369-1">(</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="5756875369-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-01-01]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="5756875369-2">(</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">13</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="5756875369-2">)</samp><samp class="w">
+</samp><samp class="gt">** (ArgumentError) cannot build date, reason: :invalid_date</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="5756875369-3">(</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">29</samp><samp class="p" data-group-id="5756875369-3">)</samp><samp class="w">
+</samp><samp class="ld">~D[2000-02-29]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="quarter_of_year/1">
+
+  <div class="detail-header">
+    <a href="#quarter_of_year/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">quarter_of_year(date)</h1>
+
+        <span class="note">(since 1.8.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L1048" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> quarter_of_year(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="typespecs.xhtml#basic-types">non_neg_integer</a>()</pre>
+
+      </div>
+
+<p>Calculates the quarter of the year of a given <code class="inline">date</code>.</p><p>Returns the day of the year as an integer. For the ISO 8601
+calendar (the default), it is an integer from 1 to 4.</p><h2 id="quarter_of_year/1-examples" class="section-heading"><a href="#quarter_of_year/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">quarter_of_year</samp><samp class="p" data-group-id="3610314169-1">(</samp><samp class="ld">~D[2016-10-31]</samp><samp class="p" data-group-id="3610314169-1">)</samp><samp class="w">
+</samp><samp class="mi">4</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">quarter_of_year</samp><samp class="p" data-group-id="3610314169-2">(</samp><samp class="ld">~D[2016-01-01]</samp><samp class="p" data-group-id="3610314169-2">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">quarter_of_year</samp><samp class="p" data-group-id="3610314169-3">(</samp><samp class="ld">~N[2016-04-01 01:23:45]</samp><samp class="p" data-group-id="3610314169-3">)</samp><samp class="w">
+</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">quarter_of_year</samp><samp class="p" data-group-id="3610314169-4">(</samp><samp class="ld">~D[-0015-09-30]</samp><samp class="p" data-group-id="3610314169-4">)</samp><samp class="w">
+</samp><samp class="mi">3</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="range/2">
+
+  <div class="detail-header">
+    <a href="#range/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">range(first, last)</h1>
+
+        <span class="note">(since 1.5.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L103" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> range(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), <a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="Date.Range.xhtml#t:t/0">Date.Range.t</a>()</pre>
+
+      </div>
+
+<p>Returns a range of dates.</p><p>A range of dates represents a discrete number of dates where
+the first and last values are dates with matching calendars.</p><p>Ranges of dates can be increasing (<code class="inline">first &lt;= last</code>) and are
+always inclusive. For a decreasing range, use <a href="#range/3"><code class="inline">range/3</code></a> with
+a step of -1 as first argument.</p><h2 id="range/2-examples" class="section-heading"><a href="#range/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">range</samp><samp class="p" data-group-id="1759069201-1">(</samp><samp class="ld">~D[1999-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2000-01-01]</samp><samp class="p" data-group-id="1759069201-1">)</samp><samp class="w">
+</samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">range</samp><samp class="p" data-group-id="1759069201-2">(</samp><samp class="ld">~D[1999-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2000-01-01]</samp><samp class="p" data-group-id="1759069201-2">)</samp></code></pre><p>A range of dates implements the <a href="Enumerable.xhtml"><code class="inline">Enumerable</code></a> protocol, which means
+functions in the <a href="Enum.xhtml"><code class="inline">Enum</code></a> module can be used to work with
+ranges:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">range</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">range</samp><samp class="p" data-group-id="2109463597-1">(</samp><samp class="ld">~D[2001-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2002-01-01]</samp><samp class="p" data-group-id="2109463597-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">range</samp><samp class="w">
+</samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">range</samp><samp class="p" data-group-id="2109463597-2">(</samp><samp class="ld">~D[2001-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2002-01-01]</samp><samp class="p" data-group-id="2109463597-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">count</samp><samp class="p" data-group-id="2109463597-3">(</samp><samp class="n">range</samp><samp class="p" data-group-id="2109463597-3">)</samp><samp class="w">
+</samp><samp class="mi">366</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="ld">~D[2001-02-01]</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="n">range</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">take</samp><samp class="p" data-group-id="2109463597-4">(</samp><samp class="n">range</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="2109463597-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="2109463597-5">[</samp><samp class="ld">~D[2001-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2001-01-02]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2001-01-03]</samp><samp class="p" data-group-id="2109463597-5">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="range/3">
+
+  <div class="detail-header">
+    <a href="#range/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">range(first, last, step)</h1>
+
+        <span class="note">(since 1.12.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L144" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> range(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), <a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), step :: <a href="typespecs.xhtml#basic-types">pos_integer</a>() | <a href="typespecs.xhtml#basic-types">neg_integer</a>()) ::
+  <a href="Date.Range.xhtml#t:t/0">Date.Range.t</a>()</pre>
+
+      </div>
+
+<p>Returns a range of dates with a step.</p><h2 id="range/3-examples" class="section-heading"><a href="#range/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">range</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">range</samp><samp class="p" data-group-id="9444197016-1">(</samp><samp class="ld">~D[2001-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2002-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9444197016-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">range</samp><samp class="w">
+</samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">range</samp><samp class="p" data-group-id="9444197016-2">(</samp><samp class="ld">~D[2001-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2002-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9444197016-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">count</samp><samp class="p" data-group-id="9444197016-3">(</samp><samp class="n">range</samp><samp class="p" data-group-id="9444197016-3">)</samp><samp class="w">
+</samp><samp class="mi">183</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="ld">~D[2001-01-03]</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="n">range</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">take</samp><samp class="p" data-group-id="9444197016-4">(</samp><samp class="n">range</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="9444197016-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9444197016-5">[</samp><samp class="ld">~D[2001-01-01]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2001-01-03]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2001-01-05]</samp><samp class="p" data-group-id="9444197016-5">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="shift/2">
+
+  <div class="detail-header">
+    <a href="#shift/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">shift(date, duration)</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L800" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> shift(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), <a href="Duration.xhtml#t:t/0">Duration.t</a>() | [unit_pair]) :: <a href="#t:t/0">t</a>()
+when unit_pair:
+       {:year, <a href="typespecs.xhtml#basic-types">integer</a>()}
+       | {:month, <a href="typespecs.xhtml#basic-types">integer</a>()}
+       | {:week, <a href="typespecs.xhtml#basic-types">integer</a>()}
+       | {:day, <a href="typespecs.xhtml#basic-types">integer</a>()}</pre>
+
+      </div>
+
+<p>Shifts given <code class="inline">date</code> by <code class="inline">duration</code> according to its calendar.</p><p>Allowed units are: <code class="inline">:year</code>, <code class="inline">:month</code>, <code class="inline">:week</code>, <code class="inline">:day</code>.</p><p>When using the default ISO calendar, durations are collapsed and
+applied in the order of months and then days:</p><ul><li>when shifting by 1 year and 2 months the date is actually shifted by 14 months</li><li>when shifting by 2 weeks and 3 days the date is shifted by 17 days</li></ul><p>When shifting by month, days are rounded down to the nearest valid date.</p><p>Raises an <a href="ArgumentError.xhtml"><code class="inline">ArgumentError</code></a> when called with time scale units.</p><h2 id="shift/2-examples" class="section-heading"><a href="#shift/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="9177170778-1">(</samp><samp class="ld">~D[2016-01-03]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9177170778-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2016-03-03]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="9177170778-2">(</samp><samp class="ld">~D[2016-01-30]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p" data-group-id="9177170778-2">)</samp><samp class="w">
+</samp><samp class="ld">~D[2015-12-30]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="9177170778-3">(</samp><samp class="ld">~D[2016-01-31]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9177170778-3">)</samp><samp class="w">
+</samp><samp class="ld">~D[2020-02-01]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="9177170778-4">(</samp><samp class="ld">~D[2016-01-03]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="9177170778-5">(</samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9177170778-5">)</samp><samp class="p" data-group-id="9177170778-4">)</samp><samp class="w">
+</samp><samp class="ld">~D[2016-03-03]</samp><samp class="w">
+
+</samp><samp class="c1"># leap years</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="9177170778-6">(</samp><samp class="ld">~D[2024-02-29]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9177170778-6">)</samp><samp class="w">
+</samp><samp class="ld">~D[2025-02-28]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="9177170778-7">(</samp><samp class="ld">~D[2024-02-29]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="9177170778-7">)</samp><samp class="w">
+</samp><samp class="ld">~D[2028-02-29]</samp><samp class="w">
+
+</samp><samp class="c1"># rounding down</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="9177170778-8">(</samp><samp class="ld">~D[2015-01-31]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9177170778-8">)</samp><samp class="w">
+</samp><samp class="ld">~D[2015-02-28]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="to_erl/1">
+
+  <div class="detail-header">
+    <a href="#to_erl/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_erl(date)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L441" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_erl(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="https://www.erlang.org/doc/apps/stdlib/calendar.html#t:date/0">:calendar.date</a>()</pre>
+
+      </div>
+
+<p>Converts the given <code class="inline">date</code> to an Erlang date tuple.</p><p>Only supports converting dates which are in the ISO calendar,
+or other calendars in which the days also start at midnight.
+Attempting to convert dates from other calendars will raise.</p><h2 id="to_erl/1-examples" class="section-heading"><a href="#to_erl/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">to_erl</samp><samp class="p" data-group-id="8385053399-1">(</samp><samp class="ld">~D[2000-01-01]</samp><samp class="p" data-group-id="8385053399-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8385053399-2">{</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="8385053399-2">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">to_erl</samp><samp class="p" data-group-id="8385053399-3">(</samp><samp class="ld">~N[2000-01-01 00:00:00]</samp><samp class="p" data-group-id="8385053399-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8385053399-4">{</samp><samp class="mi">2000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="8385053399-4">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="to_gregorian_days/1">
+
+  <div class="detail-header">
+    <a href="#to_gregorian_days/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_gregorian_days(date)</h1>
+
+        <span class="note">(since 1.11.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L525" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_gregorian_days(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="typespecs.xhtml#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Converts a <code class="inline">date</code> struct to a number of gregorian days.</p><h2 id="to_gregorian_days/1-examples" class="section-heading"><a href="#to_gregorian_days/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">to_gregorian_days</samp><samp class="p" data-group-id="2836815443-1">(</samp><samp class="ld">~D[0000-01-02]</samp><samp class="p" data-group-id="2836815443-1">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">to_gregorian_days</samp><samp class="p" data-group-id="2836815443-2">(</samp><samp class="ld">~D[2000-01-01]</samp><samp class="p" data-group-id="2836815443-2">)</samp><samp class="w">
+</samp><samp class="mi">730_485</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">to_gregorian_days</samp><samp class="p" data-group-id="2836815443-3">(</samp><samp class="ld">~N[2000-01-01 00:00:00]</samp><samp class="p" data-group-id="2836815443-3">)</samp><samp class="w">
+</samp><samp class="mi">730_485</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="to_iso8601/2">
+
+    <span id="to_iso8601/1"></span>
+
+  <div class="detail-header">
+    <a href="#to_iso8601/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_iso8601(date, format \\ :extended)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L411" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_iso8601(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>(), :extended | :basic) :: <a href="String.xhtml#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Converts the given <code class="inline">date</code> to
+<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601:2019</a>.</p><p>By default, <a href="#to_iso8601/2"><code class="inline">Date.to_iso8601/2</code></a> returns dates formatted in the &quot;extended&quot;
+format, for human readability. It also supports the &quot;basic&quot; format through passing the <code class="inline">:basic</code> option.</p><p>Only supports converting dates which are in the ISO calendar,
+or other calendars in which the days also start at midnight.
+Attempting to convert dates from other calendars will raise an <a href="ArgumentError.xhtml"><code class="inline">ArgumentError</code></a>.</p><h3 id="to_iso8601/2-examples" class="section-heading"><a href="#to_iso8601/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h3><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">to_iso8601</samp><samp class="p" data-group-id="3027863547-1">(</samp><samp class="ld">~D[2000-02-28]</samp><samp class="p" data-group-id="3027863547-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;2000-02-28&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">to_iso8601</samp><samp class="p" data-group-id="3027863547-2">(</samp><samp class="ld">~D[2000-02-28]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:basic</samp><samp class="p" data-group-id="3027863547-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;20000228&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">to_iso8601</samp><samp class="p" data-group-id="3027863547-3">(</samp><samp class="ld">~N[2000-02-28 00:00:00]</samp><samp class="p" data-group-id="3027863547-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;2000-02-28&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="to_string/1">
+
+  <div class="detail-header">
+    <a href="#to_string/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_string(date)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L331" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_string(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: <a href="String.xhtml#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Converts the given date to a string according to its calendar.</p><h3 id="to_string/1-examples" class="section-heading"><a href="#to_string/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h3><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="2433780904-1">(</samp><samp class="ld">~D[2000-02-28]</samp><samp class="p" data-group-id="2433780904-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;2000-02-28&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="2433780904-2">(</samp><samp class="ld">~N[2000-02-28 01:23:45]</samp><samp class="p" data-group-id="2433780904-2">)</samp><samp class="w">
+</samp><samp class="s">&quot;2000-02-28&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="2433780904-3">(</samp><samp class="ld">~D[-0100-12-15]</samp><samp class="p" data-group-id="2433780904-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;-0100-12-15&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="utc_today/1">
+
+    <span id="utc_today/0"></span>
+
+  <div class="detail-header">
+    <a href="#utc_today/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">utc_today(calendar \\ Calendar.ISO)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L183" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> utc_today(<a href="Calendar.xhtml#t:calendar/0">Calendar.calendar</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Returns the current date in UTC.</p><h2 id="utc_today/1-examples" class="section-heading"><a href="#utc_today/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">date</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">utc_today</samp><samp class="p" data-group-id="6290931176-1">(</samp><samp class="p" data-group-id="6290931176-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">date</samp><samp class="o">.</samp><samp class="n">year</samp><samp class="w"> </samp><samp class="o">&gt;=</samp><samp class="w"> </samp><samp class="mi">2016</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="year_of_era/1">
+
+  <div class="detail-header">
+    <a href="#year_of_era/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">year_of_era(date)</h1>
+
+        <span class="note">(since 1.8.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/date.ex#L1073" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> year_of_era(<a href="Calendar.xhtml#t:date/0">Calendar.date</a>()) :: {<a href="Calendar.xhtml#t:year/0">Calendar.year</a>(), <a href="typespecs.xhtml#basic-types">non_neg_integer</a>()}</pre>
+
+      </div>
+
+<p>Calculates the year-of-era and era for a given
+calendar year.</p><p>Returns a tuple <code class="inline">{year, era}</code> representing the
+year within the era and the era number.</p><h2 id="year_of_era/1-examples" class="section-heading"><a href="#year_of_era/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">year_of_era</samp><samp class="p" data-group-id="5752404057-1">(</samp><samp class="ld">~D[0001-01-01]</samp><samp class="p" data-group-id="5752404057-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5752404057-2">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="5752404057-2">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">year_of_era</samp><samp class="p" data-group-id="5752404057-3">(</samp><samp class="ld">~D[0000-12-31]</samp><samp class="p" data-group-id="5752404057-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5752404057-4">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="5752404057-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">year_of_era</samp><samp class="p" data-group-id="5752404057-5">(</samp><samp class="ld">~D[-0001-01-01]</samp><samp class="p" data-group-id="5752404057-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5752404057-6">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="5752404057-6">}</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

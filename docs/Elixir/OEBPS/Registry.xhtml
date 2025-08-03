@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Registry - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Registry 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A local, decentralized and scalable key-value process storage.</p><p>It allows developers to lookup one or more processes with a given key.
+If the registry has <code class="inline">:unique</code> keys, a key points to 0 or 1 process.
+If the registry allows <code class="inline">:duplicate</code> keys, a single key may point to any
+number of processes. In both cases, different keys could identify the
+same process.</p><p>Each entry in the registry is associated to the process that has
+registered the key. If the process crashes, the keys associated to that
+process are automatically removed. All key comparisons in the registry
+are done using the match operation (<a href="Kernel.xhtml#===/2"><code class="inline">===/2</code></a>).</p><p>The registry can be used for different purposes, such as name lookups (using
+the <code class="inline">:via</code> option), storing properties, custom dispatching rules, or a pubsub
+implementation. We explore some of those use cases below.</p><p>The registry may also be transparently partitioned, which provides
+more scalable behavior for running registries on highly concurrent
+environments with thousands or millions of entries.</p><h2 id="module-using-in-via">Using in <code class="inline">:via</code></h2><p>Once the registry is started with a given name using
+<a href="#start_link/1"><code class="inline">Registry.start_link/1</code></a>, it can be used to register and access named
+processes using the <code class="inline">{:via, Registry, {registry, key}}</code> tuple:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="2786895846-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="2786895846-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="2786895846-2">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyApp.Registry</samp><samp class="p" data-group-id="2786895846-2">)</samp><samp class="w">
+</samp><samp class="n">name</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="2786895846-3">{</samp><samp class="ss">:via</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2786895846-4">{</samp><samp class="nc">MyApp.Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;agent&quot;</samp><samp class="p" data-group-id="2786895846-4">}</samp><samp class="p" data-group-id="2786895846-3">}</samp><samp class="w">
+</samp><samp class="p" data-group-id="2786895846-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="2786895846-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Agent</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="2786895846-6">(</samp><samp class="k" data-group-id="2786895846-7">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="w"> </samp><samp class="k" data-group-id="2786895846-7">end</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">name</samp><samp class="p" data-group-id="2786895846-6">)</samp><samp class="w">
+</samp><samp class="nc">Agent</samp><samp class="o">.</samp><samp class="n">get</samp><samp class="p" data-group-id="2786895846-8">(</samp><samp class="n">name</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="w"> </samp><samp class="ni">&amp;1</samp><samp class="p" data-group-id="2786895846-8">)</samp><samp class="w">
+</samp><samp class="c1">#=&gt; 0</samp><samp class="w">
+</samp><samp class="nc">Agent</samp><samp class="o">.</samp><samp class="n">update</samp><samp class="p" data-group-id="2786895846-9">(</samp><samp class="n">name</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="p" data-group-id="2786895846-10">(</samp><samp class="ni">&amp;1</samp><samp class="w"> </samp><samp class="o">+</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="2786895846-10">)</samp><samp class="p" data-group-id="2786895846-9">)</samp><samp class="w">
+</samp><samp class="nc">Agent</samp><samp class="o">.</samp><samp class="n">get</samp><samp class="p" data-group-id="2786895846-11">(</samp><samp class="n">name</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="w"> </samp><samp class="ni">&amp;1</samp><samp class="p" data-group-id="2786895846-11">)</samp><samp class="w">
+</samp><samp class="c1">#=&gt; 1</samp></code></pre><p>In the previous example, we were not interested in associating a value to the
+process:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lookup</samp><samp class="p" data-group-id="0203151287-1">(</samp><samp class="nc">MyApp.Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;agent&quot;</samp><samp class="p" data-group-id="0203151287-1">)</samp><samp class="w">
+</samp><samp class="c1">#=&gt; [{self(), nil}]</samp></code></pre><p>However, in some cases it may be desired to associate a value to the process
+using the alternate <code class="inline">{:via, Registry, {registry, key, value}}</code> tuple:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="6617811659-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="6617811659-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="6617811659-2">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyApp.Registry</samp><samp class="p" data-group-id="6617811659-2">)</samp><samp class="w">
+</samp><samp class="n">name</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="6617811659-3">{</samp><samp class="ss">:via</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6617811659-4">{</samp><samp class="nc">MyApp.Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;agent&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:hello</samp><samp class="p" data-group-id="6617811659-4">}</samp><samp class="p" data-group-id="6617811659-3">}</samp><samp class="w">
+</samp><samp class="p" data-group-id="6617811659-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">agent_pid</samp><samp class="p" data-group-id="6617811659-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Agent</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="6617811659-6">(</samp><samp class="k" data-group-id="6617811659-7">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="w"> </samp><samp class="k" data-group-id="6617811659-7">end</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">name</samp><samp class="p" data-group-id="6617811659-6">)</samp><samp class="w">
+</samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lookup</samp><samp class="p" data-group-id="6617811659-8">(</samp><samp class="nc">MyApp.Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;agent&quot;</samp><samp class="p" data-group-id="6617811659-8">)</samp><samp class="w">
+</samp><samp class="c1">#=&gt; [{agent_pid, :hello}]</samp></code></pre><p>To this point, we have been starting <a href="Registry.xhtml"><code class="inline">Registry</code></a> using <a href="#start_link/1"><code class="inline">start_link/1</code></a>.
+Typically the registry is started as part of a supervision tree though:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="2040918687-1">{</samp><samp class="nc">Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyApp.Registry</samp><samp class="p" data-group-id="2040918687-1">}</samp></code></pre><p>Only registries with unique keys can be used in <code class="inline">:via</code>. If the name is
+already taken, the case-specific <code class="inline">start_link</code> function (<a href="Agent.xhtml#start_link/2"><code class="inline">Agent.start_link/2</code></a>
+in the example above) will return <code class="inline">{:error, {:already_started, current_pid}}</code>.</p><h2 id="module-using-as-a-dispatcher">Using as a dispatcher</h2><p><a href="Registry.xhtml"><code class="inline">Registry</code></a> has a dispatch mechanism that allows developers to implement custom
+dispatch logic triggered from the caller. For example, let's say we have a
+duplicate registry started as so:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="0266598460-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="0266598460-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="0266598460-2">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:duplicate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.DispatcherTest</samp><samp class="p" data-group-id="0266598460-2">)</samp></code></pre><p>By calling <a href="#register/3"><code class="inline">register/3</code></a>, different processes can register under a given key
+and associate any value under that key. In this case, let's register the
+current process under the key <code class="inline">&quot;hello&quot;</code> and attach the <code class="inline">{IO, :inspect}</code> tuple
+to it:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="5107636816-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="5107636816-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="5107636816-2">(</samp><samp class="nc">Registry.DispatcherTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="5107636816-3">{</samp><samp class="nc">IO</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:inspect</samp><samp class="p" data-group-id="5107636816-3">}</samp><samp class="p" data-group-id="5107636816-2">)</samp></code></pre><p>Now, an entity interested in dispatching events for a given key may call
+<a href="#dispatch/3"><code class="inline">dispatch/3</code></a> passing in the key and a callback. This callback will be invoked
+with a list of all the values registered under the requested key, alongside
+the PID of the process that registered each value, in the form of <code class="inline">{pid, value}</code> tuples. In our example, <code class="inline">value</code> will be the <code class="inline">{module, function}</code> tuple
+in the code above:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">dispatch</samp><samp class="p" data-group-id="2186991351-1">(</samp><samp class="nc">Registry.DispatcherTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="2186991351-2">fn</samp><samp class="w"> </samp><samp class="n">entries</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+  </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="p" data-group-id="2186991351-3">{</samp><samp class="n">pid</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2186991351-4">{</samp><samp class="n">module</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">function</samp><samp class="p" data-group-id="2186991351-4">}</samp><samp class="p" data-group-id="2186991351-3">}</samp><samp class="w"> </samp><samp class="o">&lt;-</samp><samp class="w"> </samp><samp class="n">entries</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">apply</samp><samp class="p" data-group-id="2186991351-5">(</samp><samp class="n">module</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">function</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2186991351-6">[</samp><samp class="n">pid</samp><samp class="p" data-group-id="2186991351-6">]</samp><samp class="p" data-group-id="2186991351-5">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="2186991351-2">end</samp><samp class="p" data-group-id="2186991351-1">)</samp><samp class="w">
+</samp><samp class="c1"># Prints #PID&lt;...&gt; where the PID is for the process that called register/3 above</samp><samp class="w">
+</samp><samp class="c1">#=&gt; :ok</samp></code></pre><p>Dispatching happens in the process that calls <a href="#dispatch/3"><code class="inline">dispatch/3</code></a> either serially or
+concurrently in case of multiple partitions (via spawned tasks). The
+registered processes are not involved in dispatching unless involving them is
+done explicitly (for example, by sending them a message in the callback).</p><p>Furthermore, if there is a failure when dispatching, due to a bad
+registration, dispatching will always fail and the registered process will not
+be notified. Therefore let's make sure we at least wrap and report those
+errors:</p><pre><code class="makeup elixir" translate="no"><samp class="kn">require</samp><samp class="w"> </samp><samp class="nc">Logger</samp><samp class="w">
+
+</samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">dispatch</samp><samp class="p" data-group-id="5645409022-1">(</samp><samp class="nc">Registry.DispatcherTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="5645409022-2">fn</samp><samp class="w"> </samp><samp class="n">entries</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+  </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="p" data-group-id="5645409022-3">{</samp><samp class="n">pid</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="5645409022-4">{</samp><samp class="n">module</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">function</samp><samp class="p" data-group-id="5645409022-4">}</samp><samp class="p" data-group-id="5645409022-3">}</samp><samp class="w"> </samp><samp class="o">&lt;-</samp><samp class="w"> </samp><samp class="n">entries</samp><samp class="w"> </samp><samp class="k" data-group-id="5645409022-5">do</samp><samp class="w">
+    </samp><samp class="k">try</samp><samp class="w"> </samp><samp class="k" data-group-id="5645409022-6">do</samp><samp class="w">
+      </samp><samp class="n">apply</samp><samp class="p" data-group-id="5645409022-7">(</samp><samp class="n">module</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">function</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="5645409022-8">[</samp><samp class="n">pid</samp><samp class="p" data-group-id="5645409022-8">]</samp><samp class="p" data-group-id="5645409022-7">)</samp><samp class="w">
+    </samp><samp class="k" data-group-id="5645409022-6">catch</samp><samp class="w">
+      </samp><samp class="n">kind</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">reason</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+        </samp><samp class="n">formatted</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Exception</samp><samp class="o">.</samp><samp class="n">format</samp><samp class="p" data-group-id="5645409022-9">(</samp><samp class="n">kind</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">reason</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">__STACKTRACE__</samp><samp class="p" data-group-id="5645409022-9">)</samp><samp class="w">
+        </samp><samp class="nc">Logger</samp><samp class="o">.</samp><samp class="n">error</samp><samp class="p" data-group-id="5645409022-10">(</samp><samp class="s">&quot;Registry.dispatch/3 failed with </samp><samp class="si" data-group-id="5645409022-11">#{</samp><samp class="n">formatted</samp><samp class="si" data-group-id="5645409022-11">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="5645409022-10">)</samp><samp class="w">
+    </samp><samp class="k" data-group-id="5645409022-6">end</samp><samp class="w">
+  </samp><samp class="k" data-group-id="5645409022-5">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="5645409022-2">end</samp><samp class="p" data-group-id="5645409022-1">)</samp><samp class="w">
+</samp><samp class="c1"># Prints #PID&lt;...&gt;</samp><samp class="w">
+</samp><samp class="c1">#=&gt; :ok</samp></code></pre><p>You could also replace the whole <code class="inline">apply</code> system by explicitly sending
+messages. That's the example we will see next.</p><h2 id="module-using-as-a-pubsub">Using as a PubSub</h2><p>Registries can also be used to implement a local, non-distributed, scalable
+PubSub by relying on the <a href="#dispatch/3"><code class="inline">dispatch/3</code></a> function, similarly to the previous
+section: in this case, however, we will send messages to each associated
+process, instead of invoking a given module-function.</p><p>In this example, we will also set the number of partitions to the number of
+schedulers online, which will make the registry more performant on highly
+concurrent environments:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="8950850707-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="8950850707-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w">
+  </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="8950850707-2">(</samp><samp class="w">
+    </samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:duplicate</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.PubSubTest</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">partitions</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">System</samp><samp class="o">.</samp><samp class="n">schedulers_online</samp><samp class="p" data-group-id="8950850707-3">(</samp><samp class="p" data-group-id="8950850707-3">)</samp><samp class="w">
+  </samp><samp class="p" data-group-id="8950850707-2">)</samp><samp class="w">
+
+</samp><samp class="p" data-group-id="8950850707-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="8950850707-4">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="8950850707-5">(</samp><samp class="nc">Registry.PubSubTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8950850707-6">[</samp><samp class="p" data-group-id="8950850707-6">]</samp><samp class="p" data-group-id="8950850707-5">)</samp><samp class="w">
+
+</samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">dispatch</samp><samp class="p" data-group-id="8950850707-7">(</samp><samp class="nc">Registry.PubSubTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="8950850707-8">fn</samp><samp class="w"> </samp><samp class="n">entries</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+  </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="p" data-group-id="8950850707-9">{</samp><samp class="n">pid</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="8950850707-9">}</samp><samp class="w"> </samp><samp class="o">&lt;-</samp><samp class="w"> </samp><samp class="n">entries</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">send</samp><samp class="p" data-group-id="8950850707-10">(</samp><samp class="n">pid</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8950850707-11">{</samp><samp class="ss">:broadcast</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;world&quot;</samp><samp class="p" data-group-id="8950850707-11">}</samp><samp class="p" data-group-id="8950850707-10">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="8950850707-8">end</samp><samp class="p" data-group-id="8950850707-7">)</samp><samp class="w">
+</samp><samp class="c1">#=&gt; :ok</samp></code></pre><p>The example above broadcasted the message <code class="inline">{:broadcast, &quot;world&quot;}</code> to all
+processes registered under the &quot;topic&quot; (or &quot;key&quot; as we called it until now)
+<code class="inline">&quot;hello&quot;</code>.</p><p>The third argument given to <a href="#register/3"><code class="inline">register/3</code></a> is a value associated to the
+current process. While in the previous section we used it when dispatching,
+in this particular example we are not interested in it, so we have set it
+to an empty list. You could store a more meaningful value if necessary.</p><h2 id="module-registrations">Registrations</h2><p>Looking up, dispatching and registering are efficient and immediate at
+the cost of delayed unsubscription. For example, if a process crashes,
+its keys are automatically removed from the registry but the change may
+not propagate immediately. This means certain operations may return processes
+that are already dead. When such may happen, it will be explicitly stated
+in the function documentation.</p><p>However, keep in mind those cases are typically not an issue. After all, a
+process referenced by a PID may crash at any time, including between getting
+the value from the registry and sending it a message. Many parts of the standard
+library are designed to cope with that, such as <a href="Process.xhtml#monitor/1"><code class="inline">Process.monitor/1</code></a> which will
+deliver the <code class="inline">:DOWN</code> message immediately if the monitored process is already dead
+and <a href="Kernel.xhtml#send/2"><code class="inline">send/2</code></a> which acts as a no-op for dead processes.</p><h2 id="module-ets">ETS</h2><p>Note that the registry uses one ETS table plus two ETS tables per partition.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:body/0" data-no-tooltip="" translate="no">body()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A pattern used to representing the output format part of a match spec</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:guard/0" data-no-tooltip="" translate="no">guard()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A guard to be evaluated when matching on objects in a registry</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:guards/0" data-no-tooltip="" translate="no">guards()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A list of guards to be evaluated when matching on objects in a registry</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:key/0" data-no-tooltip="" translate="no">key()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The type of keys allowed on registration</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:keys/0" data-no-tooltip="" translate="no">keys()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The type of the registry</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:listener_message/0" data-no-tooltip="" translate="no">listener_message()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The message that the registry sends to listeners when a process registers or unregisters.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:match_pattern/0" data-no-tooltip="" translate="no">match_pattern()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A pattern to match on objects in a registry</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:meta_key/0" data-no-tooltip="" translate="no">meta_key()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The type of registry metadata keys</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:meta_value/0" data-no-tooltip="" translate="no">meta_value()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The type of registry metadata values</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:registry/0" data-no-tooltip="" translate="no">registry()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The registry identifier</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:spec/0" data-no-tooltip="" translate="no">spec()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A full match spec used when selecting objects in the registry</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:start_option/0" data-no-tooltip="" translate="no">start_option()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Options used for <a><code class="inline">child_spec/1</code></a> and <a><code class="inline">start_link/1</code></a></p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:value/0" data-no-tooltip="" translate="no">value()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The type of values allowed on registration</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#child_spec/1" data-no-tooltip="" translate="no">child_spec(options)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a specification to start a registry under a supervisor.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#count/1" data-no-tooltip="" translate="no">count(registry)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the number of registered keys in a registry.
+It runs in constant time.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#count_match/4" data-no-tooltip="" translate="no">count_match(registry, key, pattern, guards \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the number of <code class="inline">{pid, value}</code> pairs under the given <code class="inline">key</code> in <code class="inline">registry</code>
+that match <code class="inline">pattern</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#count_select/2" data-no-tooltip="" translate="no">count_select(registry, spec)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Works like <a><code class="inline">select/2</code></a>, but only returns the number of matching records.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#delete_meta/2" data-no-tooltip="" translate="no">delete_meta(registry, key)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Deletes registry metadata for the given <code class="inline">key</code> in <code class="inline">registry</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#dispatch/4" data-no-tooltip="" translate="no">dispatch(registry, key, mfa_or_fun, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Invokes the callback with all entries under <code class="inline">key</code> in each partition
+for the given <code class="inline">registry</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#keys/2" data-no-tooltip="" translate="no">keys(registry, pid)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the known keys for the given <code class="inline">pid</code> in <code class="inline">registry</code> in no particular order.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#lock/3" data-no-tooltip="" translate="no">lock(registry, lock_key, function)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Out-of-band locking of the given <code class="inline">lock_key</code> for the duration of <code class="inline">function</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#lookup/2" data-no-tooltip="" translate="no">lookup(registry, key)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Finds the <code class="inline">{pid, value}</code> pair for the given <code class="inline">key</code> in <code class="inline">registry</code> in no particular order.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#match/4" data-no-tooltip="" translate="no">match(registry, key, pattern, guards \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns <code class="inline">{pid, value}</code> pairs under the given <code class="inline">key</code> in <code class="inline">registry</code> that match <code class="inline">pattern</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#meta/2" data-no-tooltip="" translate="no">meta(registry, key)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Reads registry metadata given on <a><code class="inline">start_link/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#put_meta/3" data-no-tooltip="" translate="no">put_meta(registry, key, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Stores registry metadata.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#register/3" data-no-tooltip="" translate="no">register(registry, key, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Registers the current process under the given <code class="inline">key</code> in <code class="inline">registry</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#select/2" data-no-tooltip="" translate="no">select(registry, spec)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Select key, pid, and values registered using full match specs.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#start_link/1" data-no-tooltip="" translate="no">start_link(options)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Starts the registry as a supervisor process.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#unregister/2" data-no-tooltip="" translate="no">unregister(registry, key)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Unregisters all entries for the given <code class="inline">key</code> associated to the current
+process in <code class="inline">registry</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#unregister_match/4" data-no-tooltip="" translate="no">unregister_match(registry, key, pattern, guards \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Unregisters entries for keys matching a pattern associated to the current
+process in <code class="inline">registry</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#update_value/3" data-no-tooltip="" translate="no">update_value(registry, key, callback)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Updates the value for <code class="inline">key</code> for the current process in the unique <code class="inline">registry</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#values/3" data-no-tooltip="" translate="no">values(registry, key, pid)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Reads the values for the given <code class="inline">key</code> for <code class="inline">pid</code> in <code class="inline">registry</code>.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:body/0">
+
+  <div class="detail-header">
+    <a href="#t:body/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">body()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L207" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> body() :: [<a href="typespecs.xhtml#built-in-types">term</a>()]</pre>
+
+      </div>
+
+<p>A pattern used to representing the output format part of a match spec</p>
+  </section>
+</section>
+<section class="detail" id="t:guard/0">
+
+  <div class="detail-header">
+    <a href="#t:guard/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">guard()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L201" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> guard() :: <a href="typespecs.xhtml#basic-types">atom</a>() | <a href="typespecs.xhtml#basic-types">tuple</a>()</pre>
+
+      </div>
+
+<p>A guard to be evaluated when matching on objects in a registry</p>
+  </section>
+</section>
+<section class="detail" id="t:guards/0">
+
+  <div class="detail-header">
+    <a href="#t:guards/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">guards()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L204" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> guards() :: [<a href="#t:guard/0">guard</a>()]</pre>
+
+      </div>
+
+<p>A list of guards to be evaluated when matching on objects in a registry</p>
+  </section>
+</section>
+<section class="detail" id="t:key/0">
+
+  <div class="detail-header">
+    <a href="#t:key/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">key()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L186" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> key() :: <a href="typespecs.xhtml#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>The type of keys allowed on registration</p>
+  </section>
+</section>
+<section class="detail" id="t:keys/0">
+
+  <div class="detail-header">
+    <a href="#t:keys/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">keys()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L183" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> keys() :: :unique | :duplicate</pre>
+
+      </div>
+
+<p>The type of the registry</p>
+  </section>
+</section>
+<section class="detail" id="t:listener_message/0">
+
+  <div class="detail-header">
+    <a href="#t:listener_message/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">listener_message()</h1>
+
+        <span class="note">(since 1.15.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L226" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> listener_message() ::
+  {:register, <a href="#t:registry/0">registry</a>(), <a href="#t:key/0">key</a>(), registry_partition :: <a href="typespecs.xhtml#basic-types">pid</a>(), <a href="#t:value/0">value</a>()}
+  | {:unregister, <a href="#t:registry/0">registry</a>(), <a href="#t:key/0">key</a>(), registry_partition :: <a href="typespecs.xhtml#basic-types">pid</a>()}</pre>
+
+      </div>
+
+<p>The message that the registry sends to listeners when a process registers or unregisters.</p><p>See the <code class="inline">:listeners</code> option in <a href="#start_link/1"><code class="inline">start_link/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="t:match_pattern/0">
+
+  <div class="detail-header">
+    <a href="#t:match_pattern/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">match_pattern()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L198" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> match_pattern() :: <a href="typespecs.xhtml#basic-types">atom</a>() | <a href="typespecs.xhtml#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>A pattern to match on objects in a registry</p>
+  </section>
+</section>
+<section class="detail" id="t:meta_key/0">
+
+  <div class="detail-header">
+    <a href="#t:meta_key/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">meta_key()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L192" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> meta_key() :: <a href="typespecs.xhtml#basic-types">atom</a>() | <a href="typespecs.xhtml#basic-types">tuple</a>()</pre>
+
+      </div>
+
+<p>The type of registry metadata keys</p>
+  </section>
+</section>
+<section class="detail" id="t:meta_value/0">
+
+  <div class="detail-header">
+    <a href="#t:meta_value/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">meta_value()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L195" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> meta_value() :: <a href="typespecs.xhtml#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>The type of registry metadata values</p>
+  </section>
+</section>
+<section class="detail" id="t:registry/0">
+
+  <div class="detail-header">
+    <a href="#t:registry/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">registry()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L180" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> registry() :: <a href="typespecs.xhtml#basic-types">atom</a>()</pre>
+
+      </div>
+
+<p>The registry identifier</p>
+  </section>
+</section>
+<section class="detail" id="t:spec/0">
+
+  <div class="detail-header">
+    <a href="#t:spec/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">spec()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L210" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> spec() :: [{<a href="#t:match_pattern/0">match_pattern</a>(), <a href="#t:guards/0">guards</a>(), <a href="#t:body/0">body</a>()}]</pre>
+
+      </div>
+
+<p>A full match spec used when selecting objects in the registry</p>
+  </section>
+</section>
+<section class="detail" id="t:start_option/0">
+
+  <div class="detail-header">
+    <a href="#t:start_option/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">start_option()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L213" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> start_option() ::
+  {:keys, <a href="#t:keys/0">keys</a>()}
+  | {:name, <a href="#t:registry/0">registry</a>()}
+  | {:partitions, <a href="typespecs.xhtml#basic-types">pos_integer</a>()}
+  | {:listeners, [<a href="typespecs.xhtml#basic-types">atom</a>()]}
+  | {:meta, [{<a href="#t:meta_key/0">meta_key</a>(), <a href="#t:meta_value/0">meta_value</a>()}]}</pre>
+
+      </div>
+
+<p>Options used for <a href="#child_spec/1"><code class="inline">child_spec/1</code></a> and <a href="#start_link/1"><code class="inline">start_link/1</code></a></p>
+  </section>
+</section>
+<section class="detail" id="t:value/0">
+
+  <div class="detail-header">
+    <a href="#t:value/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">value()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L189" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> value() :: <a href="typespecs.xhtml#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>The type of values allowed on registration</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="child_spec/1">
+
+  <div class="detail-header">
+    <a href="#child_spec/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">child_spec(options)</h1>
+
+        <span class="note">(since 1.5.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L400" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> child_spec([<a href="#t:start_option/0">start_option</a>()]) :: <a href="Supervisor.xhtml#t:child_spec/0">Supervisor.child_spec</a>()</pre>
+
+      </div>
+
+<p>Returns a specification to start a registry under a supervisor.</p><p>See <a href="Supervisor.xhtml"><code class="inline">Supervisor</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="count/1">
+
+  <div class="detail-header">
+    <a href="#count/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">count(registry)</h1>
+
+        <span class="note">(since 1.7.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L1241" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> count(<a href="#t:registry/0">registry</a>()) :: <a href="typespecs.xhtml#basic-types">non_neg_integer</a>()</pre>
+
+      </div>
+
+<p>Returns the number of registered keys in a registry.
+It runs in constant time.</p><h2 id="count/1-examples" class="section-heading"><a href="#count/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>In the example below we register the current process and ask for the
+number of keys in the registry:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="4010661640-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.UniqueCountTest</samp><samp class="p" data-group-id="4010661640-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">count</samp><samp class="p" data-group-id="4010661640-2">(</samp><samp class="nc">Registry.UniqueCountTest</samp><samp class="p" data-group-id="4010661640-2">)</samp><samp class="w">
+</samp><samp class="mi">0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="4010661640-3">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="4010661640-3">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="4010661640-4">(</samp><samp class="nc">Registry.UniqueCountTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="4010661640-4">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="4010661640-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="4010661640-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="4010661640-6">(</samp><samp class="nc">Registry.UniqueCountTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;world&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="4010661640-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">count</samp><samp class="p" data-group-id="4010661640-7">(</samp><samp class="nc">Registry.UniqueCountTest</samp><samp class="p" data-group-id="4010661640-7">)</samp><samp class="w">
+</samp><samp class="mi">2</samp></code></pre><p>The same applies to duplicate registries:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="0107404593-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:duplicate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.DuplicateCountTest</samp><samp class="p" data-group-id="0107404593-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">count</samp><samp class="p" data-group-id="0107404593-2">(</samp><samp class="nc">Registry.DuplicateCountTest</samp><samp class="p" data-group-id="0107404593-2">)</samp><samp class="w">
+</samp><samp class="mi">0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="0107404593-3">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="0107404593-3">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="0107404593-4">(</samp><samp class="nc">Registry.DuplicateCountTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="0107404593-4">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="0107404593-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="0107404593-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="0107404593-6">(</samp><samp class="nc">Registry.DuplicateCountTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="0107404593-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">count</samp><samp class="p" data-group-id="0107404593-7">(</samp><samp class="nc">Registry.DuplicateCountTest</samp><samp class="p" data-group-id="0107404593-7">)</samp><samp class="w">
+</samp><samp class="mi">2</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="count_match/4">
+
+    <span id="count_match/3"></span>
+
+  <div class="detail-header">
+    <a href="#count_match/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">count_match(registry, key, pattern, guards \\ [])</h1>
+
+        <span class="note">(since 1.7.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L1306" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> count_match(<a href="#t:registry/0">registry</a>(), <a href="#t:key/0">key</a>(), <a href="#t:match_pattern/0">match_pattern</a>(), <a href="#t:guards/0">guards</a>()) :: <a href="typespecs.xhtml#basic-types">non_neg_integer</a>()</pre>
+
+      </div>
+
+<p>Returns the number of <code class="inline">{pid, value}</code> pairs under the given <code class="inline">key</code> in <code class="inline">registry</code>
+that match <code class="inline">pattern</code>.</p><p>Pattern must be an atom or a tuple that will match the structure of the
+value stored in the registry. The atom <code class="inline">:_</code> can be used to ignore a given
+value or tuple element, while the atom <code class="inline">:&quot;$1&quot;</code> can be used to temporarily assign part
+of pattern to a variable for a subsequent comparison.</p><p>Optionally, it is possible to pass a list of guard conditions for more precise matching.
+Each guard is a tuple, which describes checks that should be passed by assigned part of pattern.
+For example the <code class="inline">$1 &gt; 1</code> guard condition would be expressed as the <code class="inline">{:&gt;, :&quot;$1&quot;, 1}</code> tuple.
+Please note that guard conditions will work only for assigned
+variables like <code class="inline">:&quot;$1&quot;</code>, <code class="inline">:&quot;$2&quot;</code>, and so forth.
+Avoid usage of special match variables <code class="inline">:&quot;$_&quot;</code> and <code class="inline">:&quot;$$&quot;</code>, because it might not work as expected.</p><p>Zero will be returned if there is no match.</p><p>For unique registries, a single partition lookup is necessary. For
+duplicate registries, all partitions must be looked up.</p><h2 id="count_match/4-examples" class="section-heading"><a href="#count_match/4-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>In the example below we register the current process under the same
+key in a duplicate registry but with different values:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="3460227165-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:duplicate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.CountMatchTest</samp><samp class="p" data-group-id="3460227165-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="3460227165-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="3460227165-2">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="3460227165-3">(</samp><samp class="nc">Registry.CountMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3460227165-4">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="3460227165-4">}</samp><samp class="p" data-group-id="3460227165-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="3460227165-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="3460227165-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="3460227165-6">(</samp><samp class="nc">Registry.CountMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3460227165-7">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="3460227165-7">}</samp><samp class="p" data-group-id="3460227165-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">count_match</samp><samp class="p" data-group-id="3460227165-8">(</samp><samp class="nc">Registry.CountMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3460227165-9">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p" data-group-id="3460227165-9">}</samp><samp class="p" data-group-id="3460227165-8">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">count_match</samp><samp class="p" data-group-id="3460227165-10">(</samp><samp class="nc">Registry.CountMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3460227165-11">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p" data-group-id="3460227165-11">}</samp><samp class="p" data-group-id="3460227165-10">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">count_match</samp><samp class="p" data-group-id="3460227165-12">(</samp><samp class="nc">Registry.CountMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3460227165-13">{</samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p" data-group-id="3460227165-13">}</samp><samp class="p" data-group-id="3460227165-12">)</samp><samp class="w">
+</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">count_match</samp><samp class="p" data-group-id="3460227165-14">(</samp><samp class="nc">Registry.CountMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3460227165-15">{</samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p" data-group-id="3460227165-15">}</samp><samp class="p" data-group-id="3460227165-14">)</samp><samp class="w">
+</samp><samp class="mi">2</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">count_match</samp><samp class="p" data-group-id="3460227165-16">(</samp><samp class="nc">Registry.CountMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3460227165-17">{</samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p" data-group-id="3460227165-17">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3460227165-18">[</samp><samp class="p" data-group-id="3460227165-19">{</samp><samp class="ss">:&gt;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="3460227165-19">}</samp><samp class="p" data-group-id="3460227165-18">]</samp><samp class="p" data-group-id="3460227165-16">)</samp><samp class="w">
+</samp><samp class="mi">1</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">count_match</samp><samp class="p" data-group-id="3460227165-20">(</samp><samp class="nc">Registry.CountMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3460227165-21">{</samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p" data-group-id="3460227165-21">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3460227165-22">[</samp><samp class="p" data-group-id="3460227165-23">{</samp><samp class="ss">:is_atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p" data-group-id="3460227165-23">}</samp><samp class="p" data-group-id="3460227165-22">]</samp><samp class="p" data-group-id="3460227165-20">)</samp><samp class="w">
+</samp><samp class="mi">2</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="count_select/2">
+
+  <div class="detail-header">
+    <a href="#count_select/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">count_select(registry, spec)</h1>
+
+        <span class="note">(since 1.14.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L1407" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> count_select(<a href="#t:registry/0">registry</a>(), <a href="#t:spec/0">spec</a>()) :: <a href="typespecs.xhtml#basic-types">non_neg_integer</a>()</pre>
+
+      </div>
+
+<p>Works like <a href="#select/2"><code class="inline">select/2</code></a>, but only returns the number of matching records.</p><h2 id="count_select/2-examples" class="section-heading"><a href="#count_select/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>In the example below we register the current process under different
+keys in a unique registry but with the same value:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="4972333829-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.CountSelectTest</samp><samp class="p" data-group-id="4972333829-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="4972333829-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="4972333829-2">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="4972333829-3">(</samp><samp class="nc">Registry.CountSelectTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:value</samp><samp class="p" data-group-id="4972333829-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="4972333829-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="4972333829-4">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="4972333829-5">(</samp><samp class="nc">Registry.CountSelectTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;world&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:value</samp><samp class="p" data-group-id="4972333829-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">count_select</samp><samp class="p" data-group-id="4972333829-6">(</samp><samp class="nc">Registry.CountSelectTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4972333829-7">[</samp><samp class="p" data-group-id="4972333829-8">{</samp><samp class="p" data-group-id="4972333829-9">{</samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:value</samp><samp class="p" data-group-id="4972333829-9">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4972333829-10">[</samp><samp class="p" data-group-id="4972333829-10">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4972333829-11">[</samp><samp class="no">true</samp><samp class="p" data-group-id="4972333829-11">]</samp><samp class="p" data-group-id="4972333829-8">}</samp><samp class="p" data-group-id="4972333829-7">]</samp><samp class="p" data-group-id="4972333829-6">)</samp><samp class="w">
+</samp><samp class="mi">2</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="delete_meta/2">
+
+  <div class="detail-header">
+    <a href="#delete_meta/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">delete_meta(registry, key)</h1>
+
+        <span class="note">(since 1.11.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L1202" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> delete_meta(<a href="#t:registry/0">registry</a>(), <a href="#t:meta_key/0">meta_key</a>()) :: :ok</pre>
+
+      </div>
+
+<p>Deletes registry metadata for the given <code class="inline">key</code> in <code class="inline">registry</code>.</p><h2 id="delete_meta/2-examples" class="section-heading"><a href="#delete_meta/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="5868131959-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.DeleteMetaTest</samp><samp class="p" data-group-id="5868131959-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">put_meta</samp><samp class="p" data-group-id="5868131959-2">(</samp><samp class="nc">Registry.DeleteMetaTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:custom_key</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;custom_value&quot;</samp><samp class="p" data-group-id="5868131959-2">)</samp><samp class="w">
+</samp><samp class="ss">:ok</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">meta</samp><samp class="p" data-group-id="5868131959-3">(</samp><samp class="nc">Registry.DeleteMetaTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:custom_key</samp><samp class="p" data-group-id="5868131959-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5868131959-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;custom_value&quot;</samp><samp class="p" data-group-id="5868131959-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">delete_meta</samp><samp class="p" data-group-id="5868131959-5">(</samp><samp class="nc">Registry.DeleteMetaTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:custom_key</samp><samp class="p" data-group-id="5868131959-5">)</samp><samp class="w">
+</samp><samp class="ss">:ok</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">meta</samp><samp class="p" data-group-id="5868131959-6">(</samp><samp class="nc">Registry.DeleteMetaTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:custom_key</samp><samp class="p" data-group-id="5868131959-6">)</samp><samp class="w">
+</samp><samp class="ss">:error</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="dispatch/4">
+
+    <span id="dispatch/3"></span>
+
+  <div class="detail-header">
+    <a href="#dispatch/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">dispatch(registry, key, mfa_or_fun, opts \\ [])</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L475" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> dispatch(<a href="#t:registry/0">registry</a>(), <a href="#t:key/0">key</a>(), dispatcher, <a href="typespecs.xhtml#built-in-types">keyword</a>()) :: :ok
+when dispatcher:
+       (entries :: [{<a href="typespecs.xhtml#basic-types">pid</a>(), <a href="#t:value/0">value</a>()}] -&gt; <a href="typespecs.xhtml#built-in-types">term</a>()) | {<a href="typespecs.xhtml#built-in-types">module</a>(), <a href="typespecs.xhtml#basic-types">atom</a>(), [<a href="typespecs.xhtml#built-in-types">term</a>()]}</pre>
+
+      </div>
+
+<p>Invokes the callback with all entries under <code class="inline">key</code> in each partition
+for the given <code class="inline">registry</code>.</p><p>The list of <code class="inline">entries</code> is a non-empty list of two-element tuples where
+the first element is the PID and the second element is the value
+associated to the PID. If there are no entries for the given key,
+the callback is never invoked.</p><p>If the registry is partitioned, the callback is invoked multiple times
+per partition. If the registry is partitioned and <code class="inline">parallel: true</code> is
+given as an option, the dispatching happens in parallel. In both cases,
+the callback is only invoked if there are entries for that partition.</p><p>See the module documentation for examples of using the <a href="#dispatch/3"><code class="inline">dispatch/3</code></a>
+function for building custom dispatching or a pubsub system.</p>
+  </section>
+</section>
+<section class="detail" id="keys/2">
+
+  <div class="detail-header">
+    <a href="#keys/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">keys(registry, pid)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L770" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> keys(<a href="#t:registry/0">registry</a>(), <a href="typespecs.xhtml#basic-types">pid</a>()) :: [<a href="#t:key/0">key</a>()]</pre>
+
+      </div>
+
+<p>Returns the known keys for the given <code class="inline">pid</code> in <code class="inline">registry</code> in no particular order.</p><p>If the registry is unique, the keys are unique. Otherwise
+they may contain duplicates if the process was registered
+under the same key multiple times. The list will be empty
+if the process is dead or it has no keys in this registry.</p><h2 id="keys/2-examples" class="section-heading"><a href="#keys/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>Registering under a unique registry does not allow multiple entries:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="8596892059-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.UniqueKeysTest</samp><samp class="p" data-group-id="8596892059-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="8596892059-2">(</samp><samp class="nc">Registry.UniqueKeysTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="8596892059-3">(</samp><samp class="p" data-group-id="8596892059-3">)</samp><samp class="p" data-group-id="8596892059-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8596892059-4">[</samp><samp class="p" data-group-id="8596892059-4">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="8596892059-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="8596892059-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="8596892059-6">(</samp><samp class="nc">Registry.UniqueKeysTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="8596892059-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="8596892059-7">(</samp><samp class="nc">Registry.UniqueKeysTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:later</samp><samp class="p" data-group-id="8596892059-7">)</samp><samp class="w"> </samp><samp class="c1"># registry is :unique</samp><samp class="w">
+</samp><samp class="p" data-group-id="8596892059-8">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8596892059-9">{</samp><samp class="ss">:already_registered</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="8596892059-10">(</samp><samp class="p" data-group-id="8596892059-10">)</samp><samp class="p" data-group-id="8596892059-9">}</samp><samp class="p" data-group-id="8596892059-8">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="8596892059-11">(</samp><samp class="nc">Registry.UniqueKeysTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="8596892059-12">(</samp><samp class="p" data-group-id="8596892059-12">)</samp><samp class="p" data-group-id="8596892059-11">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8596892059-13">[</samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="8596892059-13">]</samp></code></pre><p>Such is possible for duplicate registries though:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="5766894146-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:duplicate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.DuplicateKeysTest</samp><samp class="p" data-group-id="5766894146-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="5766894146-2">(</samp><samp class="nc">Registry.DuplicateKeysTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="5766894146-3">(</samp><samp class="p" data-group-id="5766894146-3">)</samp><samp class="p" data-group-id="5766894146-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5766894146-4">[</samp><samp class="p" data-group-id="5766894146-4">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="5766894146-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="5766894146-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="5766894146-6">(</samp><samp class="nc">Registry.DuplicateKeysTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="5766894146-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="5766894146-7">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="5766894146-7">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="5766894146-8">(</samp><samp class="nc">Registry.DuplicateKeysTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="5766894146-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="5766894146-9">(</samp><samp class="nc">Registry.DuplicateKeysTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="5766894146-10">(</samp><samp class="p" data-group-id="5766894146-10">)</samp><samp class="p" data-group-id="5766894146-9">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5766894146-11">[</samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="5766894146-11">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="lock/3">
+
+  <div class="detail-header">
+    <a href="#lock/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">lock(registry, lock_key, function)</h1>
+
+        <span class="note">(since 1.18.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L664" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Out-of-band locking of the given <code class="inline">lock_key</code> for the duration of <code class="inline">function</code>.</p><p>Only one function can execute under the same <code class="inline">lock_key</code> at a given
+time. The given function always runs in the caller process.</p><p>The <code class="inline">lock_key</code> has its own namespace and therefore does not clash or
+overlap with the regular registry keys. In other words, locking works
+out-of-band from the regular Registry operations. See the &quot;Use cases&quot;
+section below.</p><p>Locking behaves the same regardless of the registry type.</p><h2 id="lock/3-use-cases" class="section-heading"><a href="#lock/3-use-cases" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Use cases</span></h2><p>The Registry is safe and concurrent out-of-the-box. You are not required
+to use this function when interacting with the Registry. Furthermore,
+<a href="Registry.xhtml"><code class="inline">Registry</code></a> with <code class="inline">:unique</code> keys can already act as a process-lock for any
+given key. For example, you can ensure only one process runs at a given
+time for a given <code class="inline">:key</code> by doing:</p><pre><code class="makeup elixir" translate="no"><samp class="n">name</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="8600165447-1">{</samp><samp class="ss">:via</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8600165447-2">{</samp><samp class="nc">MyApp.Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:key</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:value</samp><samp class="p" data-group-id="8600165447-2">}</samp><samp class="p" data-group-id="8600165447-1">}</samp><samp class="w">
+
+</samp><samp class="c1"># Do not attempt to start if we are already running</samp><samp class="w">
+</samp><samp class="k">if</samp><samp class="w"> </samp><samp class="n">pid</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">GenServer</samp><samp class="o">.</samp><samp class="n">whereis</samp><samp class="p" data-group-id="8600165447-3">(</samp><samp class="n">name</samp><samp class="p" data-group-id="8600165447-3">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8600165447-4">do</samp><samp class="w">
+  </samp><samp class="n">pid</samp><samp class="w">
+</samp><samp class="k" data-group-id="8600165447-4">else</samp><samp class="w">
+  </samp><samp class="k">case</samp><samp class="w"> </samp><samp class="nc">GenServer</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="8600165447-5">(</samp><samp class="bp">__MODULE__</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">name</samp><samp class="p" data-group-id="8600165447-5">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8600165447-6">do</samp><samp class="w">
+    </samp><samp class="p" data-group-id="8600165447-7">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">pid</samp><samp class="p" data-group-id="8600165447-7">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="n">pid</samp><samp class="w">
+    </samp><samp class="p" data-group-id="8600165447-8">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8600165447-9">{</samp><samp class="ss">:already_started</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">pid</samp><samp class="p" data-group-id="8600165447-9">}</samp><samp class="p" data-group-id="8600165447-8">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="n">pid</samp><samp class="w">
+  </samp><samp class="k" data-group-id="8600165447-6">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="8600165447-4">end</samp></code></pre><p>Process locking gives you plenty of flexibility and fault isolation and
+is enough for most cases.</p><p>This function is useful only when spawning processes is not an option,
+for example, when copying the data to another process could be too
+expensive. Or when the work must be done within the current process
+for other reasons. In such cases, this function provides a scalable
+mechanism for managing locks on top of the registry's infrastructure.</p><h2 id="lock/3-examples" class="section-heading"><a href="#lock/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="9170225467-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.LockTest</samp><samp class="p" data-group-id="9170225467-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lock</samp><samp class="p" data-group-id="9170225467-2">(</samp><samp class="nc">Registry.LockTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:hello</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="9170225467-3">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="ss">:ok</samp><samp class="w"> </samp><samp class="k" data-group-id="9170225467-3">end</samp><samp class="p" data-group-id="9170225467-2">)</samp><samp class="w">
+</samp><samp class="ss">:ok</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lock</samp><samp class="p" data-group-id="9170225467-4">(</samp><samp class="nc">Registry.LockTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="9170225467-5">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="9170225467-6">(</samp><samp class="p" data-group-id="9170225467-6">)</samp><samp class="w"> </samp><samp class="k" data-group-id="9170225467-5">end</samp><samp class="p" data-group-id="9170225467-4">)</samp><samp class="w">
+</samp><samp class="n">self</samp><samp class="p" data-group-id="9170225467-7">(</samp><samp class="p" data-group-id="9170225467-7">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="lookup/2">
+
+  <div class="detail-header">
+    <a href="#lookup/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">lookup(registry, key)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L589" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> lookup(<a href="#t:registry/0">registry</a>(), <a href="#t:key/0">key</a>()) :: [{<a href="typespecs.xhtml#basic-types">pid</a>(), <a href="#t:value/0">value</a>()}]</pre>
+
+      </div>
+
+<p>Finds the <code class="inline">{pid, value}</code> pair for the given <code class="inline">key</code> in <code class="inline">registry</code> in no particular order.</p><p>An empty list if there is no match.</p><p>For unique registries, a single partition lookup is necessary. For
+duplicate registries, all partitions must be looked up.</p><h2 id="lookup/2-examples" class="section-heading"><a href="#lookup/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>In the example below we register the current process and look it up
+both from itself and other processes:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="2868675855-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.UniqueLookupTest</samp><samp class="p" data-group-id="2868675855-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lookup</samp><samp class="p" data-group-id="2868675855-2">(</samp><samp class="nc">Registry.UniqueLookupTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="2868675855-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="2868675855-3">[</samp><samp class="p" data-group-id="2868675855-3">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="2868675855-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="2868675855-4">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="2868675855-5">(</samp><samp class="nc">Registry.UniqueLookupTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="2868675855-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lookup</samp><samp class="p" data-group-id="2868675855-6">(</samp><samp class="nc">Registry.UniqueLookupTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="2868675855-6">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="2868675855-7">[</samp><samp class="p" data-group-id="2868675855-8">{</samp><samp class="n">self</samp><samp class="p" data-group-id="2868675855-9">(</samp><samp class="p" data-group-id="2868675855-9">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="2868675855-8">}</samp><samp class="p" data-group-id="2868675855-7">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Task</samp><samp class="o">.</samp><samp class="n">async</samp><samp class="p" data-group-id="2868675855-10">(</samp><samp class="k" data-group-id="2868675855-11">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lookup</samp><samp class="p" data-group-id="2868675855-12">(</samp><samp class="nc">Registry.UniqueLookupTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="2868675855-12">)</samp><samp class="w"> </samp><samp class="k" data-group-id="2868675855-11">end</samp><samp class="p" data-group-id="2868675855-10">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Task</samp><samp class="o">.</samp><samp class="n">await</samp><samp class="p" data-group-id="2868675855-13">(</samp><samp class="p" data-group-id="2868675855-13">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="2868675855-14">[</samp><samp class="p" data-group-id="2868675855-15">{</samp><samp class="n">self</samp><samp class="p" data-group-id="2868675855-16">(</samp><samp class="p" data-group-id="2868675855-16">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="2868675855-15">}</samp><samp class="p" data-group-id="2868675855-14">]</samp></code></pre><p>The same applies to duplicate registries:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="4073883562-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:duplicate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.DuplicateLookupTest</samp><samp class="p" data-group-id="4073883562-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lookup</samp><samp class="p" data-group-id="4073883562-2">(</samp><samp class="nc">Registry.DuplicateLookupTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="4073883562-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4073883562-3">[</samp><samp class="p" data-group-id="4073883562-3">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="4073883562-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="4073883562-4">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="4073883562-5">(</samp><samp class="nc">Registry.DuplicateLookupTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="4073883562-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lookup</samp><samp class="p" data-group-id="4073883562-6">(</samp><samp class="nc">Registry.DuplicateLookupTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="4073883562-6">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4073883562-7">[</samp><samp class="p" data-group-id="4073883562-8">{</samp><samp class="n">self</samp><samp class="p" data-group-id="4073883562-9">(</samp><samp class="p" data-group-id="4073883562-9">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="4073883562-8">}</samp><samp class="p" data-group-id="4073883562-7">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="4073883562-10">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="4073883562-10">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="4073883562-11">(</samp><samp class="nc">Registry.DuplicateLookupTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:another</samp><samp class="p" data-group-id="4073883562-11">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">sort</samp><samp class="p" data-group-id="4073883562-12">(</samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lookup</samp><samp class="p" data-group-id="4073883562-13">(</samp><samp class="nc">Registry.DuplicateLookupTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="4073883562-13">)</samp><samp class="p" data-group-id="4073883562-12">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4073883562-14">[</samp><samp class="p" data-group-id="4073883562-15">{</samp><samp class="n">self</samp><samp class="p" data-group-id="4073883562-16">(</samp><samp class="p" data-group-id="4073883562-16">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:another</samp><samp class="p" data-group-id="4073883562-15">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4073883562-17">{</samp><samp class="n">self</samp><samp class="p" data-group-id="4073883562-18">(</samp><samp class="p" data-group-id="4073883562-18">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="4073883562-17">}</samp><samp class="p" data-group-id="4073883562-14">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="match/4">
+
+    <span id="match/3"></span>
+
+  <div class="detail-header">
+    <a href="#match/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">match(registry, key, pattern, guards \\ [])</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L717" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> match(<a href="#t:registry/0">registry</a>(), <a href="#t:key/0">key</a>(), <a href="#t:match_pattern/0">match_pattern</a>(), <a href="#t:guards/0">guards</a>()) :: [{<a href="typespecs.xhtml#basic-types">pid</a>(), <a href="typespecs.xhtml#built-in-types">term</a>()}]</pre>
+
+      </div>
+
+<p>Returns <code class="inline">{pid, value}</code> pairs under the given <code class="inline">key</code> in <code class="inline">registry</code> that match <code class="inline">pattern</code>.</p><p>Pattern must be an atom or a tuple that will match the structure of the
+value stored in the registry. The atom <code class="inline">:_</code> can be used to ignore a given
+value or tuple element, while the atom <code class="inline">:&quot;$1&quot;</code> can be used to temporarily assign part
+of pattern to a variable for a subsequent comparison.</p><p>Optionally, it is possible to pass a list of guard conditions for more precise matching.
+Each guard is a tuple, which describes checks that should be passed by assigned part of pattern.
+For example the <code class="inline">$1 &gt; 1</code> guard condition would be expressed as the <code class="inline">{:&gt;, :&quot;$1&quot;, 1}</code> tuple.
+Please note that guard conditions will work only for assigned
+variables like <code class="inline">:&quot;$1&quot;</code>, <code class="inline">:&quot;$2&quot;</code>, and so forth.
+Avoid usage of special match variables <code class="inline">:&quot;$_&quot;</code> and <code class="inline">:&quot;$$&quot;</code>, because it might not work as expected.</p><p>An empty list will be returned if there is no match.</p><p>For unique registries, a single partition lookup is necessary. For
+duplicate registries, all partitions must be looked up.</p><h2 id="match/4-examples" class="section-heading"><a href="#match/4-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>In the example below we register the current process under the same
+key in a duplicate registry but with different values:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="9729222045-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:duplicate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.MatchTest</samp><samp class="p" data-group-id="9729222045-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="9729222045-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="9729222045-2">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="9729222045-3">(</samp><samp class="nc">Registry.MatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-4">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9729222045-4">}</samp><samp class="p" data-group-id="9729222045-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="9729222045-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="9729222045-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="9729222045-6">(</samp><samp class="nc">Registry.MatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-7">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9729222045-7">}</samp><samp class="p" data-group-id="9729222045-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">match</samp><samp class="p" data-group-id="9729222045-8">(</samp><samp class="nc">Registry.MatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-9">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p" data-group-id="9729222045-9">}</samp><samp class="p" data-group-id="9729222045-8">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9729222045-10">[</samp><samp class="p" data-group-id="9729222045-11">{</samp><samp class="n">self</samp><samp class="p" data-group-id="9729222045-12">(</samp><samp class="p" data-group-id="9729222045-12">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-13">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9729222045-13">}</samp><samp class="p" data-group-id="9729222045-11">}</samp><samp class="p" data-group-id="9729222045-10">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">match</samp><samp class="p" data-group-id="9729222045-14">(</samp><samp class="nc">Registry.MatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-15">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p" data-group-id="9729222045-15">}</samp><samp class="p" data-group-id="9729222045-14">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9729222045-16">[</samp><samp class="p" data-group-id="9729222045-17">{</samp><samp class="n">self</samp><samp class="p" data-group-id="9729222045-18">(</samp><samp class="p" data-group-id="9729222045-18">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-19">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9729222045-19">}</samp><samp class="p" data-group-id="9729222045-17">}</samp><samp class="p" data-group-id="9729222045-16">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">match</samp><samp class="p" data-group-id="9729222045-20">(</samp><samp class="nc">Registry.MatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-21">{</samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p" data-group-id="9729222045-21">}</samp><samp class="p" data-group-id="9729222045-20">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">sort</samp><samp class="p" data-group-id="9729222045-22">(</samp><samp class="p" data-group-id="9729222045-22">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9729222045-23">[</samp><samp class="p" data-group-id="9729222045-24">{</samp><samp class="n">self</samp><samp class="p" data-group-id="9729222045-25">(</samp><samp class="p" data-group-id="9729222045-25">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-26">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9729222045-26">}</samp><samp class="p" data-group-id="9729222045-24">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-27">{</samp><samp class="n">self</samp><samp class="p" data-group-id="9729222045-28">(</samp><samp class="p" data-group-id="9729222045-28">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-29">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9729222045-29">}</samp><samp class="p" data-group-id="9729222045-27">}</samp><samp class="p" data-group-id="9729222045-23">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">match</samp><samp class="p" data-group-id="9729222045-30">(</samp><samp class="nc">Registry.MatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-31">{</samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p" data-group-id="9729222045-31">}</samp><samp class="p" data-group-id="9729222045-30">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">sort</samp><samp class="p" data-group-id="9729222045-32">(</samp><samp class="p" data-group-id="9729222045-32">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9729222045-33">[</samp><samp class="p" data-group-id="9729222045-34">{</samp><samp class="n">self</samp><samp class="p" data-group-id="9729222045-35">(</samp><samp class="p" data-group-id="9729222045-35">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-36">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9729222045-36">}</samp><samp class="p" data-group-id="9729222045-34">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-37">{</samp><samp class="n">self</samp><samp class="p" data-group-id="9729222045-38">(</samp><samp class="p" data-group-id="9729222045-38">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-39">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9729222045-39">}</samp><samp class="p" data-group-id="9729222045-37">}</samp><samp class="p" data-group-id="9729222045-33">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">guards</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-40">[</samp><samp class="p" data-group-id="9729222045-41">{</samp><samp class="ss">:&gt;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9729222045-41">}</samp><samp class="p" data-group-id="9729222045-40">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">match</samp><samp class="p" data-group-id="9729222045-42">(</samp><samp class="nc">Registry.MatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-43">{</samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p" data-group-id="9729222045-43">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">guards</samp><samp class="p" data-group-id="9729222045-42">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9729222045-44">[</samp><samp class="p" data-group-id="9729222045-45">{</samp><samp class="n">self</samp><samp class="p" data-group-id="9729222045-46">(</samp><samp class="p" data-group-id="9729222045-46">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-47">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9729222045-47">}</samp><samp class="p" data-group-id="9729222045-45">}</samp><samp class="p" data-group-id="9729222045-44">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">guards</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-48">[</samp><samp class="p" data-group-id="9729222045-49">{</samp><samp class="ss">:is_atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p" data-group-id="9729222045-49">}</samp><samp class="p" data-group-id="9729222045-48">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">match</samp><samp class="p" data-group-id="9729222045-50">(</samp><samp class="nc">Registry.MatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-51">{</samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p" data-group-id="9729222045-51">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">guards</samp><samp class="p" data-group-id="9729222045-50">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">sort</samp><samp class="p" data-group-id="9729222045-52">(</samp><samp class="p" data-group-id="9729222045-52">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9729222045-53">[</samp><samp class="p" data-group-id="9729222045-54">{</samp><samp class="n">self</samp><samp class="p" data-group-id="9729222045-55">(</samp><samp class="p" data-group-id="9729222045-55">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-56">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9729222045-56">}</samp><samp class="p" data-group-id="9729222045-54">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-57">{</samp><samp class="n">self</samp><samp class="p" data-group-id="9729222045-58">(</samp><samp class="p" data-group-id="9729222045-58">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9729222045-59">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:atom</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="9729222045-59">}</samp><samp class="p" data-group-id="9729222045-57">}</samp><samp class="p" data-group-id="9729222045-53">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="meta/2">
+
+  <div class="detail-header">
+    <a href="#meta/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">meta(registry, key)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L1140" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> meta(<a href="#t:registry/0">registry</a>(), <a href="#t:meta_key/0">meta_key</a>()) :: {:ok, <a href="#t:meta_value/0">meta_value</a>()} | :error</pre>
+
+      </div>
+
+<p>Reads registry metadata given on <a href="#start_link/1"><code class="inline">start_link/1</code></a>.</p><p>Atoms and tuples are allowed as keys.</p><h2 id="meta/2-examples" class="section-heading"><a href="#meta/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="1113506594-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.MetaTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">meta</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1113506594-2">[</samp><samp class="ss">custom_key</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;custom_value&quot;</samp><samp class="p" data-group-id="1113506594-2">]</samp><samp class="p" data-group-id="1113506594-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">meta</samp><samp class="p" data-group-id="1113506594-3">(</samp><samp class="nc">Registry.MetaTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:custom_key</samp><samp class="p" data-group-id="1113506594-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1113506594-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;custom_value&quot;</samp><samp class="p" data-group-id="1113506594-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">meta</samp><samp class="p" data-group-id="1113506594-5">(</samp><samp class="nc">Registry.MetaTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:unknown_key</samp><samp class="p" data-group-id="1113506594-5">)</samp><samp class="w">
+</samp><samp class="ss">:error</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="put_meta/3">
+
+  <div class="detail-header">
+    <a href="#put_meta/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">put_meta(registry, key, value)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L1174" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> put_meta(<a href="#t:registry/0">registry</a>(), <a href="#t:meta_key/0">meta_key</a>(), <a href="#t:meta_value/0">meta_value</a>()) :: :ok</pre>
+
+      </div>
+
+<p>Stores registry metadata.</p><p>Atoms and tuples are allowed as keys.</p><h2 id="put_meta/3-examples" class="section-heading"><a href="#put_meta/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="6761025112-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.PutMetaTest</samp><samp class="p" data-group-id="6761025112-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">put_meta</samp><samp class="p" data-group-id="6761025112-2">(</samp><samp class="nc">Registry.PutMetaTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:custom_key</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;custom_value&quot;</samp><samp class="p" data-group-id="6761025112-2">)</samp><samp class="w">
+</samp><samp class="ss">:ok</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">meta</samp><samp class="p" data-group-id="6761025112-3">(</samp><samp class="nc">Registry.PutMetaTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:custom_key</samp><samp class="p" data-group-id="6761025112-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6761025112-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;custom_value&quot;</samp><samp class="p" data-group-id="6761025112-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">put_meta</samp><samp class="p" data-group-id="6761025112-5">(</samp><samp class="nc">Registry.PutMetaTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6761025112-6">{</samp><samp class="ss">:tuple</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:key</samp><samp class="p" data-group-id="6761025112-6">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;tuple_value&quot;</samp><samp class="p" data-group-id="6761025112-5">)</samp><samp class="w">
+</samp><samp class="ss">:ok</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">meta</samp><samp class="p" data-group-id="6761025112-7">(</samp><samp class="nc">Registry.PutMetaTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6761025112-8">{</samp><samp class="ss">:tuple</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:key</samp><samp class="p" data-group-id="6761025112-8">}</samp><samp class="p" data-group-id="6761025112-7">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6761025112-9">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;tuple_value&quot;</samp><samp class="p" data-group-id="6761025112-9">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="register/3">
+
+  <div class="detail-header">
+    <a href="#register/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">register(registry, key, value)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L1064" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> register(<a href="#t:registry/0">registry</a>(), <a href="#t:key/0">key</a>(), <a href="#t:value/0">value</a>()) ::
+  {:ok, <a href="typespecs.xhtml#basic-types">pid</a>()} | {:error, {:already_registered, <a href="typespecs.xhtml#basic-types">pid</a>()}}</pre>
+
+      </div>
+
+<p>Registers the current process under the given <code class="inline">key</code> in <code class="inline">registry</code>.</p><p>A value to be associated with this registration must also be given.
+This value will be retrieved whenever dispatching or doing a key
+lookup.</p><p>This function returns <code class="inline">{:ok, owner}</code> or <code class="inline">{:error, reason}</code>.
+The <code class="inline">owner</code> is the PID in the registry partition responsible for
+the PID. The owner is automatically linked to the caller.</p><p>If the registry has unique keys, it will return <code class="inline">{:ok, owner}</code> unless
+the key is already associated to a PID, in which case it returns
+<code class="inline">{:error, {:already_registered, pid}}</code>.</p><p>If the registry has duplicate keys, multiple registrations from the
+current process under the same key are allowed.</p><p>If the registry has listeners specified via the <code class="inline">:listeners</code> option in <a href="#start_link/1"><code class="inline">start_link/1</code></a>,
+those listeners will be notified of the registration and will receive a
+message of type <a href="#t:listener_message/0"><code class="inline">listener_message/0</code></a>.</p><h2 id="register/3-examples" class="section-heading"><a href="#register/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>Registering under a unique registry does not allow multiple entries:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="1397752407-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.UniqueRegisterTest</samp><samp class="p" data-group-id="1397752407-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="1397752407-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="1397752407-2">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="1397752407-3">(</samp><samp class="nc">Registry.UniqueRegisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="1397752407-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="1397752407-4">(</samp><samp class="nc">Registry.UniqueRegisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:later</samp><samp class="p" data-group-id="1397752407-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1397752407-5">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1397752407-6">{</samp><samp class="ss">:already_registered</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="1397752407-7">(</samp><samp class="p" data-group-id="1397752407-7">)</samp><samp class="p" data-group-id="1397752407-6">}</samp><samp class="p" data-group-id="1397752407-5">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="1397752407-8">(</samp><samp class="nc">Registry.UniqueRegisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="1397752407-9">(</samp><samp class="p" data-group-id="1397752407-9">)</samp><samp class="p" data-group-id="1397752407-8">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1397752407-10">[</samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="1397752407-10">]</samp></code></pre><p>Such is possible for duplicate registries though:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="4523195664-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:duplicate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.DuplicateRegisterTest</samp><samp class="p" data-group-id="4523195664-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="4523195664-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="4523195664-2">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="4523195664-3">(</samp><samp class="nc">Registry.DuplicateRegisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="4523195664-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="4523195664-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="4523195664-4">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="4523195664-5">(</samp><samp class="nc">Registry.DuplicateRegisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="4523195664-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="4523195664-6">(</samp><samp class="nc">Registry.DuplicateRegisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="4523195664-7">(</samp><samp class="p" data-group-id="4523195664-7">)</samp><samp class="p" data-group-id="4523195664-6">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4523195664-8">[</samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="4523195664-8">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="select/2">
+
+  <div class="detail-header">
+    <a href="#select/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">select(registry, spec)</h1>
+
+        <span class="note">(since 1.9.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L1376" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> select(<a href="#t:registry/0">registry</a>(), <a href="#t:spec/0">spec</a>()) :: [<a href="typespecs.xhtml#built-in-types">term</a>()]</pre>
+
+      </div>
+
+<p>Select key, pid, and values registered using full match specs.</p><p>The <code class="inline">spec</code> consists of a list of three part tuples, in the shape of <code class="inline">[{match_pattern, guards, body}]</code>.</p><p>The first part, the match pattern, must be a tuple that will match the structure of the
+the data stored in the registry, which is <code class="inline">{key, pid, value}</code>. The atom <code class="inline">:_</code> can be used to
+ignore a given value or tuple element, while the atom <code class="inline">:&quot;$1&quot;</code> can be used to temporarily
+assign part of pattern to a variable for a subsequent comparison. This can be combined
+like <code class="inline">{:&quot;$1&quot;, :_, :_}</code>.</p><p>The second part, the guards, is a list of conditions that allow filtering the results.
+Each guard is a tuple, which describes checks that should be passed by assigned part of pattern.
+For example the <code class="inline">$1 &gt; 1</code> guard condition would be expressed as the <code class="inline">{:&gt;, :&quot;$1&quot;, 1}</code> tuple.
+Please note that guard conditions will work only for assigned
+variables like <code class="inline">:&quot;$1&quot;</code>, <code class="inline">:&quot;$2&quot;</code>, and so forth.</p><p>The third part, the body, is a list of shapes of the returned entries. Like guards, you have access to
+assigned variables like <code class="inline">:&quot;$1&quot;</code>, which you can combine with hard-coded values to freely shape entries
+Note that tuples have to be wrapped in an additional tuple. To get a result format like
+<code class="inline">%{key: key, pid: pid, value: value}</code>, assuming you bound those variables in order in the match part,
+you would provide a body like <code class="inline">[%{key: :&quot;$1&quot;, pid: :&quot;$2&quot;, value: :&quot;$3&quot;}]</code>. Like guards, you can use
+some operations like <code class="inline">:element</code> to modify the output format.</p><p>Do not use special match variables <code class="inline">:&quot;$_&quot;</code> and <code class="inline">:&quot;$$&quot;</code>, because they might not work as expected.</p><p>Note that for large registries with many partitions this will be costly as it builds the result by
+concatenating all the partitions.</p><h2 id="select/2-examples" class="section-heading"><a href="#select/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>This example shows how to get everything from the registry:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="6594083534-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.SelectAllTest</samp><samp class="p" data-group-id="6594083534-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="6594083534-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="6594083534-2">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="6594083534-3">(</samp><samp class="nc">Registry.SelectAllTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:value</samp><samp class="p" data-group-id="6594083534-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="6594083534-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="6594083534-4">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="6594083534-5">(</samp><samp class="nc">Registry.SelectAllTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;world&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:value</samp><samp class="p" data-group-id="6594083534-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">select</samp><samp class="p" data-group-id="6594083534-6">(</samp><samp class="nc">Registry.SelectAllTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6594083534-7">[</samp><samp class="p" data-group-id="6594083534-8">{</samp><samp class="p" data-group-id="6594083534-9">{</samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$2&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$3&quot;</samp><samp class="p" data-group-id="6594083534-9">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6594083534-10">[</samp><samp class="p" data-group-id="6594083534-10">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6594083534-11">[</samp><samp class="p" data-group-id="6594083534-12">{</samp><samp class="p" data-group-id="6594083534-13">{</samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$2&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:&quot;$3&quot;</samp><samp class="p" data-group-id="6594083534-13">}</samp><samp class="p" data-group-id="6594083534-12">}</samp><samp class="p" data-group-id="6594083534-11">]</samp><samp class="p" data-group-id="6594083534-8">}</samp><samp class="p" data-group-id="6594083534-7">]</samp><samp class="p" data-group-id="6594083534-6">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">sort</samp><samp class="p" data-group-id="6594083534-14">(</samp><samp class="p" data-group-id="6594083534-14">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6594083534-15">[</samp><samp class="p" data-group-id="6594083534-16">{</samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="6594083534-17">(</samp><samp class="p" data-group-id="6594083534-17">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:value</samp><samp class="p" data-group-id="6594083534-16">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6594083534-18">{</samp><samp class="s">&quot;world&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="6594083534-19">(</samp><samp class="p" data-group-id="6594083534-19">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:value</samp><samp class="p" data-group-id="6594083534-18">}</samp><samp class="p" data-group-id="6594083534-15">]</samp></code></pre><p>If you want to get keys, you can pass a separate selector:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="1866852588-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.SelectKeysTest</samp><samp class="p" data-group-id="1866852588-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="1866852588-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="1866852588-2">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="1866852588-3">(</samp><samp class="nc">Registry.SelectKeysTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:value</samp><samp class="p" data-group-id="1866852588-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="1866852588-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="1866852588-4">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="1866852588-5">(</samp><samp class="nc">Registry.SelectKeysTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;world&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:value</samp><samp class="p" data-group-id="1866852588-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">select</samp><samp class="p" data-group-id="1866852588-6">(</samp><samp class="nc">Registry.SelectKeysTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1866852588-7">[</samp><samp class="p" data-group-id="1866852588-8">{</samp><samp class="p" data-group-id="1866852588-9">{</samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_</samp><samp class="p" data-group-id="1866852588-9">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1866852588-10">[</samp><samp class="p" data-group-id="1866852588-10">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1866852588-11">[</samp><samp class="ss">:&quot;$1&quot;</samp><samp class="p" data-group-id="1866852588-11">]</samp><samp class="p" data-group-id="1866852588-8">}</samp><samp class="p" data-group-id="1866852588-7">]</samp><samp class="p" data-group-id="1866852588-6">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">sort</samp><samp class="p" data-group-id="1866852588-12">(</samp><samp class="p" data-group-id="1866852588-12">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1866852588-13">[</samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;world&quot;</samp><samp class="p" data-group-id="1866852588-13">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="start_link/1">
+
+  <div class="detail-header">
+    <a href="#start_link/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">start_link(options)</h1>
+
+        <span class="note">(since 1.5.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L331" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> start_link([<a href="#t:start_option/0">start_option</a>()]) :: {:ok, <a href="typespecs.xhtml#basic-types">pid</a>()} | {:error, <a href="typespecs.xhtml#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>Starts the registry as a supervisor process.</p><p>Manually it can be started as:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="3701856862-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyApp.Registry</samp><samp class="p" data-group-id="3701856862-1">)</samp></code></pre><p>In your supervisor tree, you would write:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Supervisor</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="4953345615-1">(</samp><samp class="p" data-group-id="4953345615-2">[</samp><samp class="w">
+  </samp><samp class="p" data-group-id="4953345615-3">{</samp><samp class="nc">Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyApp.Registry</samp><samp class="p" data-group-id="4953345615-3">}</samp><samp class="w">
+</samp><samp class="p" data-group-id="4953345615-2">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">strategy</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:one_for_one</samp><samp class="p" data-group-id="4953345615-1">)</samp></code></pre><p>For intensive workloads, the registry may also be partitioned (by specifying
+the <code class="inline">:partitions</code> option). If partitioning is required then a good default is to
+set the number of partitions to the number of schedulers available:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="6824082668-1">(</samp><samp class="w">
+  </samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyApp.Registry</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">partitions</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">System</samp><samp class="o">.</samp><samp class="n">schedulers_online</samp><samp class="p" data-group-id="6824082668-2">(</samp><samp class="p" data-group-id="6824082668-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6824082668-1">)</samp></code></pre><p>or:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Supervisor</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="1281487408-1">(</samp><samp class="p" data-group-id="1281487408-2">[</samp><samp class="w">
+  </samp><samp class="p" data-group-id="1281487408-3">{</samp><samp class="nc">Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyApp.Registry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">partitions</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">System</samp><samp class="o">.</samp><samp class="n">schedulers_online</samp><samp class="p" data-group-id="1281487408-4">(</samp><samp class="p" data-group-id="1281487408-4">)</samp><samp class="p" data-group-id="1281487408-3">}</samp><samp class="w">
+</samp><samp class="p" data-group-id="1281487408-2">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">strategy</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:one_for_one</samp><samp class="p" data-group-id="1281487408-1">)</samp></code></pre><h2 id="start_link/1-options" class="section-heading"><a href="#start_link/1-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><p>The registry requires the following keys:</p><ul><li><code class="inline">:keys</code> - chooses if keys are <code class="inline">:unique</code> or <code class="inline">:duplicate</code></li><li><code class="inline">:name</code> - the name of the registry and its tables</li></ul><p>The following keys are optional:</p><ul><li><code class="inline">:partitions</code> - the number of partitions in the registry. Defaults to <code class="inline">1</code>.</li><li><code class="inline">:listeners</code> - a list of named processes which are notified of register
+and unregister events. The registered process must be monitored by the
+listener if the listener wants to be notified if the registered process
+crashes. Messages sent to listeners are of type <a href="#t:listener_message/0"><code class="inline">listener_message/0</code></a>.</li><li><code class="inline">:meta</code> - a keyword list of metadata to be attached to the registry.</li></ul>
+  </section>
+</section>
+<section class="detail" id="unregister/2">
+
+  <div class="detail-header">
+    <a href="#unregister/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">unregister(registry, key)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L905" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> unregister(<a href="#t:registry/0">registry</a>(), <a href="#t:key/0">key</a>()) :: :ok</pre>
+
+      </div>
+
+<p>Unregisters all entries for the given <code class="inline">key</code> associated to the current
+process in <code class="inline">registry</code>.</p><p>Always returns <code class="inline">:ok</code> and automatically unlinks the current process from
+the owner if there are no more keys associated to the current process. See
+also <a href="#register/3"><code class="inline">register/3</code></a> to read more about the &quot;owner&quot;.</p><p>If the registry has listeners specified via the <code class="inline">:listeners</code> option in <a href="#start_link/1"><code class="inline">start_link/1</code></a>,
+those listeners will be notified of the unregistration and will receive a
+message of type <a href="#t:listener_message/0"><code class="inline">listener_message/0</code></a>.</p><h2 id="unregister/2-examples" class="section-heading"><a href="#unregister/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>For unique registries:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="7837126469-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.UniqueUnregisterTest</samp><samp class="p" data-group-id="7837126469-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="7837126469-2">(</samp><samp class="nc">Registry.UniqueUnregisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="7837126469-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="7837126469-3">(</samp><samp class="nc">Registry.UniqueUnregisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="7837126469-4">(</samp><samp class="p" data-group-id="7837126469-4">)</samp><samp class="p" data-group-id="7837126469-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7837126469-5">[</samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="7837126469-5">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">unregister</samp><samp class="p" data-group-id="7837126469-6">(</samp><samp class="nc">Registry.UniqueUnregisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="7837126469-6">)</samp><samp class="w">
+</samp><samp class="ss">:ok</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="7837126469-7">(</samp><samp class="nc">Registry.UniqueUnregisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="7837126469-8">(</samp><samp class="p" data-group-id="7837126469-8">)</samp><samp class="p" data-group-id="7837126469-7">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7837126469-9">[</samp><samp class="p" data-group-id="7837126469-9">]</samp></code></pre><p>For duplicate registries:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="7890798048-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:duplicate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.DuplicateUnregisterTest</samp><samp class="p" data-group-id="7890798048-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="7890798048-2">(</samp><samp class="nc">Registry.DuplicateUnregisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="7890798048-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="7890798048-3">(</samp><samp class="nc">Registry.DuplicateUnregisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="7890798048-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="7890798048-4">(</samp><samp class="nc">Registry.DuplicateUnregisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="7890798048-5">(</samp><samp class="p" data-group-id="7890798048-5">)</samp><samp class="p" data-group-id="7890798048-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7890798048-6">[</samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="7890798048-6">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">unregister</samp><samp class="p" data-group-id="7890798048-7">(</samp><samp class="nc">Registry.DuplicateUnregisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="7890798048-7">)</samp><samp class="w">
+</samp><samp class="ss">:ok</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="7890798048-8">(</samp><samp class="nc">Registry.DuplicateUnregisterTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="7890798048-9">(</samp><samp class="p" data-group-id="7890798048-9">)</samp><samp class="p" data-group-id="7890798048-8">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7890798048-10">[</samp><samp class="p" data-group-id="7890798048-10">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="unregister_match/4">
+
+    <span id="unregister_match/3"></span>
+
+  <div class="detail-header">
+    <a href="#unregister_match/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">unregister_match(registry, key, pattern, guards \\ [])</h1>
+
+        <span class="note">(since 1.5.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L967" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> unregister_match(<a href="#t:registry/0">registry</a>(), <a href="#t:key/0">key</a>(), <a href="#t:match_pattern/0">match_pattern</a>(), <a href="#t:guards/0">guards</a>()) :: :ok</pre>
+
+      </div>
+
+<p>Unregisters entries for keys matching a pattern associated to the current
+process in <code class="inline">registry</code>.</p><h2 id="unregister_match/4-examples" class="section-heading"><a href="#unregister_match/4-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>For unique registries it can be used to conditionally unregister a key on
+the basis of whether or not it matches a particular value.</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="1015674840-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.UniqueUnregisterMatchTest</samp><samp class="p" data-group-id="1015674840-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="1015674840-2">(</samp><samp class="nc">Registry.UniqueUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="1015674840-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="1015674840-3">(</samp><samp class="nc">Registry.UniqueUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="1015674840-4">(</samp><samp class="p" data-group-id="1015674840-4">)</samp><samp class="p" data-group-id="1015674840-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1015674840-5">[</samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="1015674840-5">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">unregister_match</samp><samp class="p" data-group-id="1015674840-6">(</samp><samp class="nc">Registry.UniqueUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:foo</samp><samp class="p" data-group-id="1015674840-6">)</samp><samp class="w">
+</samp><samp class="ss">:ok</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="1015674840-7">(</samp><samp class="nc">Registry.UniqueUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="1015674840-8">(</samp><samp class="p" data-group-id="1015674840-8">)</samp><samp class="p" data-group-id="1015674840-7">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1015674840-9">[</samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="1015674840-9">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">unregister_match</samp><samp class="p" data-group-id="1015674840-10">(</samp><samp class="nc">Registry.UniqueUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="1015674840-10">)</samp><samp class="w">
+</samp><samp class="ss">:ok</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="1015674840-11">(</samp><samp class="nc">Registry.UniqueUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="1015674840-12">(</samp><samp class="p" data-group-id="1015674840-12">)</samp><samp class="p" data-group-id="1015674840-11">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1015674840-13">[</samp><samp class="p" data-group-id="1015674840-13">]</samp></code></pre><p>For duplicate registries:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="6040286684-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:duplicate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.DuplicateUnregisterMatchTest</samp><samp class="p" data-group-id="6040286684-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="6040286684-2">(</samp><samp class="nc">Registry.DuplicateUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world_a</samp><samp class="p" data-group-id="6040286684-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="6040286684-3">(</samp><samp class="nc">Registry.DuplicateUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world_b</samp><samp class="p" data-group-id="6040286684-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="6040286684-4">(</samp><samp class="nc">Registry.DuplicateUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world_c</samp><samp class="p" data-group-id="6040286684-4">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="6040286684-5">(</samp><samp class="nc">Registry.DuplicateUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="6040286684-6">(</samp><samp class="p" data-group-id="6040286684-6">)</samp><samp class="p" data-group-id="6040286684-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6040286684-7">[</samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="6040286684-7">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">unregister_match</samp><samp class="p" data-group-id="6040286684-8">(</samp><samp class="nc">Registry.DuplicateUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world_a</samp><samp class="p" data-group-id="6040286684-8">)</samp><samp class="w">
+</samp><samp class="ss">:ok</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">keys</samp><samp class="p" data-group-id="6040286684-9">(</samp><samp class="nc">Registry.DuplicateUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="6040286684-10">(</samp><samp class="p" data-group-id="6040286684-10">)</samp><samp class="p" data-group-id="6040286684-9">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6040286684-11">[</samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="6040286684-11">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lookup</samp><samp class="p" data-group-id="6040286684-12">(</samp><samp class="nc">Registry.DuplicateUnregisterMatchTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="6040286684-12">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6040286684-13">[</samp><samp class="p" data-group-id="6040286684-14">{</samp><samp class="n">self</samp><samp class="p" data-group-id="6040286684-15">(</samp><samp class="p" data-group-id="6040286684-15">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world_b</samp><samp class="p" data-group-id="6040286684-14">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6040286684-16">{</samp><samp class="n">self</samp><samp class="p" data-group-id="6040286684-17">(</samp><samp class="p" data-group-id="6040286684-17">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world_c</samp><samp class="p" data-group-id="6040286684-16">}</samp><samp class="p" data-group-id="6040286684-13">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="update_value/3">
+
+  <div class="detail-header">
+    <a href="#update_value/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">update_value(registry, key, callback)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L431" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> update_value(<a href="#t:registry/0">registry</a>(), <a href="#t:key/0">key</a>(), (<a href="#t:value/0">value</a>() -&gt; <a href="#t:value/0">value</a>())) ::
+  {new_value :: <a href="typespecs.xhtml#built-in-types">term</a>(), old_value :: <a href="typespecs.xhtml#built-in-types">term</a>()} | :error</pre>
+
+      </div>
+
+<p>Updates the value for <code class="inline">key</code> for the current process in the unique <code class="inline">registry</code>.</p><p>Returns a <code class="inline">{new_value, old_value}</code> tuple or <code class="inline">:error</code> if there
+is no such key assigned to the current process.</p><p>If a non-unique registry is given, an error is raised.</p><h2 id="update_value/3-examples" class="section-heading"><a href="#update_value/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="1877308829-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.UpdateTest</samp><samp class="p" data-group-id="1877308829-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="1877308829-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="1877308829-2">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="1877308829-3">(</samp><samp class="nc">Registry.UpdateTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="1877308829-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lookup</samp><samp class="p" data-group-id="1877308829-4">(</samp><samp class="nc">Registry.UpdateTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="1877308829-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1877308829-5">[</samp><samp class="p" data-group-id="1877308829-6">{</samp><samp class="n">self</samp><samp class="p" data-group-id="1877308829-7">(</samp><samp class="p" data-group-id="1877308829-7">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="1877308829-6">}</samp><samp class="p" data-group-id="1877308829-5">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">update_value</samp><samp class="p" data-group-id="1877308829-8">(</samp><samp class="nc">Registry.UpdateTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="p" data-group-id="1877308829-9">(</samp><samp class="ni">&amp;1</samp><samp class="w"> </samp><samp class="o">+</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="1877308829-9">)</samp><samp class="p" data-group-id="1877308829-8">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1877308829-10">{</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="1877308829-10">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">lookup</samp><samp class="p" data-group-id="1877308829-11">(</samp><samp class="nc">Registry.UpdateTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="1877308829-11">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1877308829-12">[</samp><samp class="p" data-group-id="1877308829-13">{</samp><samp class="n">self</samp><samp class="p" data-group-id="1877308829-14">(</samp><samp class="p" data-group-id="1877308829-14">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="1877308829-13">}</samp><samp class="p" data-group-id="1877308829-12">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="values/3">
+
+  <div class="detail-header">
+    <a href="#values/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">values(registry, key, pid)</h1>
+
+        <span class="note">(since 1.12.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/registry.ex#L846" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> values(<a href="#t:registry/0">registry</a>(), <a href="#t:key/0">key</a>(), <a href="typespecs.xhtml#basic-types">pid</a>()) :: [<a href="#t:value/0">value</a>()]</pre>
+
+      </div>
+
+<p>Reads the values for the given <code class="inline">key</code> for <code class="inline">pid</code> in <code class="inline">registry</code>.</p><p>For unique registries, it is either an empty list or a list
+with a single element. For duplicate registries, it is a list
+with zero, one, or multiple elements.</p><h2 id="values/3-examples" class="section-heading"><a href="#values/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>In the example below we register the current process and look it up
+both from itself and other processes:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="7139060268-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:unique</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.UniqueValuesTest</samp><samp class="p" data-group-id="7139060268-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">values</samp><samp class="p" data-group-id="7139060268-2">(</samp><samp class="nc">Registry.UniqueValuesTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="7139060268-3">(</samp><samp class="p" data-group-id="7139060268-3">)</samp><samp class="p" data-group-id="7139060268-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7139060268-4">[</samp><samp class="p" data-group-id="7139060268-4">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="7139060268-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="7139060268-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="7139060268-6">(</samp><samp class="nc">Registry.UniqueValuesTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="7139060268-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">values</samp><samp class="p" data-group-id="7139060268-7">(</samp><samp class="nc">Registry.UniqueValuesTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="7139060268-8">(</samp><samp class="p" data-group-id="7139060268-8">)</samp><samp class="p" data-group-id="7139060268-7">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7139060268-9">[</samp><samp class="ss">:world</samp><samp class="p" data-group-id="7139060268-9">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Task</samp><samp class="o">.</samp><samp class="n">async</samp><samp class="p" data-group-id="7139060268-10">(</samp><samp class="k" data-group-id="7139060268-11">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">values</samp><samp class="p" data-group-id="7139060268-12">(</samp><samp class="nc">Registry.UniqueValuesTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="7139060268-13">(</samp><samp class="p" data-group-id="7139060268-13">)</samp><samp class="p" data-group-id="7139060268-12">)</samp><samp class="w"> </samp><samp class="k" data-group-id="7139060268-11">end</samp><samp class="p" data-group-id="7139060268-10">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Task</samp><samp class="o">.</samp><samp class="n">await</samp><samp class="p" data-group-id="7139060268-14">(</samp><samp class="p" data-group-id="7139060268-14">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7139060268-15">[</samp><samp class="p" data-group-id="7139060268-15">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">parent</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="7139060268-16">(</samp><samp class="p" data-group-id="7139060268-16">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Task</samp><samp class="o">.</samp><samp class="n">async</samp><samp class="p" data-group-id="7139060268-17">(</samp><samp class="k" data-group-id="7139060268-18">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">values</samp><samp class="p" data-group-id="7139060268-19">(</samp><samp class="nc">Registry.UniqueValuesTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">parent</samp><samp class="p" data-group-id="7139060268-19">)</samp><samp class="w"> </samp><samp class="k" data-group-id="7139060268-18">end</samp><samp class="p" data-group-id="7139060268-17">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Task</samp><samp class="o">.</samp><samp class="n">await</samp><samp class="p" data-group-id="7139060268-20">(</samp><samp class="p" data-group-id="7139060268-20">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7139060268-21">[</samp><samp class="ss">:world</samp><samp class="p" data-group-id="7139060268-21">]</samp></code></pre><p>The same applies to duplicate registries:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">start_link</samp><samp class="p" data-group-id="6080874539-1">(</samp><samp class="ss">keys</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:duplicate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Registry.DuplicateValuesTest</samp><samp class="p" data-group-id="6080874539-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">values</samp><samp class="p" data-group-id="6080874539-2">(</samp><samp class="nc">Registry.DuplicateValuesTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="6080874539-3">(</samp><samp class="p" data-group-id="6080874539-3">)</samp><samp class="p" data-group-id="6080874539-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6080874539-4">[</samp><samp class="p" data-group-id="6080874539-4">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="6080874539-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="6080874539-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="6080874539-6">(</samp><samp class="nc">Registry.DuplicateValuesTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="6080874539-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">values</samp><samp class="p" data-group-id="6080874539-7">(</samp><samp class="nc">Registry.DuplicateValuesTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="6080874539-8">(</samp><samp class="p" data-group-id="6080874539-8">)</samp><samp class="p" data-group-id="6080874539-7">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6080874539-9">[</samp><samp class="ss">:world</samp><samp class="p" data-group-id="6080874539-9">]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="6080874539-10">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="6080874539-10">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">register</samp><samp class="p" data-group-id="6080874539-11">(</samp><samp class="nc">Registry.DuplicateValuesTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:another</samp><samp class="p" data-group-id="6080874539-11">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">sort</samp><samp class="p" data-group-id="6080874539-12">(</samp><samp class="nc">Registry</samp><samp class="o">.</samp><samp class="n">values</samp><samp class="p" data-group-id="6080874539-13">(</samp><samp class="nc">Registry.DuplicateValuesTest</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">self</samp><samp class="p" data-group-id="6080874539-14">(</samp><samp class="p" data-group-id="6080874539-14">)</samp><samp class="p" data-group-id="6080874539-13">)</samp><samp class="p" data-group-id="6080874539-12">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6080874539-15">[</samp><samp class="ss">:another</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:world</samp><samp class="p" data-group-id="6080874539-15">]</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

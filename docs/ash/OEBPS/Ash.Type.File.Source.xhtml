@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Type.File.Source - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Type.File.Source <small>protocol</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Protocol for allowing the casting of something into an <a href="Ash.Type.File.xhtml"><code class="inline">Ash.Type.File</code></a>.</p><h2 id="module-usage">Usage</h2><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyStruct</samp><samp class="w"> </samp><samp class="k" data-group-id="6928268956-1">do</samp><samp class="w">
+  </samp><samp class="kd">defstruct</samp><samp class="w"> </samp><samp class="p" data-group-id="6928268956-2">[</samp><samp class="ss">:path</samp><samp class="p" data-group-id="6928268956-2">]</samp><samp class="w">
+
+  </samp><samp class="na">@behavior</samp><samp class="w"> </samp><samp class="nc">Ash.Type.File.Implementation</samp><samp class="w">
+
+  </samp><samp class="na">@impl</samp><samp class="w"> </samp><samp class="nc">Ash.Type.File.Implementation</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">path</samp><samp class="p" data-group-id="6928268956-3">(</samp><samp class="p">%</samp><samp class="bp">__MODULE__</samp><samp class="p" data-group-id="6928268956-4">{</samp><samp class="ss">path</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">path</samp><samp class="p" data-group-id="6928268956-4">}</samp><samp class="p" data-group-id="6928268956-3">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6928268956-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">path</samp><samp class="p" data-group-id="6928268956-5">}</samp><samp class="w">
+
+  </samp><samp class="na">@impl</samp><samp class="w"> </samp><samp class="nc">Ash.Type.File.Implementation</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">open</samp><samp class="p" data-group-id="6928268956-6">(</samp><samp class="p">%</samp><samp class="bp">__MODULE__</samp><samp class="p" data-group-id="6928268956-7">{</samp><samp class="ss">path</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">path</samp><samp class="p" data-group-id="6928268956-7">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">modes</samp><samp class="p" data-group-id="6928268956-6">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">File</samp><samp class="o">.</samp><samp class="n">open</samp><samp class="p" data-group-id="6928268956-8">(</samp><samp class="n">path</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">modes</samp><samp class="p" data-group-id="6928268956-8">)</samp><samp class="w">
+
+  </samp><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Ash.Type.File.Source</samp><samp class="w"> </samp><samp class="k" data-group-id="6928268956-9">do</samp><samp class="w">
+    </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">implementation</samp><samp class="p" data-group-id="6928268956-10">(</samp><samp class="p" data-group-id="6928268956-11">%</samp><samp class="nc" data-group-id="6928268956-11">MyStruct</samp><samp class="p" data-group-id="6928268956-11">{</samp><samp class="p" data-group-id="6928268956-11">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">struct</samp><samp class="p" data-group-id="6928268956-10">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6928268956-12">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyStruct</samp><samp class="p" data-group-id="6928268956-12">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="6928268956-9">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="6928268956-1">end</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>All the types that implement this protocol.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#implementation/1" data-no-tooltip="" translate="no">implementation(file)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Detect Implementation of the file.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/file/source.ex#L1" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>All the types that implement this protocol.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="implementation/1">
+
+  <div class="detail-header">
+    <a href="#implementation/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">implementation(file)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/file/source.ex#L37" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> implementation(<a href="#t:t/0">t</a>()) :: {:ok, <a href="Ash.Type.File.Implementation.xhtml#t:t/0">Ash.Type.File.Implementation.t</a>()} | :error</pre>
+
+      </div>
+
+<p>Detect Implementation of the file.</p><p>Returns an <code class="inline">:ok</code> tuple with the implementation module if the file is supported
+and <code class="inline">:error</code> otherwise.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

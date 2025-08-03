@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Resource - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Resource 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A resource is a static definition of an entity in your system.</p><p><a href="dsl-ash-resource.html">Resource DSL documentation</a></p><h3 id="module-options">Options</h3><ul><li><p><code class="inline">:simple_notifiers</code> (list of module that adopts <a href="Ash.Notifier.xhtml"><code class="inline">Ash.Notifier</code></a>) - Notifiers with no DSL.</p></li><li><p><code class="inline">:validate_domain_inclusion?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not to validate that this resource is included in a domain. The default value is <code class="inline">true</code>.</p></li><li><p><code class="inline">:primary_read_warning?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Set to <code class="inline">false</code> to silence warnings about arguments, preparations and filters on the primary read action. The default value is <code class="inline">true</code>.</p></li><li><p><code class="inline">:domain</code> (module that adopts <a href="Ash.Domain.xhtml"><code class="inline">Ash.Domain</code></a>) - The domain to use when interacting with this resource. Also sets defaults for various options that ask for a domain.</p></li><li><p><code class="inline">:embed_nil_values?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not to include keys with <code class="inline">nil</code> values in an embedded representation. Has no effect unless resource is an embedded resource. The default value is <code class="inline">true</code>.</p></li><li><p><code class="inline">:extensions</code> (list of module that adopts <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.Extension.html"><code class="inline">Spark.Dsl.Extension</code></a>) - A list of DSL extensions to add to the <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html"><code class="inline">Spark.Dsl</code></a></p></li><li><p><code class="inline">:data_layer</code> (module that adopts <a href="Ash.DataLayer.xhtml"><code class="inline">Ash.DataLayer</code></a>) - data_layer extensions to add to the <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html"><code class="inline">Spark.Dsl</code></a> The default value is <a href="Ash.DataLayer.Simple.xhtml"><code class="inline">Ash.DataLayer.Simple</code></a>.</p></li><li><p><code class="inline">:authorizers</code> (one or a list of module that adopts <a href="Ash.Authorizer.xhtml"><code class="inline">Ash.Authorizer</code></a>) - authorizers extensions to add to the <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html"><code class="inline">Spark.Dsl</code></a> The default value is <code class="inline">[]</code>.</p></li><li><p><code class="inline">:notifiers</code> (one or a list of module that adopts <a href="Ash.Notifier.xhtml"><code class="inline">Ash.Notifier</code></a>) - notifiers extensions to add to the <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html"><code class="inline">Spark.Dsl</code></a> The default value is <code class="inline">[]</code>.</p></li><li><p><code class="inline">:otp_app</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a>) - The otp_app to use for any application configurable options</p></li><li><p><code class="inline">:fragments</code> (list of <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">module/0</code></a>) - Fragments to include in the <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html"><code class="inline">Spark.Dsl</code></a>. See the fragments guide for more.</p></li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:record/0" data-no-tooltip="" translate="no">record()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_metadata/2" data-no-tooltip="" translate="no">get_metadata(record, key_or_path)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#loaded?/3" data-no-tooltip="" translate="no">loaded?(data, path, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the load or path to load has been loaded</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#put_metadata/3" data-no-tooltip="" translate="no">put_metadata(record, key, term)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#selected?/3" data-no-tooltip="" translate="no">selected?(record, field, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the given field has been selected on a record</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_metadata/2" data-no-tooltip="" translate="no">set_metadata(record, map)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#timestamps/1" data-no-tooltip="" translate="no">timestamps(opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Defines create and update timestamp attributes.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#unload/2" data-no-tooltip="" translate="no">unload(page, path)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets a loaded key or path to a key back to its original unloaded stated</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#unload_many/2" data-no-tooltip="" translate="no">unload_many(data, paths)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets a list of loaded key or paths to a key back to their original unloaded stated</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:record/0">
+
+  <div class="detail-header">
+    <a href="#t:record/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">record()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource.ex#L9" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> record() :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">struct</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource.ex#L8" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="get_metadata/2">
+
+  <div class="detail-header">
+    <a href="#get_metadata/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_metadata(record, key_or_path)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource.ex#L680" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> get_metadata(<a href="#t:record/0">record</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()]) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="loaded?/3">
+
+    <span id="loaded?/2"></span>
+
+  <div class="detail-header">
+    <a href="#loaded?/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">loaded?(data, path, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource.ex#L480" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> loaded?(
+  nil | [<a href="#t:record/0">record</a>()] | <a href="#t:record/0">record</a>() | <a href="Ash.Page.xhtml#t:page/0">Ash.Page.page</a>(),
+  <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="Ash.Query.Calculation.xhtml#t:t/0">Ash.Query.Calculation.t</a>() | <a href="Ash.Query.Aggregate.xhtml#t:t/0">Ash.Query.Aggregate.t</a>() | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()],
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Returns true if the load or path to load has been loaded</p><h2 id="loaded?/3-options" class="section-heading"><a href="#loaded?/3-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">lists</code>: set to <code class="inline">:any</code> to have this return true if any record in a list that appears has the value loaded. Default is <code class="inline">:all</code>.</li><li><code class="inline">unknown</code>: set to <code class="inline">true</code> to have unknown paths (like nil values or non-resources) return true. Defaults to <code class="inline">false</code></li><li><code class="inline">strict?</code>: set to <code class="inline">true</code> to return false if a calculation with arguments is being checked</li></ul>
+  </section>
+</section>
+<section class="detail" id="put_metadata/3">
+
+  <div class="detail-header">
+    <a href="#put_metadata/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">put_metadata(record, key, term)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource.ex#L420" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> put_metadata(<a href="#t:record/0">record</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: <a href="#t:record/0">record</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="selected?/3">
+
+    <span id="selected?/2"></span>
+
+  <div class="detail-header">
+    <a href="#selected?/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">selected?(record, field, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource.ex#L693" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns true if the given field has been selected on a record</p><h2 id="selected?/3-options" class="section-heading"><a href="#selected?/3-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">forbidden_means_selected?</code>: set to <code class="inline">true</code> to return <code class="inline">true</code> if the field is marked as forbidden</li></ul>
+  </section>
+</section>
+<section class="detail" id="set_metadata/2">
+
+  <div class="detail-header">
+    <a href="#set_metadata/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_metadata(record, map)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource.ex#L408" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_metadata(<a href="#t:record/0">record</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()) :: <a href="#t:record/0">record</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="timestamps/1">
+
+    <span id="timestamps/0"></span>
+
+  <div class="detail-header">
+    <a href="#timestamps/1" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">timestamps(opts \\ [])</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource.ex#L167" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Defines create and update timestamp attributes.</p><p>Shorthand for <code class="inline">d:Ash.Resource.Dsl.attributes.create_timestamp</code> and
+<code class="inline">d:Ash.Resource.Dsl.attributes.update_timestamp</code> with the attribute names
+<code class="inline">:inserted_at</code> and <code class="inline">:updated_at</code> respectively.  Any options passed to this
+helper are passed to both timestamp macros.</p>
+  </section>
+</section>
+<section class="detail" id="unload/2">
+
+  <div class="detail-header">
+    <a href="#unload/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">unload(page, path)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource.ex#L440" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> unload(
+  nil | [<a href="#t:record/0">record</a>()] | <a href="#t:record/0">record</a>() | <a href="Ash.Page.xhtml#t:page/0">Ash.Page.page</a>(),
+  <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()]
+) :: nil | [<a href="#t:record/0">record</a>()] | <a href="#t:record/0">record</a>() | <a href="Ash.Page.xhtml#t:page/0">Ash.Page.page</a>()</pre>
+
+      </div>
+
+<p>Sets a loaded key or path to a key back to its original unloaded stated</p>
+  </section>
+</section>
+<section class="detail" id="unload_many/2">
+
+  <div class="detail-header">
+    <a href="#unload_many/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">unload_many(data, paths)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource.ex#L430" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> unload_many(
+  nil | [<a href="#t:record/0">record</a>()] | <a href="#t:record/0">record</a>() | <a href="Ash.Page.xhtml#t:page/0">Ash.Page.page</a>(),
+  [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()] | [[<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()]]
+) :: nil | [<a href="#t:record/0">record</a>()] | <a href="#t:record/0">record</a>() | <a href="Ash.Page.xhtml#t:page/0">Ash.Page.page</a>()</pre>
+
+      </div>
+
+<p>Sets a list of loaded key or paths to a key back to their original unloaded stated</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Timeouts - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Timeouts</h1>
+<h2 id="ways-to-specify-timeouts">Ways to Specify Timeouts</h2><p>You have a few options.</p><p>You can specify a timeout when you call an action. This takes the highest precedence.</p><pre><code class="makeup elixir" translate="no"><span class="nc">Ash</span><span class="o">.</span><span class="n">read!</span><span class="p" data-group-id="8714892229-1">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="ss">timeout</span><span class="p">:</span><span class="w"> </span><span class="nc">:timer</span><span class="o">.</span><span class="n">seconds</span><span class="p" data-group-id="8714892229-2">(</span><span class="mi">30</span><span class="p" data-group-id="8714892229-2">)</span><span class="p" data-group-id="8714892229-1">)</span></code></pre><p>You can specify one using <a href="Ash.Changeset.xhtml#timeout/2"><code class="inline">Ash.Changeset.timeout/2</code></a> or <a href="Ash.Query.xhtml#timeout/2"><code class="inline">Ash.Query.timeout/2</code></a>. This can be useful if you want to conditionally set a timeout based on the details of the request. For example, you might do something like this:</p><pre><code class="makeup elixir" translate="no"><span class="c1"># in your resource</span><span class="w">
+</span><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.SetReportTimeout</span><span class="w"> </span><span class="k" data-group-id="5035776153-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource.Preparation</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p" data-group-id="5035776153-2">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="bp">_</span><span class="p">,</span><span class="w"> </span><span class="bp">_</span><span class="p" data-group-id="5035776153-2">)</span><span class="w"> </span><span class="k" data-group-id="5035776153-3">do</span><span class="w">
+    </span><span class="k">if</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">get_argument</span><span class="p" data-group-id="5035776153-4">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="ss">:full_report</span><span class="p" data-group-id="5035776153-4">)</span><span class="w"> </span><span class="k" data-group-id="5035776153-5">do</span><span class="w">
+      </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">timeout</span><span class="p" data-group-id="5035776153-6">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="nc">:timer</span><span class="o">.</span><span class="n">minutes</span><span class="p" data-group-id="5035776153-7">(</span><span class="mi">3</span><span class="p" data-group-id="5035776153-7">)</span><span class="p" data-group-id="5035776153-6">)</span><span class="w">
+    </span><span class="k" data-group-id="5035776153-5">else</span><span class="w">
+      </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">timeout</span><span class="p" data-group-id="5035776153-8">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="nc">:timer</span><span class="o">.</span><span class="n">minutes</span><span class="p" data-group-id="5035776153-9">(</span><span class="mi">1</span><span class="p" data-group-id="5035776153-9">)</span><span class="p" data-group-id="5035776153-8">)</span><span class="w">
+    </span><span class="k" data-group-id="5035776153-5">end</span><span class="w">
+  </span><span class="k" data-group-id="5035776153-3">end</span><span class="w">
+</span><span class="k" data-group-id="5035776153-1">end</span><span class="w">
+
+</span><span class="n">actions</span><span class="w"> </span><span class="k" data-group-id="5035776153-10">do</span><span class="w">
+  </span><span class="n">read</span><span class="w"> </span><span class="ss">:report_items</span><span class="w"> </span><span class="k" data-group-id="5035776153-11">do</span><span class="w">
+    </span><span class="n">argument</span><span class="w"> </span><span class="ss">:full_report</span><span class="p">,</span><span class="w"> </span><span class="ss">:boolean</span><span class="p">,</span><span class="w"> </span><span class="ss">default</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="w">
+
+    </span><span class="n">prepare</span><span class="w"> </span><span class="nc">MyApp.SetReportTimeout</span><span class="w">
+  </span><span class="k" data-group-id="5035776153-11">end</span><span class="w">
+</span><span class="k" data-group-id="5035776153-10">end</span></code></pre><p>You can also specify a default timeout on your domain modules.</p><pre><code class="makeup elixir" translate="no"><span class="n">execution</span><span class="w"> </span><span class="k" data-group-id="8969247007-1">do</span><span class="w">
+  </span><span class="n">timeout</span><span class="w"> </span><span class="nc">:timer</span><span class="o">.</span><span class="n">seconds</span><span class="p" data-group-id="8969247007-2">(</span><span class="mi">30</span><span class="p" data-group-id="8969247007-2">)</span><span class="w"> </span><span class="c1"># the default is `:infinity`</span><span class="w">
+</span><span class="k" data-group-id="8969247007-1">end</span></code></pre><p>Keep in mind, you can't specify timeouts in a before_action or after_action hook, because at that point you are already &quot;within&quot; the code that should have a timeout applied.</p><section role="note" class="admonition warning"><h3 id="timeouts-use-processes" class="admonition-title warning">timeouts use processes</h3><p>Timeouts are implemented using processes. This means that potentially large query results will be copied across processes. Because of this, specifying timeouts globally or for things that you don't suspect would ever exceed that timeout is not recommended.</p></section><h2 id="how-are-timeouts-handled">How are timeouts handled?</h2><p>Timeouts in Ash work a bit differently than other tools. The following considerations must be taken into account:</p><ol><li>If you run a resource action in a transaction, then the timeout applies to the entire transaction.</li><li>If the resource action you are running, and any of its <code class="inline">touches_resources</code> is <em>already in a transaction</em> then the timeout is ignored, as the outer transaction is handling the timeout.</li><li>If the resource is not in a transaction, and supports async execution (ash_postgres does), then everything is run in a task and awaited with the provided timeout.</li><li>If the data layer of the resource does not support timeouts, or async execution then timeouts are <strong>ignored</strong>.</li></ol>
+
+  </body>
+</html>

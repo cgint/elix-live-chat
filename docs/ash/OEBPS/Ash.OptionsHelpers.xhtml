@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.OptionsHelpers - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.OptionsHelpers 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Helpers for working with nimble options</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ash_resource/0" data-no-tooltip="" translate="no">ash_resource()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Used to configure Spark to know that the type referenced is an Ash.Resource
+also using Spark.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ash_type/0" data-no-tooltip="" translate="no">ash_type()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Specifies Ash types that can be allowed when declaring a type for an
+attribute, calculation, aggregate, etc.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#calculation_type/0" data-no-tooltip="" translate="no">calculation_type()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Defines the calculation type used in DSL schema definitions, allowing either
+a calculation module/function or an <code class="inline">expr(...)</code> expression.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#hide_all_except/2" data-no-tooltip="" translate="no">hide_all_except(options, keys)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Used for marking an option as hidden so it doesn't show up as an option
+with Spark.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="ash_resource/0">
+
+  <div class="detail-header">
+    <a href="#ash_resource/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ash_resource()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/options_helpers.ex#L21" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> ash_resource() :: {:spark, Ash.Resource}</pre>
+
+      </div>
+
+<p>Used to configure Spark to know that the type referenced is an Ash.Resource
+also using Spark.</p>
+  </section>
+</section>
+<section class="detail" id="ash_type/0">
+
+  <div class="detail-header">
+    <a href="#ash_type/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ash_type()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/options_helpers.ex#L11" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> ash_type() ::
+  {:spark_type, Ash.Type, :builtins, [{<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()}]}</pre>
+
+      </div>
+
+<p>Specifies Ash types that can be allowed when declaring a type for an
+attribute, calculation, aggregate, etc.</p>
+  </section>
+</section>
+<section class="detail" id="calculation_type/0">
+
+  <div class="detail-header">
+    <a href="#calculation_type/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">calculation_type()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/options_helpers.ex#L45" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> calculation_type() :: <a href="https://hexdocs.pm/spark/2.2.67/Spark.Options.html#t:type/0">Spark.Options.type</a>()</pre>
+
+      </div>
+
+<p>Defines the calculation type used in DSL schema definitions, allowing either
+a calculation module/function or an <code class="inline">expr(...)</code> expression.</p>
+  </section>
+</section>
+<section class="detail" id="hide_all_except/2">
+
+  <div class="detail-header">
+    <a href="#hide_all_except/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">hide_all_except(options, keys)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/options_helpers.ex#L30" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> hide_all_except(<a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(), [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()]) :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()</pre>
+
+      </div>
+
+<p>Used for marking an option as hidden so it doesn't show up as an option
+with Spark.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

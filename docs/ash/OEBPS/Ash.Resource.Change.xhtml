@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Resource.Change - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Resource.Change <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>The behaviour for an action-specific resource change.</p><p><a href="#c:init/1"><code class="inline">init/1</code></a> is defined automatically by <code class="inline">use Ash.Resource.Change</code>, but can be implemented if you want to validate/transform any
+options passed to the module.</p><p>The main function is <a href="#c:change/3"><code class="inline">change/3</code></a>. It takes the changeset, any options that were provided
+when this change was configured on a resource, and the context, which currently only has
+the actor.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:context/0" data-no-tooltip="" translate="no">context()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:ref/0" data-no-tooltip="" translate="no">ref()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:after_batch/3" data-no-tooltip="" translate="no">after_batch(changesets_and_results, opts, context)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Runs on each batch result after it is dispatched to the data layer.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:atomic/3" data-no-tooltip="" translate="no">atomic(changeset, opts, context)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:atomic?/0" data-no-tooltip="" translate="no">atomic?()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:batch_callbacks?/3" data-no-tooltip="" translate="no">batch_callbacks?(changesets_or_query, opts, context)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not batch callbacks should be run (if they are defined). Defaults to <code class="inline">true</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:batch_change/3" data-no-tooltip="" translate="no">batch_change(changesets, opts, context)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Replaces <code class="inline">change/3</code> for batch actions, allowing to optimize changes for bulk actions.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:before_batch/3" data-no-tooltip="" translate="no">before_batch(changesets, opts, context)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Runs on each batch before it is dispatched to the data layer.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:change/3" data-no-tooltip="" translate="no">change(changeset, opts, context)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:has_after_batch?/0" data-no-tooltip="" translate="no">has_after_batch?()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:has_batch_change?/0" data-no-tooltip="" translate="no">has_batch_change?()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:has_before_batch?/0" data-no-tooltip="" translate="no">has_before_batch?()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:has_change?/0" data-no-tooltip="" translate="no">has_change?()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:init/1" data-no-tooltip="" translate="no">init(opts)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:context/0">
+
+  <div class="detail-header">
+    <a href="#t:context/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">context()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L105" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> context() :: <a href="Ash.Resource.Change.Context.xhtml#t:t/0">Ash.Resource.Change.Context.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:ref/0">
+
+  <div class="detail-header">
+    <a href="#t:ref/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ref()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L15" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> ref() :: {<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>(), <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()} | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L14" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %Ash.Resource.Change{
+  always_atomic?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  change: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  description: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  on: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  only_when_valid?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  where: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:after_batch/3">
+
+  <div class="detail-header">
+    <a href="#c:after_batch/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">after_batch(changesets_and_results, opts, context)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L137" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> after_batch(
+  changesets_and_results :: [{<a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>(), <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()}],
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="Ash.Resource.Change.Context.xhtml#t:t/0">Ash.Resource.Change.Context.t</a>()
+) ::
+  :ok
+  | Enumerable.t(
+      {:ok, <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()}
+      | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}
+      | <a href="Ash.Notifier.Notification.xhtml#t:t/0">Ash.Notifier.Notification.t</a>()
+    )</pre>
+
+      </div>
+
+<p>Runs on each batch result after it is dispatched to the data layer.</p>
+  </section>
+</section>
+<section class="detail" id="c:atomic/3">
+
+  <div class="detail-header">
+    <a href="#c:atomic/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">atomic(changeset, opts, context)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L159" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> atomic(
+  changeset :: <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="Ash.Resource.Change.Context.xhtml#t:t/0">Ash.Resource.Change.Context.t</a>()
+) ::
+  {:ok, <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>()}
+  | {:atomic, %{optional(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) =&gt; <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>() | {:atomic, <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()}}}
+  | {:atomic, <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>(), %{optional(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) =&gt; <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()}}
+  | {:atomic, <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>(), %{optional(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) =&gt; <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()},
+     [
+       {:atomic, involved_fields :: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()] | :*,
+        condition_expr :: <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>(), error_expr :: <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()}
+     ]}
+  | {:atomic, %{optional(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) =&gt; <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()},
+     [
+       {:atomic, involved_fields :: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()] | :*,
+        condition_expr :: <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>(), error_expr :: <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()}
+     ]}
+  | {:not_atomic, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()}
+  | :ok
+  | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:atomic?/0">
+
+  <div class="detail-header">
+    <a href="#c:atomic?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">atomic?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L177" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> atomic?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:batch_callbacks?/3">
+
+  <div class="detail-header">
+    <a href="#c:batch_callbacks?/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">batch_callbacks?(changesets_or_query, opts, context)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L152" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> batch_callbacks?(
+  changesets_or_query :: [<a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>()] | <a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="Ash.Resource.Change.Context.xhtml#t:t/0">Ash.Resource.Change.Context.t</a>()
+) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not batch callbacks should be run (if they are defined). Defaults to <code class="inline">true</code>.</p>
+  </section>
+</section>
+<section class="detail" id="c:batch_change/3">
+
+  <div class="detail-header">
+    <a href="#c:batch_change/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">batch_change(changesets, opts, context)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L117" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> batch_change(
+  changesets :: [<a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>()],
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="Ash.Resource.Change.Context.xhtml#t:t/0">Ash.Resource.Change.Context.t</a>()
+) :: <a href="https://hexdocs.pm/elixir/Enumerable.html#t:t/1">Enumerable.t</a>(<a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>())</pre>
+
+      </div>
+
+<p>Replaces <code class="inline">change/3</code> for batch actions, allowing to optimize changes for bulk actions.</p><p>You can define only <code class="inline">batch_change/3</code>, and it will be used for both single and batch actions.
+It cannot, however, be used in place of the <code class="inline">atomic/3</code> callback.</p>
+  </section>
+</section>
+<section class="detail" id="c:before_batch/3">
+
+  <div class="detail-header">
+    <a href="#c:before_batch/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">before_batch(changesets, opts, context)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L127" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> before_batch(
+  changesets :: [<a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>()],
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="Ash.Resource.Change.Context.xhtml#t:t/0">Ash.Resource.Change.Context.t</a>()
+) :: <a href="https://hexdocs.pm/elixir/Enumerable.html#t:t/1">Enumerable.t</a>(<a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>() | <a href="Ash.Notifier.Notification.xhtml#t:t/0">Ash.Notifier.Notification.t</a>())</pre>
+
+      </div>
+
+<p>Runs on each batch before it is dispatched to the data layer.</p>
+  </section>
+</section>
+<section class="detail" id="c:change/3">
+
+  <div class="detail-header">
+    <a href="#c:change/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">change(changeset, opts, context)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L108" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> change(
+  changeset :: <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="Ash.Resource.Change.Context.xhtml#t:t/0">Ash.Resource.Change.Context.t</a>()
+) :: <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:has_after_batch?/0">
+
+  <div class="detail-header">
+    <a href="#c:has_after_batch?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">has_after_batch?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L182" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> has_after_batch?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:has_batch_change?/0">
+
+  <div class="detail-header">
+    <a href="#c:has_batch_change?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">has_batch_change?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L181" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> has_batch_change?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:has_before_batch?/0">
+
+  <div class="detail-header">
+    <a href="#c:has_before_batch?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">has_before_batch?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L183" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> has_before_batch?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:has_change?/0">
+
+  <div class="detail-header">
+    <a href="#c:has_change?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">has_change?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L179" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> has_change?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:init/1">
+
+  <div class="detail-header">
+    <a href="#c:init/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">init(opts)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/change/change.ex#L107" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> init(opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()) :: {:ok, <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Type.Union - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Type.Union 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A union between multiple types, distinguished with a tag or by attempting to validate.</p><p>Union types allow you to define attributes that can hold values of different types. There are two
+main strategies for distinguishing between types:</p><ol><li><strong>Tagged unions</strong> - Uses a specific field (tag) and value (tag_value) to identify the type</li><li><strong>Untagged unions</strong> - Attempts to cast the value against each type in order until one succeeds</li></ol><h2 id="module-basic-usage">Basic Usage</h2><p>Define a union type in an attribute:</p><pre><code class="makeup elixir" translate="no"><samp class="n">attribute</samp><samp class="w"> </samp><samp class="ss">:content</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:union</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7041812730-1">[</samp><samp class="w">
+    </samp><samp class="ss">types</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7041812730-2">[</samp><samp class="w">
+      </samp><samp class="ss">text</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7041812730-3">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p" data-group-id="7041812730-3">]</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">number</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7041812730-4">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:integer</samp><samp class="p" data-group-id="7041812730-4">]</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">flag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7041812730-5">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:boolean</samp><samp class="p" data-group-id="7041812730-5">]</samp><samp class="w">
+    </samp><samp class="p" data-group-id="7041812730-2">]</samp><samp class="w">
+  </samp><samp class="p" data-group-id="7041812730-1">]</samp></code></pre><p>Values are wrapped in an <code class="inline">%Ash.Union{}</code> struct with <code class="inline">:type</code> and <code class="inline">:value</code> fields:</p><pre><code class="makeup elixir" translate="no"><samp class="c1"># Reading union values</samp><samp class="w">
+</samp><samp class="p" data-group-id="8272742340-1">%</samp><samp class="nc" data-group-id="8272742340-1">Ash.Union</samp><samp class="p" data-group-id="8272742340-1">{</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:text</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="p" data-group-id="8272742340-1">}</samp><samp class="w">
+</samp><samp class="p" data-group-id="8272742340-2">%</samp><samp class="nc" data-group-id="8272742340-2">Ash.Union</samp><samp class="p" data-group-id="8272742340-2">{</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:number</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">42</samp><samp class="p" data-group-id="8272742340-2">}</samp></code></pre><h2 id="module-tagged-unions">Tagged Unions</h2><p>Tagged unions use a discriminator field to identify the type. This is more reliable but requires
+the data to include the tag field:</p><pre><code class="makeup elixir" translate="no"><samp class="n">attribute</samp><samp class="w"> </samp><samp class="ss">:data</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:union</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9491637722-1">[</samp><samp class="w">
+    </samp><samp class="ss">types</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9491637722-2">[</samp><samp class="w">
+      </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9491637722-3">[</samp><samp class="w">
+        </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:map</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:type</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag_value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;user&quot;</samp><samp class="w">
+      </samp><samp class="p" data-group-id="9491637722-3">]</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">admin</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9491637722-4">[</samp><samp class="w">
+        </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:map</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:type</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag_value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;admin&quot;</samp><samp class="w">
+      </samp><samp class="p" data-group-id="9491637722-4">]</samp><samp class="w">
+    </samp><samp class="p" data-group-id="9491637722-2">]</samp><samp class="w">
+  </samp><samp class="p" data-group-id="9491637722-1">]</samp></code></pre><p>Input data must include the tag field:</p><pre><code class="makeup elixir" translate="no"><samp class="c1"># Valid inputs</samp><samp class="w">
+</samp><samp class="p" data-group-id="4381454281-1">%{</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;user&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;John&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;john@example.com&quot;</samp><samp class="p" data-group-id="4381454281-1">}</samp><samp class="w">
+</samp><samp class="p" data-group-id="4381454281-2">%{</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;admin&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Jane&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">permissions</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4381454281-3">[</samp><samp class="s">&quot;read&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;write&quot;</samp><samp class="p" data-group-id="4381454281-3">]</samp><samp class="p" data-group-id="4381454281-2">}</samp></code></pre><h3 id="module-tag-options">Tag Options</h3><ul><li><code class="inline">tag</code> - The field name to check (e.g., <code class="inline">:type</code>, <code class="inline">:kind</code>, <code class="inline">:__type__</code>)</li><li><code class="inline">tag_value</code> - The expected value for this type (string, atom, or nil)</li><li><code class="inline">cast_tag?</code> - Whether to include the tag in the final value (default: <code class="inline">true</code>)</li></ul><p>When <code class="inline">cast_tag?: false</code>, the tag field is removed from the final value.</p><h2 id="module-untagged-unions">Untagged Unions</h2><p>Without tags, union types attempt to cast values against each type in order:</p><pre><code class="makeup elixir" translate="no"><samp class="n">attribute</samp><samp class="w"> </samp><samp class="ss">:flexible</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:union</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7492001750-1">[</samp><samp class="w">
+    </samp><samp class="ss">types</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7492001750-2">[</samp><samp class="w">
+      </samp><samp class="ss">integer</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7492001750-3">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:integer</samp><samp class="p" data-group-id="7492001750-3">]</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">string</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7492001750-4">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p" data-group-id="7492001750-4">]</samp><samp class="w">
+    </samp><samp class="p" data-group-id="7492001750-2">]</samp><samp class="w">
+  </samp><samp class="p" data-group-id="7492001750-1">]</samp></code></pre><p><strong>Order matters!</strong> The first successful cast wins:</p><pre><code class="makeup elixir" translate="no"><samp class="c1"># &quot;42&quot; would be cast as :integer (42), not :string (&quot;42&quot;)</samp><samp class="w">
+</samp><samp class="c1"># if integer comes first in the types list</samp></code></pre><h2 id="module-mixed-tagged-and-untagged-types">Mixed Tagged and Untagged Types</h2><p>You can mix tagged and untagged types within a single union. Tagged types are checked first
+by their tag values, and if no tagged type matches, untagged types are tried in order:</p><pre><code class="makeup elixir" translate="no"><samp class="n">attribute</samp><samp class="w"> </samp><samp class="ss">:flexible_data</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:union</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3197470570-1">[</samp><samp class="w">
+    </samp><samp class="ss">types</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3197470570-2">[</samp><samp class="w">
+      </samp><samp class="c1"># Tagged types - checked first by tag</samp><samp class="w">
+      </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3197470570-3">[</samp><samp class="w">
+        </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:map</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:type</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag_value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;user&quot;</samp><samp class="w">
+      </samp><samp class="p" data-group-id="3197470570-3">]</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">admin</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3197470570-4">[</samp><samp class="w">
+        </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:map</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:type</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag_value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;admin&quot;</samp><samp class="w">
+      </samp><samp class="p" data-group-id="3197470570-4">]</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="c1"># Untagged types - tried in order if no tag matches</samp><samp class="w">
+      </samp><samp class="ss">number</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3197470570-5">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:integer</samp><samp class="p" data-group-id="3197470570-5">]</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">text</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3197470570-6">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p" data-group-id="3197470570-6">]</samp><samp class="w">
+    </samp><samp class="p" data-group-id="3197470570-2">]</samp><samp class="w">
+  </samp><samp class="p" data-group-id="3197470570-1">]</samp></code></pre><p>This allows for both explicit type identification (via tags) and fallback casting:</p><pre><code class="makeup elixir" translate="no"><samp class="c1"># Tagged - uses :type field to determine it&#39;s a user</samp><samp class="w">
+</samp><samp class="p" data-group-id="7915189681-1">%{</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;user&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;John&quot;</samp><samp class="p" data-group-id="7915189681-1">}</samp><samp class="w">
+
+</samp><samp class="c1"># Untagged - tries :integer first, then :string</samp><samp class="w">
+</samp><samp class="mi">42</samp><samp class="w">        </samp><samp class="c1"># -&gt; %Ash.Union{type: :number, value: 42}</samp><samp class="w">
+</samp><samp class="s">&quot;hello&quot;</samp><samp class="w">   </samp><samp class="c1"># -&gt; %Ash.Union{type: :text, value: &quot;hello&quot;}</samp></code></pre><h2 id="module-storage-modes">Storage Modes</h2><p>Union values can be stored in different formats:</p><h3 id="module-type_and_value-default"><code class="inline">:type_and_value</code> (default)</h3><p>Stores as a map with explicit type and value fields:</p><pre><code class="makeup elixir" translate="no"><samp class="c1"># Stored as: %{&quot;type&quot; =&gt; &quot;text&quot;, &quot;value&quot; =&gt; &quot;Hello&quot;}</samp></code></pre><h3 id="module-map_with_tag"><code class="inline">:map_with_tag</code></h3><p>Stores the value directly (requires all types to have tags):</p><pre><code class="makeup elixir" translate="no"><samp class="c1"># Stored as: %{&quot;type&quot; =&gt; &quot;user&quot;, &quot;name&quot; =&gt; &quot;John&quot;, &quot;email&quot; =&gt; &quot;john@example.com&quot;}</samp><samp class="w">
+
+</samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5990600370-1">[</samp><samp class="w">
+  </samp><samp class="ss">storage</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:map_with_tag</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">types</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5990600370-2">[</samp><samp class="w">
+    </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5990600370-3">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:map</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">tag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:type</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">tag_value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;user&quot;</samp><samp class="p" data-group-id="5990600370-3">]</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">admin</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5990600370-4">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:map</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">tag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:type</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">tag_value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;admin&quot;</samp><samp class="p" data-group-id="5990600370-4">]</samp><samp class="w">
+  </samp><samp class="p" data-group-id="5990600370-2">]</samp><samp class="w">
+</samp><samp class="p" data-group-id="5990600370-1">]</samp></code></pre><h2 id="module-embedded-resources">Embedded Resources</h2><p>Union types work seamlessly with embedded resources:</p><pre><code class="makeup elixir" translate="no"><samp class="n">attribute</samp><samp class="w"> </samp><samp class="ss">:contact_info</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:union</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3110118424-1">[</samp><samp class="w">
+    </samp><samp class="ss">types</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3110118424-2">[</samp><samp class="w">
+      </samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3110118424-3">[</samp><samp class="w">
+        </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">EmailContact</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:type</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag_value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;email&quot;</samp><samp class="w">
+      </samp><samp class="p" data-group-id="3110118424-3">]</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">phone</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3110118424-4">[</samp><samp class="w">
+        </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">PhoneContact</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:type</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">tag_value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;phone&quot;</samp><samp class="w">
+      </samp><samp class="p" data-group-id="3110118424-4">]</samp><samp class="w">
+    </samp><samp class="p" data-group-id="3110118424-2">]</samp><samp class="w">
+  </samp><samp class="p" data-group-id="3110118424-1">]</samp></code></pre><h2 id="module-arrays-of-unions">Arrays of Unions</h2><p>Union types support arrays using the standard <code class="inline">{:array, :union}</code> syntax:</p><pre><code class="makeup elixir" translate="no"><samp class="n">attribute</samp><samp class="w"> </samp><samp class="ss">:mixed_data</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6217393473-1">{</samp><samp class="ss">:array</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:union</samp><samp class="p" data-group-id="6217393473-1">}</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6217393473-2">[</samp><samp class="w">
+    </samp><samp class="ss">items</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6217393473-3">[</samp><samp class="w">
+      </samp><samp class="ss">types</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6217393473-4">[</samp><samp class="w">
+        </samp><samp class="ss">text</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6217393473-5">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p" data-group-id="6217393473-5">]</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">number</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6217393473-6">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:integer</samp><samp class="p" data-group-id="6217393473-6">]</samp><samp class="w">
+      </samp><samp class="p" data-group-id="6217393473-4">]</samp><samp class="w">
+    </samp><samp class="p" data-group-id="6217393473-3">]</samp><samp class="w">
+  </samp><samp class="p" data-group-id="6217393473-2">]</samp></code></pre><h2 id="module-advanced-input-formats">Advanced Input Formats</h2><p>Union types support multiple input formats for flexibility:</p><h3 id="module-direct-union-struct">Direct Union Struct</h3><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="6972504618-1">%</samp><samp class="nc" data-group-id="6972504618-1">Ash.Union</samp><samp class="p" data-group-id="6972504618-1">{</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:text</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="p" data-group-id="6972504618-1">}</samp></code></pre><h3 id="module-tagged-map-when-tags-are-configured">Tagged Map (when tags are configured)</h3><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="4895258318-1">%{</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;text&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">content</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="p" data-group-id="4895258318-1">}</samp></code></pre><h3 id="module-explicit-union-format">Explicit Union Format</h3><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="6457952605-1">%{</samp><samp class="w">
+  </samp><samp class="s">&quot;_union_type&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;text&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="s">&quot;_union_value&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="w">
+</samp><samp class="p" data-group-id="6457952605-1">}</samp><samp class="w">
+
+</samp><samp class="c1"># Or with the value merged in</samp><samp class="w">
+</samp><samp class="p" data-group-id="6457952605-2">%{</samp><samp class="w">
+  </samp><samp class="s">&quot;_union_type&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;text&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="s">&quot;content&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="w">
+</samp><samp class="p" data-group-id="6457952605-2">}</samp></code></pre><h2 id="module-nested-unions">Nested Unions</h2><p>Unions can contain other union types. All type names must be unique across the entire
+nested structure:</p><pre><code class="makeup elixir" translate="no"><samp class="ss">types</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8971337761-1">[</samp><samp class="w">
+  </samp><samp class="ss">simple</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8971337761-2">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p" data-group-id="8971337761-2">]</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">complex</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8971337761-3">[</samp><samp class="w">
+    </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:union</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8971337761-4">[</samp><samp class="w">
+      </samp><samp class="ss">types</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8971337761-5">[</samp><samp class="w">
+        </samp><samp class="c1"># Names must be unique - can&#39;t reuse &#39;simple&#39;</samp><samp class="w">
+        </samp><samp class="ss">nested_text</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8971337761-6">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p" data-group-id="8971337761-6">]</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">nested_num</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8971337761-7">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:integer</samp><samp class="p" data-group-id="8971337761-7">]</samp><samp class="w">
+      </samp><samp class="p" data-group-id="8971337761-5">]</samp><samp class="w">
+    </samp><samp class="p" data-group-id="8971337761-4">]</samp><samp class="w">
+  </samp><samp class="p" data-group-id="8971337761-3">]</samp><samp class="w">
+</samp><samp class="p" data-group-id="8971337761-1">]</samp></code></pre><h2 id="module-loading-and-calculations">Loading and Calculations</h2><p>Union types support loading related data when member types are loadable (like embedded resources):</p><pre><code class="makeup elixir" translate="no"><samp class="c1"># Load through all union types</samp><samp class="w">
+</samp><samp class="n">query</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Query</samp><samp class="o">.</samp><samp class="n">load</samp><samp class="p" data-group-id="5343601234-1">(</samp><samp class="ss">union_field</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:*</samp><samp class="p" data-group-id="5343601234-1">)</samp><samp class="w">
+
+</samp><samp class="c1"># Load through specific type</samp><samp class="w">
+</samp><samp class="n">query</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Query</samp><samp class="o">.</samp><samp class="n">load</samp><samp class="p" data-group-id="5343601234-2">(</samp><samp class="ss">union_field</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5343601234-3">[</samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5343601234-4">[</samp><samp class="ss">:profile</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:preferences</samp><samp class="p" data-group-id="5343601234-4">]</samp><samp class="p" data-group-id="5343601234-3">]</samp><samp class="p" data-group-id="5343601234-2">)</samp></code></pre><h2 id="module-error-handling">Error Handling</h2><p>Union casting provides detailed error information:</p><ul><li><strong>Tagged unions</strong>: Clear errors when tags don't match expected values</li><li><strong>Untagged unions</strong>: Aggregated errors from all attempted type casts</li><li><strong>Array unions</strong>: Errors include index and path information for debugging</li></ul><h2 id="module-newtype-integration">NewType Integration</h2><p>Create reusable union types with <a href="Ash.Type.NewType.xhtml"><code class="inline">Ash.Type.NewType</code></a>:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.Types.ContactMethod</samp><samp class="w"> </samp><samp class="k" data-group-id="1056786330-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Ash.Type.NewType</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">subtype_of</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:union</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1056786330-2">[</samp><samp class="w">
+      </samp><samp class="ss">types</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1056786330-3">[</samp><samp class="w">
+        </samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1056786330-4">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1056786330-5">[</samp><samp class="ss">match</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sr">~r/@/</samp><samp class="p" data-group-id="1056786330-5">]</samp><samp class="p" data-group-id="1056786330-4">]</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">phone</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1056786330-6">[</samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1056786330-7">[</samp><samp class="ss">match</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sr">~r/^+$/</samp><samp class="p" data-group-id="1056786330-7">]</samp><samp class="p" data-group-id="1056786330-6">]</samp><samp class="w">
+      </samp><samp class="p" data-group-id="1056786330-3">]</samp><samp class="w">
+    </samp><samp class="p" data-group-id="1056786330-2">]</samp><samp class="w">
+</samp><samp class="k" data-group-id="1056786330-1">end</samp></code></pre><h2 id="module-performance-considerations">Performance Considerations</h2><ul><li><strong>Tagged unions</strong> are more efficient as they avoid trial-and-error casting</li><li><strong>Type order matters</strong> in untagged unions - put more specific types first</li><li><strong>Use constraints</strong> on member types to fail fast on invalid data</li></ul><h2 id="module-constraints">Constraints</h2><ul><li><p><code class="inline">:storage</code> - How the value will be stored when persisted.<br/><code class="inline">:type_and_value</code> will store the type and value in a map like so <code class="inline">{type: :type_name, value: the_value}</code>
+<code class="inline">:map_with_tag</code> will store the value directly. This only works if all types have a <code class="inline">tag</code> and <code class="inline">tag_value</code> configured.
+ Valid values are :type_and_value, :map_with_tag The default value is <code class="inline">:type_and_value</code>.</p></li><li><p><code class="inline">:include_source?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether to include the source changeset in the context. Defaults to the value of <code class="inline">config :ash, :include_embedded_source_by_default</code>, or <code class="inline">true</code>. In 4.x, the default will be <code class="inline">false</code>. The default value is <code class="inline">true</code>.</p></li><li><p><code class="inline">:types</code> - The types to be unioned, a map of an identifier for the enum value to its configuration.<br/>When using <code class="inline">tag</code> and <code class="inline">tag_value</code> we are referring to a map key that must equal a certain value
+in order for the value to be considered an instance of that type.<br/>For example:  </p><pre><code class="makeup elixir" translate="no"><samp class="ss">types</samp><samp class="p">:</samp><samp class="w">  </samp><samp class="p" data-group-id="7910147245-1">[</samp><samp class="w">
+  </samp><samp class="ss">int</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7910147245-2">[</samp><samp class="w">
+    </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:integer</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7910147245-3">[</samp><samp class="w">
+      </samp><samp class="ss">max</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">10</samp><samp class="w">
+    </samp><samp class="p" data-group-id="7910147245-3">]</samp><samp class="w">
+  </samp><samp class="p" data-group-id="7910147245-2">]</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">object</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7910147245-4">[</samp><samp class="w">
+    </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyObjectType</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="c1"># The default value is `true`</samp><samp class="w">
+    </samp><samp class="c1"># this passes the tag key/value to the nested type</samp><samp class="w">
+    </samp><samp class="c1"># when casting input</samp><samp class="w">
+    </samp><samp class="ss">cast_tag?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">tag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:type</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">tag_value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;my_object&quot;</samp><samp class="w">
+  </samp><samp class="p" data-group-id="7910147245-4">]</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">other_object</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7910147245-5">[</samp><samp class="w">
+    </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyOtherObjectType</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">cast_tag?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">tag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:type</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">tag_value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;my_other_object&quot;</samp><samp class="w">
+  </samp><samp class="p" data-group-id="7910147245-5">]</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">other_object_without_type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7910147245-6">[</samp><samp class="w">
+    </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyOtherObjectTypeWithoutType</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">cast_tag?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">false</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">tag</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:type</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">tag_value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">nil</samp><samp class="w">
+  </samp><samp class="p" data-group-id="7910147245-6">]</samp><samp class="w">
+</samp><samp class="p" data-group-id="7910147245-1">]</samp><samp class="w">  </samp></code></pre><p>IMPORTANT:<br/>This is stored as a map under the hood. Filters over the data will need to take this into account.<br/>Additionally, if you are not using a tag, a value will be considered to be of the given type if it successfully casts.
+This means that, for example, if you try to cast <code class="inline">&quot;10&quot;</code> as a union of a string and an integer, it will end up as <code class="inline">&quot;10&quot;</code> because
+it is a string. If you put the integer type ahead of the string type, it will cast first and <code class="inline">10</code> will be the value.</p></li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_change?/0" data-no-tooltip="" translate="no">handle_change?()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#prepare_change?/0" data-no-tooltip="" translate="no">prepare_change?()</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="handle_change?/0">
+
+  <div class="detail-header">
+    <a href="#handle_change?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_change?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/union.ex#L1" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="prepare_change?/0">
+
+  <div class="detail-header">
+    <a href="#prepare_change?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">prepare_change?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/union.ex#L1" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

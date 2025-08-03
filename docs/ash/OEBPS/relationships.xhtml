@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Relationships - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Relationships</h1>
+<p>Relationships describe the connections between resources and are a core
+component of Ash. Defining relationships enables you to do things like</p><ul><li>Loading related data</li><li>Filtering on related data</li><li>Managing related records through changes on a single resource</li><li>Authorizing based on the state of related data</li></ul><h2 id="relationships-basics">Relationships Basics</h2><p>A relationship exists between a source resource and a destination resource.
+These are defined in the <code class="inline">relationships</code> block of the source resource. For
+example, if <code class="inline">MyApp.Tweet</code> is the source resource, and <code class="inline">MyApp.User</code> is the
+destination resource, we could define a relationship called <code class="inline">:owner</code> like this:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Tweet</span><span class="w"> </span><span class="k" data-group-id="6786905292-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource</span><span class="p">,</span><span class="w">
+    </span><span class="ss">data_layer</span><span class="p">:</span><span class="w"> </span><span class="n">my_data_layer</span><span class="w">
+
+  </span><span class="n">attributes</span><span class="w"> </span><span class="k" data-group-id="6786905292-2">do</span><span class="w">
+    </span><span class="n">uuid_primary_key</span><span class="w"> </span><span class="ss">:id</span><span class="w">
+    </span><span class="n">attribute</span><span class="w"> </span><span class="ss">:body</span><span class="p">,</span><span class="w"> </span><span class="ss">:string</span><span class="w">
+  </span><span class="k" data-group-id="6786905292-2">end</span><span class="w">
+
+  </span><span class="n">relationships</span><span class="w"> </span><span class="k" data-group-id="6786905292-3">do</span><span class="w">
+    </span><span class="n">belongs_to</span><span class="w"> </span><span class="ss">:owner</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.User</span><span class="w">
+  </span><span class="k" data-group-id="6786905292-3">end</span><span class="w">
+</span><span class="k" data-group-id="6786905292-1">end</span></code></pre><h2 id="kinds-of-relationships">Kinds of relationships</h2><p>There are four kinds of relationships:</p><ul><li><a href="#belongs-to"><code class="inline">belongs_to</code></a></li><li><a href="#has-one"><code class="inline">has_one</code></a></li><li><a href="#has-many"><code class="inline">has_many</code></a></li><li><a href="#many-to-many"><code class="inline">many_to_many</code></a></li></ul><p>Each of these relationships has a <code class="inline">source</code> resource and a <code class="inline">destination</code> resource
+with a corresponding attribute on the source resource (<code class="inline">source_attribute</code>), and
+destination resource (<code class="inline">destination_attribute</code>). Relationships will validate that
+their configured attributes exist at compile time.</p><p>You don't need to have a corresponding &quot;reverse&quot; relationship for every
+relationship, i.e if you have a <code class="inline">MyApp.Tweet</code> resource with
+<code class="inline">belongs_to :user, MyApp.User</code> you aren't required to have a
+<code class="inline">has_many :tweets, MyApp.Tweet</code> on <code class="inline">MyApp.User</code>. All that is required is that
+the attributes used by the relationship exist.</p><h3 id="belongs-to">Belongs To</h3><pre><code class="makeup elixir" translate="no"><span class="c1"># on MyApp.Tweet</span><span class="w">
+</span><span class="n">belongs_to</span><span class="w"> </span><span class="ss">:owner</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.User</span></code></pre><p>A <code class="inline">belongs_to</code> relationship means that there is an attribute
+(<code class="inline">source_attribute</code>) on the source resource that uniquely identifies a record
+with a matching attribute (<code class="inline">destination_attribute</code>) in the destination. In the
+example above, the source attribute on <code class="inline">MyApp.Tweet</code> is <code class="inline">:owner_id</code> and the
+destination attribute on <code class="inline">MyApp.User</code> is <code class="inline">:id</code>.</p><h4>Attribute Defaults</h4><p>By default, the <code class="inline">source_attribute</code> is defined as <code class="inline">:&lt;relationship_name&gt;_id</code> of
+the type <code class="inline">:uuid</code> on the source resource and the <code class="inline">destination_attribute</code> is
+assumed to be <code class="inline">:id</code>. You can override the attribute names by specifying the
+<code class="inline">source_attribute</code> and <code class="inline">destination_attribute</code> options like so:</p><pre><code class="makeup elixir" translate="no"><span class="n">belongs_to</span><span class="w"> </span><span class="ss">:owner</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.User</span><span class="w"> </span><span class="k" data-group-id="1358932556-1">do</span><span class="w">
+  </span><span class="c1"># defaults to :&lt;relationship_name&gt;_id (i.e. :owner_id)</span><span class="w">
+  </span><span class="n">source_attribute</span><span class="w"> </span><span class="ss">:custom_attribute_name</span><span class="w">
+
+  </span><span class="c1"># defaults to :id</span><span class="w">
+  </span><span class="n">destination_attribute</span><span class="w"> </span><span class="ss">:custom_attribute_name</span><span class="w">
+</span><span class="k" data-group-id="1358932556-1">end</span></code></pre><p>You can further customize the <code class="inline">source_attribute</code> using options such as:</p><ul><li><code class="inline">d:Ash.Resource.Dsl.relationships.belongs_to|define_attribute?</code> to define it
+yourself</li><li><code class="inline">d:Ash.Resource.Dsl.relationships.belongs_to|attribute_type</code> to modify the
+default type</li><li><code class="inline">d:Ash.Resource.Dsl.relationships.belongs_to|attribute_public?</code> to make the
+source attribute <code class="inline">public?: true</code></li></ul><p>For example:</p><pre><code class="makeup elixir" translate="no"><span class="n">belongs_to</span><span class="w"> </span><span class="ss">:owner</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.User</span><span class="w"> </span><span class="k" data-group-id="6354351544-1">do</span><span class="w">
+  </span><span class="n">attribute_type</span><span class="w"> </span><span class="ss">:integer</span><span class="w">
+  </span><span class="n">attribute_writable?</span><span class="w"> </span><span class="no">false</span><span class="w">
+</span><span class="k" data-group-id="6354351544-1">end</span></code></pre><p>Or if you wanted to define the attribute yourself,</p><pre><code class="makeup elixir" translate="no"><span class="n">attributes</span><span class="w"> </span><span class="k" data-group-id="3490401364-1">do</span><span class="w">
+  </span><span class="n">attribute</span><span class="w"> </span><span class="ss">:owner_foo</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.CustomType</span><span class="w">
+</span><span class="k" data-group-id="3490401364-1">end</span><span class="w">
+
+</span><span class="n">...</span><span class="w">
+</span><span class="n">relationships</span><span class="w"> </span><span class="k" data-group-id="3490401364-2">do</span><span class="w">
+  </span><span class="n">belongs_to</span><span class="w"> </span><span class="ss">:owner</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.User</span><span class="w"> </span><span class="k" data-group-id="3490401364-3">do</span><span class="w">
+    </span><span class="n">define_attribute?</span><span class="w"> </span><span class="no">false</span><span class="w">
+    </span><span class="n">source_attribute</span><span class="w"> </span><span class="ss">:owner_foo</span><span class="w">
+  </span><span class="k" data-group-id="3490401364-3">end</span><span class="w">
+</span><span class="k" data-group-id="3490401364-2">end</span></code></pre><h4>Customizing default belongs_to attribute type</h4><p>Destination attributes that are added by default are assumed to be <code class="inline">:uuid</code>. To
+change this, set the following configuration in <code class="inline">config.exs</code>:</p><pre><code class="makeup elixir" translate="no"><span class="n">config</span><span class="w"> </span><span class="ss">:ash</span><span class="p">,</span><span class="w"> </span><span class="ss">:default_belongs_to_type</span><span class="p">,</span><span class="w"> </span><span class="ss">:integer</span></code></pre><p>See the docs for more: <code class="inline">d:Ash.Resource.Dsl.relationships.belongs_to</code></p><h3 id="has-one">Has One</h3><pre><code class="makeup elixir" translate="no"><span class="c1"># on MyApp.User</span><span class="w">
+</span><span class="n">has_one</span><span class="w"> </span><span class="ss">:profile</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.Profile</span></code></pre><p>A <code class="inline">has_one</code> relationship means that there is a unique attribute
+(<code class="inline">destination_attribute</code>) on the destination resource that identifies a record
+with a matching unique attribute (<code class="inline">source_resource</code>) in the source. In the
+example above, the source attribute on <code class="inline">MyApp.User</code> is <code class="inline">:id</code> and the destination
+attribute on <code class="inline">MyApp.Profile</code> is <code class="inline">:user_id</code>.</p><p>A <code class="inline">has_one</code> is similar to a <code class="inline">belongs_to</code> except the reference attribute is on
+the destination resource, instead of the source.</p><h4>Attribute Defaults</h4><p>By default, the <code class="inline">source_attribute</code> is assumed to be <code class="inline">:id</code>, and
+<code class="inline">destination_attribute</code> defaults to <code class="inline">&lt;snake_cased_last_part_of_module_name&gt;_id</code>.</p><p>See the docs for more: <code class="inline">d:Ash.Resource.Dsl.relationships.has_one</code></p><h3 id="has-many">Has Many</h3><pre><code class="makeup elixir" translate="no"><span class="c1"># on MyApp.User</span><span class="w">
+</span><span class="n">has_many</span><span class="w"> </span><span class="ss">:tweets</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.Tweet</span></code></pre><p>A <code class="inline">has_many</code> relationship means that there is a non-unique attribute
+(<code class="inline">destination_attribute</code>) on the destination resource that identifies a record
+with a matching attribute (<code class="inline">source_attribute</code>) in the source. In the example
+above, the source attribute on <code class="inline">MyApp.User</code> is <code class="inline">:id</code> and the destination
+attribute on <code class="inline">MyApp.Tweet</code> is <code class="inline">:user_id</code>.</p><p>A <code class="inline">has_many</code> relationship is similar to a <code class="inline">has_one</code> because the reference
+attribute exists on the destination resource. The only difference between this
+and <code class="inline">has_one</code> is that the destination attribute is not unique, and therefore
+will produce a list of related items. In the example above, <code class="inline">:tweets</code>
+corresponds to a list of <code class="inline">MyApp.Tweet</code> records.</p><h4>Attribute Defaults</h4><p>By default, the <code class="inline">source_attribute</code> is assumed to be <code class="inline">:id</code>, and
+<code class="inline">destination_attribute</code> defaults to <code class="inline">&lt;snake_cased_last_part_of_module_name&gt;_id</code>.</p><p>See the docs for more: <code class="inline">d:Ash.Resource.Dsl.relationships.has_many</code></p><h3 id="many-to-many">Many To Many</h3><p>A <code class="inline">many_to_many</code> relationship can be used to relate many source resources to
+many destination resources. To achieve this, the <code class="inline">source_attribute</code> and
+<code class="inline">destination_attribute</code> are defined on a join resource. A <code class="inline">many_to_many</code>
+relationship can be thought of as a combination of a <code class="inline">has_many</code> relationship on
+the source/destination resources and a <code class="inline">belongs_to</code> relationship on the join
+resource.</p><p>For example, consider two resources <code class="inline">MyApp.Tweet</code> and <code class="inline">MyApp.Hashtag</code>
+representing tweets and hashtags. We want to be able to associate a tweet with
+many hashtags, and a hashtag with many tweets. To do this, we could define the
+following <code class="inline">many_to_many</code> relationship:</p><pre><code class="makeup elixir" translate="no"><span class="c1"># on MyApp.Tweet</span><span class="w">
+</span><span class="n">many_to_many</span><span class="w"> </span><span class="ss">:hashtags</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.Hashtag</span><span class="w"> </span><span class="k" data-group-id="0871308845-1">do</span><span class="w">
+  </span><span class="n">through</span><span class="w"> </span><span class="nc">MyApp.TweetHashtag</span><span class="w">
+  </span><span class="n">source_attribute_on_join_resource</span><span class="w"> </span><span class="ss">:tweet_id</span><span class="w">
+  </span><span class="n">destination_attribute_on_join_resource</span><span class="w"> </span><span class="ss">:hashtag_id</span><span class="w">
+</span><span class="k" data-group-id="0871308845-1">end</span></code></pre><p>The <code class="inline">through</code> option specifies the &quot;join&quot; resource that will be used to store
+the relationship. We need to define this resource as well:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.TweetHashtag</span><span class="w"> </span><span class="k" data-group-id="1704278300-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource</span><span class="p">,</span><span class="w">
+    </span><span class="ss">data_layer</span><span class="p">:</span><span class="w"> </span><span class="n">your_data_layer</span><span class="w">
+
+  </span><span class="n">postgres</span><span class="w"> </span><span class="k" data-group-id="1704278300-2">do</span><span class="w">
+    </span><span class="n">table</span><span class="w"> </span><span class="s">&quot;tweet_hashtags&quot;</span><span class="w">
+    </span><span class="n">repo</span><span class="w"> </span><span class="nc">MyApp.Repo</span><span class="w">
+  </span><span class="k" data-group-id="1704278300-2">end</span><span class="w">
+
+  </span><span class="n">relationships</span><span class="w"> </span><span class="k" data-group-id="1704278300-3">do</span><span class="w">
+    </span><span class="n">belongs_to</span><span class="w"> </span><span class="ss">:tweet</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.Tweet</span><span class="p">,</span><span class="w"> </span><span class="ss">primary_key?</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p">,</span><span class="w"> </span><span class="ss">allow_nil?</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="w">
+    </span><span class="n">belongs_to</span><span class="w"> </span><span class="ss">:hashtag</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.Hashtag</span><span class="p">,</span><span class="w"> </span><span class="ss">primary_key?</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p">,</span><span class="w"> </span><span class="ss">allow_nil?</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="w">
+  </span><span class="k" data-group-id="1704278300-3">end</span><span class="w">
+
+  </span><span class="n">actions</span><span class="w"> </span><span class="k" data-group-id="1704278300-4">do</span><span class="w">
+    </span><span class="n">defaults</span><span class="w"> </span><span class="p" data-group-id="1704278300-5">[</span><span class="ss">:read</span><span class="p">,</span><span class="w"> </span><span class="ss">:destroy</span><span class="p">,</span><span class="w"> </span><span class="ss">create</span><span class="p">:</span><span class="w"> </span><span class="ss">:*</span><span class="p">,</span><span class="w"> </span><span class="ss">update</span><span class="p">:</span><span class="w"> </span><span class="ss">:*</span><span class="p" data-group-id="1704278300-5">]</span><span class="w">
+  </span><span class="k" data-group-id="1704278300-4">end</span><span class="w">
+</span><span class="k" data-group-id="1704278300-1">end</span></code></pre><p>It is convention to name this resource
+<code class="inline">&lt;source_resource_name&gt;&lt;destination_resource_name&gt;</code> however this is not
+required. The attributes on the join resource must match the
+<code class="inline">source_attribute_on_join_resource</code> and <code class="inline">destination_attribute_on_join_resource</code>
+options on the <code class="inline">many_to_many</code> relationship. The relationships on the join
+resource are standard <code class="inline">belongs_to</code> relationships, and can be configured as such.
+In this case, we have specified that the <code class="inline">:tweet_id</code> and <code class="inline">:hashtag_id</code>
+attributes form the primary key for the join resource, and that they cannot be
+<code class="inline">nil</code>.</p><p>Now that we have a resource with the proper attributes, Ash will use this
+automatically under the hood when performing relationship operations like
+filtering and loading.</p><p>See the docs for more: <code class="inline">d:Ash.Resource.Dsl.relationships.many_to_many</code></p><h2 id="loading-related-data">Loading related data</h2><p>There are two ways to load relationships:</p><ul><li>in the query using <a href="Ash.Query.xhtml#load/2"><code class="inline">Ash.Query.load/2</code></a></li><li>directly on records using <a href="Ash.xhtml#load/3"><code class="inline">Ash.load/3</code></a></li></ul><h3 id="on-records">On records</h3><p>Given a single record or a set of records, it is possible to load their
+relationships by calling the <code class="inline">load</code> function on the record's parent domain. For
+example:</p><pre><code class="makeup elixir" translate="no"><span class="c1"># user = %User{...}</span><span class="w">
+</span><span class="nc">Ash</span><span class="o">.</span><span class="n">load</span><span class="p" data-group-id="0599030675-1">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="ss">:tweets</span><span class="p" data-group-id="0599030675-1">)</span><span class="w">
+
+</span><span class="c1"># users = [%User{...}, %User{...}, ....]</span><span class="w">
+</span><span class="nc">Ash</span><span class="o">.</span><span class="n">load</span><span class="p" data-group-id="0599030675-2">(</span><span class="n">users</span><span class="p">,</span><span class="w"> </span><span class="ss">:tweets</span><span class="p" data-group-id="0599030675-2">)</span></code></pre><p>This will fetch the tweets for each user, and set them in the corresponding
+<code class="inline">tweets</code> key.</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="0784529658-1">%</span><span class="nc" data-group-id="0784529658-1">User</span><span class="p" data-group-id="0784529658-1">{</span><span class="w">
+  </span><span class="n">...</span><span class="w">
+  </span><span class="ss">tweets</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0784529658-2">[</span><span class="w">
+    </span><span class="p" data-group-id="0784529658-3">%</span><span class="nc" data-group-id="0784529658-3">Tweet</span><span class="p" data-group-id="0784529658-3">{</span><span class="n">...</span><span class="p" data-group-id="0784529658-3">}</span><span class="p">,</span><span class="w">
+    </span><span class="p" data-group-id="0784529658-4">%</span><span class="nc" data-group-id="0784529658-4">Tweet</span><span class="p" data-group-id="0784529658-4">{</span><span class="n">...</span><span class="p" data-group-id="0784529658-4">}</span><span class="p">,</span><span class="w">
+    </span><span class="n">...</span><span class="w">
+  </span><span class="p" data-group-id="0784529658-2">]</span><span class="w">
+</span><span class="p" data-group-id="0784529658-1">}</span></code></pre><p>See <a href="Ash.xhtml#load/3"><code class="inline">Ash.load/3</code></a> for more information.</p><h3 id="in-the-query">In the query</h3><p>The following will return a list of users with their tweets loaded identically
+to the previous example:</p><pre><code class="makeup elixir" translate="no"><span class="nc">User</span><span class="w">
+</span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">load</span><span class="p" data-group-id="2958800288-1">(</span><span class="ss">:tweets</span><span class="p" data-group-id="2958800288-1">)</span><span class="w">
+</span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash</span><span class="o">.</span><span class="n">read</span><span class="p" data-group-id="2958800288-2">(</span><span class="p" data-group-id="2958800288-2">)</span></code></pre><p>At present, loading relationships in the query is fundamentally the same as
+loading on records. Eventually, data layers will be able to optimize these loads
+(potentially including them as joins in the main query).</p><p>See <a href="Ash.Query.xhtml#load/2"><code class="inline">Ash.Query.load/2</code></a> for more information.</p><h3 id="more-complex-data-loading">More complex data loading</h3><p>Multiple relationships can be loaded at once, i.e</p><pre><code class="makeup elixir" translate="no"><span class="nc">Ash</span><span class="o">.</span><span class="n">load</span><span class="p" data-group-id="5586537382-1">(</span><span class="n">users</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5586537382-2">[</span><span class="ss">:tweets</span><span class="p">,</span><span class="w"> </span><span class="ss">:followers</span><span class="p" data-group-id="5586537382-2">]</span><span class="p" data-group-id="5586537382-1">)</span></code></pre><p>Nested relationships can be loaded:</p><pre><code class="makeup elixir" translate="no"><span class="nc">Ash</span><span class="o">.</span><span class="n">load</span><span class="p" data-group-id="0647888893-1">(</span><span class="n">users</span><span class="p">,</span><span class="w"> </span><span class="ss">followers</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0647888893-2">[</span><span class="ss">:tweets</span><span class="p">,</span><span class="w"> </span><span class="ss">:followers</span><span class="p" data-group-id="0647888893-2">]</span><span class="p" data-group-id="0647888893-1">)</span></code></pre><p>The queries used for loading can be customized by providing a query as the
+value.</p><pre><code class="makeup elixir" translate="no"><span class="n">followers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">sort</span><span class="p" data-group-id="1992160924-1">(</span><span class="nc">User</span><span class="p">,</span><span class="w"> </span><span class="ss">follower_count</span><span class="p">:</span><span class="w"> </span><span class="ss">:asc</span><span class="p" data-group-id="1992160924-1">)</span><span class="w">
+
+</span><span class="nc">Ash</span><span class="o">.</span><span class="n">load</span><span class="p" data-group-id="1992160924-2">(</span><span class="n">users</span><span class="p">,</span><span class="w"> </span><span class="ss">followers</span><span class="p">:</span><span class="w"> </span><span class="n">followers</span><span class="p" data-group-id="1992160924-2">)</span></code></pre><p>Nested loads will be included in the parent load.</p><pre><code class="makeup elixir" translate="no"><span class="n">followers</span><span class="w"> </span><span class="o">=</span><span class="w">
+  </span><span class="nc">User</span><span class="w">
+  </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">sort</span><span class="p" data-group-id="4814558828-1">(</span><span class="ss">follower_count</span><span class="p">:</span><span class="w"> </span><span class="ss">:asc</span><span class="p" data-group-id="4814558828-1">)</span><span class="w">
+  </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">load</span><span class="p" data-group-id="4814558828-2">(</span><span class="ss">:followers</span><span class="p" data-group-id="4814558828-2">)</span><span class="w">
+
+</span><span class="c1"># Will load followers and followers of those followers</span><span class="w">
+</span><span class="nc">Ash</span><span class="o">.</span><span class="n">load</span><span class="p" data-group-id="4814558828-3">(</span><span class="n">users</span><span class="p">,</span><span class="w"> </span><span class="ss">followers</span><span class="p">:</span><span class="w"> </span><span class="n">followers</span><span class="p" data-group-id="4814558828-3">)</span></code></pre><h2 id="no_attributes-true">no_attributes? true</h2><p>This is really useful when creating customized relationships that aren't joined
+with simple attribute matches. For example:</p><pre><code class="makeup elixir" translate="no"><span class="n">has_many</span><span class="w"> </span><span class="ss">:higher_priority_tickets</span><span class="p">,</span><span class="w"> </span><span class="bp">__MODULE__</span><span class="w"> </span><span class="k" data-group-id="5813343205-1">do</span><span class="w">
+  </span><span class="n">no_attributes?</span><span class="w"> </span><span class="no">true</span><span class="w">
+  </span><span class="c1"># parent/1 in this case puts the expression on this current resource</span><span class="w">
+  </span><span class="c1"># so this is &quot;tickets with priority higher than this ticket&quot;</span><span class="w">
+  </span><span class="n">filter</span><span class="w"> </span><span class="n">expr</span><span class="p" data-group-id="5813343205-2">(</span><span class="n">priority</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">parent</span><span class="p" data-group-id="5813343205-3">(</span><span class="n">priority</span><span class="p" data-group-id="5813343205-3">)</span><span class="p" data-group-id="5813343205-2">)</span><span class="w">
+</span><span class="k" data-group-id="5813343205-1">end</span></code></pre><p>This can also be useful when combined with schema-based multitenancy.
+Specifically, if you have a tenant resource like <code class="inline">Organization</code>, you can use
+<code class="inline">no_attributes?</code> to do things like
+<code class="inline">has_many :employees, Employee, no_attributes?: true</code>, which lets you avoid
+having an unnecessary <code class="inline">organization_id</code> field on <code class="inline">Employee</code>. The same works in
+reverse: <code class="inline">has_one :organization, Organization, no_attributes?: true</code> allows
+relating the employee to their organization.</p><p>You can also use <code class="inline">no_attributes? true</code> with attribute-based multitenancy in the
+same situation described above, to avoid an unnecessary second filter. If both
+resources have attribute multitenancy configured, they will already be filtered
+by <code class="inline">organization_id</code> by virtue of having set the tenant.</p><section role="note" class="admonition warning"><h3 id="caveats-for-using-no_attributes" class="admonition-title warning">Caveats for using <code class="inline">no_attributes?</code></h3><ol><li> You can still manage relationships from one to the other, but &quot;relate&quot; and
+&quot;unrelate&quot; will have no effect, because there are no fields to change.</li><li> Loading the relationship on a list of resources will not behave as
+expected in all circumstances involving multitenancy. For example, if you
+get a list of <code class="inline">Organization</code> and then try to load <code class="inline">employees</code>, you would
+need to set a single tenant on the load query, meaning you'll get all
+organizations back with the set of employees from one tenant. This could
+eventually be solved, but for now it is considered an edge case.</li></ol></section><h2 id="manual-relationships">Manual Relationships</h2><p>Manual relationships allow you to express complex or non-typical relationships
+between resources in a standard way. Individual data layers may interact with
+manual relationships in their own way, so see their corresponding guides. In
+general, you should try to use manual relationships sparingly, as you can do <em>a
+lot</em> with filters on relationships, and the <code class="inline">no_attributes?</code> flag.</p><h3 id="example">Example</h3><p>In our Helpdesk example, we'd like to have a way to find tickets</p><p>In the <code class="inline">Representative</code> resource, define a <code class="inline">has_many</code> relationship as <code class="inline">manual</code>
+and point to the module where it will be implemented.</p><pre><code class="makeup elixir" translate="no"><span class="n">relationships</span><span class="w"> </span><span class="k" data-group-id="6880578077-1">do</span><span class="w">
+  </span><span class="n">has_many</span><span class="w"> </span><span class="ss">:tickets_above_threshold</span><span class="p">,</span><span class="w"> </span><span class="nc">Helpdesk.Support.Ticket</span><span class="w"> </span><span class="k" data-group-id="6880578077-2">do</span><span class="w">
+    </span><span class="n">manual</span><span class="w"> </span><span class="nc">Helpdesk.Support.Ticket.Relationships.TicketsAboveThreshold</span><span class="w">
+  </span><span class="k" data-group-id="6880578077-2">end</span><span class="w">
+</span><span class="k" data-group-id="6880578077-1">end</span></code></pre><p>Using Ash to get the destination records is ideal, so you can authorize access
+like normal but if you need to use a raw ecto query here, you can. As long as
+you return the right structure.</p><p>The <code class="inline">TicketsAboveThreshold</code> module is implemented as follows.</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">Helpdesk.Support.Ticket.Relationships.TicketsAboveThreshold</span><span class="w"> </span><span class="k" data-group-id="0866708584-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource.ManualRelationship</span><span class="w">
+  </span><span class="kn">require</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">load</span><span class="p" data-group-id="0866708584-2">(</span><span class="n">records</span><span class="p">,</span><span class="w"> </span><span class="c">_opts</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0866708584-3">%{</span><span class="ss">query</span><span class="p">:</span><span class="w"> </span><span class="n">query</span><span class="p" data-group-id="0866708584-3">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p" data-group-id="0866708584-2">)</span><span class="w"> </span><span class="k" data-group-id="0866708584-4">do</span><span class="w">
+    </span><span class="c1"># Use existing records to limit results</span><span class="w">
+    </span><span class="n">rep_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Enum</span><span class="o">.</span><span class="n">map</span><span class="p" data-group-id="0866708584-5">(</span><span class="n">records</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="ni">&amp;1</span><span class="o">.</span><span class="n">id</span><span class="p" data-group-id="0866708584-5">)</span><span class="w">
+
+    </span><span class="p" data-group-id="0866708584-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w">
+     </span><span class="n">query</span><span class="w">
+     </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">filter</span><span class="p" data-group-id="0866708584-7">(</span><span class="n">representative_id</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="o">^</span><span class="n">rep_ids</span><span class="p" data-group-id="0866708584-7">)</span><span class="w">
+     </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">filter</span><span class="p" data-group-id="0866708584-8">(</span><span class="n">priority</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">representative</span><span class="o">.</span><span class="n">priority_threshold</span><span class="p" data-group-id="0866708584-8">)</span><span class="w">
+     </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash</span><span class="o">.</span><span class="n">read!</span><span class="p" data-group-id="0866708584-9">(</span><span class="nc">Ash.Context</span><span class="o">.</span><span class="n">to_opts</span><span class="p" data-group-id="0866708584-10">(</span><span class="n">context</span><span class="p" data-group-id="0866708584-10">)</span><span class="p" data-group-id="0866708584-9">)</span><span class="w">
+     </span><span class="c1"># Return the items grouped by the primary key of the source, i.e representative.id =&gt; [...tickets above threshold]</span><span class="w">
+     </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Enum</span><span class="o">.</span><span class="n">group_by</span><span class="p" data-group-id="0866708584-11">(</span><span class="o">&amp;</span><span class="w"> </span><span class="ni">&amp;1</span><span class="o">.</span><span class="n">representative_id</span><span class="p" data-group-id="0866708584-11">)</span><span class="p" data-group-id="0866708584-6">}</span><span class="w">
+  </span><span class="k" data-group-id="0866708584-4">end</span><span class="w">
+</span><span class="k" data-group-id="0866708584-1">end</span></code></pre><h3 id="reusing-the-query">Reusing the Query</h3><p>Since you likely want to support things like filtering your relationship when
+being loaded, you will want to make sure that you use the query being provided.
+However, depending on how you're loading the relationship, you may need to do
+things like fetch extra records. To do this, you might do things like</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">load</span><span class="p" data-group-id="0968390287-1">(</span><span class="n">records</span><span class="p">,</span><span class="w"> </span><span class="c">_opts</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0968390287-2">%{</span><span class="ss">query</span><span class="p">:</span><span class="w"> </span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="o">..</span><span class="p" data-group-id="0968390287-2">}</span><span class="p" data-group-id="0968390287-1">)</span><span class="w"> </span><span class="k" data-group-id="0968390287-3">do</span><span class="w">
+  </span><span class="c1"># unset some fields</span><span class="w">
+  </span><span class="n">fetch_query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">unset</span><span class="p" data-group-id="0968390287-4">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0968390287-5">[</span><span class="ss">:limit</span><span class="p">,</span><span class="w"> </span><span class="ss">:offset</span><span class="p" data-group-id="0968390287-5">]</span><span class="p" data-group-id="0968390287-4">)</span><span class="w">
+
+  </span><span class="c1"># or, to be more safe/explicit, you might make a new query, explicitly setting only a few fields</span><span class="w">
+  </span><span class="n">fetch_query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="o">.</span><span class="n">resource</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">filter</span><span class="p" data-group-id="0968390287-6">(</span><span class="o">^</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p" data-group-id="0968390287-6">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">sort</span><span class="p" data-group-id="0968390287-7">(</span><span class="n">query</span><span class="o">.</span><span class="n">sort</span><span class="p" data-group-id="0968390287-7">)</span><span class="w">
+
+  </span><span class="n">...</span><span class="w">
+</span><span class="k" data-group-id="0968390287-3">end</span></code></pre><h3 id="query-when-loading-with-strict-true">Query when loading with strict?: true</h3><p>When using <code class="inline">Ash.Query.load</code> or <code class="inline">Ash.load</code> with the <code class="inline">strict?: true</code> option, the
+query that is provided to the load callback might be configured with a
+select-statement that doesn't load the attributes you want to group matching
+results by. If your codebase utilizes the strict loading functionality, it is
+therefore recommended to use <code class="inline">Ash.Query.ensure_selected</code> on the query to ensure
+the required attributes are indeed fetched.</p><pre><code class="makeup elixir" translate="no"><span class="w">
+</span><span class="c1"># Here only :id &amp; :priority is set, which will then configure the relationship query to only</span><span class="w">
+</span><span class="c1"># select those attributes</span><span class="w">
+</span><span class="p" data-group-id="2438512591-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">rep</span><span class="p" data-group-id="2438512591-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Ash</span><span class="o">.</span><span class="n">load</span><span class="p" data-group-id="2438512591-2">(</span><span class="n">representative</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2438512591-3">[</span><span class="ss">tickets_above_threshold</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2438512591-4">[</span><span class="ss">:id</span><span class="p">,</span><span class="w"> </span><span class="ss">:priority</span><span class="p" data-group-id="2438512591-4">]</span><span class="p" data-group-id="2438512591-3">]</span><span class="p">,</span><span class="w"> </span><span class="ss">strict?</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="2438512591-2">)</span><span class="w">
+
+</span><span class="kd">defmodule</span><span class="w"> </span><span class="nc">Helpdesk.Support.Ticket.Relationships.TicketsAboveThreshold</span><span class="w"> </span><span class="k" data-group-id="2438512591-5">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource.ManualRelationship</span><span class="w">
+  </span><span class="kn">require</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">load</span><span class="p" data-group-id="2438512591-6">(</span><span class="n">records</span><span class="p">,</span><span class="w"> </span><span class="c">_opts</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2438512591-7">%{</span><span class="ss">query</span><span class="p">:</span><span class="w"> </span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="ss">actor</span><span class="p">:</span><span class="w"> </span><span class="n">actor</span><span class="p">,</span><span class="w"> </span><span class="ss">authorize?</span><span class="p">:</span><span class="w"> </span><span class="n">authorize?</span><span class="p" data-group-id="2438512591-7">}</span><span class="p" data-group-id="2438512591-6">)</span><span class="w"> </span><span class="k" data-group-id="2438512591-8">do</span><span class="w">
+    </span><span class="n">rep_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Enum</span><span class="o">.</span><span class="n">map</span><span class="p" data-group-id="2438512591-9">(</span><span class="n">records</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="ni">&amp;1</span><span class="o">.</span><span class="n">id</span><span class="p" data-group-id="2438512591-9">)</span><span class="w">
+
+    </span><span class="p" data-group-id="2438512591-10">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w">
+     </span><span class="n">query</span><span class="w">
+     </span><span class="c1"># If this isn&#39;t added, representative_id would be set to %Ash.NotLoaded, causing the</span><span class="w">
+     </span><span class="c1"># Enum.group_by call below to fail mapping results to the correct records.</span><span class="w">
+     </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">ensure_selected</span><span class="p" data-group-id="2438512591-11">(</span><span class="p" data-group-id="2438512591-12">[</span><span class="ss">:representative_id</span><span class="p" data-group-id="2438512591-12">]</span><span class="p" data-group-id="2438512591-11">)</span><span class="w">
+     </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">filter</span><span class="p" data-group-id="2438512591-13">(</span><span class="n">representative_id</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="o">^</span><span class="n">rep_ids</span><span class="p" data-group-id="2438512591-13">)</span><span class="w">
+     </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">filter</span><span class="p" data-group-id="2438512591-14">(</span><span class="n">priority</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">representative</span><span class="o">.</span><span class="n">priority_threshold</span><span class="p" data-group-id="2438512591-14">)</span><span class="w">
+     </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Helpdesk.Support</span><span class="o">.</span><span class="n">read!</span><span class="p" data-group-id="2438512591-15">(</span><span class="ss">actor</span><span class="p">:</span><span class="w"> </span><span class="n">actor</span><span class="p">,</span><span class="w"> </span><span class="ss">authorize?</span><span class="p">:</span><span class="w"> </span><span class="n">authorize?</span><span class="p" data-group-id="2438512591-15">)</span><span class="w">
+     </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Enum</span><span class="o">.</span><span class="n">group_by</span><span class="p" data-group-id="2438512591-16">(</span><span class="o">&amp;</span><span class="w"> </span><span class="ni">&amp;1</span><span class="o">.</span><span class="n">representative_id</span><span class="p" data-group-id="2438512591-16">)</span><span class="p" data-group-id="2438512591-10">}</span><span class="w">
+  </span><span class="k" data-group-id="2438512591-8">end</span><span class="w">
+</span><span class="k" data-group-id="2438512591-5">end</span></code></pre><h3 id="fetching-the-records-and-then-applying-a-query">Fetching the records and then applying a query</h3><p>Lets say the records come from some totally unrelated source, or you can't just
+modify the query to fetch the records you need. You can fetch the records you
+need and then apply the query to them in memory.</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">load</span><span class="p" data-group-id="6861461433-1">(</span><span class="n">records</span><span class="p">,</span><span class="w"> </span><span class="c">_opts</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6861461433-2">%{</span><span class="ss">query</span><span class="p">:</span><span class="w"> </span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="o">..</span><span class="p" data-group-id="6861461433-2">}</span><span class="p" data-group-id="6861461433-1">)</span><span class="w"> </span><span class="k" data-group-id="6861461433-3">do</span><span class="w">
+  </span><span class="c1"># fetch the data from the other source, which is capable of sorting</span><span class="w">
+  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_other_data</span><span class="p" data-group-id="6861461433-4">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="o">.</span><span class="n">sort</span><span class="p" data-group-id="6861461433-4">)</span><span class="w">
+
+  </span><span class="n">query</span><span class="w">
+  </span><span class="c1"># unset the sort since we already applied that</span><span class="w">
+  </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">unset</span><span class="p" data-group-id="6861461433-5">(</span><span class="p" data-group-id="6861461433-6">[</span><span class="ss">:sort</span><span class="p" data-group-id="6861461433-6">]</span><span class="p" data-group-id="6861461433-5">)</span><span class="w">
+  </span><span class="c1"># apply the query in memory (filtering, distinct, limit, offset)</span><span class="w">
+  </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">apply_to</span><span class="p" data-group-id="6861461433-7">(</span><span class="n">data</span><span class="p" data-group-id="6861461433-7">)</span><span class="w">
+</span><span class="k" data-group-id="6861461433-3">end</span></code></pre><h2 id="managing-relationships">Managing Relationships</h2><p>Ash provides two primary approaches for managing related data, each suited to
+different scenarios:</p><ol><li><strong>Using <code class="inline">change manage_relationship/3</code> in actions</strong> - When input comes from
+action arguments</li><li><strong>Using <a href="Ash.Changeset.xhtml#manage_relationship/4"><code class="inline">Ash.Changeset.manage_relationship/4</code></a> directly</strong> - When building
+values programmatically in custom changes</li></ol><h3 id="when-to-use-which-approach">When to Use Which Approach</h3><p><strong>Use <code class="inline">change manage_relationship/3</code> when:</strong></p><ul><li>Input comes from action arguments (API endpoints, form submissions)</li><li>You want portable logic across different interfaces (GraphQL, JSON API)</li><li>You need standard CRUD operations on relationships</li><li>The relationship management logic is straightforward</li></ul><p><strong>Use <a href="Ash.Changeset.xhtml#manage_relationship/4"><code class="inline">Ash.Changeset.manage_relationship/4</code></a> when:</strong></p><ul><li>Building relationship data programmatically in custom changes</li><li>You need complex logic or data transformation before managing relationships</li><li>Conditional relationship management based on changeset state</li><li>Integration with external APIs or complex business rules</li></ul><section role="note" class="admonition warning"><h4 class="admonition-title warning">Order of operations</h4><p>In destroy actions, relationships are managed <strong>after</strong> the main action is
+performed. This means if you're using <code class="inline">manage_relationship</code> to remove related
+records in a destroy action, and your database has foreign key constraints
+with &quot;no action&quot; or &quot;restrict&quot; settings, you may encounter constraint
+violations because Ash tries to destroy the primary resource first.</p><p>To work around this, you can:</p><ul><li>Use the <code class="inline">cascade_destroy</code> builtin change instead of <code class="inline">manage_relationship</code></li><li>Configure your database constraints to be deferred</li><li>Use different constraint settings that allow the operation order</li></ul></section><h3 id="using-change-manage_relationship-3-in-actions">Using <code class="inline">change manage_relationship/3</code> in Actions</h3><p>This is the most common approach for managing relationships through action
+arguments:</p><pre><code class="makeup elixir" translate="no"><span class="n">actions</span><span class="w"> </span><span class="k" data-group-id="7915643991-1">do</span><span class="w">
+  </span><span class="n">update</span><span class="w"> </span><span class="ss">:update</span><span class="w"> </span><span class="k" data-group-id="7915643991-2">do</span><span class="w">
+    </span><span class="n">argument</span><span class="w"> </span><span class="ss">:add_comment</span><span class="p">,</span><span class="w"> </span><span class="ss">:map</span><span class="w"> </span><span class="k" data-group-id="7915643991-3">do</span><span class="w">
+      </span><span class="n">allow_nil?</span><span class="w"> </span><span class="no">false</span><span class="w">
+    </span><span class="k" data-group-id="7915643991-3">end</span><span class="w">
+
+    </span><span class="n">argument</span><span class="w"> </span><span class="ss">:tags</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7915643991-4">{</span><span class="ss">:array</span><span class="p">,</span><span class="w"> </span><span class="ss">:uuid</span><span class="p" data-group-id="7915643991-4">}</span><span class="w"> </span><span class="k" data-group-id="7915643991-5">do</span><span class="w">
+      </span><span class="n">allow_nil?</span><span class="w"> </span><span class="no">false</span><span class="w">
+    </span><span class="k" data-group-id="7915643991-5">end</span><span class="w">
+
+    </span><span class="c1"># First argument is the name of the action argument to use</span><span class="w">
+    </span><span class="c1"># Second argument is the relationship to be managed</span><span class="w">
+    </span><span class="c1"># Third argument is options. For more, see `Ash.Changeset.manage_relationship/4`.</span><span class="w">
+    </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="7915643991-6">(</span><span class="ss">:add_comment</span><span class="p">,</span><span class="w"> </span><span class="ss">:comments</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:create</span><span class="p" data-group-id="7915643991-6">)</span><span class="w">
+
+    </span><span class="c1"># Second argument can be omitted when argument name matches relationship name</span><span class="w">
+    </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="7915643991-7">(</span><span class="ss">:tags</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append_and_remove</span><span class="p" data-group-id="7915643991-7">)</span><span class="w">
+  </span><span class="k" data-group-id="7915643991-2">end</span><span class="w">
+</span><span class="k" data-group-id="7915643991-1">end</span></code></pre><p>With this setup, you can use the arguments in action input:</p><pre><code class="makeup elixir" translate="no"><span class="n">post</span><span class="w">
+</span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Changeset</span><span class="o">.</span><span class="n">for_update</span><span class="p" data-group-id="0996960612-1">(</span><span class="ss">:update</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0996960612-2">%{</span><span class="w">
+  </span><span class="ss">tags</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0996960612-3">[</span><span class="n">tag1</span><span class="o">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">tag2</span><span class="o">.</span><span class="n">id</span><span class="p" data-group-id="0996960612-3">]</span><span class="p">,</span><span class="w">
+  </span><span class="ss">add_comment</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0996960612-4">%{</span><span class="ss">text</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;comment text&quot;</span><span class="p" data-group-id="0996960612-4">}</span><span class="w">
+</span><span class="p" data-group-id="0996960612-2">}</span><span class="p" data-group-id="0996960612-1">)</span><span class="w">
+</span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash</span><span class="o">.</span><span class="n">update!</span><span class="p" data-group-id="0996960612-5">(</span><span class="p" data-group-id="0996960612-5">)</span></code></pre><h4>Common Patterns with Actions</h4><p><strong>Creating with related data:</strong></p><pre><code class="makeup elixir" translate="no"><span class="n">create</span><span class="w"> </span><span class="ss">:create_with_author</span><span class="w"> </span><span class="k" data-group-id="3435240090-1">do</span><span class="w">
+  </span><span class="n">argument</span><span class="w"> </span><span class="ss">:author</span><span class="p">,</span><span class="w"> </span><span class="ss">:map</span><span class="p">,</span><span class="w"> </span><span class="ss">allow_nil?</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="w">
+  </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="3435240090-2">(</span><span class="ss">:author</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:create</span><span class="p" data-group-id="3435240090-2">)</span><span class="w">
+</span><span class="k" data-group-id="3435240090-1">end</span><span class="w">
+
+</span><span class="c1"># Usage</span><span class="w">
+</span><span class="nc">Post</span><span class="w">
+</span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Changeset</span><span class="o">.</span><span class="n">for_create</span><span class="p" data-group-id="3435240090-3">(</span><span class="ss">:create_with_author</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3435240090-4">%{</span><span class="w">
+  </span><span class="ss">title</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;My Post&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="ss">author</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3435240090-5">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;John Doe&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;john@example.com&quot;</span><span class="p" data-group-id="3435240090-5">}</span><span class="w">
+</span><span class="p" data-group-id="3435240090-4">}</span><span class="p" data-group-id="3435240090-3">)</span><span class="w">
+</span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash</span><span class="o">.</span><span class="n">create!</span><span class="p" data-group-id="3435240090-6">(</span><span class="p" data-group-id="3435240090-6">)</span></code></pre><p><strong>Managing many-to-many relationships:</strong></p><pre><code class="makeup elixir" translate="no"><span class="n">update</span><span class="w"> </span><span class="ss">:manage_categories</span><span class="w"> </span><span class="k" data-group-id="1756593429-1">do</span><span class="w">
+  </span><span class="n">argument</span><span class="w"> </span><span class="ss">:category_names</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="1756593429-2">{</span><span class="ss">:array</span><span class="p">,</span><span class="w"> </span><span class="ss">:string</span><span class="p" data-group-id="1756593429-2">}</span><span class="w">
+
+  </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="1756593429-3">(</span><span class="ss">:category_names</span><span class="p">,</span><span class="w"> </span><span class="ss">:categories</span><span class="p">,</span><span class="w">
+    </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append_and_remove</span><span class="p">,</span><span class="w">
+    </span><span class="ss">value_is_key</span><span class="p">:</span><span class="w"> </span><span class="ss">:name</span><span class="p">,</span><span class="w">
+    </span><span class="ss">on_lookup</span><span class="p">:</span><span class="w"> </span><span class="ss">:relate</span><span class="p">,</span><span class="w">
+    </span><span class="ss">on_no_match</span><span class="p">:</span><span class="w"> </span><span class="ss">:create</span><span class="w">
+  </span><span class="p" data-group-id="1756593429-3">)</span><span class="w">
+</span><span class="k" data-group-id="1756593429-1">end</span></code></pre><p><strong>Different argument and relationship names:</strong></p><pre><code class="makeup elixir" translate="no"><span class="n">update</span><span class="w"> </span><span class="ss">:assign_reviewer</span><span class="w"> </span><span class="k" data-group-id="6317116012-1">do</span><span class="w">
+  </span><span class="n">argument</span><span class="w"> </span><span class="ss">:reviewer_id</span><span class="p">,</span><span class="w"> </span><span class="ss">:uuid</span><span class="w">
+  </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="6317116012-2">(</span><span class="ss">:reviewer_id</span><span class="p">,</span><span class="w"> </span><span class="ss">:reviewer</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append_and_remove</span><span class="p" data-group-id="6317116012-2">)</span><span class="w">
+</span><span class="k" data-group-id="6317116012-1">end</span></code></pre><h3 id="using-ash-changeset-manage_relationship-4-in-custom-changes">Using <a href="Ash.Changeset.xhtml#manage_relationship/4"><code class="inline">Ash.Changeset.manage_relationship/4</code></a> in Custom Changes</h3><p>For more complex scenarios, you can use <a href="Ash.Changeset.xhtml#manage_relationship/4"><code class="inline">Ash.Changeset.manage_relationship/4</code></a>
+directly in custom changes:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Changes.AssignProjectMembers</span><span class="w"> </span><span class="k" data-group-id="8861918501-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource.Change</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">change</span><span class="p" data-group-id="8861918501-2">(</span><span class="n">changeset</span><span class="p">,</span><span class="w"> </span><span class="c">_opts</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p" data-group-id="8861918501-2">)</span><span class="w"> </span><span class="k" data-group-id="8861918501-3">do</span><span class="w">
+    </span><span class="c1"># Get the current user from context</span><span class="w">
+    </span><span class="n">current_user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="o">.</span><span class="n">actor</span><span class="w">
+
+    </span><span class="c1"># Build relationship data based on business logic</span><span class="w">
+    </span><span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">determine_project_members</span><span class="p" data-group-id="8861918501-4">(</span><span class="n">changeset</span><span class="p">,</span><span class="w"> </span><span class="n">current_user</span><span class="p" data-group-id="8861918501-4">)</span><span class="w">
+
+    </span><span class="c1"># Manage the relationship directly</span><span class="w">
+    </span><span class="nc">Ash.Changeset</span><span class="o">.</span><span class="n">manage_relationship</span><span class="p" data-group-id="8861918501-5">(</span><span class="w">
+      </span><span class="n">changeset</span><span class="p">,</span><span class="w">
+      </span><span class="ss">:members</span><span class="p">,</span><span class="w">
+      </span><span class="n">members</span><span class="p">,</span><span class="w">
+      </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append_and_remove</span><span class="p">,</span><span class="w">
+      </span><span class="ss">authorize?</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="w">
+    </span><span class="p" data-group-id="8861918501-5">)</span><span class="w">
+  </span><span class="k" data-group-id="8861918501-3">end</span><span class="w">
+
+  </span><span class="kd">defp</span><span class="w"> </span><span class="nf">determine_project_members</span><span class="p" data-group-id="8861918501-6">(</span><span class="n">changeset</span><span class="p">,</span><span class="w"> </span><span class="n">current_user</span><span class="p" data-group-id="8861918501-6">)</span><span class="w"> </span><span class="k" data-group-id="8861918501-7">do</span><span class="w">
+    </span><span class="c1"># Complex logic to determine who should be project members</span><span class="w">
+    </span><span class="c1"># based on changeset data and business rules</span><span class="w">
+    </span><span class="c1"># ...</span><span class="w">
+  </span><span class="k" data-group-id="8861918501-7">end</span><span class="w">
+</span><span class="k" data-group-id="8861918501-1">end</span></code></pre><p><strong>Conditional relationship management:</strong></p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Changes.ConditionalTagging</span><span class="w"> </span><span class="k" data-group-id="3622162312-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource.Change</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">change</span><span class="p" data-group-id="3622162312-2">(</span><span class="n">changeset</span><span class="p">,</span><span class="w"> </span><span class="c">_opts</span><span class="p">,</span><span class="w"> </span><span class="c">_context</span><span class="p" data-group-id="3622162312-2">)</span><span class="w"> </span><span class="k" data-group-id="3622162312-3">do</span><span class="w">
+    </span><span class="c1"># Only manage tags if certain conditions are met</span><span class="w">
+    </span><span class="k">if</span><span class="w"> </span><span class="n">should_auto_tag?</span><span class="p" data-group-id="3622162312-4">(</span><span class="n">changeset</span><span class="p" data-group-id="3622162312-4">)</span><span class="w"> </span><span class="k" data-group-id="3622162312-5">do</span><span class="w">
+      </span><span class="n">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generate_auto_tags</span><span class="p" data-group-id="3622162312-6">(</span><span class="n">changeset</span><span class="p" data-group-id="3622162312-6">)</span><span class="w">
+
+      </span><span class="nc">Ash.Changeset</span><span class="o">.</span><span class="n">manage_relationship</span><span class="p" data-group-id="3622162312-7">(</span><span class="w">
+        </span><span class="n">changeset</span><span class="p">,</span><span class="w">
+        </span><span class="ss">:tags</span><span class="p">,</span><span class="w">
+        </span><span class="n">tags</span><span class="p">,</span><span class="w">
+        </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append</span><span class="p">,</span><span class="w">
+        </span><span class="ss">on_no_match</span><span class="p">:</span><span class="w"> </span><span class="ss">:create</span><span class="w">
+      </span><span class="p" data-group-id="3622162312-7">)</span><span class="w">
+    </span><span class="k" data-group-id="3622162312-5">else</span><span class="w">
+      </span><span class="n">changeset</span><span class="w">
+    </span><span class="k" data-group-id="3622162312-5">end</span><span class="w">
+  </span><span class="k" data-group-id="3622162312-3">end</span><span class="w">
+</span><span class="k" data-group-id="3622162312-1">end</span></code></pre><p><strong>Data transformation before relationship management:</strong></p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Changes.ProcessOrderItems</span><span class="w"> </span><span class="k" data-group-id="7790272134-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource.Change</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">change</span><span class="p" data-group-id="7790272134-2">(</span><span class="n">changeset</span><span class="p">,</span><span class="w"> </span><span class="c">_opts</span><span class="p">,</span><span class="w"> </span><span class="c">_context</span><span class="p" data-group-id="7790272134-2">)</span><span class="w"> </span><span class="k" data-group-id="7790272134-3">do</span><span class="w">
+    </span><span class="k">case</span><span class="w"> </span><span class="nc">Ash.Changeset</span><span class="o">.</span><span class="n">fetch_argument</span><span class="p" data-group-id="7790272134-4">(</span><span class="n">changeset</span><span class="p">,</span><span class="w"> </span><span class="ss">:raw_items</span><span class="p" data-group-id="7790272134-4">)</span><span class="w"> </span><span class="k" data-group-id="7790272134-5">do</span><span class="w">
+      </span><span class="p" data-group-id="7790272134-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">raw_items</span><span class="p" data-group-id="7790272134-6">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">
+        </span><span class="c1"># Transform and validate the raw item data</span><span class="w">
+        </span><span class="n">processed_items</span><span class="w"> </span><span class="o">=</span><span class="w">
+          </span><span class="n">raw_items</span><span class="w">
+          </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">validate_items</span><span class="p" data-group-id="7790272134-7">(</span><span class="p" data-group-id="7790272134-7">)</span><span class="w">
+          </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">calculate_pricing</span><span class="p" data-group-id="7790272134-8">(</span><span class="p" data-group-id="7790272134-8">)</span><span class="w">
+          </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">apply_discounts</span><span class="p" data-group-id="7790272134-9">(</span><span class="p" data-group-id="7790272134-9">)</span><span class="w">
+
+        </span><span class="nc">Ash.Changeset</span><span class="o">.</span><span class="n">manage_relationship</span><span class="p" data-group-id="7790272134-10">(</span><span class="w">
+          </span><span class="n">changeset</span><span class="p">,</span><span class="w">
+          </span><span class="ss">:items</span><span class="p">,</span><span class="w">
+          </span><span class="n">processed_items</span><span class="p">,</span><span class="w">
+          </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:direct_control</span><span class="w">
+        </span><span class="p" data-group-id="7790272134-10">)</span><span class="w">
+
+      </span><span class="ss">:error</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">
+        </span><span class="n">changeset</span><span class="w">
+    </span><span class="k" data-group-id="7790272134-5">end</span><span class="w">
+  </span><span class="k" data-group-id="7790272134-3">end</span><span class="w">
+</span><span class="k" data-group-id="7790272134-1">end</span></code></pre><h3 id="management-types-and-options">Management Types and Options</h3><p>Ash provides several built-in management types that configure common
+relationship management patterns:</p><h4>Management Types</h4><p><strong><code class="inline">:append</code></strong> - Add new related records, ignore existing ones</p><pre><code class="makeup elixir" translate="no"><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="7329789605-1">(</span><span class="ss">:tags</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append</span><span class="p" data-group-id="7329789605-1">)</span><span class="w">
+</span><span class="c1"># Equivalent to:</span><span class="w">
+</span><span class="c1"># on_lookup: :relate, on_no_match: :error, on_match: :ignore, on_missing: :ignore</span></code></pre><p><strong><code class="inline">:append_and_remove</code></strong> - Add new related records, remove missing ones</p><pre><code class="makeup elixir" translate="no"><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="5420365951-1">(</span><span class="ss">:tags</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append_and_remove</span><span class="p" data-group-id="5420365951-1">)</span><span class="w">
+</span><span class="c1"># Equivalent to:</span><span class="w">
+</span><span class="c1"># on_lookup: :relate, on_no_match: :error, on_match: :ignore, on_missing: :unrelate</span></code></pre><p><strong><code class="inline">:remove</code></strong> - Remove specified related records</p><pre><code class="makeup elixir" translate="no"><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="0677626181-1">(</span><span class="ss">:tags</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:remove</span><span class="p" data-group-id="0677626181-1">)</span><span class="w">
+</span><span class="c1"># Equivalent to:</span><span class="w">
+</span><span class="c1"># on_no_match: :error, on_match: :unrelate, on_missing: :ignore</span></code></pre><p><strong><code class="inline">:direct_control</code></strong> - Full CRUD control over the related records</p><pre><code class="makeup elixir" translate="no"><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="7534337786-1">(</span><span class="ss">:comments</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:direct_control</span><span class="p" data-group-id="7534337786-1">)</span><span class="w">
+</span><span class="c1"># Equivalent to:</span><span class="w">
+</span><span class="c1"># on_lookup: :ignore, on_no_match: :create, on_match: :update, on_missing: :destroy</span></code></pre><p><strong><code class="inline">:create</code></strong> - Only create new related records</p><pre><code class="makeup elixir" translate="no"><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="8455764929-1">(</span><span class="ss">:items</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:create</span><span class="p" data-group-id="8455764929-1">)</span><span class="w">
+</span><span class="c1"># Equivalent to:</span><span class="w">
+</span><span class="c1"># on_no_match: :create, on_match: :ignore</span></code></pre><h4>Key Options</h4><p><strong><code class="inline">on_lookup</code></strong> - How to handle records that might exist elsewhere:</p><ul><li><code class="inline">:ignore</code> - Don't look up existing records</li><li><code class="inline">:relate</code> - Look up and relate existing records</li><li><code class="inline">{:relate, :action_name}</code> - Use specific action for relating</li></ul><p><strong><code class="inline">on_no_match</code></strong> - What to do when no matching record exists:</p><ul><li><code class="inline">:ignore</code> - Skip these inputs</li><li><code class="inline">:create</code> - Create new records</li><li><code class="inline">{:create, :action_name}</code> - Use specific create action</li><li><code class="inline">:error</code> - Raise an error</li></ul><p><strong><code class="inline">on_match</code></strong> - What to do when a matching record is found:</p><ul><li><code class="inline">:ignore</code> - Leave the record as-is</li><li><code class="inline">:update</code> - Update the existing record</li><li><code class="inline">{:update, :action_name}</code> - Use specific update action</li><li><code class="inline">:unrelate</code> - Remove the relationship</li><li><code class="inline">:error</code> - Raise an error</li></ul><p><strong><code class="inline">on_missing</code></strong> - What to do with related records not in the input:</p><ul><li><code class="inline">:ignore</code> - Leave them as-is</li><li><code class="inline">:unrelate</code> - Remove the relationship</li><li><code class="inline">:destroy</code> - Delete the records</li><li><code class="inline">{:destroy, :action_name}</code> - Use specific destroy action</li></ul><h4>Decision Flow</h4><p>The following diagram shows how <code class="inline">manage_relationship</code> processes input records
+using these options:</p><pre><code class="mermaid">flowchart TD
+    A[manage_relationship input] --&gt; B[Load existing relationships]
+
+    B --&gt; C[Does input exist in current relationships?]
+    B --&gt; L
+
+    C --&gt;|Yes - Found match| D[on_match behavior]
+    C --&gt;|No - No match found| E[on_lookup behavior]
+
+    E --&gt;|:ignore| F[on_no_match behavior]
+    E --&gt;|:relate| G[Query destination resource&lt;br/&gt;using input identities]
+
+    G --&gt; H[Found in lookup?]
+    H --&gt;|Yes| I[:relate - Add relationship]
+    H --&gt;|No| F
+
+    D --&gt; D1[:ignore - Leave as-is]
+    D --&gt; D2[:update - Update existing]
+    D --&gt; D3[:unrelate - Remove relationship]
+    D --&gt; D4[:error - Raise error]
+
+    F --&gt; F1[:ignore - Skip input]
+    F --&gt; F2[:create - Create new record]
+    F --&gt; F3[:error - Raise error]
+
+    L[Existing related records not in input] --&gt; J[on_missing behavior]
+
+    J --&gt; J1[:ignore - Leave as-is]
+    J --&gt; J2[:unrelate - Remove relationship]
+    J --&gt; J3[:destroy - Delete records]
+
+    style A fill:#e1f5fe
+    style D1 fill:#fff3e0
+    style D2 fill:#e8f5e8
+    style D3 fill:#fce4ec
+    style D4 fill:#ffebee
+    style F1 fill:#fff3e0
+    style F2 fill:#e8f5e8
+    style F3 fill:#ffebee
+    style I fill:#e8f5e8
+    style J1 fill:#fff3e0
+    style J2 fill:#fce4ec
+    style J3 fill:#ffcdd2
+</code></pre><h4>Advanced Options</h4><p><strong><code class="inline">value_is_key</code></strong> - Use a specific field as the key when providing simple
+values:</p><pre><code class="makeup elixir" translate="no"><span class="c1"># Allow using category names instead of IDs</span><span class="w">
+</span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="1071241769-1">(</span><span class="ss">:category_names</span><span class="p">,</span><span class="w"> </span><span class="ss">:categories</span><span class="p">,</span><span class="w">
+  </span><span class="ss">value_is_key</span><span class="p">:</span><span class="w"> </span><span class="ss">:name</span><span class="p">,</span><span class="w">
+  </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append_and_remove</span><span class="w">
+</span><span class="p" data-group-id="1071241769-1">)</span></code></pre><p><strong><code class="inline">use_identities</code></strong> - Specify which identities to use for lookups:</p><pre><code class="makeup elixir" translate="no"><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="9312461906-1">(</span><span class="ss">:tags</span><span class="p">,</span><span class="w">
+  </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append_and_remove</span><span class="p">,</span><span class="w">
+  </span><span class="ss">use_identities</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9312461906-2">[</span><span class="ss">:name</span><span class="p">,</span><span class="w"> </span><span class="ss">:_primary_key</span><span class="p" data-group-id="9312461906-2">]</span><span class="w">
+</span><span class="p" data-group-id="9312461906-1">)</span></code></pre><p><strong><code class="inline">join_keys</code></strong> - For many-to-many relationships, specify join table parameters:</p><pre><code class="makeup elixir" translate="no"><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="4545574148-1">(</span><span class="ss">:categories</span><span class="p">,</span><span class="w">
+  </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append_and_remove</span><span class="p">,</span><span class="w">
+  </span><span class="ss">join_keys</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="4545574148-2">[</span><span class="ss">:priority</span><span class="p">,</span><span class="w"> </span><span class="ss">:added_by</span><span class="p" data-group-id="4545574148-2">]</span><span class="w">
+</span><span class="p" data-group-id="4545574148-1">)</span></code></pre><h3 id="relationship-type-considerations">Relationship Type Considerations</h3><h4>belongs_to Relationships</h4><p>When managing <code class="inline">belongs_to</code> relationships, you're typically setting a parent:</p><pre><code class="makeup elixir" translate="no"><span class="n">create</span><span class="w"> </span><span class="ss">:create_with_parent</span><span class="w"> </span><span class="k" data-group-id="1939624667-1">do</span><span class="w">
+  </span><span class="n">argument</span><span class="w"> </span><span class="ss">:parent</span><span class="p">,</span><span class="w"> </span><span class="ss">:map</span><span class="w">
+  </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="1939624667-2">(</span><span class="ss">:parent</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:create</span><span class="p" data-group-id="1939624667-2">)</span><span class="w">
+</span><span class="k" data-group-id="1939624667-1">end</span><span class="w">
+
+</span><span class="c1"># Or relating to existing parent</span><span class="w">
+</span><span class="n">update</span><span class="w"> </span><span class="ss">:assign_parent</span><span class="w"> </span><span class="k" data-group-id="1939624667-3">do</span><span class="w">
+  </span><span class="n">argument</span><span class="w"> </span><span class="ss">:parent_id</span><span class="p">,</span><span class="w"> </span><span class="ss">:uuid</span><span class="w">
+  </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="1939624667-4">(</span><span class="ss">:parent_id</span><span class="p">,</span><span class="w"> </span><span class="ss">:parent</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append_and_remove</span><span class="p" data-group-id="1939624667-4">)</span><span class="w">
+</span><span class="k" data-group-id="1939624667-3">end</span></code></pre><h4>has_one Relationships</h4><p>For <code class="inline">has_one</code> relationships, you manage a single related record:</p><pre><code class="makeup elixir" translate="no"><span class="n">update</span><span class="w"> </span><span class="ss">:update_profile</span><span class="w"> </span><span class="k" data-group-id="8023460188-1">do</span><span class="w">
+  </span><span class="n">argument</span><span class="w"> </span><span class="ss">:profile</span><span class="p">,</span><span class="w"> </span><span class="ss">:map</span><span class="w">
+  </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="8023460188-2">(</span><span class="ss">:profile</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:direct_control</span><span class="p" data-group-id="8023460188-2">)</span><span class="w">
+</span><span class="k" data-group-id="8023460188-1">end</span></code></pre><h4>has_many Relationships</h4><p>With <code class="inline">has_many</code>, you typically manage collections:</p><pre><code class="makeup elixir" translate="no"><span class="n">update</span><span class="w"> </span><span class="ss">:manage_comments</span><span class="w"> </span><span class="k" data-group-id="3096145055-1">do</span><span class="w">
+  </span><span class="n">argument</span><span class="w"> </span><span class="ss">:comments</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3096145055-2">{</span><span class="ss">:array</span><span class="p">,</span><span class="w"> </span><span class="ss">:map</span><span class="p" data-group-id="3096145055-2">}</span><span class="w">
+  </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="3096145055-3">(</span><span class="ss">:comments</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:direct_control</span><span class="p" data-group-id="3096145055-3">)</span><span class="w">
+</span><span class="k" data-group-id="3096145055-1">end</span></code></pre><h4>many_to_many Relationships</h4><p>Many-to-many relationships often involve join table management:</p><pre><code class="makeup elixir" translate="no"><span class="n">update</span><span class="w"> </span><span class="ss">:update_post_tags</span><span class="w"> </span><span class="k" data-group-id="2234083357-1">do</span><span class="w">
+  </span><span class="n">argument</span><span class="w"> </span><span class="ss">:tags</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2234083357-2">{</span><span class="ss">:array</span><span class="p">,</span><span class="w"> </span><span class="ss">:map</span><span class="p" data-group-id="2234083357-2">}</span><span class="w">
+
+  </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="2234083357-3">(</span><span class="ss">:tags</span><span class="p">,</span><span class="w">
+    </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append_and_remove</span><span class="p">,</span><span class="w">
+    </span><span class="ss">join_keys</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2234083357-4">[</span><span class="ss">:tagged_at</span><span class="p">,</span><span class="w"> </span><span class="ss">:tagged_by</span><span class="p" data-group-id="2234083357-4">]</span><span class="w">
+  </span><span class="p" data-group-id="2234083357-3">)</span><span class="w">
+</span><span class="k" data-group-id="2234083357-1">end</span></code></pre><h3 id="advanced-patterns">Advanced Patterns</h3><h4>Multiple manage_relationship Calls</h4><p>You can call <code class="inline">manage_relationship</code> multiple times, and they'll be processed in
+order:</p><pre><code class="makeup elixir" translate="no"><span class="n">update</span><span class="w"> </span><span class="ss">:complex_update</span><span class="w"> </span><span class="k" data-group-id="9635884911-1">do</span><span class="w">
+  </span><span class="n">argument</span><span class="w"> </span><span class="ss">:add_tags</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="9635884911-2">{</span><span class="ss">:array</span><span class="p">,</span><span class="w"> </span><span class="ss">:string</span><span class="p" data-group-id="9635884911-2">}</span><span class="w">
+  </span><span class="n">argument</span><span class="w"> </span><span class="ss">:remove_tags</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="9635884911-3">{</span><span class="ss">:array</span><span class="p">,</span><span class="w"> </span><span class="ss">:string</span><span class="p" data-group-id="9635884911-3">}</span><span class="w">
+
+  </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="9635884911-4">(</span><span class="ss">:add_tags</span><span class="p">,</span><span class="w"> </span><span class="ss">:tags</span><span class="p">,</span><span class="w">
+    </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append</span><span class="p">,</span><span class="w">
+    </span><span class="ss">value_is_key</span><span class="p">:</span><span class="w"> </span><span class="ss">:name</span><span class="p">,</span><span class="w">
+    </span><span class="ss">meta</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9635884911-5">[</span><span class="ss">order</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p" data-group-id="9635884911-5">]</span><span class="w">
+  </span><span class="p" data-group-id="9635884911-4">)</span><span class="w">
+
+  </span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="9635884911-6">(</span><span class="ss">:remove_tags</span><span class="p">,</span><span class="w"> </span><span class="ss">:tags</span><span class="p">,</span><span class="w">
+    </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:remove</span><span class="p">,</span><span class="w">
+    </span><span class="ss">value_is_key</span><span class="p">:</span><span class="w"> </span><span class="ss">:name</span><span class="p">,</span><span class="w">
+    </span><span class="ss">meta</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9635884911-7">[</span><span class="ss">order</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p" data-group-id="9635884911-7">]</span><span class="w">
+  </span><span class="p" data-group-id="9635884911-6">)</span><span class="w">
+</span><span class="k" data-group-id="9635884911-1">end</span></code></pre><h3 id="argument-types-and-value-handling">Argument Types and Value Handling</h3><h4>Map and List Inputs</h4><p>When providing maps or lists of maps, you're providing input for actions on the
+destination resource:</p><pre><code class="makeup elixir" translate="no"><span class="c1"># Maps become action input</span><span class="w">
+</span><span class="n">argument</span><span class="w"> </span><span class="ss">:comment</span><span class="p">,</span><span class="w"> </span><span class="ss">:map</span><span class="w">
+</span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="1954567125-1">(</span><span class="ss">:comment</span><span class="p">,</span><span class="w"> </span><span class="ss">:comments</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:create</span><span class="p" data-group-id="1954567125-1">)</span><span class="w">
+
+</span><span class="c1"># Usage:</span><span class="w">
+</span><span class="p" data-group-id="1954567125-2">%{</span><span class="ss">comment</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="1954567125-3">%{</span><span class="ss">text</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Great post!&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">rating</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p" data-group-id="1954567125-3">}</span><span class="p" data-group-id="1954567125-2">}</span></code></pre><h4>Simple Value Inputs</h4><p>You can also provide simple values using <code class="inline">value_is_key</code>:</p><pre><code class="makeup elixir" translate="no"><span class="n">argument</span><span class="w"> </span><span class="ss">:tag_names</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6734798721-1">{</span><span class="ss">:array</span><span class="p">,</span><span class="w"> </span><span class="ss">:string</span><span class="p" data-group-id="6734798721-1">}</span><span class="w">
+</span><span class="n">change</span><span class="w"> </span><span class="n">manage_relationship</span><span class="p" data-group-id="6734798721-2">(</span><span class="ss">:tag_names</span><span class="p">,</span><span class="w"> </span><span class="ss">:tags</span><span class="p">,</span><span class="w">
+  </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append_and_remove</span><span class="p">,</span><span class="w">
+  </span><span class="ss">value_is_key</span><span class="p">:</span><span class="w"> </span><span class="ss">:name</span><span class="p">,</span><span class="w">
+  </span><span class="ss">on_lookup</span><span class="p">:</span><span class="w"> </span><span class="ss">:relate</span><span class="p">,</span><span class="w">
+  </span><span class="ss">on_no_match</span><span class="p">:</span><span class="w"> </span><span class="ss">:create</span><span class="w">
+</span><span class="p" data-group-id="6734798721-2">)</span><span class="w">
+
+</span><span class="c1"># Usage:</span><span class="w">
+</span><span class="p" data-group-id="6734798721-3">%{</span><span class="ss">tag_names</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="6734798721-4">[</span><span class="s">&quot;elixir&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;phoenix&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ash&quot;</span><span class="p" data-group-id="6734798721-4">]</span><span class="p" data-group-id="6734798721-3">}</span></code></pre><h4>Using Existing Records</h4><p>You can also pass existing record structs directly:</p><pre><code class="makeup elixir" translate="no"><span class="c1"># In a custom change</span><span class="w">
+</span><span class="n">existing_tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Ash</span><span class="o">.</span><span class="n">read!</span><span class="p" data-group-id="1618966530-1">(</span><span class="nc">Tag</span><span class="p">,</span><span class="w"> </span><span class="ss">actor</span><span class="p">:</span><span class="w"> </span><span class="n">actor</span><span class="p" data-group-id="1618966530-1">)</span><span class="w">
+</span><span class="nc">Ash.Changeset</span><span class="o">.</span><span class="n">manage_relationship</span><span class="p" data-group-id="1618966530-2">(</span><span class="n">changeset</span><span class="p">,</span><span class="w"> </span><span class="ss">:tags</span><span class="p">,</span><span class="w"> </span><span class="n">existing_tags</span><span class="p">,</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="ss">:append</span><span class="p" data-group-id="1618966530-2">)</span></code></pre><section role="note" class="admonition warning"><h4 class="admonition-title warning">Authorization considerations</h4><p>When you pass existing record structs directly to <code class="inline">manage_relationship</code>, Ash
+assumes that the actor is already authorized to read those records. This
+bypasses the normal authorization checks that would occur if you had provided
+IDs instead.</p><p>If you provide ids/maps, Ash will read the records and properly check
+authorization. Only pass existing record structs when you're certain the actor
+has appropriate read permissions for those records, or authorization is not
+relevant.</p></section><h3 id="integration-with-tools">Integration with Tools</h3><p>The explicit nature of relationship management options enables rich
+integrations:</p><ul><li><strong>AshPhoenix.Form</strong> - Automatically derives nested form structures</li><li><strong>AshGraphQL</strong> - Generates complex input objects for mutations</li><li><strong>AshJsonApi</strong> - Creates appropriate API endpoints for relationship management</li></ul><p>This works because Ash can determine exactly what actions might be called and
+what input is needed based on your <code class="inline">manage_relationship</code> configuration.</p><p>For complete documentation of all available options, see
+<a href="Ash.Changeset.xhtml#manage_relationship/4"><code class="inline">Ash.Changeset.manage_relationship/4</code></a>.</p>
+
+  </body>
+</html>

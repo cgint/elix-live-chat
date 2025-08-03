@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Notifier.PubSub - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Notifier.PubSub 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A builtin notifier to help you publish events over any kind of pub-sub tooling.</p><p>This is plug and play with <code class="inline">Phoenix.PubSub</code>, but could be used with any pubsub system.</p><p>You configure a module that defines a <code class="inline">broadcast/3</code> function, and then add some &quot;publications&quot;
+which configure under what conditions an event should be sent and what the topic should be.</p><h2 id="module-example">Example</h2><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.User</samp><samp class="w"> </samp><samp class="k" data-group-id="7867653392-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Ash.Resource</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="c1"># ...</samp><samp class="w">
+    </samp><samp class="ss">notifiers</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7867653392-2">[</samp><samp class="nc">Ash.Notifier.PubSub</samp><samp class="p" data-group-id="7867653392-2">]</samp><samp class="w">
+
+  </samp><samp class="c1"># ...</samp><samp class="w">
+
+  </samp><samp class="n">pub_sub</samp><samp class="w"> </samp><samp class="k" data-group-id="7867653392-3">do</samp><samp class="w">
+    </samp><samp class="n">module</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Endpoint</samp><samp class="w">
+
+    </samp><samp class="n">prefix</samp><samp class="w"> </samp><samp class="s">&quot;user&quot;</samp><samp class="w">
+    </samp><samp class="n">publish</samp><samp class="w"> </samp><samp class="ss">:update</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="7867653392-4">[</samp><samp class="s">&quot;updated&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_pkey</samp><samp class="p" data-group-id="7867653392-4">]</samp><samp class="w">
+  </samp><samp class="k" data-group-id="7867653392-3">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="7867653392-1">end</samp></code></pre><h2 id="module-debugging-pubsub">Debugging PubSub</h2><p>It can be quite frustrating when setting up pub_sub when everything appears to be set up properly, but
+you aren't receiving events. This usually means some kind of mismatch between the event names produced
+by the resource/config of your publications, and you can use the following flag to display debug
+information about all pub sub events.</p><pre><code class="makeup elixir" translate="no"><samp class="n">config</samp><samp class="w"> </samp><samp class="ss">:ash</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:pub_sub</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">debug?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">true</samp></code></pre><h2 id="module-topic-templates">Topic Templates</h2><p>Often you want to include some piece of data in the thing being changed, like the <code class="inline">:id</code> attribute. This
+is done by providing a list as the topic, and using atoms which will be replaced by their corresponding
+values. They will ultimately be joined with <code class="inline">:</code>.</p><p>For example:</p><pre><code class="makeup elixir" translate="no"><samp class="n">prefix</samp><samp class="w"> </samp><samp class="s">&quot;user&quot;</samp><samp class="w">
+
+</samp><samp class="n">publish</samp><samp class="w"> </samp><samp class="ss">:create</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="5034051332-1">[</samp><samp class="s">&quot;created&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:user_id</samp><samp class="p" data-group-id="5034051332-1">]</samp></code></pre><p>This might publish a message to &quot;user:created:1&quot; for example.</p><p>For updates, if the field in the template is being changed, a message is sent
+to <em>both</em> values. So if you change <code class="inline">user 1</code> to <code class="inline">user 2</code>, the same message would
+be published to <code class="inline">user:updated:1</code> and <code class="inline">user:updated:2</code>. If there are multiple
+attributes in the template, and they are all being changed, a message is sent for
+every combination of substitutions.</p><h2 id="module-important">Important</h2><p>If the previous value was <code class="inline">nil</code> or the field was not selected on the data passed into the action, then a
+notification is not sent for the previous value.</p><p>If the new value is <code class="inline">nil</code> then a notification is not sent for the new value.</p><h2 id="module-template-parts">Template parts</h2><p>Templates may contain lists, in which case all combinations of values in the list will be used. Add
+<code class="inline">nil</code> to the list if you want to produce a pattern where that entry is omitted.</p><p>The atom <code class="inline">:_tenant</code> may be used. If the changeset has a tenant set on it, that
+value will be used, otherwise that combination of values is ignored.</p><p>The atom <code class="inline">:_pkey</code> may be used. It will be a stringified, concatenation of the primary key fields,
+or just the primary key if there is only one primary key field.</p><p>The atom <code class="inline">nil</code> may be used. It only makes sense to use it in the context of a list of alternatives,
+and adds a pattern where that part is skipped.</p><pre><code class="makeup elixir" translate="no"><samp class="n">publish</samp><samp class="w"> </samp><samp class="ss">:updated</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2861246376-1">[</samp><samp class="p" data-group-id="2861246376-2">[</samp><samp class="ss">:team_id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:_tenant</samp><samp class="p" data-group-id="2861246376-2">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;updated&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2861246376-3">[</samp><samp class="ss">:id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="no">nil</samp><samp class="p" data-group-id="2861246376-3">]</samp><samp class="p" data-group-id="2861246376-1">]</samp></code></pre><p>Would produce the following messages, given a <code class="inline">team_id</code> of 1, a <code class="inline">tenant</code> of <code class="inline">org_1</code>, and an <code class="inline">id</code> of <code class="inline">50</code>:</p><pre><code class="makeup elixir" translate="no"><samp class="s">&quot;1:updated:50&quot;</samp><samp class="w">
+</samp><samp class="s">&quot;1:updated&quot;</samp><samp class="w">
+</samp><samp class="s">&quot;org_1:updated:50&quot;</samp><samp class="w">
+</samp><samp class="s">&quot;org_1:updated&quot;</samp></code></pre><h2 id="module-custom-delimiters">Custom Delimiters</h2><p>It's possible to change the default delimiter used when generating topics. This is useful when working with message brokers
+like RabbitMQ, which rely on a different set of delimiters for routing.</p><pre><code class="makeup elixir" translate="no"><samp class="n">pub_sub</samp><samp class="w"> </samp><samp class="k" data-group-id="0907550927-1">do</samp><samp class="w">
+  </samp><samp class="n">delimiter</samp><samp class="w"> </samp><samp class="s">&quot;.&quot;</samp><samp class="w">
+</samp><samp class="k" data-group-id="0907550927-1">end</samp></code></pre><h2 id="module-named-pubsub-modules">Named Pubsub modules</h2><p>If you are using a phoenix <code class="inline">Endpoint</code> module for pubsub then this is unnecessary. If you want to use a custom pub sub started
+with something like <code class="inline">{Phoenix.PubSub, name: MyName}</code>, then you can provide <code class="inline">MyName</code> to here.</p><h2 id="module-broadcast-types">Broadcast Types</h2><p>Configured with <code class="inline">broadcast_type</code>.</p><ul><li><code class="inline">:notification</code> just sends the notification</li><li><code class="inline">:phoenix_broadcast</code> sends a <code class="inline">%Phoenix.Socket.Broadcast{}</code> (see above)</li><li><code class="inline">:broadcast</code> sends <code class="inline">%{topic: (topic), event: (event), payload: (notification)}</code></li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#pub_sub/1" data-no-tooltip="" translate="no">pub_sub(body)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_payload/4" data-no-tooltip="" translate="no">to_payload(topic, event, notification, value)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="pub_sub/1">
+
+  <div class="detail-header">
+    <a href="#pub_sub/1" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">pub_sub(body)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/notifier/pub_sub/pub_sub.ex#L214" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="to_payload/4">
+
+  <div class="detail-header">
+    <a href="#to_payload/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_payload(topic, event, notification, value)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/notifier/pub_sub/pub_sub.ex#L311" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Notifier.Notification - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Notifier.Notification 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Represents a notification that will be handled by a resource's notifiers</p><p>Set the <code class="inline">for</code> key to a notifier or a list of notifiers to route the notification
+to them. This allows you to produce notifications inside of a <code class="inline">change</code> module
+and target specific notifiers with them.</p><p><code class="inline">metadata</code> is freeform data to be set however you want. <code class="inline">resource</code>, <code class="inline">action</code>, <code class="inline">data</code>,
+<code class="inline">changeset</code> and <code class="inline">actor</code> are all set by default based on the details of the action, so
+they can be omitted.</p><p>When creating a notification, a resource is required to ensure that the notification isn't
+sent until the current transaction for that resource is closed. If you don't need this
+behavior you can explicitly supply <code class="inline">nil</code> for the resource. If you supply <code class="inline">nil</code> for the resource,
+however, you must manually set the <code class="inline">for</code> option, e.g: <code class="inline">for: Notifier</code> or <code class="inline">for: [Notifier1, Notifier2]</code></p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new/2" data-no-tooltip="" translate="no">new(resource, opts)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/notifier/notification.ex#L20" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %Ash.Notifier.Notification{
+  action: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  actor: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  changeset: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  data: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  domain: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  for: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  from: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  metadata: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  resource: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="new/2">
+
+  <div class="detail-header">
+    <a href="#new/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(resource, opts)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/notifier/notification.ex#L22" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

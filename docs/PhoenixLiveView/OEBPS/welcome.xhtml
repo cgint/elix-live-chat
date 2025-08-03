@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Welcome</h1>
+<p>Welcome to Phoenix LiveView documentation. Phoenix LiveView enables
+rich, real-time user experiences with server-rendered HTML. A general
+overview of LiveView and its benefits is <a href="https://github.com/phoenixframework/phoenix_live_view">available in our README</a>.</p><h2 id="what-is-a-liveview">What is a LiveView?</h2><p>LiveViews are processes that receive events, update their state,
+and render updates to a page as diffs.</p><p>The LiveView programming model is declarative: instead of saying
+&quot;once event X happens, change Y on the page&quot;, events in LiveView
+are regular messages which may cause changes to the state. Once
+the state changes, the LiveView will re-render the relevant parts of
+its HTML template and push it to the browser, which updates the page
+in the most efficient manner.</p><p>LiveView state is nothing more than functional and immutable
+Elixir data structures. The events are either internal application messages
+(usually emitted by <a href="https://hexdocs.pm/phoenix_pubsub/2.1.3/Phoenix.PubSub.html"><code class="inline">Phoenix.PubSub</code></a>) or sent by the client/browser.</p><p>Every LiveView is first rendered statically as part of a regular
+HTTP request, which provides quick times for &quot;First Meaningful
+Paint&quot;, in addition to helping search and indexing engines.
+A persistent connection is then established between the client and
+server. This allows LiveView applications to react faster to user
+events as there is less work to be done and less data to be sent
+compared to stateless requests that have to authenticate, decode, load,
+and encode data on every request.</p><h2 id="example">Example</h2><p>LiveView is included by default in Phoenix applications.
+Therefore, to use LiveView, you must have already installed Phoenix
+and created your first application. If you haven't done so,
+check <a href="https://hexdocs.pm/phoenix/installation.html">Phoenix' installation guide</a>
+to get started.</p><p>The behaviour of a LiveView is outlined by a module which implements
+a series of functions as callbacks. Let's see an example. Write the
+file below to <code class="inline">lib/my_app_web/live/thermostat_live.ex</code>:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyAppWeb.ThermostatLive</span><span class="w"> </span><span class="k" data-group-id="3018321974-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">MyAppWeb</span><span class="p">,</span><span class="w"> </span><span class="ss">:live_view</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">render</span><span class="p" data-group-id="3018321974-2">(</span><span class="n">assigns</span><span class="p" data-group-id="3018321974-2">)</span><span class="w"> </span><span class="k" data-group-id="3018321974-3">do</span><span class="w">
+    </span><span class="sx">~H&quot;&quot;&quot;</span><span class="w">
+</span><span class="n">    Current temperature: </span><span class="p" data-group-id="7187519039-1">{</span><span class="na">@temperature</span><span class="p" data-group-id="7187519039-1">}</span><span class="n">°F
+</span><span class="w">    </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">phx-click</span><span class="p">=</span><span class="p">&quot;</span><span class="s2">inc_temperature</span><span class="p">&quot;</span><span class="p">&gt;</span><span class="n">+</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span><span class="w">
+</span><span class="w">    </span><span class="sx">&quot;&quot;&quot;</span><span class="w">
+  </span><span class="k" data-group-id="3018321974-3">end</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">mount</span><span class="p" data-group-id="3018321974-4">(</span><span class="c">_params</span><span class="p">,</span><span class="w"> </span><span class="c">_session</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="3018321974-4">)</span><span class="w"> </span><span class="k" data-group-id="3018321974-5">do</span><span class="w">
+    </span><span class="n">temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">70</span><span class="w"> </span><span class="c1"># Let&#39;s assume a fixed temperature for now</span><span class="w">
+    </span><span class="p" data-group-id="3018321974-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">assign</span><span class="p" data-group-id="3018321974-7">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">:temperature</span><span class="p">,</span><span class="w"> </span><span class="n">temperature</span><span class="p" data-group-id="3018321974-7">)</span><span class="p" data-group-id="3018321974-6">}</span><span class="w">
+  </span><span class="k" data-group-id="3018321974-5">end</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">handle_event</span><span class="p" data-group-id="3018321974-8">(</span><span class="s">&quot;inc_temperature&quot;</span><span class="p">,</span><span class="w"> </span><span class="c">_params</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="3018321974-8">)</span><span class="w"> </span><span class="k" data-group-id="3018321974-9">do</span><span class="w">
+    </span><span class="p" data-group-id="3018321974-10">{</span><span class="ss">:noreply</span><span class="p">,</span><span class="w"> </span><span class="n">update</span><span class="p" data-group-id="3018321974-11">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">:temperature</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="3018321974-12">(</span><span class="ni">&amp;1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p" data-group-id="3018321974-12">)</span><span class="p" data-group-id="3018321974-11">)</span><span class="p" data-group-id="3018321974-10">}</span><span class="w">
+  </span><span class="k" data-group-id="3018321974-9">end</span><span class="w">
+</span><span class="k" data-group-id="3018321974-1">end</span></code></pre><p>The module above defines three functions (they are callbacks
+required by LiveView). The first one is <code class="inline">render/1</code>,
+which receives the socket <code class="inline">assigns</code> and is responsible for returning
+the content to be rendered on the page. We use the <code class="inline">~H</code> sigil to define
+a HEEx template, which stands for HTML+EEx. They are an extension of
+Elixir's builtin EEx templates, with support for HTML validation, syntax-based
+components, smart change tracking, and more. You can learn more about
+the template syntax in <a href="Phoenix.Component.xhtml#sigil_H/2"><code class="inline">Phoenix.Component.sigil_H/2</code></a> (note
+<a href="Phoenix.Component.xhtml"><code class="inline">Phoenix.Component</code></a> is automatically imported when you use <a href="Phoenix.LiveView.xhtml"><code class="inline">Phoenix.LiveView</code></a>).</p><p>The data used on rendering comes from the <code class="inline">mount</code> callback. The
+<code class="inline">mount</code> callback is invoked when the LiveView starts. In it, you
+can access the request parameters, read information stored in the
+session (typically information which identifies who is the current
+user), and a socket. The socket is where we keep all state, including
+assigns. <code class="inline">mount</code> proceeds to assign a default temperature to the socket.
+Because Elixir data structures are immutable, LiveView APIs often
+receive the socket and return an updated socket. Then we return
+<code class="inline">{:ok, socket}</code> to signal that we were able to mount the LiveView
+successfully. After <code class="inline">mount</code>, LiveView will render the page with the
+values from <code class="inline">assigns</code> and send it to the client.</p><p>If you look at the HTML rendered, you will notice there is a button
+with a <code class="inline">phx-click</code> attribute. When the button is clicked, a
+<code class="inline">&quot;inc_temperature&quot;</code> event is sent to the server, which is matched and
+handled by the <code class="inline">handle_event</code> callback. This callback updates the socket
+and returns <code class="inline">{:noreply, socket}</code> with the updated socket.
+<code class="inline">handle_*</code> callbacks in LiveView (and in Elixir in general) are
+invoked based on some action, in this case, the user clicking a button.
+The <code class="inline">{:noreply, socket}</code> return means there is no additional replies
+sent to the browser, only that a new version of the page is rendered.
+LiveView then computes diffs and sends them to the client.</p><p>Now we are ready to render our LiveView. You can serve the LiveView
+directly from your router:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyAppWeb.Router</span><span class="w"> </span><span class="k" data-group-id="9927755554-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">MyAppWeb</span><span class="p">,</span><span class="w"> </span><span class="ss">:router</span><span class="w">
+
+  </span><span class="n">pipeline</span><span class="w"> </span><span class="ss">:browser</span><span class="w"> </span><span class="k" data-group-id="9927755554-2">do</span><span class="w">
+    </span><span class="n">...</span><span class="w">
+  </span><span class="k" data-group-id="9927755554-2">end</span><span class="w">
+
+  </span><span class="n">scope</span><span class="w"> </span><span class="s">&quot;/&quot;</span><span class="p">,</span><span class="w"> </span><span class="nc">MyAppWeb</span><span class="w"> </span><span class="k" data-group-id="9927755554-3">do</span><span class="w">
+    </span><span class="n">pipe_through</span><span class="w"> </span><span class="ss">:browser</span><span class="w">
+    </span><span class="n">...</span><span class="w">
+
+    </span><span class="n">live</span><span class="w"> </span><span class="s">&quot;/thermostat&quot;</span><span class="p">,</span><span class="w"> </span><span class="nc">ThermostatLive</span><span class="w">
+  </span><span class="k" data-group-id="9927755554-3">end</span><span class="w">
+</span><span class="k" data-group-id="9927755554-1">end</span></code></pre><p>Once the LiveView is rendered, a regular HTML response is sent. In your
+app.js file, you should find the following:</p><pre><code class="makeup javascript" translate="no"><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nv">Socket</span><span class="p">}</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="p">&quot;</span><span class="s2">phoenix</span><span class="p">&quot;</span><span class="w">
+</span><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nv">LiveSocket</span><span class="p">}</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="p">&quot;</span><span class="s2">phoenix_live_view</span><span class="p">&quot;</span><span class="w">
+</span><span class="w">
+</span><span class="kt">let</span><span class="w"> </span><span class="nv">csrfToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="p">&quot;</span><span class="s2">meta[name=&#39;csrf-token&#39;]</span><span class="p">&quot;</span><span class="p">)</span><span class="p">.</span><span class="nf">getAttribute</span><span class="p">(</span><span class="p">&quot;</span><span class="s2">content</span><span class="p">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="kt">let</span><span class="w"> </span><span class="nv">liveSocket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nv">LiveSocket</span><span class="p">(</span><span class="p">&quot;</span><span class="s2">/live</span><span class="p">&quot;</span><span class="p">,</span><span class="w"> </span><span class="no">Socket</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">params</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="n">_csrf_token</span><span class="p">:</span><span class="w"> </span><span class="nv">csrfToken</span><span class="p">}</span><span class="p">}</span><span class="p">)</span><span class="w">
+</span><span class="nv">liveSocket</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span><span class="p">)</span></code></pre><p>Now the JavaScript client will connect over WebSockets and <code class="inline">mount/3</code> will be invoked
+inside a spawned LiveView process.</p><h2 id="parameters-and-session">Parameters and session</h2><p>The mount callback receives three arguments: the request parameters, the session, and the socket.</p><p>The parameters can be used to read information from the URL. For example, assuming you have a <code class="inline">Thermostat</code> module defined somewhere that can read this information based on the house name, you could write this:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">mount</span><span class="p" data-group-id="7847513555-1">(</span><span class="p" data-group-id="7847513555-2">%{</span><span class="s">&quot;house&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">house</span><span class="p" data-group-id="7847513555-2">}</span><span class="p">,</span><span class="w"> </span><span class="c">_session</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="7847513555-1">)</span><span class="w"> </span><span class="k" data-group-id="7847513555-3">do</span><span class="w">
+  </span><span class="n">temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Thermostat</span><span class="o">.</span><span class="n">get_house_reading</span><span class="p" data-group-id="7847513555-4">(</span><span class="n">house</span><span class="p" data-group-id="7847513555-4">)</span><span class="w">
+  </span><span class="p" data-group-id="7847513555-5">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">assign</span><span class="p" data-group-id="7847513555-6">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">:temperature</span><span class="p">,</span><span class="w"> </span><span class="n">temperature</span><span class="p" data-group-id="7847513555-6">)</span><span class="p" data-group-id="7847513555-5">}</span><span class="w">
+</span><span class="k" data-group-id="7847513555-3">end</span></code></pre><p>And then in your router:</p><pre><code class="makeup elixir" translate="no"><span class="n">live</span><span class="w"> </span><span class="s">&quot;/thermostat/:house&quot;</span><span class="p">,</span><span class="w"> </span><span class="nc">ThermostatLive</span></code></pre><p>The session retrieves information from a signed (or encrypted) cookie. This is where you can store authentication information, such as <code class="inline">current_user_id</code>:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">mount</span><span class="p" data-group-id="7651835268-1">(</span><span class="c">_params</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7651835268-2">%{</span><span class="s">&quot;current_user_id&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">user_id</span><span class="p" data-group-id="7651835268-2">}</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="7651835268-1">)</span><span class="w"> </span><span class="k" data-group-id="7651835268-3">do</span><span class="w">
+  </span><span class="n">temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Thermostat</span><span class="o">.</span><span class="n">get_user_reading</span><span class="p" data-group-id="7651835268-4">(</span><span class="n">user_id</span><span class="p" data-group-id="7651835268-4">)</span><span class="w">
+  </span><span class="p" data-group-id="7651835268-5">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">assign</span><span class="p" data-group-id="7651835268-6">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">:temperature</span><span class="p">,</span><span class="w"> </span><span class="n">temperature</span><span class="p" data-group-id="7651835268-6">)</span><span class="p" data-group-id="7651835268-5">}</span><span class="w">
+</span><span class="k" data-group-id="7651835268-3">end</span></code></pre><blockquote><p>Phoenix comes with built-in authentication generators. See <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Mix.Tasks.Phx.Gen.Auth.html"><code class="inline">mix phx.gen.auth</code></a>.</p></blockquote><p>Most times, in practice, you will use both:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">mount</span><span class="p" data-group-id="3096640766-1">(</span><span class="p" data-group-id="3096640766-2">%{</span><span class="s">&quot;house&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">house</span><span class="p" data-group-id="3096640766-2">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3096640766-3">%{</span><span class="s">&quot;current_user_id&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">user_id</span><span class="p" data-group-id="3096640766-3">}</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="3096640766-1">)</span><span class="w"> </span><span class="k" data-group-id="3096640766-4">do</span><span class="w">
+  </span><span class="n">temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Thermostat</span><span class="o">.</span><span class="n">get_house_reading</span><span class="p" data-group-id="3096640766-5">(</span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">house</span><span class="p" data-group-id="3096640766-5">)</span><span class="w">
+  </span><span class="p" data-group-id="3096640766-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">assign</span><span class="p" data-group-id="3096640766-7">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">:temperature</span><span class="p">,</span><span class="w"> </span><span class="n">temperature</span><span class="p" data-group-id="3096640766-7">)</span><span class="p" data-group-id="3096640766-6">}</span><span class="w">
+</span><span class="k" data-group-id="3096640766-4">end</span></code></pre><p>In other words, you want to read the information about a given house, as long as the user has access to it.</p><h2 id="bindings">Bindings</h2><p>Phoenix supports DOM element bindings for client-server interaction. For
+example, to react to a click on a button, you would render the element:</p><pre><code class="makeup heex" translate="no"><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">phx-click</span><span class="p">=</span><span class="p">&quot;</span><span class="s2">inc_temperature</span><span class="p">&quot;</span><span class="p">&gt;</span><span class="n">+</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span></code></pre><p>Then on the server, all LiveView bindings are handled with the <code class="inline">handle_event/3</code>
+callback, for example:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">handle_event</span><span class="p" data-group-id="2096657236-1">(</span><span class="s">&quot;inc_temperature&quot;</span><span class="p">,</span><span class="w"> </span><span class="c">_value</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="2096657236-1">)</span><span class="w"> </span><span class="k" data-group-id="2096657236-2">do</span><span class="w">
+  </span><span class="p" data-group-id="2096657236-3">{</span><span class="ss">:noreply</span><span class="p">,</span><span class="w"> </span><span class="n">update</span><span class="p" data-group-id="2096657236-4">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">:temperature</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2096657236-5">(</span><span class="ni">&amp;1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p" data-group-id="2096657236-5">)</span><span class="p" data-group-id="2096657236-4">)</span><span class="p" data-group-id="2096657236-3">}</span><span class="w">
+</span><span class="k" data-group-id="2096657236-2">end</span></code></pre><p>To update UI state, for example, to open and close dropdowns, switch tabs,
+etc, LiveView also supports JS commands (<a href="Phoenix.LiveView.JS.xhtml"><code class="inline">Phoenix.LiveView.JS</code></a>), which
+execute directly on the client without reaching the server. To learn more,
+see <a href="bindings.xhtml">our bindings page</a> for a complete list of all LiveView
+bindings as well as our <a href="js-interop.xhtml">JavaScript interoperability guide</a>.</p><p>LiveView has built-in support for forms, including uploads and association
+management. See <a href="Phoenix.Component.xhtml#form/1"><code class="inline">Phoenix.Component.form/1</code></a> as a starting point and
+<a href="Phoenix.Component.xhtml#inputs_for/1"><code class="inline">Phoenix.Component.inputs_for/1</code></a> for working with associations.
+The <a href="uploads.xhtml">Uploads</a> and <a href="form-bindings.xhtml">Form bindings</a> guides provide
+more information about advanced features.</p><h2 id="navigation">Navigation</h2><p>LiveView provides functionality to allow page navigation using the
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API">browser's pushState API</a>.
+With live navigation, the page is updated without a full page reload.</p><p>You can either <em>patch</em> the current LiveView, updating its URL, or
+<em>navigate</em> to a new LiveView. You can learn more about them in the
+<a href="live-navigation.xhtml">Live Navigation</a> guide.</p><h2 id="generators">Generators</h2><p>Phoenix v1.6 and later includes code generators for LiveView. If you want to see
+an example of how to structure your application, from the database all the way up
+to LiveViews, run the following:</p><pre><code class="makeup shell" translate="no"><span class="gp unselectable">$ </span><span class="">mix phx.gen.live Blog Post posts title:string body:text
+</span></code></pre><p>For more information, run <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Mix.Tasks.Phx.Gen.Live.html"><code class="inline">mix help phx.gen.live</code></a>.</p><p>For authentication, with built-in LiveView support, run <code class="inline">mix phx.gen.auth Account User users</code>.</p><h2 id="compartmentalize-state-markup-and-events-in-liveview">Compartmentalize state, markup, and events in LiveView</h2><p>LiveView supports two extension mechanisms: function components, provided by
+<code class="inline">HEEx</code> templates, and stateful components, known as LiveComponents.</p><h3 id="function-components-to-organize-markup-and-event-handling">Function components to organize markup and event handling</h3><p>Similar to <code class="inline">render(assigns)</code> in our LiveView, a function component is any
+function that receives an assigns map and returns a <code class="inline">~H</code> template. For example:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">weather_greeting</span><span class="p" data-group-id="1837243866-1">(</span><span class="n">assigns</span><span class="p" data-group-id="1837243866-1">)</span><span class="w"> </span><span class="k" data-group-id="1837243866-2">do</span><span class="w">
+  </span><span class="sx">~H&quot;&quot;&quot;</span><span class="w">
+</span><span class="w">  </span><span class="p">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="na">title</span><span class="p">=</span><span class="p">&quot;</span><span class="s2">My div</span><span class="p">&quot;</span><span class="w"> </span><span class="na">class</span><span class="p">=</span><span class="p" data-group-id="3172609670-1">{</span><span class="na">@class</span><span class="p" data-group-id="3172609670-1">}</span><span class="p">&gt;</span><span class="w">
+</span><span class="w">    </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="n">Hello </span><span class="p" data-group-id="3172609670-2">{</span><span class="na">@name</span><span class="p" data-group-id="3172609670-2">}</span><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span><span class="w">
+</span><span class="w">    </span><span class="p">&lt;</span><span class="nc">MyApp.Weather</span><span class="o">.</span><span class="n">city</span><span class="w"> </span><span class="na">name</span><span class="p">=</span><span class="p">&quot;</span><span class="s2">Kraków</span><span class="p">&quot;</span><span class="p">/&gt;</span><span class="w">
+</span><span class="w">  </span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span><span class="w">
+</span><span class="w">  </span><span class="sx">&quot;&quot;&quot;</span><span class="w">
+</span><span class="k" data-group-id="1837243866-2">end</span></code></pre><p>You can learn more about function components in the <a href="Phoenix.Component.xhtml"><code class="inline">Phoenix.Component</code></a>
+module. At the end of the day, they are a useful mechanism for code organization
+and to reuse markup in your LiveViews.</p><p>Sometimes you need to share more than just markup across LiveViews. When you also
+want to move events to a separate module, or use the same event handler in multiple
+places, function components can be paired with
+<a href="Phoenix.LiveView.xhtml#attach_hook/4-sharing-event-handling-logic"><code class="inline">Phoenix.LiveView.attach_hook/4</code></a>.</p><h3 id="live-components-to-encapsulate-additional-state">Live components to encapsulate additional state</h3><p>A component will occasionally need control over not only its own events,
+but also its own separate state. For these cases, LiveView
+provides <a href="Phoenix.LiveComponent.xhtml"><code class="inline">Phoenix.LiveComponent</code></a>, which are rendered using
+<a href="Phoenix.Component.xhtml#live_component/1"><code class="inline">live_component/1</code></a>:</p><pre><code class="makeup heex" translate="no"><span class="p">&lt;</span><span class="nf">.live_component</span><span class="w"> </span><span class="na">module</span><span class="p">=</span><span class="p" data-group-id="2599369911-1">{</span><span class="nc">UserComponent</span><span class="p" data-group-id="2599369911-1">}</span><span class="w"> </span><span class="na">id</span><span class="p">=</span><span class="p" data-group-id="2599369911-2">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p" data-group-id="2599369911-2">}</span><span class="w"> </span><span class="na">user</span><span class="p">=</span><span class="p" data-group-id="2599369911-3">{</span><span class="n">user</span><span class="p" data-group-id="2599369911-3">}</span><span class="w"> </span><span class="p">/&gt;</span></code></pre><p>LiveComponents have their own <code class="inline">mount/1</code> and <code class="inline">handle_event/3</code> callbacks, as well
+as their own state with change tracking support, similar to LiveViews. They are
+lightweight since they &quot;run&quot; in the same process as the parent LiveView, but
+are more complex than function components themselves. Given they all run in the
+same process, errors in components cause the whole view to fail to render.
+For a complete rundown, see <a href="Phoenix.LiveComponent.xhtml"><code class="inline">Phoenix.LiveComponent</code></a>.</p><p>When in doubt over <a href="Phoenix.LiveComponent.xhtml#functional-components-or-live-components">Functional components or live components?</a>, default to the former.
+Rely on the latter only when you need the additional state.</p><h3 id="live_render-3-to-encapsulate-state-with-error-isolation">live_render/3 to encapsulate state (with error isolation)</h3><p>Finally, if you want complete isolation between parts of a LiveView, you can
+always render a LiveView inside another LiveView by calling
+<a href="Phoenix.Component.xhtml#live_render/3"><code class="inline">live_render/3</code></a>. This child LiveView
+runs in a separate process than the parent, with its own callbacks. If a child
+LiveView crashes, it won't affect the parent. If the parent crashes, all children
+are terminated.</p><p>When rendering a child LiveView, the <code class="inline">:id</code> option is required to uniquely
+identify the child. A child LiveView will only ever be rendered and mounted
+a single time, provided its ID remains unchanged. To force a child to re-mount
+with new session data, a new ID must be provided.</p><p>Given that it runs in its own process, a nested LiveView is an excellent tool
+for creating completely isolated UI elements, but it is a slightly expensive
+abstraction if all you want is to compartmentalize markup or events (or both).</p><h3 id="summary">Summary</h3><ul><li>use <a href="Phoenix.Component.xhtml"><code class="inline">Phoenix.Component</code></a> for code organization and reusing markup (optionally with <a href="Phoenix.LiveView.xhtml#attach_hook/4-sharing-event-handling-logic"><code class="inline">attach_hook/4</code></a> for event handling reuse)</li><li>use <a href="Phoenix.LiveComponent.xhtml"><code class="inline">Phoenix.LiveComponent</code></a> for sharing state, markup, and events between LiveViews</li><li>use nested <a href="Phoenix.LiveView.xhtml"><code class="inline">Phoenix.LiveView</code></a> to compartmentalize state, markup, and events (with error isolation)</li></ul><h2 id="guides">Guides</h2><p>This documentation is split into two categories. We have the API
+reference for all LiveView modules, that's where you will learn
+more about <a href="Phoenix.Component.xhtml"><code class="inline">Phoenix.Component</code></a>, <a href="Phoenix.LiveView.xhtml"><code class="inline">Phoenix.LiveView</code></a>, and so on.</p><p>LiveView also has many guides to help you on your journey,
+split on server-side and client-side:</p><h3 id="server-side">Server-side</h3><p>These guides focus on server-side functionality:</p><ul><li><a href="assigns-eex.xhtml">Assigns and HEEx templates</a></li><li><a href="deployments.xhtml">Deployments and recovery</a></li><li><a href="error-handling.xhtml">Error and exception handling</a></li><li><a href="gettext.xhtml">Gettext for internationalization</a></li><li><a href="live-layouts.xhtml">Live layouts</a></li><li><a href="live-navigation.xhtml">Live navigation</a></li><li><a href="security-model.xhtml">Security considerations</a></li><li><a href="telemetry.xhtml">Telemetry</a></li><li><a href="uploads.xhtml">Uploads</a></li></ul><h3 id="client-side">Client-side</h3><p>These guides focus on LiveView bindings and client-side integration:</p><ul><li><a href="bindings.xhtml">Bindings</a></li><li><a href="external-uploads.xhtml">External uploads</a></li><li><a href="form-bindings.xhtml">Form bindings</a></li><li><a href="js-interop.xhtml">JavaScript interoperability</a></li><li><a href="syncing-changes.xhtml">Syncing changes and optimistic UIs</a></li></ul>
+
+  </body>
+</html>

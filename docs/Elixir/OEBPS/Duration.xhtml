@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Duration - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Duration 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Struct and functions for handling durations.</p><p>A <a href="Duration.xhtml"><code class="inline">Duration</code></a> struct represents a collection of time scale units,
+allowing for manipulation and calculation of durations.</p><p>Date and time scale units are represented as integers, allowing for
+both positive and negative values.</p><p>Microseconds are represented using a tuple <code class="inline">{microsecond, precision}</code>.
+This ensures compatibility with other calendar types implementing time,
+such as <a href="Time.xhtml"><code class="inline">Time</code></a>, <a href="DateTime.xhtml"><code class="inline">DateTime</code></a>, and <a href="NaiveDateTime.xhtml"><code class="inline">NaiveDateTime</code></a>.</p><h2 id="module-shifting">Shifting</h2><p>The most common use of durations in Elixir's standard library is to
+&quot;shift&quot; the calendar types.</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="8507591569-1">(</samp><samp class="ld">~D[2016-01-03]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="8507591569-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2016-03-03]</samp></code></pre><p>In the example above, <a href="Date.xhtml#shift/2"><code class="inline">Date.shift/2</code></a> automatically converts the units
+into a <a href="Duration.xhtml"><code class="inline">Duration</code></a> struct, although one can also be given directly:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="2396581954-1">(</samp><samp class="ld">~D[2016-01-03]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="2396581954-2">(</samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="2396581954-2">)</samp><samp class="p" data-group-id="2396581954-1">)</samp><samp class="w">
+</samp><samp class="ld">~D[2016-03-03]</samp></code></pre><p>It is important to note that shifting is not an arithmetic operation.
+For example, adding <code class="inline">date + 1 month + 1 month</code> does not yield the same
+result as <code class="inline">date + 2 months</code>. Let's see an example:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="ld">~D[2016-01-31]</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="0117858886-1">(</samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="0117858886-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="0117858886-2">(</samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="0117858886-2">)</samp><samp class="w">
+</samp><samp class="ld">~D[2016-03-29]</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="ld">~D[2016-01-31]</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="0117858886-3">(</samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="0117858886-3">)</samp><samp class="w">
+</samp><samp class="ld">~D[2016-03-31]</samp></code></pre><p>As you can see above, the results differ, which explains why operations
+with durations are called &quot;shift&quot; rather than &quot;add&quot;. This happens because,
+once we add one month to <code class="inline">2016-01-31</code>, we get <code class="inline">2016-02-29</code>. Then adding
+one extra month gives us <code class="inline">2016-03-29</code> instead of <code class="inline">2016-03-31</code>.</p><p>In particular, when applying durations to <a href="Calendar.ISO.xhtml"><code class="inline">Calendar.ISO</code></a> types:</p><ul><li><p>larger units (such as years and months) are applied before
+smaller ones (such as weeks, hours, days, and so on)</p></li><li><p>units are collapsed into months (<code class="inline">:year</code> and <code class="inline">:month</code>),
+seconds (<code class="inline">:week</code>, <code class="inline">:day</code>, <code class="inline">:hour</code>, <code class="inline">:minute</code>, <code class="inline">:second</code>)
+and microseconds (<code class="inline">:microsecond</code>) before they are applied</p></li><li><p>1 year is equivalent to 12 months, 1 week is equivalent to 7 days.
+Therefore, 4 weeks <em>are not</em> equivalent to 1 month</p></li><li><p>in case of non-existing dates, the results are rounded down to the
+nearest valid date</p></li></ul><p>As the <code class="inline">shift/2</code> functions are calendar aware, they are guaranteed to return
+valid date/times, considering leap years as well as DST in applicable time zones.</p><h2 id="module-intervals">Intervals</h2><p>Durations in Elixir can be combined with stream operations to build intervals.
+For example, to retrieve the next three Wednesdays starting from 17th April, 2024:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="ld">~D[2024-04-17]</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Stream</samp><samp class="o">.</samp><samp class="n">iterate</samp><samp class="p" data-group-id="1306862577-1">(</samp><samp class="o">&amp;</samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="1306862577-2">(</samp><samp class="ni">&amp;1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">week</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="1306862577-2">)</samp><samp class="p" data-group-id="1306862577-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">take</samp><samp class="p" data-group-id="1306862577-3">(</samp><samp class="mi">3</samp><samp class="p" data-group-id="1306862577-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1306862577-4">[</samp><samp class="ld">~D[2024-04-17]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2024-04-24]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2024-05-01]</samp><samp class="p" data-group-id="1306862577-4">]</samp></code></pre><p>However, once again, it is important to remember that shifting a duration is not
+arithmetic, so you may want to use the functions in this module depending on what
+you to achieve. Compare the results of both examples below:</p><pre><code class="makeup elixir" translate="no"><samp class="c1"># Adding one month after the other</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">date</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="ld">~D[2016-01-31]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">duration</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="0531729811-1">(</samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="0531729811-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">stream</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Stream</samp><samp class="o">.</samp><samp class="n">iterate</samp><samp class="p" data-group-id="0531729811-2">(</samp><samp class="n">date</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="0531729811-3">fn</samp><samp class="w"> </samp><samp class="n">prev_date</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="0531729811-4">(</samp><samp class="n">prev_date</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">duration</samp><samp class="p" data-group-id="0531729811-4">)</samp><samp class="w"> </samp><samp class="k" data-group-id="0531729811-3">end</samp><samp class="p" data-group-id="0531729811-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">take</samp><samp class="p" data-group-id="0531729811-5">(</samp><samp class="n">stream</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="0531729811-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0531729811-6">[</samp><samp class="ld">~D[2016-01-31]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2016-02-29]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2016-03-29]</samp><samp class="p" data-group-id="0531729811-6">]</samp><samp class="w">
+
+</samp><samp class="c1"># Multiplying durations by an index</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">date</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="ld">~D[2016-01-31]</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">duration</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="0531729811-7">(</samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="0531729811-7">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">stream</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Stream</samp><samp class="o">.</samp><samp class="n">from_index</samp><samp class="p" data-group-id="0531729811-8">(</samp><samp class="k" data-group-id="0531729811-9">fn</samp><samp class="w"> </samp><samp class="n">i</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Date</samp><samp class="o">.</samp><samp class="n">shift</samp><samp class="p" data-group-id="0531729811-10">(</samp><samp class="n">date</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">multiply</samp><samp class="p" data-group-id="0531729811-11">(</samp><samp class="n">duration</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">i</samp><samp class="p" data-group-id="0531729811-11">)</samp><samp class="p" data-group-id="0531729811-10">)</samp><samp class="w"> </samp><samp class="k" data-group-id="0531729811-9">end</samp><samp class="p" data-group-id="0531729811-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">take</samp><samp class="p" data-group-id="0531729811-12">(</samp><samp class="n">stream</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="0531729811-12">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0531729811-13">[</samp><samp class="ld">~D[2016-01-31]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2016-02-29]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~D[2016-03-31]</samp><samp class="p" data-group-id="0531729811-13">]</samp></code></pre><p>The second example consistently points to the last day of the month,
+as it performs operations on the duration, rather than shifting date
+after date.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:duration/0" data-no-tooltip="" translate="no">duration()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The duration type specifies a <code class="inline">%Duration{}</code> struct or a keyword list of valid duration unit pairs.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The duration struct type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:unit_pair/0" data-no-tooltip="" translate="no">unit_pair()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The unit pair type specifies a pair of a valid duration unit key and value.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add/2" data-no-tooltip="" translate="no">add(d1, d2)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds units of given durations <code class="inline">d1</code> and <code class="inline">d2</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#from_iso8601/1" data-no-tooltip="" translate="no">from_iso8601(string)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Parses an <a>ISO 8601</a> formatted duration string to a <a><code class="inline">Duration</code></a> struct.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#from_iso8601!/1" data-no-tooltip="" translate="no">from_iso8601!(string)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Same as <a><code class="inline">from_iso8601/1</code></a> but raises an <a><code class="inline">ArgumentError</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#multiply/2" data-no-tooltip="" translate="no">multiply(duration, integer)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Multiplies <code class="inline">duration</code> units by given <code class="inline">integer</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#negate/1" data-no-tooltip="" translate="no">negate(duration)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Negates <code class="inline">duration</code> units.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new!/1" data-no-tooltip="" translate="no">new!(duration)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates a new <a><code class="inline">Duration</code></a> struct from given <code class="inline">unit_pairs</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#subtract/2" data-no-tooltip="" translate="no">subtract(d1, d2)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Subtracts units of given durations <code class="inline">d1</code> and <code class="inline">d2</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_iso8601/1" data-no-tooltip="" translate="no">to_iso8601(duration)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts the given <code class="inline">duration</code> to an <a>ISO 8601-2:2019</a> formatted string.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_string/2" data-no-tooltip="" translate="no">to_string(duration, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts the given <code class="inline">duration</code> to a human readable representation.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:duration/0">
+
+  <div class="detail-header">
+    <a href="#t:duration/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">duration()</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L135" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> duration() :: <a href="#t:t/0">t</a>() | [<a href="#t:unit_pair/0">unit_pair</a>()]</pre>
+
+      </div>
+
+<p>The duration type specifies a <code class="inline">%Duration{}</code> struct or a keyword list of valid duration unit pairs.</p>
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L108" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %Duration{
+  day: <a href="typespecs.xhtml#basic-types">integer</a>(),
+  hour: <a href="typespecs.xhtml#basic-types">integer</a>(),
+  microsecond: {<a href="typespecs.xhtml#basic-types">integer</a>(), 0..6},
+  minute: <a href="typespecs.xhtml#basic-types">integer</a>(),
+  month: <a href="typespecs.xhtml#basic-types">integer</a>(),
+  second: <a href="typespecs.xhtml#basic-types">integer</a>(),
+  week: <a href="typespecs.xhtml#basic-types">integer</a>(),
+  year: <a href="typespecs.xhtml#basic-types">integer</a>()
+}</pre>
+
+      </div>
+
+<p>The duration struct type.</p>
+  </section>
+</section>
+<section class="detail" id="t:unit_pair/0">
+
+  <div class="detail-header">
+    <a href="#t:unit_pair/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">unit_pair()</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L122" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> unit_pair() ::
+  {:year, <a href="typespecs.xhtml#basic-types">integer</a>()}
+  | {:month, <a href="typespecs.xhtml#basic-types">integer</a>()}
+  | {:week, <a href="typespecs.xhtml#basic-types">integer</a>()}
+  | {:day, <a href="typespecs.xhtml#basic-types">integer</a>()}
+  | {:hour, <a href="typespecs.xhtml#basic-types">integer</a>()}
+  | {:minute, <a href="typespecs.xhtml#basic-types">integer</a>()}
+  | {:second, <a href="typespecs.xhtml#basic-types">integer</a>()}
+  | {:microsecond, {<a href="typespecs.xhtml#basic-types">integer</a>(), 0..6}}</pre>
+
+      </div>
+
+<p>The unit pair type specifies a pair of a valid duration unit key and value.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="add/2">
+
+  <div class="detail-header">
+    <a href="#add/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add(d1, d2)</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L203" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> add(<a href="#t:t/0">t</a>(), <a href="#t:t/0">t</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds units of given durations <code class="inline">d1</code> and <code class="inline">d2</code>.</p><p>Respects the the highest microsecond precision of the two.</p><h2 id="add/2-examples" class="section-heading"><a href="#add/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">add</samp><samp class="p" data-group-id="0413762267-1">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="0413762267-2">(</samp><samp class="ss">week</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="0413762267-2">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="0413762267-3">(</samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="0413762267-3">)</samp><samp class="p" data-group-id="0413762267-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0413762267-4">%</samp><samp class="nc" data-group-id="0413762267-4">Duration</samp><samp class="p" data-group-id="0413762267-4">{</samp><samp class="ss">week</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="0413762267-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">add</samp><samp class="p" data-group-id="0413762267-5">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="0413762267-6">(</samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0413762267-7">{</samp><samp class="mi">400</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="0413762267-7">}</samp><samp class="p" data-group-id="0413762267-6">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="0413762267-8">(</samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0413762267-9">{</samp><samp class="mi">600</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p" data-group-id="0413762267-9">}</samp><samp class="p" data-group-id="0413762267-8">)</samp><samp class="p" data-group-id="0413762267-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0413762267-10">%</samp><samp class="nc" data-group-id="0413762267-10">Duration</samp><samp class="p" data-group-id="0413762267-10">{</samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0413762267-11">{</samp><samp class="mi">1000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p" data-group-id="0413762267-11">}</samp><samp class="p" data-group-id="0413762267-10">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="from_iso8601/1">
+
+  <div class="detail-header">
+    <a href="#from_iso8601/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">from_iso8601(string)</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L326" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> from_iso8601(<a href="String.xhtml#t:t/0">String.t</a>()) :: {:ok, <a href="#t:t/0">t</a>()} | {:error, <a href="typespecs.xhtml#basic-types">atom</a>()}</pre>
+
+      </div>
+
+<p>Parses an <a href="https://en.wikipedia.org/wiki/ISO_8601#Durations">ISO 8601</a> formatted duration string to a <a href="Duration.xhtml"><code class="inline">Duration</code></a> struct.</p><p>Duration strings, as well as individual units, may be prefixed with plus/minus signs so that:</p><ul><li><code class="inline">-PT6H3M</code> parses as <code class="inline">%Duration{hour: -6, minute: -3}</code></li><li><code class="inline">-PT6H-3M</code> parses as <code class="inline">%Duration{hour: -6, minute: 3}</code></li><li><code class="inline">+PT6H3M</code> parses as <code class="inline">%Duration{hour: 6, minute: 3}</code></li><li><code class="inline">+PT6H-3M</code> parses as <code class="inline">%Duration{hour: 6, minute: -3}</code></li></ul><p>Duration designators must be provided in order of magnitude: <code class="inline">P[n]Y[n]M[n]W[n]DT[n]H[n]M[n]S</code>.</p><p>Only seconds may be specified with a decimal fraction, using either a comma or a full stop: <code class="inline">P1DT4,5S</code>.</p><h2 id="from_iso8601/1-examples" class="section-heading"><a href="#from_iso8601/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">from_iso8601</samp><samp class="p" data-group-id="9540445516-1">(</samp><samp class="s">&quot;P1Y2M3DT4H5M6S&quot;</samp><samp class="p" data-group-id="9540445516-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9540445516-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9540445516-3">%</samp><samp class="nc" data-group-id="9540445516-3">Duration</samp><samp class="p" data-group-id="9540445516-3">{</samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">hour</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">minute</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">5</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p" data-group-id="9540445516-3">}</samp><samp class="p" data-group-id="9540445516-2">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">from_iso8601</samp><samp class="p" data-group-id="9540445516-4">(</samp><samp class="s">&quot;P3Y-2MT3H&quot;</samp><samp class="p" data-group-id="9540445516-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9540445516-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9540445516-6">%</samp><samp class="nc" data-group-id="9540445516-6">Duration</samp><samp class="p" data-group-id="9540445516-6">{</samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">hour</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="9540445516-6">}</samp><samp class="p" data-group-id="9540445516-5">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">from_iso8601</samp><samp class="p" data-group-id="9540445516-7">(</samp><samp class="s">&quot;-PT10H-30M&quot;</samp><samp class="p" data-group-id="9540445516-7">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9540445516-8">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9540445516-9">%</samp><samp class="nc" data-group-id="9540445516-9">Duration</samp><samp class="p" data-group-id="9540445516-9">{</samp><samp class="ss">hour</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">10</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">minute</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">30</samp><samp class="p" data-group-id="9540445516-9">}</samp><samp class="p" data-group-id="9540445516-8">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">from_iso8601</samp><samp class="p" data-group-id="9540445516-10">(</samp><samp class="s">&quot;PT4.650S&quot;</samp><samp class="p" data-group-id="9540445516-10">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9540445516-11">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9540445516-12">%</samp><samp class="nc" data-group-id="9540445516-12">Duration</samp><samp class="p" data-group-id="9540445516-12">{</samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9540445516-13">{</samp><samp class="mi">650000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="9540445516-13">}</samp><samp class="p" data-group-id="9540445516-12">}</samp><samp class="p" data-group-id="9540445516-11">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="from_iso8601!/1">
+
+  <div class="detail-header">
+    <a href="#from_iso8601!/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">from_iso8601!(string)</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L348" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> from_iso8601!(<a href="String.xhtml#t:t/0">String.t</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Same as <a href="#from_iso8601/1"><code class="inline">from_iso8601/1</code></a> but raises an <a href="ArgumentError.xhtml"><code class="inline">ArgumentError</code></a>.</p><h2 id="from_iso8601!/1-examples" class="section-heading"><a href="#from_iso8601!/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">from_iso8601!</samp><samp class="p" data-group-id="5252896996-1">(</samp><samp class="s">&quot;P1Y2M3DT4H5M6S&quot;</samp><samp class="p" data-group-id="5252896996-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5252896996-2">%</samp><samp class="nc" data-group-id="5252896996-2">Duration</samp><samp class="p" data-group-id="5252896996-2">{</samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">hour</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">minute</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">5</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p" data-group-id="5252896996-2">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">from_iso8601!</samp><samp class="p" data-group-id="5252896996-3">(</samp><samp class="s">&quot;P10D&quot;</samp><samp class="p" data-group-id="5252896996-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="5252896996-4">%</samp><samp class="nc" data-group-id="5252896996-4">Duration</samp><samp class="p" data-group-id="5252896996-4">{</samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">10</samp><samp class="p" data-group-id="5252896996-4">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="multiply/2">
+
+  <div class="detail-header">
+    <a href="#multiply/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">multiply(duration, integer)</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L261" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> multiply(<a href="#t:t/0">t</a>(), <a href="typespecs.xhtml#basic-types">integer</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Multiplies <code class="inline">duration</code> units by given <code class="inline">integer</code>.</p><h2 id="multiply/2-examples" class="section-heading"><a href="#multiply/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">multiply</samp><samp class="p" data-group-id="6840670529-1">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="6840670529-2">(</samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">minute</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">15</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">10</samp><samp class="p" data-group-id="6840670529-2">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="6840670529-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6840670529-3">%</samp><samp class="nc" data-group-id="6840670529-3">Duration</samp><samp class="p" data-group-id="6840670529-3">{</samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">minute</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">45</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">30</samp><samp class="p" data-group-id="6840670529-3">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">multiply</samp><samp class="p" data-group-id="6840670529-4">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="6840670529-5">(</samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6840670529-6">{</samp><samp class="mi">200</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="6840670529-6">}</samp><samp class="p" data-group-id="6840670529-5">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="6840670529-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6840670529-7">%</samp><samp class="nc" data-group-id="6840670529-7">Duration</samp><samp class="p" data-group-id="6840670529-7">{</samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6840670529-8">{</samp><samp class="mi">600</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="6840670529-8">}</samp><samp class="p" data-group-id="6840670529-7">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="negate/1">
+
+  <div class="detail-header">
+    <a href="#negate/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">negate(duration)</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L286" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> negate(<a href="#t:t/0">t</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Negates <code class="inline">duration</code> units.</p><h2 id="negate/1-examples" class="section-heading"><a href="#negate/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">negate</samp><samp class="p" data-group-id="1139292501-1">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="1139292501-2">(</samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">minute</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">15</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">10</samp><samp class="p" data-group-id="1139292501-2">)</samp><samp class="p" data-group-id="1139292501-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1139292501-3">%</samp><samp class="nc" data-group-id="1139292501-3">Duration</samp><samp class="p" data-group-id="1139292501-3">{</samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">minute</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">15</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">10</samp><samp class="p" data-group-id="1139292501-3">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">negate</samp><samp class="p" data-group-id="1139292501-4">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="1139292501-5">(</samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1139292501-6">{</samp><samp class="mi">500000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="1139292501-6">}</samp><samp class="p" data-group-id="1139292501-5">)</samp><samp class="p" data-group-id="1139292501-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1139292501-7">%</samp><samp class="nc" data-group-id="1139292501-7">Duration</samp><samp class="p" data-group-id="1139292501-7">{</samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1139292501-8">{</samp><samp class="o">-</samp><samp class="mi">500000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="1139292501-8">}</samp><samp class="p" data-group-id="1139292501-7">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="new!/1">
+
+  <div class="detail-header">
+    <a href="#new!/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new!(duration)</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L155" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> new!(<a href="#t:duration/0">duration</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Creates a new <a href="Duration.xhtml"><code class="inline">Duration</code></a> struct from given <code class="inline">unit_pairs</code>.</p><p>Raises an <a href="ArgumentError.xhtml"><code class="inline">ArgumentError</code></a> when called with invalid unit pairs.</p><h2 id="new!/1-examples" class="section-heading"><a href="#new!/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="6346638638-1">(</samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">week</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">hour</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="6346638638-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6346638638-2">%</samp><samp class="nc" data-group-id="6346638638-2">Duration</samp><samp class="p" data-group-id="6346638638-2">{</samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">week</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">hour</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="6346638638-2">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="6346638638-3">(</samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6346638638-4">{</samp><samp class="mi">1000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p" data-group-id="6346638638-4">}</samp><samp class="p" data-group-id="6346638638-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6346638638-5">%</samp><samp class="nc" data-group-id="6346638638-5">Duration</samp><samp class="p" data-group-id="6346638638-5">{</samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6346638638-6">{</samp><samp class="mi">1000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p" data-group-id="6346638638-6">}</samp><samp class="p" data-group-id="6346638638-5">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="6346638638-7">(</samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="6346638638-7">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6346638638-8">%</samp><samp class="nc" data-group-id="6346638638-8">Duration</samp><samp class="p" data-group-id="6346638638-8">{</samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="6346638638-8">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="subtract/2">
+
+  <div class="detail-header">
+    <a href="#subtract/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">subtract(d1, d2)</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L233" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> subtract(<a href="#t:t/0">t</a>(), <a href="#t:t/0">t</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Subtracts units of given durations <code class="inline">d1</code> and <code class="inline">d2</code>.</p><p>Respects the the highest microsecond precision of the two.</p><h2 id="subtract/2-examples" class="section-heading"><a href="#subtract/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">subtract</samp><samp class="p" data-group-id="0196768402-1">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="0196768402-2">(</samp><samp class="ss">week</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="0196768402-2">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="0196768402-3">(</samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="0196768402-3">)</samp><samp class="p" data-group-id="0196768402-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0196768402-4">%</samp><samp class="nc" data-group-id="0196768402-4">Duration</samp><samp class="p" data-group-id="0196768402-4">{</samp><samp class="ss">week</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p" data-group-id="0196768402-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">subtract</samp><samp class="p" data-group-id="0196768402-5">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="0196768402-6">(</samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0196768402-7">{</samp><samp class="mi">400</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p" data-group-id="0196768402-7">}</samp><samp class="p" data-group-id="0196768402-6">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="0196768402-8">(</samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0196768402-9">{</samp><samp class="mi">600</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="0196768402-9">}</samp><samp class="p" data-group-id="0196768402-8">)</samp><samp class="p" data-group-id="0196768402-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0196768402-10">%</samp><samp class="nc" data-group-id="0196768402-10">Duration</samp><samp class="p" data-group-id="0196768402-10">{</samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0196768402-11">{</samp><samp class="o">-</samp><samp class="mi">200</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p" data-group-id="0196768402-11">}</samp><samp class="p" data-group-id="0196768402-10">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="to_iso8601/1">
+
+  <div class="detail-header">
+    <a href="#to_iso8601/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_iso8601(duration)</h1>
+
+        <span class="note">(since 1.17.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L490" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_iso8601(<a href="#t:t/0">t</a>()) :: <a href="String.xhtml#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Converts the given <code class="inline">duration</code> to an <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601-2:2019</a> formatted string.</p><p>This function implements the extension of ISO 8601:2019, allowing weeks to appear between months and days: <code class="inline">P3M3W3D</code>.</p><h2 id="to_iso8601/1-examples" class="section-heading"><a href="#to_iso8601/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_iso8601</samp><samp class="p" data-group-id="2477754556-1">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="2477754556-2">(</samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="2477754556-2">)</samp><samp class="p" data-group-id="2477754556-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;P3Y&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_iso8601</samp><samp class="p" data-group-id="2477754556-3">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="2477754556-4">(</samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">40</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">hour</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">12</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">minute</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">42</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">12</samp><samp class="p" data-group-id="2477754556-4">)</samp><samp class="p" data-group-id="2477754556-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;P40DT12H42M12S&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_iso8601</samp><samp class="p" data-group-id="2477754556-5">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="2477754556-6">(</samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">30</samp><samp class="p" data-group-id="2477754556-6">)</samp><samp class="p" data-group-id="2477754556-5">)</samp><samp class="w">
+</samp><samp class="s">&quot;PT30S&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_iso8601</samp><samp class="p" data-group-id="2477754556-7">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="2477754556-8">(</samp><samp class="p" data-group-id="2477754556-9">[</samp><samp class="p" data-group-id="2477754556-9">]</samp><samp class="p" data-group-id="2477754556-8">)</samp><samp class="p" data-group-id="2477754556-7">)</samp><samp class="w">
+</samp><samp class="s">&quot;PT0S&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_iso8601</samp><samp class="p" data-group-id="2477754556-10">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="2477754556-11">(</samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2477754556-12">{</samp><samp class="mi">2_200</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="2477754556-12">}</samp><samp class="p" data-group-id="2477754556-11">)</samp><samp class="p" data-group-id="2477754556-10">)</samp><samp class="w">
+</samp><samp class="s">&quot;PT1.002S&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_iso8601</samp><samp class="p" data-group-id="2477754556-13">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="2477754556-14">(</samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2477754556-15">{</samp><samp class="o">-</samp><samp class="mi">1_200_000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="2477754556-15">}</samp><samp class="p" data-group-id="2477754556-14">)</samp><samp class="p" data-group-id="2477754556-13">)</samp><samp class="w">
+</samp><samp class="s">&quot;PT-0.2000S&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="to_string/2">
+
+    <span id="to_string/1"></span>
+
+  <div class="detail-header">
+    <a href="#to_string/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_string(duration, opts \\ [])</h1>
+
+        <span class="note">(since 1.18.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/calendar/duration.ex#L412" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Converts the given <code class="inline">duration</code> to a human readable representation.</p><h2 id="to_string/2-options" class="section-heading"><a href="#to_string/2-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><p><code class="inline">:units</code> - the units to be used alongside each duration component.
+The default units follow the ISO 80000-3 standard:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="9407042409-1">[</samp><samp class="w">
+  </samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;a&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">month</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;mo&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">week</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;wk&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;d&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">hour</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;h&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">minute</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;min&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;s&quot;</samp><samp class="w">
+</samp><samp class="p" data-group-id="9407042409-1">]</samp></code></pre></li><li><p><code class="inline">:separator</code> - a string used to separate the distinct components. Defaults to <code class="inline">&quot; &quot;</code>.</p></li></ul><h2 id="to_string/2-examples" class="section-heading"><a href="#to_string/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="5490664659-1">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="5490664659-2">(</samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">30</samp><samp class="p" data-group-id="5490664659-2">)</samp><samp class="p" data-group-id="5490664659-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;30s&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="5490664659-3">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="5490664659-4">(</samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">40</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">hour</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">12</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">minute</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">42</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">12</samp><samp class="p" data-group-id="5490664659-4">)</samp><samp class="p" data-group-id="5490664659-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;40d 12h 42min 12s&quot;</samp></code></pre><p>By default, this function uses ISO 80000-3 units, which uses &quot;a&quot; for years.
+But you can customize all units via the units option:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="2287045813-1">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="2287045813-2">(</samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="2287045813-2">)</samp><samp class="p" data-group-id="2287045813-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;3a&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="2287045813-3">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="2287045813-4">(</samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="2287045813-4">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">units</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2287045813-5">[</samp><samp class="ss">year</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;y&quot;</samp><samp class="p" data-group-id="2287045813-5">]</samp><samp class="p" data-group-id="2287045813-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;3y&quot;</samp></code></pre><p>You may also choose the separator:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="6227046971-1">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="6227046971-2">(</samp><samp class="ss">day</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">40</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">hour</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">12</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">minute</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">42</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">12</samp><samp class="p" data-group-id="6227046971-2">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">separator</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;, &quot;</samp><samp class="p" data-group-id="6227046971-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;40d, 12h, 42min, 12s&quot;</samp></code></pre><p>A duration without components is rendered as &quot;0s&quot;:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="3325824377-1">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="3325824377-2">(</samp><samp class="p" data-group-id="3325824377-3">[</samp><samp class="p" data-group-id="3325824377-3">]</samp><samp class="p" data-group-id="3325824377-2">)</samp><samp class="p" data-group-id="3325824377-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;0s&quot;</samp></code></pre><p>Microseconds are rendered as part of seconds with the appropriate precision:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="5738912688-1">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="5738912688-2">(</samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5738912688-3">{</samp><samp class="mi">2_200</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="5738912688-3">}</samp><samp class="p" data-group-id="5738912688-2">)</samp><samp class="p" data-group-id="5738912688-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;1.002s&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="5738912688-4">(</samp><samp class="nc">Duration</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="5738912688-5">(</samp><samp class="ss">second</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">microsecond</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5738912688-6">{</samp><samp class="o">-</samp><samp class="mi">1_200_000</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="5738912688-6">}</samp><samp class="p" data-group-id="5738912688-5">)</samp><samp class="p" data-group-id="5738912688-4">)</samp><samp class="w">
+</samp><samp class="s">&quot;-0.2000s&quot;</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

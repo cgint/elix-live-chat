@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Generator - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Generator 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Tools for generating input to Ash resource actions and for generating seed data.</p><h2 id="module-using-ash-generator">Using Ash.Generator</h2><p>To define generators for your tests, <code class="inline">use Ash.Generator</code>, and define
+functions that use <a href="#changeset_generator/3"><code class="inline">changeset_generator/3</code></a> and/or <a href="#seed_generator/2"><code class="inline">seed_generator/2</code></a>.</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">YourApp.Generator</samp><samp class="w"> </samp><samp class="k" data-group-id="8767110225-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Ash.Generator</samp><samp class="w">
+
+  </samp><samp class="c1"># using `seed_generator`, bypasses the action and saves directly to the data layer</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">blog_post</samp><samp class="p" data-group-id="8767110225-2">(</samp><samp class="n">opts</samp><samp class="w"> </samp><samp class="o">\\</samp><samp class="w"> </samp><samp class="p" data-group-id="8767110225-3">[</samp><samp class="p" data-group-id="8767110225-3">]</samp><samp class="p" data-group-id="8767110225-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8767110225-4">do</samp><samp class="w">
+    </samp><samp class="n">seed_generator</samp><samp class="p" data-group-id="8767110225-5">(</samp><samp class="w">
+      </samp><samp class="p" data-group-id="8767110225-6">%</samp><samp class="nc" data-group-id="8767110225-6">MyApp.Blog.Post</samp><samp class="p" data-group-id="8767110225-6">{</samp><samp class="w">
+        </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">sequence</samp><samp class="p" data-group-id="8767110225-7">(</samp><samp class="ss">:title</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="s">&quot;My Blog Post </samp><samp class="si" data-group-id="8767110225-8">#{</samp><samp class="ni">&amp;1</samp><samp class="si" data-group-id="8767110225-8">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="8767110225-7">)</samp><samp class="w">
+        </samp><samp class="ss">text</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">StreamData</samp><samp class="o">.</samp><samp class="n">repeatedly</samp><samp class="p" data-group-id="8767110225-9">(</samp><samp class="k" data-group-id="8767110225-10">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Faker.Lorem</samp><samp class="o">.</samp><samp class="n">paragraph</samp><samp class="p" data-group-id="8767110225-11">(</samp><samp class="p" data-group-id="8767110225-11">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8767110225-10">end</samp><samp class="p" data-group-id="8767110225-9">)</samp><samp class="w">
+      </samp><samp class="p" data-group-id="8767110225-6">}</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">overrides</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="w">
+    </samp><samp class="p" data-group-id="8767110225-5">)</samp><samp class="w">
+  </samp><samp class="k" data-group-id="8767110225-4">end</samp><samp class="w">
+
+  </samp><samp class="c1"># using `changeset_generator`, calls the action when passed to `generate`</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">blog_post_comment</samp><samp class="p" data-group-id="8767110225-12">(</samp><samp class="n">opts</samp><samp class="w"> </samp><samp class="o">\\</samp><samp class="w"> </samp><samp class="p" data-group-id="8767110225-13">[</samp><samp class="p" data-group-id="8767110225-13">]</samp><samp class="p" data-group-id="8767110225-12">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8767110225-14">do</samp><samp class="w">
+    </samp><samp class="n">blog_post_id</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="p" data-group-id="8767110225-15">[</samp><samp class="ss">:blog_post_id</samp><samp class="p" data-group-id="8767110225-15">]</samp><samp class="w"> </samp><samp class="o">||</samp><samp class="w"> </samp><samp class="n">once</samp><samp class="p" data-group-id="8767110225-16">(</samp><samp class="ss">:default_blog_post_id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="8767110225-17">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="n">generate</samp><samp class="p" data-group-id="8767110225-18">(</samp><samp class="n">blog_post</samp><samp class="p" data-group-id="8767110225-19">(</samp><samp class="p" data-group-id="8767110225-19">)</samp><samp class="p" data-group-id="8767110225-18">)</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="w"> </samp><samp class="k" data-group-id="8767110225-17">end</samp><samp class="p" data-group-id="8767110225-16">)</samp><samp class="w">
+
+    </samp><samp class="n">changeset_generator</samp><samp class="p" data-group-id="8767110225-20">(</samp><samp class="w">
+      </samp><samp class="nc">MyApp.Blog.Comment</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">:create</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">defaults</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8767110225-21">[</samp><samp class="w">
+        </samp><samp class="ss">blog_post_id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">blog_post_id</samp><samp class="w">
+      </samp><samp class="p" data-group-id="8767110225-21">]</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="ss">overrides</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="w">
+    </samp><samp class="p" data-group-id="8767110225-20">)</samp><samp class="w">
+  </samp><samp class="k" data-group-id="8767110225-14">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="8767110225-1">end</samp></code></pre><p>Then, in your tests, you can <code class="inline">import YourApp.Generator</code>, and use <a href="#generate/1"><code class="inline">generate/1</code></a> and <code class="inline">generate_many/1</code> to generate data.
+For example:</p><pre><code class="makeup elixir" translate="no"><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">YourApp.Generator</samp><samp class="w">
+
+</samp><samp class="n">test</samp><samp class="w"> </samp><samp class="s">&quot;`comment_count` on blog_post shows the count of comments&quot;</samp><samp class="w"> </samp><samp class="k" data-group-id="4290306628-1">do</samp><samp class="w">
+  </samp><samp class="n">blog_post</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">generate</samp><samp class="p" data-group-id="4290306628-2">(</samp><samp class="n">blog_post</samp><samp class="p" data-group-id="4290306628-3">(</samp><samp class="p" data-group-id="4290306628-3">)</samp><samp class="p" data-group-id="4290306628-2">)</samp><samp class="w">
+  </samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="nc">Ash</samp><samp class="o">.</samp><samp class="n">load!</samp><samp class="p" data-group-id="4290306628-4">(</samp><samp class="n">blog_post</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:comment_count</samp><samp class="p" data-group-id="4290306628-4">)</samp><samp class="o">.</samp><samp class="n">comment_count</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="w">
+
+  </samp><samp class="n">generate_many</samp><samp class="p" data-group-id="4290306628-5">(</samp><samp class="n">blog_post_comment</samp><samp class="p" data-group-id="4290306628-6">(</samp><samp class="ss">blog_post_id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">blog_post</samp><samp class="o">.</samp><samp class="n">id</samp><samp class="p" data-group-id="4290306628-6">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">10</samp><samp class="p" data-group-id="4290306628-5">)</samp><samp class="w">
+
+  </samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="nc">Ash</samp><samp class="o">.</samp><samp class="n">load!</samp><samp class="p" data-group-id="4290306628-7">(</samp><samp class="n">blog_post</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:comment_count</samp><samp class="p" data-group-id="4290306628-7">)</samp><samp class="o">.</samp><samp class="n">comment_count</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="mi">10</samp><samp class="w">
+</samp><samp class="k" data-group-id="4290306628-1">end</samp></code></pre><h2 id="module-about-generators">About Generators</h2><p>These generators are backed by <a href="https://hexdocs.pm/stream_data/1.2.0/StreamData.html"><code class="inline">StreamData</code></a>, and are ready for use with property testing via <a href="https://hexdocs.pm/stream_data/1.2.0/ExUnitProperties.html"><code class="inline">ExUnitProperties</code></a></p><p>Many functions in this module support &quot;overrides&quot;, which allow passing down either constant values
+or your own <a href="https://hexdocs.pm/stream_data/1.2.0/StreamData.html"><code class="inline">StreamData</code></a> generators.</p><p>For example:</p><pre><code class="makeup elixir" translate="no"><samp class="c1"># All generated posts will have text as `&quot;text&quot;`. Equivalent to providing `StreamData.constant(&quot;text&quot;)`.</samp><samp class="w">
+</samp><samp class="nc">Ash.Generator</samp><samp class="o">.</samp><samp class="n">seed_input</samp><samp class="p" data-group-id="4086214554-1">(</samp><samp class="nc">Post</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4086214554-2">%{</samp><samp class="ss">text</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;text&quot;</samp><samp class="p" data-group-id="4086214554-2">}</samp><samp class="p" data-group-id="4086214554-1">)</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:overrides/0" data-no-tooltip="" translate="no">overrides()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A map or keyword of data generators or constant values to use in place of defaults.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:stream_data/0" data-no-tooltip="" translate="no">stream_data()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>An instance of <a><code class="inline">StreamData</code></a>, gotten from one of the functions in that module.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#action_input/3" data-no-tooltip="" translate="no">action_input(resource_or_record, action_name, generators \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generate input meant to be passed into a resource action.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#changeset/4" data-no-tooltip="" translate="no">changeset(resource_or_record, action, generators \\ %{}, changeset_options \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates the input for the provided action with <a><code class="inline">action_input/3</code></a>, and creates a changeset for that action with that input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#changeset_generator/3" data-no-tooltip="" translate="no">changeset_generator(resource, action, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A generator of changesets which call their specific actions when passed to <a><code class="inline">generate/1</code></a> or <a><code class="inline">generate_many/2</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#generate/1" data-no-tooltip="" translate="no">generate(changeset)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Takes one value from a changeset or seed generator and calls <code class="inline">Ash.create!</code> or <code class="inline">Ash.update!</code> on it.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#generate_many/2" data-no-tooltip="" translate="no">generate_many(changeset_generator, count)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Takes <code class="inline">count</code> values from a changeset or seed generator and passes their inputs into <code class="inline">Ash.bulk_create!</code> or <code class="inline">Ash.Seed.seed!</code> respectively.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#initialize_once/1" data-no-tooltip="" translate="no">initialize_once(identifier)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Starts and links an agent for a <a><code class="inline">once/2</code></a>, or returns the existing agent pid if it already exists.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#initialize_sequence/1" data-no-tooltip="" translate="no">initialize_sequence(identifier)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Starts and links an agent for a sequence, or returns the existing agent pid if it already exists.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#many_changesets/5" data-no-tooltip="" translate="no">many_changesets(resource_or_record, action, count, generators \\ %{}, changeset_options \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generate <code class="inline">count</code> changesets and return them as a list.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#many_queries/5" data-no-tooltip="" translate="no">many_queries(resource, action, count, generators \\ %{}, changeset_options \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generate <code class="inline">count</code> queries and return them as a list.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#mixed_map/2" data-no-tooltip="" translate="no">mixed_map(map, keys)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates a generator of maps where all keys are required except the list provided</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#next_in_sequence/3" data-no-tooltip="" translate="no">next_in_sequence(identifier, fun, sequencer \\ fn i -&gt; (i || -1) + 1 end)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the next value for a given sequence identifier.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#once/2" data-no-tooltip="" translate="no">once(identifier, generator)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Run the provided function or enumerable (i.e generator) only once.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#query/4" data-no-tooltip="" translate="no">query(resource, action, generators \\ %{}, query_options \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates the input for the provided action with <a><code class="inline">action_input/3</code></a>, and returns a query for that action with that input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#seed!/2" data-no-tooltip="" translate="no">seed!(resource, generators \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets input using <a><code class="inline">seed_input/2</code></a> and passes it to <a><code class="inline">Ash.Seed.seed!/2</code></a>, returning the result</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#seed_generator/2" data-no-tooltip="" translate="no">seed_generator(record, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A generator of seedable records, to be passed to <a><code class="inline">generate/1</code></a> or <code class="inline">generate_many/1</code></p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#seed_input/2" data-no-tooltip="" translate="no">seed_input(resource, generators \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generate input meant to be passed into <a><code class="inline">Ash.Seed.seed!/2</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#seed_many!/3" data-no-tooltip="" translate="no">seed_many!(resource, n, generators \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates an input <code class="inline">n</code> times, and passes them all to seed, returning the list of seeded items.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#sequence/3" data-no-tooltip="" translate="no">sequence(identifier, generator, sequencer \\ fn i -&gt; (i || -1) + 1 end)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generate globally unique values.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#stop_once/1" data-no-tooltip="" translate="no">stop_once(identifier)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Stops the agent for a <a><code class="inline">once/2</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#stop_sequence/1" data-no-tooltip="" translate="no">stop_sequence(identifier)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Stops the agent for a sequence.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:overrides/0">
+
+  <div class="detail-header">
+    <a href="#t:overrides/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">overrides()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L108" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> overrides() ::
+  %{required(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) =&gt; <a href="#t:stream_data/0">stream_data</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}
+  | <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/1">Keyword.t</a>(<a href="#t:stream_data/0">stream_data</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>())</pre>
+
+      </div>
+
+<p>A map or keyword of data generators or constant values to use in place of defaults.</p><p>Many functions in <a href="Ash.Generator.xhtml"><code class="inline">Ash.Generator</code></a> support <code class="inline">overrides</code>, allowing to customize the default
+generated values.</p>
+  </section>
+</section>
+<section class="detail" id="t:stream_data/0">
+
+  <div class="detail-header">
+    <a href="#t:stream_data/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">stream_data()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L114" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> stream_data() :: <a href="https://hexdocs.pm/elixir/Enumerable.html#t:t/0">Enumerable.t</a>()</pre>
+
+      </div>
+
+<p>An instance of <a href="https://hexdocs.pm/stream_data/1.2.0/StreamData.html"><code class="inline">StreamData</code></a>, gotten from one of the functions in that module.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="action_input/3">
+
+    <span id="action_input/2"></span>
+
+  <div class="detail-header">
+    <a href="#action_input/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">action_input(resource_or_record, action_name, generators \\ %{})</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L838" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> action_input(
+  <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>() | <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>(),
+  action_name :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(),
+  generators :: <a href="#t:overrides/0">overrides</a>()
+) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()</pre>
+
+      </div>
+
+<p>Generate input meant to be passed into a resource action.</p><p>Arguments that are passed to a <code class="inline">manage_relationship</code> are not generated by default, and you will
+have to generate them yourself by passing your own generators/values down. See the module documentation for more.</p>
+  </section>
+</section>
+<section class="detail" id="changeset/4">
+
+    <span id="changeset/2"></span>
+
+    <span id="changeset/3"></span>
+
+  <div class="detail-header">
+    <a href="#changeset/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">changeset(resource_or_record, action, generators \\ %{}, changeset_options \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L873" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> changeset(
+  <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  action :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(),
+  <a href="#t:overrides/0">overrides</a>(),
+  changeset_options :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>()</pre>
+
+      </div>
+
+<p>Creates the input for the provided action with <a href="#action_input/3"><code class="inline">action_input/3</code></a>, and creates a changeset for that action with that input.</p><p>See <a href="#action_input/3"><code class="inline">action_input/3</code></a> and the module documentation for more.</p>
+  </section>
+</section>
+<section class="detail" id="changeset_generator/3">
+
+    <span id="changeset_generator/2"></span>
+
+  <div class="detail-header">
+    <a href="#changeset_generator/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">changeset_generator(resource, action, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L224" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>A generator of changesets which call their specific actions when passed to <a href="#generate/1"><code class="inline">generate/1</code></a> or <a href="#generate_many/2"><code class="inline">generate_many/2</code></a>.</p><p>See <a href="#seed_generator/2"><code class="inline">seed_generator/2</code></a> for the equivalent construct for cases when you want to seed directly to the data layer as opposed to calling resource
+actions.</p><h2 id="changeset_generator/3-examples" class="section-heading"><a href="#changeset_generator/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">changeset_generator</samp><samp class="p" data-group-id="6935384877-1">(</samp><samp class="nc">MyApp.Blog.Post</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:create</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">defaults</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6935384877-2">[</samp><samp class="ss">title</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">sequence</samp><samp class="p" data-group-id="6935384877-3">(</samp><samp class="ss">:blog_post_title</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="s">&quot;My Blog Post </samp><samp class="si" data-group-id="6935384877-4">#{</samp><samp class="ni">&amp;1</samp><samp class="si" data-group-id="6935384877-4">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="6935384877-3">)</samp><samp class="p" data-group-id="6935384877-2">]</samp><samp class="p" data-group-id="6935384877-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">generate</samp><samp class="p" data-group-id="6935384877-5">(</samp><samp class="p" data-group-id="6935384877-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6935384877-6">%</samp><samp class="nc" data-group-id="6935384877-6">Ash.Changeset</samp><samp class="p" data-group-id="6935384877-6">{</samp><samp class="n">...</samp><samp class="p" data-group-id="6935384877-6">}</samp></code></pre><h2 id="changeset_generator/3-usage-in-tests" class="section-heading"><a href="#changeset_generator/3-usage-in-tests" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage in tests</span></h2><p>This can be used to define generators in tests. A useful pattern is defining a function like so:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">blog_post</samp><samp class="p" data-group-id="9601527271-1">(</samp><samp class="n">opts</samp><samp class="w"> </samp><samp class="err">\</samp><samp class="w"> </samp><samp class="p" data-group-id="9601527271-2">[</samp><samp class="p" data-group-id="9601527271-2">]</samp><samp class="p" data-group-id="9601527271-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="9601527271-3">do</samp><samp class="w">
+  </samp><samp class="n">changeset_generator</samp><samp class="p" data-group-id="9601527271-4">(</samp><samp class="w">
+    </samp><samp class="nc">MyApp.Blog.Post</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">:create</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">defaults</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9601527271-5">[</samp><samp class="w">
+      </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">sequence</samp><samp class="p" data-group-id="9601527271-6">(</samp><samp class="ss">:blog_post_title</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="s">&quot;My Blog Post </samp><samp class="si" data-group-id="9601527271-7">#{</samp><samp class="ni">&amp;1</samp><samp class="si" data-group-id="9601527271-7">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="9601527271-6">)</samp><samp class="w">
+      </samp><samp class="ss">text</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">StreamData</samp><samp class="o">.</samp><samp class="n">repeatedly</samp><samp class="p" data-group-id="9601527271-8">(</samp><samp class="k" data-group-id="9601527271-9">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Faker.Lorem</samp><samp class="o">.</samp><samp class="n">paragraph</samp><samp class="p" data-group-id="9601527271-10">(</samp><samp class="p" data-group-id="9601527271-10">)</samp><samp class="w"> </samp><samp class="k" data-group-id="9601527271-9">end</samp><samp class="p" data-group-id="9601527271-8">)</samp><samp class="w">
+    </samp><samp class="p" data-group-id="9601527271-5">]</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">overrides</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="w">
+  </samp><samp class="p" data-group-id="9601527271-4">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="9601527271-3">end</samp></code></pre><p>When you only allow child resource to be created through a managed relationship, e.g. an update action on a parent resource,
+this pattern could be expanded, yielding a resource with a new child resource:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">post_for</samp><samp class="p" data-group-id="4107597128-1">(</samp><samp class="n">author</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="w"> </samp><samp class="err">\</samp><samp class="w"> </samp><samp class="p" data-group-id="4107597128-2">[</samp><samp class="p" data-group-id="4107597128-2">]</samp><samp class="p" data-group-id="4107597128-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="4107597128-3">do</samp><samp class="w">
+  </samp><samp class="n">changeset_generator</samp><samp class="p" data-group-id="4107597128-4">(</samp><samp class="w">
+    </samp><samp class="n">author</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">:new_post</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">uses</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4107597128-5">[</samp><samp class="w">
+      </samp><samp class="ss">post_input</samp><samp class="p">:</samp><samp class="w">
+        </samp><samp class="n">action_input</samp><samp class="p" data-group-id="4107597128-6">(</samp><samp class="w">
+          </samp><samp class="nc">MyApp.Blog.Post</samp><samp class="p">,</samp><samp class="w">
+          </samp><samp class="ss">:create</samp><samp class="p">,</samp><samp class="w">
+          </samp><samp class="ss">title</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">sequence</samp><samp class="p" data-group-id="4107597128-7">(</samp><samp class="ss">:title</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="s">&quot;Post </samp><samp class="si" data-group-id="4107597128-8">#{</samp><samp class="ni">&amp;1</samp><samp class="si" data-group-id="4107597128-8">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="4107597128-7">)</samp><samp class="w">
+        </samp><samp class="p" data-group-id="4107597128-6">)</samp><samp class="w">
+    </samp><samp class="p" data-group-id="4107597128-5">]</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">defaults</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="k" data-group-id="4107597128-9">fn</samp><samp class="w"> </samp><samp class="n">inputs</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+      </samp><samp class="p" data-group-id="4107597128-10">[</samp><samp class="ss">posts</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4107597128-11">[</samp><samp class="n">inputs</samp><samp class="o">.</samp><samp class="n">post_input</samp><samp class="p" data-group-id="4107597128-11">]</samp><samp class="p" data-group-id="4107597128-10">]</samp><samp class="w">
+    </samp><samp class="k" data-group-id="4107597128-9">end</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">overrides</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="w">
+  </samp><samp class="p" data-group-id="4107597128-4">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="4107597128-3">end</samp></code></pre><p>See the <a href="Ash.Generator.xhtml"><code class="inline">Ash.Generator</code></a> moduledocs for more information.</p><h2 id="changeset_generator/3-options" class="section-heading"><a href="#changeset_generator/3-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:defaults</code> - A keyword list of values or generators, used as inputs. Can also be a function
+when using the <code class="inline">:uses</code> option.</li><li><code class="inline">:overrides</code> - A keyword list or map of <code class="inline">t:overrides()</code></li><li><code class="inline">:actor</code> - Passed through to the changeset</li><li><code class="inline">:tenant</code> - Passed through to the changeset</li><li><code class="inline">:uses</code> - A map of generators that are passed into your <code class="inline">defaults</code>. <code class="inline">defaults</code> must be a
+function. This is useful when multiple things in your <code class="inline">defaults</code> need to use the same generated
+value.</li><li><code class="inline">:authorize?</code> - Passed through to the changeset</li><li><code class="inline">:context</code> - Passed through to the changeset</li><li><code class="inline">:after_action</code> - A one argument function that takes the result and returns
+a new result to run after the record is created.</li><li><code class="inline">:private_arguments</code> - A map of private arguments, whos values can also be generators. Can also
+be a function when using the <code class="inline">:uses</code> option.</li></ul><h2 id="changeset_generator/3-the-uses-option" class="section-heading"><a href="#changeset_generator/3-the-uses-option" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">The <code class="inline">uses</code> option</span></h2><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">blog_post</samp><samp class="p" data-group-id="1150227478-1">(</samp><samp class="n">opts</samp><samp class="w"> </samp><samp class="err">\</samp><samp class="w"> </samp><samp class="p" data-group-id="1150227478-2">[</samp><samp class="p" data-group-id="1150227478-2">]</samp><samp class="p" data-group-id="1150227478-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="1150227478-3">do</samp><samp class="w">
+  </samp><samp class="n">changeset_generator</samp><samp class="p" data-group-id="1150227478-4">(</samp><samp class="w">
+    </samp><samp class="nc">MyApp.Blog.Post</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">:create</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">uses</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1150227478-5">[</samp><samp class="w">
+      </samp><samp class="ss">author</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">author</samp><samp class="p" data-group-id="1150227478-6">(</samp><samp class="p" data-group-id="1150227478-6">)</samp><samp class="w"> </samp><samp class="c1"># A function using `changeset_generator` just like this one.</samp><samp class="w">
+    </samp><samp class="p" data-group-id="1150227478-5">]</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">defaults</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="k" data-group-id="1150227478-7">fn</samp><samp class="w"> </samp><samp class="p" data-group-id="1150227478-8">%{</samp><samp class="ss">author</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">author</samp><samp class="p" data-group-id="1150227478-8">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+      </samp><samp class="n">author</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">generate</samp><samp class="p" data-group-id="1150227478-9">(</samp><samp class="n">author</samp><samp class="p" data-group-id="1150227478-9">)</samp><samp class="w">
+
+      </samp><samp class="p" data-group-id="1150227478-10">[</samp><samp class="w">
+        </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">sequence</samp><samp class="p" data-group-id="1150227478-11">(</samp><samp class="ss">:blog_post_title</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="s">&quot;My Blog Post </samp><samp class="si" data-group-id="1150227478-12">#{</samp><samp class="ni">&amp;1</samp><samp class="si" data-group-id="1150227478-12">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="1150227478-11">)</samp><samp class="w">
+        </samp><samp class="ss">author_name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">author</samp><samp class="o">.</samp><samp class="n">name</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">text</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">StreamData</samp><samp class="o">.</samp><samp class="n">repeatedly</samp><samp class="p" data-group-id="1150227478-13">(</samp><samp class="k" data-group-id="1150227478-14">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Faker.Lorem</samp><samp class="o">.</samp><samp class="n">paragraph</samp><samp class="p" data-group-id="1150227478-15">(</samp><samp class="p" data-group-id="1150227478-15">)</samp><samp class="w"> </samp><samp class="k" data-group-id="1150227478-14">end</samp><samp class="p" data-group-id="1150227478-13">)</samp><samp class="w">
+      </samp><samp class="p" data-group-id="1150227478-10">]</samp><samp class="w">
+    </samp><samp class="k" data-group-id="1150227478-7">end</samp><samp class="w">
+    </samp><samp class="ss">overrides</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="w">
+  </samp><samp class="p" data-group-id="1150227478-4">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="1150227478-3">end</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="generate/1">
+
+  <div class="detail-header">
+    <a href="#generate/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">generate(changeset)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L751" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> generate(<a href="#t:stream_data/0">stream_data</a>() | <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>() | <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()) ::
+  <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()</pre>
+
+      </div>
+
+<p>Takes one value from a changeset or seed generator and calls <code class="inline">Ash.create!</code> or <code class="inline">Ash.update!</code> on it.</p><p>Passes through resource structs without doing anything.
+Creates a changeset if given</p>
+  </section>
+</section>
+<section class="detail" id="generate_many/2">
+
+  <div class="detail-header">
+    <a href="#generate_many/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">generate_many(changeset_generator, count)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L783" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Takes <code class="inline">count</code> values from a changeset or seed generator and passes their inputs into <code class="inline">Ash.bulk_create!</code> or <code class="inline">Ash.Seed.seed!</code> respectively.</p>
+  </section>
+</section>
+<section class="detail" id="initialize_once/1">
+
+  <div class="detail-header">
+    <a href="#initialize_once/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">initialize_once(identifier)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L655" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> initialize_once(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pid</a>()</pre>
+
+      </div>
+
+<p>Starts and links an agent for a <a href="#once/2"><code class="inline">once/2</code></a>, or returns the existing agent pid if it already exists.</p><p>See <a href="#once/2"><code class="inline">once/2</code></a> for more.</p>
+  </section>
+</section>
+<section class="detail" id="initialize_sequence/1">
+
+  <div class="detail-header">
+    <a href="#initialize_sequence/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">initialize_sequence(identifier)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L684" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> initialize_sequence(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pid</a>()</pre>
+
+      </div>
+
+<p>Starts and links an agent for a sequence, or returns the existing agent pid if it already exists.</p><p>See <a href="#sequence/3"><code class="inline">sequence/3</code></a> for more.</p>
+  </section>
+</section>
+<section class="detail" id="many_changesets/5">
+
+    <span id="many_changesets/3"></span>
+
+    <span id="many_changesets/4"></span>
+
+  <div class="detail-header">
+    <a href="#many_changesets/5" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">many_changesets(resource_or_record, action, count, generators \\ %{}, changeset_options \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L897" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> many_changesets(
+  <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  action :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(),
+  count :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>(),
+  <a href="#t:overrides/0">overrides</a>(),
+  changeset_options :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: [<a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>()]</pre>
+
+      </div>
+
+<p>Generate <code class="inline">count</code> changesets and return them as a list.</p>
+  </section>
+</section>
+<section class="detail" id="many_queries/5">
+
+    <span id="many_queries/3"></span>
+
+    <span id="many_queries/4"></span>
+
+  <div class="detail-header">
+    <a href="#many_queries/5" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">many_queries(resource, action, count, generators \\ %{}, changeset_options \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L942" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> many_queries(
+  <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  action :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(),
+  count :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>(),
+  <a href="#t:overrides/0">overrides</a>(),
+  changeset_options :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: [<a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>()]</pre>
+
+      </div>
+
+<p>Generate <code class="inline">count</code> queries and return them as a list.</p>
+  </section>
+</section>
+<section class="detail" id="mixed_map/2">
+
+  <div class="detail-header">
+    <a href="#mixed_map/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">mixed_map(map, keys)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L988" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> mixed_map(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>(), [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()]) :: <a href="#t:stream_data/0">stream_data</a>()</pre>
+
+      </div>
+
+<p>Creates a generator of maps where all keys are required except the list provided</p><h2 id="mixed_map/2-example" class="section-heading"><a href="#mixed_map/2-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">mixed_map</samp><samp class="p" data-group-id="6496997048-1">(</samp><samp class="p" data-group-id="6496997048-2">%{</samp><samp class="ss">a</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">StreamData</samp><samp class="o">.</samp><samp class="n">constant</samp><samp class="p" data-group-id="6496997048-3">(</samp><samp class="mi">1</samp><samp class="p" data-group-id="6496997048-3">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">b</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">StreamData</samp><samp class="o">.</samp><samp class="n">constant</samp><samp class="p" data-group-id="6496997048-4">(</samp><samp class="mi">2</samp><samp class="p" data-group-id="6496997048-4">)</samp><samp class="p" data-group-id="6496997048-2">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6496997048-5">[</samp><samp class="ss">:b</samp><samp class="p" data-group-id="6496997048-5">]</samp><samp class="p" data-group-id="6496997048-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">take</samp><samp class="p" data-group-id="6496997048-6">(</samp><samp class="mi">2</samp><samp class="p" data-group-id="6496997048-6">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6496997048-7">[</samp><samp class="p" data-group-id="6496997048-8">%{</samp><samp class="ss">a</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="6496997048-8">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6496997048-9">%{</samp><samp class="ss">a</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">b</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="6496997048-9">}</samp><samp class="p" data-group-id="6496997048-7">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="next_in_sequence/3">
+
+    <span id="next_in_sequence/2"></span>
+
+  <div class="detail-header">
+    <a href="#next_in_sequence/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">next_in_sequence(identifier, fun, sequencer \\ fn i -&gt; (i || -1) + 1 end)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L971" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Gets the next value for a given sequence identifier.</p><p>See <a href="#sequence/3"><code class="inline">sequence/3</code></a> for more.</p><p>This is equivalent to <code class="inline">identifier |&gt; Ash.Generator.sequence(fun, sequencer) |&gt; Enum.at(0)</code></p>
+  </section>
+</section>
+<section class="detail" id="once/2">
+
+  <div class="detail-header">
+    <a href="#once/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">once(identifier, generator)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L597" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> once(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pid</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), (-&gt; value) | <a href="https://hexdocs.pm/elixir/Enumerable.html#t:t/1">Enumerable.t</a>(value)) :: <a href="https://hexdocs.pm/stream_data/1.2.0/StreamData.html#t:t/1">StreamData.t</a>(value)
+when value: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>Run the provided function or enumerable (i.e generator) only once.</p><p>This is useful for ensuring that some piece of data is generated a single time during a test.</p><p>The lifecycle of this generator is tied to the process that initially starts it. In general,
+that will be the test. In the rare case where you are running async processes that need to share a sequence
+that is not created in the test process, you can initialize a sequence in the test using <a href="#initialize_once/1"><code class="inline">initialize_once/1</code></a>.</p><p>Example:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Ash.Generator</samp><samp class="o">.</samp><samp class="n">once</samp><samp class="p" data-group-id="6975299811-1">(</samp><samp class="ss">:user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="6975299811-2">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+       </samp><samp class="n">register_user</samp><samp class="p" data-group-id="6975299811-3">(</samp><samp class="n">...</samp><samp class="p" data-group-id="6975299811-3">)</samp><samp class="w">
+     </samp><samp class="k" data-group-id="6975299811-2">end</samp><samp class="p" data-group-id="6975299811-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">at</samp><samp class="p" data-group-id="6975299811-4">(</samp><samp class="mi">0</samp><samp class="p" data-group-id="6975299811-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6975299811-5">%</samp><samp class="nc" data-group-id="6975299811-5">User</samp><samp class="p" data-group-id="6975299811-5">{</samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="6975299811-5">}</samp><samp class="w"> </samp><samp class="c1"># created the user</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Ash.Generator</samp><samp class="o">.</samp><samp class="n">once</samp><samp class="p" data-group-id="6975299811-6">(</samp><samp class="ss">:user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="6975299811-7">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+       </samp><samp class="n">register_user</samp><samp class="p" data-group-id="6975299811-8">(</samp><samp class="n">...</samp><samp class="p" data-group-id="6975299811-8">)</samp><samp class="w">
+     </samp><samp class="k" data-group-id="6975299811-7">end</samp><samp class="p" data-group-id="6975299811-6">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">at</samp><samp class="p" data-group-id="6975299811-9">(</samp><samp class="mi">0</samp><samp class="p" data-group-id="6975299811-9">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6975299811-10">%</samp><samp class="nc" data-group-id="6975299811-10">User</samp><samp class="p" data-group-id="6975299811-10">{</samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="6975299811-10">}</samp><samp class="w"> </samp><samp class="c1"># reused the last user</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="query/4">
+
+    <span id="query/2"></span>
+
+    <span id="query/3"></span>
+
+  <div class="detail-header">
+    <a href="#query/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">query(resource, action, generators \\ %{}, query_options \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L928" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> query(
+  <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  action :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(),
+  <a href="#t:overrides/0">overrides</a>(),
+  query_options :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>()</pre>
+
+      </div>
+
+<p>Creates the input for the provided action with <a href="#action_input/3"><code class="inline">action_input/3</code></a>, and returns a query for that action with that input.</p><p>See <a href="#action_input/3"><code class="inline">action_input/3</code></a> and the module documentation for more.</p>
+  </section>
+</section>
+<section class="detail" id="seed!/2">
+
+    <span id="seed!/1"></span>
+
+  <div class="detail-header">
+    <a href="#seed!/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">seed!(resource, generators \\ %{})</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L722" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Gets input using <a href="#seed_input/2"><code class="inline">seed_input/2</code></a> and passes it to <a href="Ash.Seed.xhtml#seed!/2"><code class="inline">Ash.Seed.seed!/2</code></a>, returning the result</p>
+  </section>
+</section>
+<section class="detail" id="seed_generator/2">
+
+    <span id="seed_generator/1"></span>
+
+  <div class="detail-header">
+    <a href="#seed_generator/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">seed_generator(record, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L403" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> seed_generator(
+  <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()
+  | {<a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()}
+  | (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>() -&gt; <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>() | {<a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), %{}}),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:stream_data/0">stream_data</a>()</pre>
+
+      </div>
+
+<p>A generator of seedable records, to be passed to <a href="#generate/1"><code class="inline">generate/1</code></a> or <code class="inline">generate_many/1</code></p><p>See <a href="#changeset_generator/3"><code class="inline">changeset_generator/3</code></a> for the equivalent construct for cases when you want to call resource
+actions as opposed to seed directly to the data layer.</p><p>When a struct is given, only exactly the given values/generators will be used. If you
+pass a tuple, i.e <code class="inline">{Resource, %{field: :value}}</code>, all values not provided will be generated
+automatically.</p><h2 id="seed_generator/2-examples" class="section-heading"><a href="#seed_generator/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">seed_generator</samp><samp class="p" data-group-id="2585357582-1">(</samp><samp class="p" data-group-id="2585357582-2">%</samp><samp class="nc" data-group-id="2585357582-2">MyApp.Blog.Post</samp><samp class="p" data-group-id="2585357582-2">{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">sequence</samp><samp class="p" data-group-id="2585357582-3">(</samp><samp class="ss">:blog_post_title</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="s">&quot;My Blog Post </samp><samp class="si" data-group-id="2585357582-4">#{</samp><samp class="ni">&amp;1</samp><samp class="si" data-group-id="2585357582-4">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="2585357582-3">)</samp><samp class="p" data-group-id="2585357582-2">}</samp><samp class="p" data-group-id="2585357582-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">generate</samp><samp class="p" data-group-id="2585357582-5">(</samp><samp class="p" data-group-id="2585357582-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="2585357582-6">%</samp><samp class="nc" data-group-id="2585357582-6">Tunez.Music.Artist</samp><samp class="p" data-group-id="2585357582-6">{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Artist 1&quot;</samp><samp class="p" data-group-id="2585357582-6">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">seed_generator</samp><samp class="p" data-group-id="2585357582-7">(</samp><samp class="p" data-group-id="2585357582-8">{</samp><samp class="nc">MyApp.Blog.Post</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2585357582-9">%{</samp><samp class="p" data-group-id="2585357582-9">}</samp><samp class="p" data-group-id="2585357582-8">}</samp><samp class="p" data-group-id="2585357582-7">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">generate</samp><samp class="p" data-group-id="2585357582-10">(</samp><samp class="p" data-group-id="2585357582-10">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="2585357582-11">%</samp><samp class="nc" data-group-id="2585357582-11">Tunez.Music.Artist</samp><samp class="p" data-group-id="2585357582-11">{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;A random name&quot;</samp><samp class="p" data-group-id="2585357582-11">}</samp></code></pre><h2 id="seed_generator/2-usage-in-tests" class="section-heading"><a href="#seed_generator/2-usage-in-tests" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage in tests</span></h2><p>This can be used to define seed generators in tests. A useful pattern is defining a function like so:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">blog_post</samp><samp class="p" data-group-id="8883422232-1">(</samp><samp class="n">opts</samp><samp class="w"> </samp><samp class="err">\</samp><samp class="w"> </samp><samp class="p" data-group-id="8883422232-2">[</samp><samp class="p" data-group-id="8883422232-2">]</samp><samp class="p" data-group-id="8883422232-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8883422232-3">do</samp><samp class="w">
+  </samp><samp class="n">seed_generator</samp><samp class="p" data-group-id="8883422232-4">(</samp><samp class="w">
+    </samp><samp class="p" data-group-id="8883422232-5">%</samp><samp class="nc" data-group-id="8883422232-5">MyApp.Blog.Post</samp><samp class="p" data-group-id="8883422232-5">{</samp><samp class="w">
+      </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">sequence</samp><samp class="p" data-group-id="8883422232-6">(</samp><samp class="ss">:blog_post_title</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">&amp;</samp><samp class="s">&quot;My Blog Post </samp><samp class="si" data-group-id="8883422232-7">#{</samp><samp class="ni">&amp;1</samp><samp class="si" data-group-id="8883422232-7">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="8883422232-6">)</samp><samp class="w">
+      </samp><samp class="ss">text</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">StreamData</samp><samp class="o">.</samp><samp class="n">repeatedly</samp><samp class="p" data-group-id="8883422232-8">(</samp><samp class="k" data-group-id="8883422232-9">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Faker.Lorem</samp><samp class="o">.</samp><samp class="n">paragraph</samp><samp class="p" data-group-id="8883422232-10">(</samp><samp class="p" data-group-id="8883422232-10">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8883422232-9">end</samp><samp class="p" data-group-id="8883422232-8">)</samp><samp class="w">
+    </samp><samp class="p" data-group-id="8883422232-5">}</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">overrides</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="w">
+  </samp><samp class="p" data-group-id="8883422232-4">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="8883422232-3">end</samp></code></pre><p>See the <a href="Ash.Generator.xhtml"><code class="inline">Ash.Generator</code></a> moduledocs for more information.</p><h2 id="seed_generator/2-options" class="section-heading"><a href="#seed_generator/2-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:overrides</code> - A keyword list or map of <code class="inline">t:overrides()</code></li><li><code class="inline">:actor</code> - Passed through to the changeset</li><li><code class="inline">:tenant</code> - Passed through to the changeset</li><li><code class="inline">:uses</code> - A map of generators that are passed into the first argument, if it is a function.</li><li><code class="inline">:authorize?</code> - Passed through to the changeset</li><li><code class="inline">:context</code> - Passed through to the changeset</li><li><code class="inline">:after_action</code> - A one argument function that takes the result and returns
+a new result to run after the record is created.</li></ul>
+  </section>
+</section>
+<section class="detail" id="seed_input/2">
+
+    <span id="seed_input/1"></span>
+
+  <div class="detail-header">
+    <a href="#seed_input/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">seed_input(resource, generators \\ %{})</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L953" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> seed_input(<a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()) :: <a href="https://hexdocs.pm/stream_data/1.2.0/StreamData.html#t:t/1">StreamData.t</a>(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>())</pre>
+
+      </div>
+
+<p>Generate input meant to be passed into <a href="Ash.Seed.xhtml#seed!/2"><code class="inline">Ash.Seed.seed!/2</code></a>.</p><p>A map of custom <a href="https://hexdocs.pm/stream_data/1.2.0/StreamData.html"><code class="inline">StreamData</code></a> generators can be provided to add to or overwrite the generated input,
+for example: <code class="inline">Ash.Generator.seed_input(Post, %{text: StreamData.constant(&quot;Post&quot;)})</code></p>
+  </section>
+</section>
+<section class="detail" id="seed_many!/3">
+
+    <span id="seed_many!/2"></span>
+
+  <div class="detail-header">
+    <a href="#seed_many!/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">seed_many!(resource, n, generators \\ %{})</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L733" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Generates an input <code class="inline">n</code> times, and passes them all to seed, returning the list of seeded items.</p>
+  </section>
+</section>
+<section class="detail" id="sequence/3">
+
+    <span id="sequence/2"></span>
+
+  <div class="detail-header">
+    <a href="#sequence/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">sequence(identifier, generator, sequencer \\ fn i -&gt; (i || -1) + 1 end)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L556" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> sequence(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pid</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), (iterator | nil -&gt; value), (iterator | nil -&gt; iterator)) ::
+  <a href="https://hexdocs.pm/stream_data/1.2.0/StreamData.html#t:t/1">StreamData.t</a>(value)
+when iterator: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), value: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>Generate globally unique values.</p><p>This is useful for generating values that are unique within a given test or processes that it spawns, such as email addresses,
+or for generating values that are unique across a single resource, such as identifiers. The values will be unique
+for anything using the same sequence name, <strong>within the same test</strong>.</p><section role="note" class="admonition warning"><h3 id="sequence/3-not-globally-unique" class="admonition-title warning section-heading"><a href="#sequence/3-not-globally-unique" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Not Globally Unique</span></h3><p>The lifecycle of this generator is tied to the process that initially starts it. In general,
+that will be the test. In the rare case where you are running async processes that need to share a sequence
+that is not created in the test process, you can initialize a sequence in the test using <a href="#initialize_sequence/1"><code class="inline">initialize_sequence/1</code></a>.</p><p>If you need a globally unique value, use a value like <code class="inline">System.unique_integer([:positive])</code> in your values instead.</p><p>For example:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">StreamData</samp><samp class="o">.</samp><samp class="n">repeatedly</samp><samp class="p" data-group-id="8867636120-1">(</samp><samp class="k" data-group-id="8867636120-2">fn</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="s">&quot;email</samp><samp class="si" data-group-id="8867636120-3">#{</samp><samp class="nc">System</samp><samp class="o">.</samp><samp class="n">unique_integer</samp><samp class="p" data-group-id="8867636120-4">(</samp><samp class="p" data-group-id="8867636120-5">[</samp><samp class="ss">:positive</samp><samp class="p" data-group-id="8867636120-5">]</samp><samp class="p" data-group-id="8867636120-4">)</samp><samp class="si" data-group-id="8867636120-3">}</samp><samp class="s">@example.com&quot;</samp><samp class="w"> </samp><samp class="k" data-group-id="8867636120-2">end</samp><samp class="p" data-group-id="8867636120-1">)</samp></code></pre></section><p>Example:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Ash.Generator</samp><samp class="o">.</samp><samp class="n">sequence</samp><samp class="p" data-group-id="4111618433-1">(</samp><samp class="ss">:unique_email</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="4111618433-2">fn</samp><samp class="w"> </samp><samp class="n">i</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="s">&quot;user</samp><samp class="si" data-group-id="4111618433-3">#{</samp><samp class="n">i</samp><samp class="si" data-group-id="4111618433-3">}</samp><samp class="s">@example.com&quot;</samp><samp class="w"> </samp><samp class="k" data-group-id="4111618433-2">end</samp><samp class="p" data-group-id="4111618433-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">take</samp><samp class="p" data-group-id="4111618433-4">(</samp><samp class="mi">3</samp><samp class="p" data-group-id="4111618433-4">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="4111618433-5">[</samp><samp class="s">&quot;user0@example.com&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;user1@example.com&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;user2@example.com&quot;</samp><samp class="p" data-group-id="4111618433-5">]</samp></code></pre><h2 id="sequence/3-using-a-different-sequencer" class="section-heading"><a href="#sequence/3-using-a-different-sequencer" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Using a different sequencer</span></h2><p>By default we use an incrementing integer starting at 0. However, if you want to use something else, you can provide
+your own sequencer. The initial value will be <code class="inline">nil</code>, which you can use to detect that you are the start of the sequence.</p><p>Example:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Ash.Generator</samp><samp class="o">.</samp><samp class="n">sequence</samp><samp class="p" data-group-id="0939030293-1">(</samp><samp class="ss">:unique_email</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="0939030293-2">fn</samp><samp class="w"> </samp><samp class="n">i</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="s">&quot;user</samp><samp class="si" data-group-id="0939030293-3">#{</samp><samp class="n">i</samp><samp class="si" data-group-id="0939030293-3">}</samp><samp class="s">@example.com&quot;</samp><samp class="w"> </samp><samp class="k" data-group-id="0939030293-2">end</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="0939030293-4">fn</samp><samp class="w"> </samp><samp class="n">num</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="0939030293-5">(</samp><samp class="n">num</samp><samp class="w"> </samp><samp class="o">||</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="0939030293-5">)</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="k" data-group-id="0939030293-4">end</samp><samp class="p" data-group-id="0939030293-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">take</samp><samp class="p" data-group-id="0939030293-6">(</samp><samp class="mi">3</samp><samp class="p" data-group-id="0939030293-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="p" data-group-id="0939030293-7">[</samp><samp class="s">&quot;user0@example.com&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;user-1@example.com&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;user-2@example.com&quot;</samp><samp class="p" data-group-id="0939030293-7">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="stop_once/1">
+
+  <div class="detail-header">
+    <a href="#stop_once/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">stop_once(identifier)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L672" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Stops the agent for a <a href="#once/2"><code class="inline">once/2</code></a>.</p><p>See <a href="#once/2"><code class="inline">once/2</code></a> for more.</p>
+  </section>
+</section>
+<section class="detail" id="stop_sequence/1">
+
+  <div class="detail-header">
+    <a href="#stop_sequence/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">stop_sequence(identifier)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/generator/generator.ex#L714" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Stops the agent for a sequence.</p><p>See <a href="#sequence/3"><code class="inline">sequence/3</code></a> for more.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

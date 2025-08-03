@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.PlugHelpers - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.PlugHelpers 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Helpers for working with the Plug connection.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_actor/1" data-no-tooltip="" translate="no">get_actor(arg1)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Retrieves the actor from the Plug connection.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_context/1" data-no-tooltip="" translate="no">get_context(arg1)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Retrieves the context from the Plug connection.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_tenant/1" data-no-tooltip="" translate="no">get_tenant(arg1)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Retrieves the tenant from the Plug connection.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_actor/2" data-no-tooltip="" translate="no">set_actor(conn, actor)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets the actor inside the Plug connection.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_context/2" data-no-tooltip="" translate="no">set_context(conn, context)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets the context inside the Plug connection.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_tenant/2" data-no-tooltip="" translate="no">set_tenant(conn, tenant)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets the tenant inside the Plug connection.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#update_actor/2" data-no-tooltip="" translate="no">update_actor(conn, callback)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Updates the actor inside the Plug connection.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#update_context/2" data-no-tooltip="" translate="no">update_context(conn, callback)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Updates the context inside the Plug connection.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="get_actor/1">
+
+  <div class="detail-header">
+    <a href="#get_actor/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_actor(arg1)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/plug_helpers.ex#L77" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> get_actor(<a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>()) :: nil | <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()</pre>
+
+      </div>
+
+<p>Retrieves the actor from the Plug connection.</p><p>The actor is stored inside the <a href="https://hexdocs.pm/plug/Plug.Conn.html#module-private-fields">connection's private
+fields</a>.</p><h2 id="get_actor/1-deprecation-warning" class="section-heading"><a href="#get_actor/1-deprecation-warning" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Deprecation warning</span></h2><p>This function checks to see if the actor is already set in the <code class="inline">@actor</code>
+assign, and if so will emit a deprecation warning.</p><p>This is to allow apps using the previous method a chance to update.</p><p>Rather than setting the actor in the assigns, please use the <a href="#set_actor/2"><code class="inline">set_actor/2</code></a>
+method.</p><h2 id="get_actor/1-example" class="section-heading"><a href="#get_actor/1-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">actor</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_actor</samp><samp class="p" data-group-id="4392740762-1">(</samp><samp class="p" data-group-id="4392740762-2">%{</samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;marty@1985.retro&quot;</samp><samp class="p" data-group-id="4392740762-2">}</samp><samp class="p" data-group-id="4392740762-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_conn</samp><samp class="p" data-group-id="4392740762-3">(</samp><samp class="p" data-group-id="4392740762-3">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">put_private</samp><samp class="p" data-group-id="4392740762-4">(</samp><samp class="ss">:ash</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4392740762-5">%{</samp><samp class="ss">actor</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">actor</samp><samp class="p" data-group-id="4392740762-5">}</samp><samp class="p" data-group-id="4392740762-4">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">actor</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get_actor</samp><samp class="p" data-group-id="4392740762-6">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="4392740762-6">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4392740762-7">%{</samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;marty@1985.retro&quot;</samp><samp class="p" data-group-id="4392740762-7">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">actor</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">actor</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_actor</samp><samp class="p" data-group-id="4392740762-8">(</samp><samp class="p" data-group-id="4392740762-9">%{</samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;marty@1985.retro&quot;</samp><samp class="p" data-group-id="4392740762-9">}</samp><samp class="p" data-group-id="4392740762-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_conn</samp><samp class="p" data-group-id="4392740762-10">(</samp><samp class="p" data-group-id="4392740762-10">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">assign</samp><samp class="p" data-group-id="4392740762-11">(</samp><samp class="ss">:actor</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">actor</samp><samp class="p" data-group-id="4392740762-11">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">actor</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get_actor</samp><samp class="p" data-group-id="4392740762-12">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="4392740762-12">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4392740762-13">%{</samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;marty@1985.retro&quot;</samp><samp class="p" data-group-id="4392740762-13">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">actor</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="get_context/1">
+
+  <div class="detail-header">
+    <a href="#get_context/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_context(arg1)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/plug_helpers.ex#L218" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> get_context(<a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>()) :: nil | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()</pre>
+
+      </div>
+
+<p>Retrieves the context from the Plug connection.</p><p>The context is stored inside the <a href="https://hexdocs.pm/plug/Plug.Conn.html#module-private-fields">connection's private
+fields</a>.</p><h2 id="get_context/1-example" class="section-heading"><a href="#get_context/1-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">context</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="3585470207-1">%{</samp><samp class="ss">fraud_score</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mf">0.427</samp><samp class="p" data-group-id="3585470207-1">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_conn</samp><samp class="p" data-group-id="3585470207-2">(</samp><samp class="p" data-group-id="3585470207-2">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">put_private</samp><samp class="p" data-group-id="3585470207-3">(</samp><samp class="ss">:ash</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3585470207-4">%{</samp><samp class="ss">context</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">context</samp><samp class="p" data-group-id="3585470207-4">}</samp><samp class="p" data-group-id="3585470207-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">context</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get_context</samp><samp class="p" data-group-id="3585470207-5">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="3585470207-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="3585470207-6">%{</samp><samp class="ss">fraud_score</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mf">0.427</samp><samp class="p" data-group-id="3585470207-6">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="get_tenant/1">
+
+  <div class="detail-header">
+    <a href="#get_tenant/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_tenant(arg1)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/plug_helpers.ex#L168" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> get_tenant(<a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>Retrieves the tenant from the Plug connection.</p><p>The tenant is stored inside the <a href="https://hexdocs.pm/plug/Plug.Conn.html#module-private-fields">connection's private
+fields</a>.</p><h2 id="get_tenant/1-deprecation-warning" class="section-heading"><a href="#get_tenant/1-deprecation-warning" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Deprecation warning</span></h2><p>This function checks to see if the tenant is already set in the <code class="inline">@tenant</code>
+assign, and if so will emit a deprecation warning.</p><p>This is to allow apps using the previous method a chance to update.</p><p>Rather than setting the tenant in the assigns, please use the <a href="#set_tenant/2"><code class="inline">set_tenant/2</code></a>
+method.</p><h2 id="get_tenant/1-example" class="section-heading"><a href="#get_tenant/1-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_conn</samp><samp class="p" data-group-id="9568179387-1">(</samp><samp class="p" data-group-id="9568179387-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">put_private</samp><samp class="p" data-group-id="9568179387-2">(</samp><samp class="ss">:ash</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9568179387-3">%{</samp><samp class="ss">tenant</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;my-tenant&quot;</samp><samp class="p" data-group-id="9568179387-3">}</samp><samp class="p" data-group-id="9568179387-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">tenant</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get_tenant</samp><samp class="p" data-group-id="9568179387-4">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="9568179387-4">)</samp><samp class="w">
+</samp><samp class="s">&quot;my-tenant&quot;</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">tenant</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_conn</samp><samp class="p" data-group-id="9568179387-5">(</samp><samp class="p" data-group-id="9568179387-5">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">assign</samp><samp class="p" data-group-id="9568179387-6">(</samp><samp class="ss">:tenant</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;my-tenant&quot;</samp><samp class="p" data-group-id="9568179387-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">tenant</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get_tenant</samp><samp class="p" data-group-id="9568179387-7">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="9568179387-7">)</samp><samp class="w">
+</samp><samp class="s">&quot;my-tenant&quot;</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">tenant</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="set_actor/2">
+
+  <div class="detail-header">
+    <a href="#set_actor/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_actor(conn, actor)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/plug_helpers.ex#L38" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_actor(<a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>(), <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>()) :: <a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>()</pre>
+
+      </div>
+
+<p>Sets the actor inside the Plug connection.</p><p>The actor is stored inside the <a href="https://hexdocs.pm/plug/Plug.Conn.html#module-private-fields">connection's private
+fields</a>.</p><h2 id="set_actor/2-example" class="section-heading"><a href="#set_actor/2-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">actor</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_actor</samp><samp class="p" data-group-id="1028363588-1">(</samp><samp class="p" data-group-id="1028363588-2">%{</samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;marty@1985.retro&quot;</samp><samp class="p" data-group-id="1028363588-2">}</samp><samp class="p" data-group-id="1028363588-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_conn</samp><samp class="p" data-group-id="1028363588-3">(</samp><samp class="p" data-group-id="1028363588-3">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">set_actor</samp><samp class="p" data-group-id="1028363588-4">(</samp><samp class="n">actor</samp><samp class="p" data-group-id="1028363588-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1028363588-5">%</samp><samp class="nc" data-group-id="1028363588-5">Plug.Conn</samp><samp class="p" data-group-id="1028363588-5">{</samp><samp class="ss">private</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1028363588-6">%{</samp><samp class="ss">ash</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1028363588-7">%{</samp><samp class="ss">actor</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1028363588-8">%{</samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;marty@1985.retro&quot;</samp><samp class="p" data-group-id="1028363588-8">}</samp><samp class="p" data-group-id="1028363588-7">}</samp><samp class="p" data-group-id="1028363588-6">}</samp><samp class="p" data-group-id="1028363588-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">conn</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="set_context/2">
+
+  <div class="detail-header">
+    <a href="#set_context/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_context(conn, context)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/plug_helpers.ex#L194" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_context(<a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()) :: <a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>()</pre>
+
+      </div>
+
+<p>Sets the context inside the Plug connection.</p><p>Context can be used to store arbitrary data about the user, connection, or
+anything else you like that doesn't belong as part of the actor or tenant.</p><p>The context is stored inside the <a href="https://hexdocs.pm/plug/Plug.Conn.html#module-private-fields">connection's private
+fields</a>.</p><h2 id="set_context/2-example" class="section-heading"><a href="#set_context/2-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">context</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="6862423021-1">%{</samp><samp class="ss">fraud_score</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mf">0.427</samp><samp class="p" data-group-id="6862423021-1">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_conn</samp><samp class="p" data-group-id="6862423021-2">(</samp><samp class="p" data-group-id="6862423021-2">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">set_context</samp><samp class="p" data-group-id="6862423021-3">(</samp><samp class="n">context</samp><samp class="p" data-group-id="6862423021-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6862423021-4">%</samp><samp class="nc" data-group-id="6862423021-4">Plug.Conn</samp><samp class="p" data-group-id="6862423021-4">{</samp><samp class="ss">private</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6862423021-5">%{</samp><samp class="ss">ash</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6862423021-6">%{</samp><samp class="ss">context</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6862423021-7">%{</samp><samp class="ss">fraud_score</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mf">0.427</samp><samp class="p" data-group-id="6862423021-7">}</samp><samp class="p" data-group-id="6862423021-6">}</samp><samp class="p" data-group-id="6862423021-5">}</samp><samp class="p" data-group-id="6862423021-4">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">conn</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="set_tenant/2">
+
+  <div class="detail-header">
+    <a href="#set_tenant/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_tenant(conn, tenant)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/plug_helpers.ex#L130" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_tenant(<a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>(), <a href="Ash.ToTenant.xhtml#t:t/0">Ash.ToTenant.t</a>()) :: <a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>()</pre>
+
+      </div>
+
+<p>Sets the tenant inside the Plug connection.</p><p>The tenant is stored inside the <a href="https://hexdocs.pm/plug/Plug.Conn.html#module-private-fields">connection's private
+fields</a>.</p><h2 id="set_tenant/2-example" class="section-heading"><a href="#set_tenant/2-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_conn</samp><samp class="p" data-group-id="7602796483-1">(</samp><samp class="p" data-group-id="7602796483-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">set_tenant</samp><samp class="p" data-group-id="7602796483-2">(</samp><samp class="s">&quot;my-tenant&quot;</samp><samp class="p" data-group-id="7602796483-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="7602796483-3">%</samp><samp class="nc" data-group-id="7602796483-3">Plug.Conn</samp><samp class="p" data-group-id="7602796483-3">{</samp><samp class="ss">private</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7602796483-4">%{</samp><samp class="ss">ash</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7602796483-5">%{</samp><samp class="ss">tenant</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;my-tenant&quot;</samp><samp class="p" data-group-id="7602796483-5">}</samp><samp class="p" data-group-id="7602796483-4">}</samp><samp class="p" data-group-id="7602796483-3">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">conn</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="update_actor/2">
+
+  <div class="detail-header">
+    <a href="#update_actor/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">update_actor(conn, callback)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/plug_helpers.ex#L107" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> update_actor(<a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>(), (nil | <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>() -&gt;
+                               nil | <a href="Ash.Resource.xhtml#t:record/0">Ash.Resource.record</a>())) ::
+  <a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>()</pre>
+
+      </div>
+
+<p>Updates the actor inside the Plug connection.</p><p>The actor is stored inside the <a href="https://hexdocs.pm/plug/Plug.Conn.html#module-private-fields">connection's private
+fields</a>.</p><h2 id="update_actor/2-example" class="section-heading"><a href="#update_actor/2-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">actor</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_actor</samp><samp class="p" data-group-id="8025105960-1">(</samp><samp class="p" data-group-id="8025105960-2">%{</samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;marty@1985.retro&quot;</samp><samp class="p" data-group-id="8025105960-2">}</samp><samp class="p" data-group-id="8025105960-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_conn</samp><samp class="p" data-group-id="8025105960-3">(</samp><samp class="p" data-group-id="8025105960-3">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">put_private</samp><samp class="p" data-group-id="8025105960-4">(</samp><samp class="ss">:ash</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8025105960-5">%{</samp><samp class="ss">actor</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">actor</samp><samp class="p" data-group-id="8025105960-5">}</samp><samp class="p" data-group-id="8025105960-4">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">actor</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get_actor</samp><samp class="p" data-group-id="8025105960-6">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="8025105960-6">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8025105960-7">%{</samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;marty@1985.retro&quot;</samp><samp class="p" data-group-id="8025105960-7">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">actor</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">update_actor</samp><samp class="p" data-group-id="8025105960-8">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="8025105960-9">fn</samp><samp class="w"> </samp><samp class="n">actor</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">put</samp><samp class="p" data-group-id="8025105960-10">(</samp><samp class="n">actor</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:name</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Marty Retro&quot;</samp><samp class="p" data-group-id="8025105960-10">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8025105960-9">end</samp><samp class="p" data-group-id="8025105960-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">actor</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get_actor</samp><samp class="p" data-group-id="8025105960-11">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="8025105960-11">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8025105960-12">%{</samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;marty@1985.retro&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Marty Retro&quot;</samp><samp class="p" data-group-id="8025105960-12">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">actor</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">update_actor</samp><samp class="p" data-group-id="8025105960-13">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="8025105960-14">fn</samp><samp class="w"> </samp><samp class="n">actor</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">delete</samp><samp class="p" data-group-id="8025105960-15">(</samp><samp class="n">actor</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:email</samp><samp class="p" data-group-id="8025105960-15">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8025105960-14">end</samp><samp class="p" data-group-id="8025105960-13">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">actor</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get_actor</samp><samp class="p" data-group-id="8025105960-16">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="8025105960-16">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8025105960-17">%{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Marty Retro&quot;</samp><samp class="p" data-group-id="8025105960-17">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">actor</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="update_context/2">
+
+  <div class="detail-header">
+    <a href="#update_context/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">update_context(conn, callback)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/plug_helpers.ex#L242" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> update_context(<a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>(), (nil | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>() -&gt; nil | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>())) :: <a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html#t:t/0">Plug.Conn.t</a>()</pre>
+
+      </div>
+
+<p>Updates the context inside the Plug connection.</p><p>The context is stored inside the <a href="https://hexdocs.pm/plug/Plug.Conn.html#module-private-fields">connection's private
+fields</a>.</p><h2 id="update_context/2-example" class="section-heading"><a href="#update_context/2-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">context</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="9084704877-1">%{</samp><samp class="ss">species</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Fythetropozoat&quot;</samp><samp class="p" data-group-id="9084704877-1">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">build_conn</samp><samp class="p" data-group-id="9084704877-2">(</samp><samp class="p" data-group-id="9084704877-2">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">put_private</samp><samp class="p" data-group-id="9084704877-3">(</samp><samp class="ss">:ash</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9084704877-4">%{</samp><samp class="ss">context</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">context</samp><samp class="p" data-group-id="9084704877-4">}</samp><samp class="p" data-group-id="9084704877-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">context</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get_context</samp><samp class="p" data-group-id="9084704877-5">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="9084704877-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9084704877-6">%{</samp><samp class="ss">fraud_score</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mf">0.427</samp><samp class="p" data-group-id="9084704877-6">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">context</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">update_context</samp><samp class="p" data-group-id="9084704877-7">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="9084704877-8">fn</samp><samp class="w"> </samp><samp class="n">context</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">put</samp><samp class="p" data-group-id="9084704877-9">(</samp><samp class="n">context</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:location</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Barnard&#39;s Loop&quot;</samp><samp class="p" data-group-id="9084704877-9">)</samp><samp class="w"> </samp><samp class="k" data-group-id="9084704877-8">end</samp><samp class="p" data-group-id="9084704877-7">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">context</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get_context</samp><samp class="p" data-group-id="9084704877-10">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="9084704877-10">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9084704877-11">%{</samp><samp class="ss">species</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Fythetropozoat&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">location</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Barnard&#39;s Loop&quot;</samp><samp class="p" data-group-id="9084704877-11">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">context</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">update_context</samp><samp class="p" data-group-id="9084704877-12">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="9084704877-13">fn</samp><samp class="w"> </samp><samp class="n">context</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">delete</samp><samp class="p" data-group-id="9084704877-14">(</samp><samp class="n">context</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:fraud_score</samp><samp class="p" data-group-id="9084704877-14">)</samp><samp class="w"> </samp><samp class="k" data-group-id="9084704877-13">end</samp><samp class="p" data-group-id="9084704877-12">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="n">context</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get_context</samp><samp class="p" data-group-id="9084704877-15">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="9084704877-15">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9084704877-16">%{</samp><samp class="ss">location</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Barnard&#39;s Loop&quot;</samp><samp class="p" data-group-id="9084704877-16">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">context</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

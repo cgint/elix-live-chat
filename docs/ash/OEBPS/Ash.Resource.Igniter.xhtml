@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Resource.Igniter - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Resource.Igniter 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Codemods for working with Ash.Resource modules</p><h2 id="module-important-details">Important Details</h2><p>This interrogates <em>the source code</em> of a resource, not its ultimate compiled state.
+What this means, is that things like <code class="inline">defines_attribute</code> will not return <code class="inline">true</code> if
+the attribute is added by an extension. Only if it appears literally in the source code
+of the resource or one of its <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.Fragment.html"><code class="inline">Spark.Dsl.Fragment</code></a>s.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_action/3" data-no-tooltip="" translate="no">add_action(igniter, resource, action)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the given code block to the resource's <code class="inline">actions</code> block</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_attribute/3" data-no-tooltip="" translate="no">add_attribute(igniter, resource, attribute)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the given code block to the resource's <code class="inline">attributes</code> block</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_block/4" data-no-tooltip="" translate="no">add_block(igniter, resource, block, chunk)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the given code block to the block of the resource specified</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_bypass/4" data-no-tooltip="" translate="no">add_bypass(igniter, resource, condition, body)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds a bypass to the top of the resource's <code class="inline">policies</code> block</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_calculation/3" data-no-tooltip="" translate="no">add_calculation(igniter, resource, calculation)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the given code block to the resource's <code class="inline">calculations</code> block</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_identity/3" data-no-tooltip="" translate="no">add_identity(igniter, resource, identity)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the given code block to the resource's <code class="inline">identities</code> block</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_new_action/4" data-no-tooltip="" translate="no">add_new_action(igniter, resource, name, action)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds an action if it doesn't already exist</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_new_attribute/4" data-no-tooltip="" translate="no">add_new_attribute(igniter, resource, name, attribute)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the given code block to the resource's <code class="inline">attributes</code> block if there is no existing attribute with the given name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_new_calculation/4" data-no-tooltip="" translate="no">add_new_calculation(igniter, resource, name, attribute)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the given code block to the resource's <code class="inline">calculations</code> block if there is no existing calculation with the given name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_new_identity/4" data-no-tooltip="" translate="no">add_new_identity(igniter, resource, name, identity)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the given code block to the resource's <code class="inline">identities</code> block if there is no existing identity with the given name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_new_relationship/4" data-no-tooltip="" translate="no">add_new_relationship(igniter, resource, name, relationship)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the given code block to the resource's <code class="inline">relationships</code> block</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_policy/4" data-no-tooltip="" translate="no">add_policy(igniter, resource, condition, body)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds a policy to the bottom of the resource's <code class="inline">policies</code> block</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_relationship/3" data-no-tooltip="" translate="no">add_relationship(igniter, resource, relationship)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the given code block to the resource's <code class="inline">relationships</code> block</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_resource_configuration/3" data-no-tooltip="" translate="no">add_resource_configuration(igniter, resource, resource_configuration)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds the given code block to the resource's <code class="inline">resource</code> block</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#defines_action/3" data-no-tooltip="" translate="no">defines_action(igniter, resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the given resource defines an action with the provided name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#defines_attribute/3" data-no-tooltip="" translate="no">defines_attribute(igniter, resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the given resource defines an attribute with the provided name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#defines_calculation/3" data-no-tooltip="" translate="no">defines_calculation(igniter, resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the given resource defines a calculation with the provided name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#defines_identity/3" data-no-tooltip="" translate="no">defines_identity(igniter, resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the given resource defines an identity with the provided name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#defines_relationship/3" data-no-tooltip="" translate="no">defines_relationship(igniter, resource, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the given resource defines a relationship with the provided name</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#domain/2" data-no-tooltip="" translate="no">domain(igniter, resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the domain from the given resource module</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ensure_primary_action/3" data-no-tooltip="" translate="no">ensure_primary_action(igniter, resource, type)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ensure_timestamps/2" data-no-tooltip="" translate="no">ensure_timestamps(igniter, resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Ensures that created_at and updated_at timestamps exist on the resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#has_action_with_primary/3" data-no-tooltip="" translate="no">has_action_with_primary(igniter, resource, type)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#list_resources/1" data-no-tooltip="" translate="no">list_resources(igniter)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>List all resource modules found in the project</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#resource_mods/1" data-no-tooltip="" translate="no">resource_mods(igniter)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="add_action/3">
+
+  <div class="detail-header">
+    <a href="#add_action/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_action(igniter, resource, action)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L418" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds the given code block to the resource's <code class="inline">actions</code> block</p>
+  </section>
+</section>
+<section class="detail" id="add_attribute/3">
+
+  <div class="detail-header">
+    <a href="#add_attribute/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_attribute(igniter, resource, attribute)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L397" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds the given code block to the resource's <code class="inline">attributes</code> block</p>
+  </section>
+</section>
+<section class="detail" id="add_block/4">
+
+  <div class="detail-header">
+    <a href="#add_block/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_block(igniter, resource, block, chunk)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L61" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds the given code block to the block of the resource specified</p>
+  </section>
+</section>
+<section class="detail" id="add_bypass/4">
+
+  <div class="detail-header">
+    <a href="#add_bypass/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_bypass(igniter, resource, condition, body)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L85" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds a bypass to the top of the resource's <code class="inline">policies</code> block</p>
+  </section>
+</section>
+<section class="detail" id="add_calculation/3">
+
+  <div class="detail-header">
+    <a href="#add_calculation/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_calculation(igniter, resource, calculation)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L402" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds the given code block to the resource's <code class="inline">calculations</code> block</p>
+  </section>
+</section>
+<section class="detail" id="add_identity/3">
+
+  <div class="detail-header">
+    <a href="#add_identity/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_identity(igniter, resource, identity)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L392" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds the given code block to the resource's <code class="inline">identities</code> block</p>
+  </section>
+</section>
+<section class="detail" id="add_new_action/4">
+
+  <div class="detail-header">
+    <a href="#add_new_action/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_new_action(igniter, resource, name, action)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L407" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds an action if it doesn't already exist</p>
+  </section>
+</section>
+<section class="detail" id="add_new_attribute/4">
+
+  <div class="detail-header">
+    <a href="#add_new_attribute/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_new_attribute(igniter, resource, name, attribute)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L359" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds the given code block to the resource's <code class="inline">attributes</code> block if there is no existing attribute with the given name</p>
+  </section>
+</section>
+<section class="detail" id="add_new_calculation/4">
+
+  <div class="detail-header">
+    <a href="#add_new_calculation/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_new_calculation(igniter, resource, name, attribute)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L370" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds the given code block to the resource's <code class="inline">calculations</code> block if there is no existing calculation with the given name</p>
+  </section>
+</section>
+<section class="detail" id="add_new_identity/4">
+
+  <div class="detail-header">
+    <a href="#add_new_identity/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_new_identity(igniter, resource, name, identity)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L381" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds the given code block to the resource's <code class="inline">identities</code> block if there is no existing identity with the given name</p>
+  </section>
+</section>
+<section class="detail" id="add_new_relationship/4">
+
+  <div class="detail-header">
+    <a href="#add_new_relationship/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_new_relationship(igniter, resource, name, relationship)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L423" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds the given code block to the resource's <code class="inline">relationships</code> block</p>
+  </section>
+</section>
+<section class="detail" id="add_policy/4">
+
+  <div class="detail-header">
+    <a href="#add_policy/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_policy(igniter, resource, condition, body)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L123" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds a policy to the bottom of the resource's <code class="inline">policies</code> block</p>
+  </section>
+</section>
+<section class="detail" id="add_relationship/3">
+
+  <div class="detail-header">
+    <a href="#add_relationship/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_relationship(igniter, resource, relationship)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L434" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds the given code block to the resource's <code class="inline">relationships</code> block</p>
+  </section>
+</section>
+<section class="detail" id="add_resource_configuration/3">
+
+  <div class="detail-header">
+    <a href="#add_resource_configuration/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_resource_configuration(igniter, resource, resource_configuration)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L439" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Adds the given code block to the resource's <code class="inline">resource</code> block</p>
+  </section>
+</section>
+<section class="detail" id="defines_action/3">
+
+  <div class="detail-header">
+    <a href="#defines_action/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">defines_action(igniter, resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L264" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> defines_action(<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  {<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), true | false}</pre>
+
+      </div>
+
+<p>Returns true if the given resource defines an action with the provided name</p>
+  </section>
+</section>
+<section class="detail" id="defines_attribute/3">
+
+  <div class="detail-header">
+    <a href="#defines_attribute/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">defines_attribute(igniter, resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L162" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> defines_attribute(<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  {<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), true | false}</pre>
+
+      </div>
+
+<p>Returns true if the given resource defines an attribute with the provided name</p>
+  </section>
+</section>
+<section class="detail" id="defines_calculation/3">
+
+  <div class="detail-header">
+    <a href="#defines_calculation/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">defines_calculation(igniter, resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L208" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> defines_calculation(<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  {<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), true | false}</pre>
+
+      </div>
+
+<p>Returns true if the given resource defines a calculation with the provided name</p>
+  </section>
+</section>
+<section class="detail" id="defines_identity/3">
+
+  <div class="detail-header">
+    <a href="#defines_identity/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">defines_identity(igniter, resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L237" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> defines_identity(<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  {<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), true | false}</pre>
+
+      </div>
+
+<p>Returns true if the given resource defines an identity with the provided name</p>
+  </section>
+</section>
+<section class="detail" id="defines_relationship/3">
+
+  <div class="detail-header">
+    <a href="#defines_relationship/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">defines_relationship(igniter, resource, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L328" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> defines_relationship(<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  {<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), true | false}</pre>
+
+      </div>
+
+<p>Returns true if the given resource defines a relationship with the provided name</p>
+  </section>
+</section>
+<section class="detail" id="domain/2">
+
+  <div class="detail-header">
+    <a href="#domain/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">domain(igniter, resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L32" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> domain(<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) ::
+  {:ok, <a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()} | {:error, <a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>()}</pre>
+
+      </div>
+
+<p>Gets the domain from the given resource module</p>
+  </section>
+</section>
+<section class="detail" id="ensure_primary_action/3">
+
+  <div class="detail-header">
+    <a href="#ensure_primary_action/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ensure_primary_action(igniter, resource, type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L312" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> ensure_primary_action(
+  <a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(),
+  <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  :create | :read | :update | :destroy
+) :: <a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="ensure_timestamps/2">
+
+  <div class="detail-header">
+    <a href="#ensure_timestamps/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ensure_timestamps(igniter, resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L444" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Ensures that created_at and updated_at timestamps exist on the resource</p>
+  </section>
+</section>
+<section class="detail" id="has_action_with_primary/3">
+
+  <div class="detail-header">
+    <a href="#has_action_with_primary/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">has_action_with_primary(igniter, resource, type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L545" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> has_action_with_primary(<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) ::
+  {<a href="https://hexdocs.pm/igniter/0.6.22/Igniter.html#t:t/0">Igniter.t</a>(), true | false}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="list_resources/1">
+
+  <div class="detail-header">
+    <a href="#list_resources/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">list_resources(igniter)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L15" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>List all resource modules found in the project</p>
+  </section>
+</section>
+<section class="detail" id="resource_mods/1">
+
+  <div class="detail-header">
+    <a href="#resource_mods/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">resource_mods(igniter)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/resource/igniter.ex#L54" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

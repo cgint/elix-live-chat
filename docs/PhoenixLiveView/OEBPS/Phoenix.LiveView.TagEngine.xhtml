@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.TagEngine - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.TagEngine <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>An EEx engine that understands tags.</p><p>This cannot be directly used by Phoenix applications.
+Instead, it is the building block by engines such as
+<a href="Phoenix.LiveView.HTMLEngine.xhtml"><code class="inline">Phoenix.LiveView.HTMLEngine</code></a>.</p><p>It is typically invoked like this:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">EEx</samp><samp class="o">.</samp><samp class="n">compile_string</samp><samp class="p" data-group-id="7309992854-1">(</samp><samp class="n">source</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">engine</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveView.TagEngine</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">line</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">file</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">path</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">caller</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="bp">__CALLER__</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">source</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">source</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">tag_handler</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">FooBarEngine</samp><samp class="w">
+</samp><samp class="p" data-group-id="7309992854-1">)</samp></code></pre><p>Where <code class="inline">:tag_handler</code> implements the behaviour defined by this module.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:annotate_body/1" data-no-tooltip="" translate="no">annotate_body(caller)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Callback invoked to add annotations around the whole body of a template.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:annotate_caller/2" data-no-tooltip="" translate="no">annotate_caller(file, line)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Callback invoked to add caller annotations before a function component is invoked.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:annotate_slot/4" data-no-tooltip="" translate="no">annotate_slot(name, tag_meta, close_tag_meta, caller)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Callback invoked to add annotations around each slot of a template.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:classify_type/1" data-no-tooltip="" translate="no">classify_type(name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Classify the tag type from the given binary.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:handle_attributes/2" data-no-tooltip="" translate="no">handle_attributes(ast, meta)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Implements processing of attributes.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:void?/1" data-no-tooltip="" translate="no">void?(name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns if the given tag name is void or not.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#component/3" data-no-tooltip="" translate="no">component(func, assigns, caller)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Renders a component defined by the given function.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#inner_block/2" data-no-tooltip="" translate="no">inner_block(name, list)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Define a inner block, generally used by slots.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:annotate_body/1">
+
+  <div class="detail-header">
+    <a href="#c:annotate_body/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">annotate_body(caller)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/tag_engine.ex#L59" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> annotate_body(caller :: <a href="https://hexdocs.pm/elixir/Macro.Env.html#t:t/0">Macro.Env.t</a>()) :: {<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()} | nil</pre>
+
+      </div>
+
+<p>Callback invoked to add annotations around the whole body of a template.</p>
+  </section>
+</section>
+<section class="detail" id="c:annotate_caller/2">
+
+  <div class="detail-header">
+    <a href="#c:annotate_caller/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">annotate_caller(file, line)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/tag_engine.ex#L77" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> annotate_caller(file :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), line :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>()) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>Callback invoked to add caller annotations before a function component is invoked.</p>
+  </section>
+</section>
+<section class="detail" id="c:annotate_slot/4">
+
+  <div class="detail-header">
+    <a href="#c:annotate_slot/4" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">annotate_slot(name, tag_meta, close_tag_meta, caller)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/tag_engine.ex#L67" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> annotate_slot(
+  name :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(),
+  tag_meta :: %{line: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">non_neg_integer</a>(), column: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">non_neg_integer</a>()},
+  close_tag_meta :: %{line: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">non_neg_integer</a>(), column: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">non_neg_integer</a>()},
+  caller :: <a href="https://hexdocs.pm/elixir/Macro.Env.html#t:t/0">Macro.Env.t</a>()
+) :: {<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()} | nil</pre>
+
+      </div>
+
+<p>Callback invoked to add annotations around each slot of a template.</p><p>In case the slot is an implicit inner block, the tag meta points to
+the component.</p>
+  </section>
+</section>
+<section class="detail" id="c:classify_type/1">
+
+  <div class="detail-header">
+    <a href="#c:classify_type/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">classify_type(name)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/tag_engine.ex#L33" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> classify_type(name :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()) :: {type :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), name :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()}</pre>
+
+      </div>
+
+<p>Classify the tag type from the given binary.</p><p>This must return a tuple containing the type of the tag and the name of tag.
+For instance, for LiveView which uses HTML as default tag handler this would
+return <code class="inline">{:tag, 'div'}</code> in case the given binary is identified as HTML tag.</p><p>You can also return <code class="inline">{:error, &quot;reason&quot;}</code> so that the compiler will display this
+error.</p>
+  </section>
+</section>
+<section class="detail" id="c:handle_attributes/2">
+
+  <div class="detail-header">
+    <a href="#c:handle_attributes/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_attributes(ast, meta)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/tag_engine.ex#L53" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> handle_attributes(ast :: <a href="https://hexdocs.pm/elixir/Macro.html#t:t/0">Macro.t</a>(), meta :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>()) ::
+  {:attributes, [{<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), <a href="https://hexdocs.pm/elixir/Macro.html#t:t/0">Macro.t</a>()} | <a href="https://hexdocs.pm/elixir/Macro.html#t:t/0">Macro.t</a>()]} | {:quoted, <a href="https://hexdocs.pm/elixir/Macro.html#t:t/0">Macro.t</a>()}</pre>
+
+      </div>
+
+<p>Implements processing of attributes.</p><p>It returns a quoted expression or attributes. If attributes are returned,
+the second element is a list where each element in the list represents
+one attribute. If the list element is a two-element tuple, it is assumed
+the key is the name to be statically written in the template. The second
+element is the value which is also statically written to the template whenever
+possible (such as binaries or binaries inside a list).</p>
+  </section>
+</section>
+<section class="detail" id="c:void?/1">
+
+  <div class="detail-header">
+    <a href="#c:void?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">void?(name)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/tag_engine.ex#L41" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> void?(name :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Returns if the given tag name is void or not.</p><p>That's mainly useful for HTML tags and used internally by the compiler. You
+can just implement as <code class="inline">def void?(_), do: false</code> if you want to ignore this.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="component/3">
+
+  <div class="detail-header">
+    <a href="#component/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">component(func, assigns, caller)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/tag_engine.ex#L101" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Renders a component defined by the given function.</p><p>This function is rarely invoked directly by users. Instead, it is used by <code class="inline">~H</code>
+and other engine implementations to render <a href="Phoenix.Component.xhtml"><code class="inline">Phoenix.Component</code></a>s. For example,
+the following:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nc">MyApp.Weather</samp><samp class="o">.</samp><samp class="n">city</samp><samp class="w"> </samp><samp class="na">name</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">Kraków</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="p">/&gt;</samp></code></pre><p>Is the same as:</p><pre><code class="makeup heex" translate="no"><samp class="p" data-group-id="5349566103-1">&lt;%=</samp><samp class="w"> </samp><samp class="n">component</samp><samp class="p" data-group-id="5349566103-ex-1">(</samp><samp class="w">
+      </samp><samp class="o">&amp;</samp><samp class="nc">MyApp.Weather</samp><samp class="o">.</samp><samp class="n">city</samp><samp class="o">/</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="p" data-group-id="5349566103-ex-2">[</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Kraków&quot;</samp><samp class="p" data-group-id="5349566103-ex-2">]</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="p" data-group-id="5349566103-ex-3">{</samp><samp class="bp">__ENV__</samp><samp class="o">.</samp><samp class="n">module</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">__ENV__</samp><samp class="o">.</samp><samp class="n">function</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">__ENV__</samp><samp class="o">.</samp><samp class="n">file</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">__ENV__</samp><samp class="o">.</samp><samp class="n">line</samp><samp class="p" data-group-id="5349566103-ex-3">}</samp><samp class="w">
+    </samp><samp class="p" data-group-id="5349566103-ex-1">)</samp><samp class="w"> </samp><samp class="p" data-group-id="5349566103-1">%&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="inner_block/2">
+
+  <div class="detail-header">
+    <a href="#inner_block/2" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">inner_block(name, list)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/tag_engine.ex#L142" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Define a inner block, generally used by slots.</p><p>This macro is mostly used by custom HTML engines that provide
+a <code class="inline">slot</code> implementation and rarely called directly. The
+<code class="inline">name</code> must be the assign name the slot/block will be stored
+under.</p><p>If you're using HEEx templates, you should use its higher
+level <code class="inline">&lt;:slot&gt;</code> notation instead. See <a href="Phoenix.Component.xhtml"><code class="inline">Phoenix.Component</code></a>
+for more information.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

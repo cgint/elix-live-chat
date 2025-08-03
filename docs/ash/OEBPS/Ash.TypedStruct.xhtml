@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.TypedStruct - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.TypedStruct 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A DSL for defining typed structs with field validation and constraints.</p><p><a href="Ash.TypedStruct.xhtml"><code class="inline">Ash.TypedStruct</code></a> provides a convenient way to define a struct type in Ash.</p><p>Under the hood, it creates an <a href="Ash.Type.NewType.xhtml"><code class="inline">Ash.Type.NewType</code></a> with <code class="inline">subtype_of: :struct</code>
+and the appropriate constraints.</p><h2 id="module-example">Example</h2><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.UserProfile</samp><samp class="w"> </samp><samp class="k" data-group-id="9599531362-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Ash.TypedStruct</samp><samp class="w"> 
+
+  </samp><samp class="n">typed_struct</samp><samp class="w"> </samp><samp class="k" data-group-id="9599531362-2">do</samp><samp class="w">
+    </samp><samp class="n">field</samp><samp class="w"> </samp><samp class="ss">:username</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">allow_nil?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">false</samp><samp class="w">
+    </samp><samp class="n">field</samp><samp class="w"> </samp><samp class="ss">:email</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9599531362-3">[</samp><samp class="ss">match</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sr">~r/@/</samp><samp class="p" data-group-id="9599531362-3">]</samp><samp class="w">
+    </samp><samp class="n">field</samp><samp class="w"> </samp><samp class="ss">:age</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:integer</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9599531362-4">[</samp><samp class="ss">min</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">max</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">150</samp><samp class="p" data-group-id="9599531362-4">]</samp><samp class="w">
+    </samp><samp class="n">field</samp><samp class="w"> </samp><samp class="ss">:bio</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">default</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;&quot;</samp><samp class="w">
+    </samp><samp class="n">field</samp><samp class="w"> </samp><samp class="ss">:verified</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:boolean</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">default</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">false</samp><samp class="w">
+  </samp><samp class="k" data-group-id="9599531362-2">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="9599531362-1">end</samp><samp class="w">
+
+</samp><samp class="c1"># Creating instances</samp><samp class="w">
+</samp><samp class="p" data-group-id="9599531362-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">profile</samp><samp class="p" data-group-id="9599531362-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.UserProfile</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="9599531362-6">(</samp><samp class="ss">username</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;john&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;john@example.com&quot;</samp><samp class="p" data-group-id="9599531362-6">)</samp><samp class="w">
+
+</samp><samp class="c1"># Using new! for raising on errors</samp><samp class="w">
+</samp><samp class="n">profile</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.UserProfile</samp><samp class="o">.</samp><samp class="n">new!</samp><samp class="p" data-group-id="9599531362-7">(</samp><samp class="ss">username</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;jane&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;jane@example.com&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">age</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">25</samp><samp class="p" data-group-id="9599531362-7">)</samp><samp class="w">
+
+</samp><samp class="c1"># Can be used as an Ash type</samp><samp class="w">
+</samp><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.User</samp><samp class="w"> </samp><samp class="k" data-group-id="9599531362-8">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Ash.Resource</samp><samp class="w">
+
+  </samp><samp class="n">attributes</samp><samp class="w"> </samp><samp class="k" data-group-id="9599531362-9">do</samp><samp class="w">
+    </samp><samp class="n">attribute</samp><samp class="w"> </samp><samp class="ss">:profile</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyApp.UserProfile</samp><samp class="w">
+  </samp><samp class="k" data-group-id="9599531362-9">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="9599531362-8">end</samp></code></pre><h2 id="module-field-options">Field Options</h2><ul><li><code class="inline">:type</code> - The Ash type of the field (required)</li><li><code class="inline">:default</code> - Default value for the field</li><li><code class="inline">:allow_nil?</code> - Whether the field can be nil (defaults to <code class="inline">true</code>)</li><li><code class="inline">:constraints</code> - Type-specific constraints (e.g., <code class="inline">:min</code>, <code class="inline">:max</code>, <code class="inline">:match</code>)</li><li><code class="inline">:description</code> - Field documentation</li></ul><h2 id="module-constructor-functions">Constructor Functions</h2><p>The generated module includes:</p><ul><li><code class="inline">new/1</code> - Returns <code class="inline">{:ok, struct}</code> or <code class="inline">{:error, error}</code></li><li><code class="inline">new!/1</code> - Returns the struct or raises an error</li></ul><h2 id="module-overriding-new-1">Overriding new/1</h2><p>You can override the <code class="inline">new/1</code> function to add custom logic:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.CustomStruct</samp><samp class="w"> </samp><samp class="k" data-group-id="2781241239-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Ash.TypedStruct</samp><samp class="w">
+
+  </samp><samp class="n">typed_struct</samp><samp class="w"> </samp><samp class="k" data-group-id="2781241239-2">do</samp><samp class="w">
+    </samp><samp class="n">field</samp><samp class="w"> </samp><samp class="ss">:name</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">allow_nil?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">false</samp><samp class="w">
+    </samp><samp class="n">field</samp><samp class="w"> </samp><samp class="ss">:created_at</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:utc_datetime</samp><samp class="w">
+  </samp><samp class="k" data-group-id="2781241239-2">end</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">new</samp><samp class="p" data-group-id="2781241239-3">(</samp><samp class="n">params</samp><samp class="p" data-group-id="2781241239-3">)</samp><samp class="w"> </samp><samp class="k" data-group-id="2781241239-4">do</samp><samp class="w">
+    </samp><samp class="n">params</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">put_new</samp><samp class="p" data-group-id="2781241239-5">(</samp><samp class="n">params</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:created_at</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">DateTime</samp><samp class="o">.</samp><samp class="n">utc_now</samp><samp class="p" data-group-id="2781241239-6">(</samp><samp class="p" data-group-id="2781241239-6">)</samp><samp class="p" data-group-id="2781241239-5">)</samp><samp class="w">
+    </samp><samp class="k">super</samp><samp class="p" data-group-id="2781241239-7">(</samp><samp class="n">params</samp><samp class="p" data-group-id="2781241239-7">)</samp><samp class="w">
+  </samp><samp class="k" data-group-id="2781241239-4">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="2781241239-1">end</samp></code></pre><h3 id="module-options">Options</h3><ul><li><p><code class="inline">:extensions</code> (list of module that adopts <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.Extension.html"><code class="inline">Spark.Dsl.Extension</code></a>) - A list of DSL extensions to add to the <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html"><code class="inline">Spark.Dsl</code></a></p></li><li><p><code class="inline">:otp_app</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">atom/0</code></a>) - The otp_app to use for any application configurable options</p></li><li><p><code class="inline">:fragments</code> (list of <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">module/0</code></a>) - Fragments to include in the <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html"><code class="inline">Spark.Dsl</code></a>. See the fragments guide for more.</p></li></ul>
+      </section>
+
+
+
+
+  </body>
+</html>

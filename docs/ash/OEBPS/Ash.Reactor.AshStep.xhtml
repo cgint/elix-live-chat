@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Reactor.AshStep - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Reactor.AshStep 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A reactor step which runs a step-module or an anonymous function, and enqueues any returned
+notifications before returning.</p><p>The following return values are supported: <code class="inline">{:ok, result}</code>, <code class="inline">{:ok, result, notifications}</code>,
+<code class="inline">{:ok, result, notifications, new_steps}</code></p><p>Example:</p><pre><code class="makeup elixir" translate="no"><samp class="n">ash_step</samp><samp class="w"> </samp><samp class="ss">:maybe_update_post</samp><samp class="w"> </samp><samp class="k" data-group-id="4358413536-1">do</samp><samp class="w">
+  </samp><samp class="n">run</samp><samp class="w"> </samp><samp class="k" data-group-id="4358413536-2">fn</samp><samp class="w"> </samp><samp class="p" data-group-id="4358413536-3">%{</samp><samp class="ss">post</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">post</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">new_amount_of_likes</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">new_amount_of_likes</samp><samp class="p" data-group-id="4358413536-3">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">ctx</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+    </samp><samp class="n">opts</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Ash.Context</samp><samp class="o">.</samp><samp class="n">to_opts</samp><samp class="p" data-group-id="4358413536-4">(</samp><samp class="n">ctx</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">return_notifications?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p" data-group-id="4358413536-4">)</samp><samp class="w">
+    </samp><samp class="k">if</samp><samp class="w"> </samp><samp class="n">post</samp><samp class="o">.</samp><samp class="n">amount_of_likes</samp><samp class="w"> </samp><samp class="o">!=</samp><samp class="w"> </samp><samp class="n">new_amount_of_likes</samp><samp class="w"> </samp><samp class="k" data-group-id="4358413536-5">do</samp><samp class="w">
+      </samp><samp class="nc">Post</samp><samp class="o">.</samp><samp class="n">update</samp><samp class="p" data-group-id="4358413536-6">(</samp><samp class="n">post</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4358413536-7">%{</samp><samp class="ss">amount_of_likes</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">new_amount_of_likes</samp><samp class="p" data-group-id="4358413536-7">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="p" data-group-id="4358413536-6">)</samp><samp class="w">
+    </samp><samp class="k" data-group-id="4358413536-5">else</samp><samp class="w">
+      </samp><samp class="p" data-group-id="4358413536-8">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">post</samp><samp class="p" data-group-id="4358413536-8">}</samp><samp class="w">
+    </samp><samp class="k" data-group-id="4358413536-5">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="4358413536-2">end</samp></code></pre><h2 id="module-options">Options</h2><ul><li><code class="inline">run</code> - a one or two arity function or MFA which will be called as the run
+function of the step.</li><li><code class="inline">compensate</code> - a one to three arity function or MFA which will be called as
+the compensate function of the step.  Optional.</li><li><code class="inline">undo</code> - a one to three arity function or MFA which will be called as the
+undo function of this step.  Optional.</li></ul>
+      </section>
+
+
+
+
+  </body>
+</html>

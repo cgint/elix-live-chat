@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Error.Forbidden.Policy - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Error.Forbidden.Policy <small>exception</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Raised when policy authorization for an action fails</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#exception/1" data-no-tooltip="" translate="no">exception(args)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Create an <a><code class="inline">Elixir.Ash.Error.Forbidden.Policy</code></a> without raising it.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_breakdown/4" data-no-tooltip="" translate="no">get_breakdown(facts, filter, policies, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Print a report of an authorization failure from authorization information.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#report/1" data-no-tooltip="" translate="no">report(forbidden)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Print a report of an authorization failure from a forbidden error</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#report/2" data-no-tooltip="" translate="no">report(error, opts \\ [])</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="exception/1">
+
+    <span id="exception/0"></span>
+
+  <div class="detail-header">
+    <a href="#exception/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">exception(args)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/forbidden/policy.ex#L28" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> exception(opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()) :: %Ash.Error.Forbidden.Policy{
+  __exception__: true,
+  action: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  actor: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  bread_crumbs: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  changeset_doesnt_match_filter: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  class: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  context_description: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  domain: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  facts: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  filter: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  for_fields: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  must_pass_strict_check?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  path: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  policies: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  policy_breakdown?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  resource: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  scenarios: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  solver_statement: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  splode: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  stacktrace: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  subject: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  vars: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()
+}</pre>
+
+      </div>
+
+<p>Create an <a href="Ash.Error.Forbidden.Policy.xhtml"><code class="inline">Elixir.Ash.Error.Forbidden.Policy</code></a> without raising it.</p><h2 id="exception/1-keys" class="section-heading"><a href="#exception/1-keys" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Keys</span></h2><ul><li>:scenarios</li><li>:facts</li><li>:filter</li><li>:actor</li><li>:policy_breakdown?</li><li>:must_pass_strict_check?</li><li>:for_fields</li><li>:subject</li><li>:context_description</li><li>:policies</li><li>:resource</li><li>:solver_statement</li><li>:domain</li><li>:action</li><li>:changeset_doesnt_match_filter</li></ul>
+  </section>
+</section>
+<section class="detail" id="get_breakdown/4">
+
+    <span id="get_breakdown/3"></span>
+
+  <div class="detail-header">
+    <a href="#get_breakdown/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_breakdown(facts, filter, policies, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/forbidden/policy.ex#L137" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Print a report of an authorization failure from authorization information.</p><p>Options:</p><ul><li><code class="inline">:help_text?</code>: Defaults to true. Displays help text at the top of the policy breakdown.</li><li><code class="inline">:success?</code>: Defaults to false. Changes the messaging/graphics around to indicate successful policy authorization.</li><li><code class="inline">:must_pass_strict_check?</code>: Defaults to false. Adds a message about this authorization requiring passing strict check.</li></ul>
+  </section>
+</section>
+<section class="detail" id="report/1">
+
+  <div class="detail-header">
+    <a href="#report/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">report(forbidden)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/forbidden/policy.ex#L81" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Print a report of an authorization failure from a forbidden error</p><p>Options:</p><ul><li><code class="inline">:help_text?</code>: Defaults to true. Displays help text at the top of the policy breakdown.</li></ul>
+  </section>
+</section>
+<section class="detail" id="report/2">
+
+  <div class="detail-header">
+    <a href="#report/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">report(error, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/forbidden/policy.ex#L87" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

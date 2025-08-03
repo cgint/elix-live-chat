@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf"
+         unique-identifier="project-Elixir"
+         version="3.0">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:title>Elixir - 1.18.4</dc:title>
+    <dc:identifier id="project-Elixir">urn:uuid:87cf8f57-8f35-911c-9c2f-a47fe74578ea</dc:identifier>
+    <dc:language>en</dc:language>
+
+    <meta property="dcterms:modified">2025-06-18T14:42:11Z</meta>
+
+  </metadata>
+  <manifest>
+    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav scripted"/>
+    <item id="cover" href="title.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="changelog" href="changelog.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="introduction" href="introduction.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="basic-types" href="basic-types.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="lists-and-tuples" href="lists-and-tuples.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="pattern-matching" href="pattern-matching.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="case-cond-and-if" href="case-cond-and-if.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="anonymous-functions" href="anonymous-functions.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="binaries-strings-and-charlists" href="binaries-strings-and-charlists.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="keywords-and-maps" href="keywords-and-maps.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="modules-and-functions" href="modules-and-functions.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="recursion" href="recursion.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="enumerable-and-streams" href="enumerable-and-streams.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="processes" href="processes.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="io-and-the-file-system" href="io-and-the-file-system.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="alias-require-and-import" href="alias-require-and-import.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="module-attributes" href="module-attributes.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="structs" href="structs.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="protocols" href="protocols.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="comprehensions" href="comprehensions.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="sigils" href="sigils.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="try-catch-and-rescue" href="try-catch-and-rescue.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="writing-documentation" href="writing-documentation.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="optional-syntax" href="optional-syntax.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="erlang-libraries" href="erlang-libraries.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="debugging" href="debugging.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="enum-cheat" href="enum-cheat.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="what-anti-patterns" href="what-anti-patterns.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="code-anti-patterns" href="code-anti-patterns.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="design-anti-patterns" href="design-anti-patterns.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="process-anti-patterns" href="process-anti-patterns.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="macro-anti-patterns" href="macro-anti-patterns.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="quote-and-unquote" href="quote-and-unquote.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="macros" href="macros.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="domain-specific-languages" href="domain-specific-languages.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="introduction-to-mix" href="introduction-to-mix.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="agents" href="agents.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="genservers" href="genservers.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="supervisor-and-application" href="supervisor-and-application.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="dynamic-supervisor" href="dynamic-supervisor.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="erlang-term-storage" href="erlang-term-storage.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="dependencies-and-umbrella-projects" href="dependencies-and-umbrella-projects.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="task-and-gen-tcp" href="task-and-gen-tcp.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="docs-tests-and-with" href="docs-tests-and-with.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="distributed-tasks" href="distributed-tasks.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="config-and-releases" href="config-and-releases.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="compatibility-and-deprecations" href="compatibility-and-deprecations.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="gradual-set-theoretic-types" href="gradual-set-theoretic-types.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="library-guidelines" href="library-guidelines.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="naming-conventions" href="naming-conventions.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="operators" href="operators.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="patterns-and-guards" href="patterns-and-guards.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="syntax-reference" href="syntax-reference.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="typespecs" href="typespecs.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="unicode-syntax" href="unicode-syntax.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+
+      <item id="Kernel" href="Kernel.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Kernel.SpecialForms" href="Kernel.SpecialForms.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Atom" href="Atom.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Base" href="Base.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Bitwise" href="Bitwise.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Date" href="Date.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="DateTime" href="DateTime.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Duration" href="Duration.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Exception" href="Exception.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Float" href="Float.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Function" href="Function.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Integer" href="Integer.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="JSON" href="JSON.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Module" href="Module.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="NaiveDateTime" href="NaiveDateTime.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Record" href="Record.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Regex" href="Regex.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="String" href="String.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Time" href="Time.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Tuple" href="Tuple.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="URI" href="URI.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Version" href="Version.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Version.Requirement" href="Version.Requirement.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Access" href="Access.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Date.Range" href="Date.Range.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Enum" href="Enum.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Keyword" href="Keyword.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="List" href="List.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Map" href="Map.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="MapSet" href="MapSet.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Range" href="Range.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Stream" href="Stream.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="File" href="File.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="File.Stat" href="File.Stat.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="File.Stream" href="File.Stream.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="IO" href="IO.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="IO.ANSI" href="IO.ANSI.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="IO.Stream" href="IO.Stream.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="OptionParser" href="OptionParser.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Path" href="Path.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Port" href="Port.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="StringIO" href="StringIO.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="System" href="System.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Calendar" href="Calendar.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Calendar.ISO" href="Calendar.ISO.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Calendar.TimeZoneDatabase" href="Calendar.TimeZoneDatabase.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Calendar.UTCOnlyTimeZoneDatabase" href="Calendar.UTCOnlyTimeZoneDatabase.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Agent" href="Agent.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Application" href="Application.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Config" href="Config.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Config.Provider" href="Config.Provider.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Config.Reader" href="Config.Reader.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="DynamicSupervisor" href="DynamicSupervisor.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="GenServer" href="GenServer.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Node" href="Node.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="PartitionSupervisor" href="PartitionSupervisor.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Process" href="Process.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Registry" href="Registry.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Supervisor" href="Supervisor.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Task" href="Task.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Task.Supervisor" href="Task.Supervisor.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Collectable" href="Collectable.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Enumerable" href="Enumerable.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Inspect" href="Inspect.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Inspect.Algebra" href="Inspect.Algebra.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Inspect.Opts" href="Inspect.Opts.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="JSON.Encoder" href="JSON.Encoder.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="List.Chars" href="List.Chars.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Protocol" href="Protocol.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="String.Chars" href="String.Chars.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Code" href="Code.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Code.Fragment" href="Code.Fragment.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Kernel.ParallelCompiler" href="Kernel.ParallelCompiler.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Macro" href="Macro.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Macro.Env" href="Macro.Env.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Behaviour" href="Behaviour.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Dict" href="Dict.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="GenEvent" href="GenEvent.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="HashDict" href="HashDict.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="HashSet" href="HashSet.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Set" href="Set.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Supervisor.Spec" href="Supervisor.Spec.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="ArgumentError" href="ArgumentError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="ArithmeticError" href="ArithmeticError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="BadArityError" href="BadArityError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="BadBooleanError" href="BadBooleanError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="BadFunctionError" href="BadFunctionError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="BadMapError" href="BadMapError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="BadStructError" href="BadStructError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="CaseClauseError" href="CaseClauseError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Code.LoadError" href="Code.LoadError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="CompileError" href="CompileError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="CondClauseError" href="CondClauseError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Enum.EmptyError" href="Enum.EmptyError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Enum.OutOfBoundsError" href="Enum.OutOfBoundsError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="ErlangError" href="ErlangError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="File.CopyError" href="File.CopyError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="File.Error" href="File.Error.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="File.LinkError" href="File.LinkError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="File.RenameError" href="File.RenameError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="FunctionClauseError" href="FunctionClauseError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="IO.StreamError" href="IO.StreamError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Inspect.Error" href="Inspect.Error.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="JSON.DecodeError" href="JSON.DecodeError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Kernel.TypespecError" href="Kernel.TypespecError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="KeyError" href="KeyError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="MatchError" href="MatchError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="MismatchedDelimiterError" href="MismatchedDelimiterError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="MissingApplicationsError" href="MissingApplicationsError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="OptionParser.ParseError" href="OptionParser.ParseError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Protocol.UndefinedError" href="Protocol.UndefinedError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Regex.CompileError" href="Regex.CompileError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="RuntimeError" href="RuntimeError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="SyntaxError" href="SyntaxError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="System.EnvError" href="System.EnvError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="SystemLimitError" href="SystemLimitError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="TokenMissingError" href="TokenMissingError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="TryClauseError" href="TryClauseError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="URI.Error" href="URI.Error.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="UndefinedFunctionError" href="UndefinedFunctionError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="UnicodeConversionError" href="UnicodeConversionError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Version.InvalidRequirementError" href="Version.InvalidRequirementError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="Version.InvalidVersionError" href="Version.InvalidVersionError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+      <item id="WithClauseError" href="WithClauseError.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+
+
+      <item id="epub-4wip524f-js" href="dist/epub-4WIP524F.js" media-type="text/javascript"/>
+
+      <item id="epub-elixir-fnuukfp7-css" href="dist/epub-elixir-FNUUKFP7.css" media-type="text/css"/>
+
+      <item id="logo-png" href="assets/logo.png" media-type="image/png"/>
+
+      <item id="kv-observer-png" href="assets/kv-observer.png" media-type="image/png"/>
+
+
+
+      <item id="logo" href="assets/logo.png" media-type="image/png"/>
+
+  </manifest>
+  <spine>
+    <itemref idref="cover"/>
+    <itemref idref="nav"/>
+
+      <itemref idref="changelog"/>
+
+      <itemref idref="introduction"/>
+
+      <itemref idref="basic-types"/>
+
+      <itemref idref="lists-and-tuples"/>
+
+      <itemref idref="pattern-matching"/>
+
+      <itemref idref="case-cond-and-if"/>
+
+      <itemref idref="anonymous-functions"/>
+
+      <itemref idref="binaries-strings-and-charlists"/>
+
+      <itemref idref="keywords-and-maps"/>
+
+      <itemref idref="modules-and-functions"/>
+
+      <itemref idref="recursion"/>
+
+      <itemref idref="enumerable-and-streams"/>
+
+      <itemref idref="processes"/>
+
+      <itemref idref="io-and-the-file-system"/>
+
+      <itemref idref="alias-require-and-import"/>
+
+      <itemref idref="module-attributes"/>
+
+      <itemref idref="structs"/>
+
+      <itemref idref="protocols"/>
+
+      <itemref idref="comprehensions"/>
+
+      <itemref idref="sigils"/>
+
+      <itemref idref="try-catch-and-rescue"/>
+
+      <itemref idref="writing-documentation"/>
+
+      <itemref idref="optional-syntax"/>
+
+      <itemref idref="erlang-libraries"/>
+
+      <itemref idref="debugging"/>
+
+      <itemref idref="enum-cheat"/>
+
+      <itemref idref="what-anti-patterns"/>
+
+      <itemref idref="code-anti-patterns"/>
+
+      <itemref idref="design-anti-patterns"/>
+
+      <itemref idref="process-anti-patterns"/>
+
+      <itemref idref="macro-anti-patterns"/>
+
+      <itemref idref="quote-and-unquote"/>
+
+      <itemref idref="macros"/>
+
+      <itemref idref="domain-specific-languages"/>
+
+      <itemref idref="introduction-to-mix"/>
+
+      <itemref idref="agents"/>
+
+      <itemref idref="genservers"/>
+
+      <itemref idref="supervisor-and-application"/>
+
+      <itemref idref="dynamic-supervisor"/>
+
+      <itemref idref="erlang-term-storage"/>
+
+      <itemref idref="dependencies-and-umbrella-projects"/>
+
+      <itemref idref="task-and-gen-tcp"/>
+
+      <itemref idref="docs-tests-and-with"/>
+
+      <itemref idref="distributed-tasks"/>
+
+      <itemref idref="config-and-releases"/>
+
+      <itemref idref="compatibility-and-deprecations"/>
+
+      <itemref idref="gradual-set-theoretic-types"/>
+
+      <itemref idref="library-guidelines"/>
+
+      <itemref idref="naming-conventions"/>
+
+      <itemref idref="operators"/>
+
+      <itemref idref="patterns-and-guards"/>
+
+      <itemref idref="syntax-reference"/>
+
+      <itemref idref="typespecs"/>
+
+      <itemref idref="unicode-syntax"/>
+
+
+      <itemref idref="Kernel"/>
+
+      <itemref idref="Kernel.SpecialForms"/>
+
+      <itemref idref="Atom"/>
+
+      <itemref idref="Base"/>
+
+      <itemref idref="Bitwise"/>
+
+      <itemref idref="Date"/>
+
+      <itemref idref="DateTime"/>
+
+      <itemref idref="Duration"/>
+
+      <itemref idref="Exception"/>
+
+      <itemref idref="Float"/>
+
+      <itemref idref="Function"/>
+
+      <itemref idref="Integer"/>
+
+      <itemref idref="JSON"/>
+
+      <itemref idref="Module"/>
+
+      <itemref idref="NaiveDateTime"/>
+
+      <itemref idref="Record"/>
+
+      <itemref idref="Regex"/>
+
+      <itemref idref="String"/>
+
+      <itemref idref="Time"/>
+
+      <itemref idref="Tuple"/>
+
+      <itemref idref="URI"/>
+
+      <itemref idref="Version"/>
+
+      <itemref idref="Version.Requirement"/>
+
+      <itemref idref="Access"/>
+
+      <itemref idref="Date.Range"/>
+
+      <itemref idref="Enum"/>
+
+      <itemref idref="Keyword"/>
+
+      <itemref idref="List"/>
+
+      <itemref idref="Map"/>
+
+      <itemref idref="MapSet"/>
+
+      <itemref idref="Range"/>
+
+      <itemref idref="Stream"/>
+
+      <itemref idref="File"/>
+
+      <itemref idref="File.Stat"/>
+
+      <itemref idref="File.Stream"/>
+
+      <itemref idref="IO"/>
+
+      <itemref idref="IO.ANSI"/>
+
+      <itemref idref="IO.Stream"/>
+
+      <itemref idref="OptionParser"/>
+
+      <itemref idref="Path"/>
+
+      <itemref idref="Port"/>
+
+      <itemref idref="StringIO"/>
+
+      <itemref idref="System"/>
+
+      <itemref idref="Calendar"/>
+
+      <itemref idref="Calendar.ISO"/>
+
+      <itemref idref="Calendar.TimeZoneDatabase"/>
+
+      <itemref idref="Calendar.UTCOnlyTimeZoneDatabase"/>
+
+      <itemref idref="Agent"/>
+
+      <itemref idref="Application"/>
+
+      <itemref idref="Config"/>
+
+      <itemref idref="Config.Provider"/>
+
+      <itemref idref="Config.Reader"/>
+
+      <itemref idref="DynamicSupervisor"/>
+
+      <itemref idref="GenServer"/>
+
+      <itemref idref="Node"/>
+
+      <itemref idref="PartitionSupervisor"/>
+
+      <itemref idref="Process"/>
+
+      <itemref idref="Registry"/>
+
+      <itemref idref="Supervisor"/>
+
+      <itemref idref="Task"/>
+
+      <itemref idref="Task.Supervisor"/>
+
+      <itemref idref="Collectable"/>
+
+      <itemref idref="Enumerable"/>
+
+      <itemref idref="Inspect"/>
+
+      <itemref idref="Inspect.Algebra"/>
+
+      <itemref idref="Inspect.Opts"/>
+
+      <itemref idref="JSON.Encoder"/>
+
+      <itemref idref="List.Chars"/>
+
+      <itemref idref="Protocol"/>
+
+      <itemref idref="String.Chars"/>
+
+      <itemref idref="Code"/>
+
+      <itemref idref="Code.Fragment"/>
+
+      <itemref idref="Kernel.ParallelCompiler"/>
+
+      <itemref idref="Macro"/>
+
+      <itemref idref="Macro.Env"/>
+
+      <itemref idref="Behaviour"/>
+
+      <itemref idref="Dict"/>
+
+      <itemref idref="GenEvent"/>
+
+      <itemref idref="HashDict"/>
+
+      <itemref idref="HashSet"/>
+
+      <itemref idref="Set"/>
+
+      <itemref idref="Supervisor.Spec"/>
+
+      <itemref idref="ArgumentError"/>
+
+      <itemref idref="ArithmeticError"/>
+
+      <itemref idref="BadArityError"/>
+
+      <itemref idref="BadBooleanError"/>
+
+      <itemref idref="BadFunctionError"/>
+
+      <itemref idref="BadMapError"/>
+
+      <itemref idref="BadStructError"/>
+
+      <itemref idref="CaseClauseError"/>
+
+      <itemref idref="Code.LoadError"/>
+
+      <itemref idref="CompileError"/>
+
+      <itemref idref="CondClauseError"/>
+
+      <itemref idref="Enum.EmptyError"/>
+
+      <itemref idref="Enum.OutOfBoundsError"/>
+
+      <itemref idref="ErlangError"/>
+
+      <itemref idref="File.CopyError"/>
+
+      <itemref idref="File.Error"/>
+
+      <itemref idref="File.LinkError"/>
+
+      <itemref idref="File.RenameError"/>
+
+      <itemref idref="FunctionClauseError"/>
+
+      <itemref idref="IO.StreamError"/>
+
+      <itemref idref="Inspect.Error"/>
+
+      <itemref idref="JSON.DecodeError"/>
+
+      <itemref idref="Kernel.TypespecError"/>
+
+      <itemref idref="KeyError"/>
+
+      <itemref idref="MatchError"/>
+
+      <itemref idref="MismatchedDelimiterError"/>
+
+      <itemref idref="MissingApplicationsError"/>
+
+      <itemref idref="OptionParser.ParseError"/>
+
+      <itemref idref="Protocol.UndefinedError"/>
+
+      <itemref idref="Regex.CompileError"/>
+
+      <itemref idref="RuntimeError"/>
+
+      <itemref idref="SyntaxError"/>
+
+      <itemref idref="System.EnvError"/>
+
+      <itemref idref="SystemLimitError"/>
+
+      <itemref idref="TokenMissingError"/>
+
+      <itemref idref="TryClauseError"/>
+
+      <itemref idref="URI.Error"/>
+
+      <itemref idref="UndefinedFunctionError"/>
+
+      <itemref idref="UnicodeConversionError"/>
+
+      <itemref idref="Version.InvalidRequirementError"/>
+
+      <itemref idref="Version.InvalidVersionError"/>
+
+      <itemref idref="WithClauseError"/>
+
+  </spine>
+</package>

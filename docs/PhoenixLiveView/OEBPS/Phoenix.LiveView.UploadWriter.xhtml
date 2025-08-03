@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.UploadWriter - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.UploadWriter <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Provide a behavior for writing uploaded chunks to a final destination.</p><p>By default, uploads are written to a temporary file on the server and
+consumed by the LiveView by reading the temporary file or copying it to
+durable location. Some usecases require custom handling of the uploaded
+chunks, such as streaming a user's upload to another server. In these cases,
+we don't want the chunks to be written to disk since we only need to forward
+them on.</p><p><strong>Note</strong>: Upload writers run inside the channel uploader process, so
+any blocking work will block the channel  errors will crash the channel process.</p><p>Custom implementations of <a href="Phoenix.LiveView.UploadWriter.xhtml"><code class="inline">Phoenix.LiveView.UploadWriter</code></a> can be passed to
+<code class="inline">allow_upload/3</code>. To initialize the writer with options, define a 3-arity function
+that returns a tuple of <code class="inline">{writer, writer_opts}</code>. For example imagine
+an upload writer that logs the chunk sizes and tracks the total bytes sent by the
+client:</p><pre><code class="makeup elixir" translate="no"><samp class="n">socket</samp><samp class="w">
+</samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">allow_upload</samp><samp class="p" data-group-id="9101975033-1">(</samp><samp class="ss">:avatar</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">accept</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:any</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">writer</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="k" data-group-id="9101975033-2">fn</samp><samp class="w"> </samp><samp class="c">_name</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_entry</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_socket</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="9101975033-3">{</samp><samp class="nc">EchoWriter</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">level</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:debug</samp><samp class="p" data-group-id="9101975033-3">}</samp><samp class="w"> </samp><samp class="k" data-group-id="9101975033-2">end</samp><samp class="w">
+</samp><samp class="p" data-group-id="9101975033-1">)</samp></code></pre><p>And such an <code class="inline">EchoWriter</code> could look like this:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">EchoWriter</samp><samp class="w"> </samp><samp class="k" data-group-id="4420145619-1">do</samp><samp class="w">
+  </samp><samp class="na">@behaviour</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveView.UploadWriter</samp><samp class="w">
+
+  </samp><samp class="kn">require</samp><samp class="w"> </samp><samp class="nc">Logger</samp><samp class="w">
+
+  </samp><samp class="na">@impl</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">init</samp><samp class="p" data-group-id="4420145619-2">(</samp><samp class="n">opts</samp><samp class="p" data-group-id="4420145619-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="4420145619-3">do</samp><samp class="w">
+    </samp><samp class="p" data-group-id="4420145619-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4420145619-5">%{</samp><samp class="ss">total</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">level</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Keyword</samp><samp class="o">.</samp><samp class="n">fetch!</samp><samp class="p" data-group-id="4420145619-6">(</samp><samp class="n">opts</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:level</samp><samp class="p" data-group-id="4420145619-6">)</samp><samp class="p" data-group-id="4420145619-5">}</samp><samp class="p" data-group-id="4420145619-4">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="4420145619-3">end</samp><samp class="w">
+
+  </samp><samp class="na">@impl</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">meta</samp><samp class="p" data-group-id="4420145619-7">(</samp><samp class="n">state</samp><samp class="p" data-group-id="4420145619-7">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4420145619-8">%{</samp><samp class="ss">level</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">state</samp><samp class="o">.</samp><samp class="n">level</samp><samp class="p" data-group-id="4420145619-8">}</samp><samp class="w">
+
+  </samp><samp class="na">@impl</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">write_chunk</samp><samp class="p" data-group-id="4420145619-9">(</samp><samp class="n">data</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">state</samp><samp class="p" data-group-id="4420145619-9">)</samp><samp class="w"> </samp><samp class="k" data-group-id="4420145619-10">do</samp><samp class="w">
+    </samp><samp class="n">size</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">byte_size</samp><samp class="p" data-group-id="4420145619-11">(</samp><samp class="n">data</samp><samp class="p" data-group-id="4420145619-11">)</samp><samp class="w">
+    </samp><samp class="nc">Logger</samp><samp class="o">.</samp><samp class="n">log</samp><samp class="p" data-group-id="4420145619-12">(</samp><samp class="n">state</samp><samp class="o">.</samp><samp class="n">level</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;received chunk of </samp><samp class="si" data-group-id="4420145619-13">#{</samp><samp class="n">size</samp><samp class="si" data-group-id="4420145619-13">}</samp><samp class="s"> bytes&quot;</samp><samp class="p" data-group-id="4420145619-12">)</samp><samp class="w">
+    </samp><samp class="p" data-group-id="4420145619-14">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4420145619-15">%{</samp><samp class="n">state</samp><samp class="w"> </samp><samp class="o">|</samp><samp class="w"> </samp><samp class="ss">total</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">state</samp><samp class="o">.</samp><samp class="n">total</samp><samp class="w"> </samp><samp class="o">+</samp><samp class="w"> </samp><samp class="n">size</samp><samp class="p" data-group-id="4420145619-15">}</samp><samp class="p" data-group-id="4420145619-14">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="4420145619-10">end</samp><samp class="w">
+
+  </samp><samp class="na">@impl</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">close</samp><samp class="p" data-group-id="4420145619-16">(</samp><samp class="n">state</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">reason</samp><samp class="p" data-group-id="4420145619-16">)</samp><samp class="w"> </samp><samp class="k" data-group-id="4420145619-17">do</samp><samp class="w">
+    </samp><samp class="nc">Logger</samp><samp class="o">.</samp><samp class="n">log</samp><samp class="p" data-group-id="4420145619-18">(</samp><samp class="n">state</samp><samp class="o">.</samp><samp class="n">level</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;closing upload after </samp><samp class="si" data-group-id="4420145619-19">#{</samp><samp class="n">state</samp><samp class="o">.</samp><samp class="n">total</samp><samp class="si" data-group-id="4420145619-19">}</samp><samp class="s"> bytes, </samp><samp class="si" data-group-id="4420145619-20">#{</samp><samp class="n">inspect</samp><samp class="p" data-group-id="4420145619-21">(</samp><samp class="n">reason</samp><samp class="p" data-group-id="4420145619-21">)</samp><samp class="si" data-group-id="4420145619-20">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="4420145619-18">)</samp><samp class="w">
+    </samp><samp class="p" data-group-id="4420145619-22">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">state</samp><samp class="p" data-group-id="4420145619-22">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="4420145619-17">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="4420145619-1">end</samp></code></pre><p>When the LiveView consumes the uploaded entry, it will receive the <code class="inline">%{level: ...}</code>
+returned from the meta callback. This allows the writer to keep state as it handles
+chunks to be later relayed to the LiveView when consumed.</p><h2 id="module-close-reasons">Close reasons</h2><p>The <code class="inline">close/2</code> callback is called when the upload is complete or cancelled. The following
+values can be passed:</p><ul><li><code class="inline">:done</code> - The client sent all expected chunks and the upload is awaiting consumption</li><li><code class="inline">:cancel</code> - The upload was canceled, either by the server or the client navigating away.</li><li><code class="inline">{:error, reason}</code> - The upload was canceled due to an error returned from <code class="inline">write_chunk/2</code>.
+For example, if <code class="inline">write_chunk/2</code> returns <code class="inline">{:error, :enoent, state}</code>, the upload will be cancelled
+and <code class="inline">close/2</code> will be called with the reason <code class="inline">{:error, :enoent}</code>.</li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:close/2" data-no-tooltip="" translate="no">close(state, reason)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:init/1" data-no-tooltip="" translate="no">init(opts)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:meta/1" data-no-tooltip="" translate="no">meta(state)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:write_chunk/2" data-no-tooltip="" translate="no">write_chunk(data, state)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:close/2">
+
+  <div class="detail-header">
+    <a href="#c:close/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">close(state, reason)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/upload_writer.ex#L76" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> close(state :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), reason :: :done | :cancel | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}) ::
+  {:ok, state :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:init/1">
+
+  <div class="detail-header">
+    <a href="#c:init/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">init(opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/upload_writer.ex#L72" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> init(opts :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: {:ok, state :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:meta/1">
+
+  <div class="detail-header">
+    <a href="#c:meta/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">meta(state)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/upload_writer.ex#L73" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> meta(state :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="c:write_chunk/2">
+
+  <div class="detail-header">
+    <a href="#c:write_chunk/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">write_chunk(data, state)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/upload_writer.ex#L74" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> write_chunk(data :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), state :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) ::
+  {:ok, state :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, reason :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), state :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

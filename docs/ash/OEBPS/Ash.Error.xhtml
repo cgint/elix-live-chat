@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Error - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Error 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Tools and utilities used by Ash to manage and conform errors</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:ash_error/0" data-no-tooltip="" translate="no">ash_error()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:ash_error_subject/0" data-no-tooltip="" translate="no">ash_error_subject()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:class/0" data-no-tooltip="" translate="no">class()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:class_module/0" data-no-tooltip="" translate="no">class_module()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:error_class/0" data-no-tooltip="" translate="no">error_class()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:error_input/0" data-no-tooltip="" translate="no">error_input()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:error_keyword/0" data-no-tooltip="" translate="no">error_keyword()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:error_keyword_option/0" data-no-tooltip="" translate="no">error_keyword_option()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:path/0" data-no-tooltip="" translate="no">path()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:path_input/0" data-no-tooltip="" translate="no">path_input()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ash_error?/1" data-no-tooltip="" translate="no">ash_error?(value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns whether or not a term is an Ash.Error type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#error_descriptions/1" data-no-tooltip="" translate="no">error_descriptions(errors)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts errors into a single <code class="inline">String.t</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_path/2" data-no-tooltip="" translate="no">set_path(errors, path)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>This function prepends the provided path to any existing path on the errors.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#splode_error?/2" data-no-tooltip="" translate="no">splode_error?(arg1, splode)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_ash_error/3" data-no-tooltip="" translate="no">to_ash_error(value, stacktrace \\ nil, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts a value to an Ash exception.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_error_class/2" data-no-tooltip="" translate="no">to_error_class(value, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts a value to an Ash.Error type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#unwrap!/2" data-no-tooltip="" translate="no">unwrap!(result, opts \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Raises an error if the result is an error, otherwise returns the result</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:ash_error/0">
+
+  <div class="detail-header">
+    <a href="#t:ash_error/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ash_error()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L23" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> ash_error() :: <a href="https://hexdocs.pm/elixir/Exception.html#t:t/0">Exception.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:ash_error_subject/0">
+
+  <div class="detail-header">
+    <a href="#t:ash_error_subject/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ash_error_subject()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L24" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> ash_error_subject() :: <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>() | <a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>() | <a href="Ash.ActionInput.xhtml#t:t/0">Ash.ActionInput.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:class/0">
+
+  <div class="detail-header">
+    <a href="#t:class/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">class()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L5" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> class() :: %{
+  :__struct__ =&gt; <a href="#t:class_module/0">class_module</a>(),
+  :__exception__ =&gt; true,
+  :errors =&gt; [<a href="#t:t/0">t</a>()],
+  :class =&gt; <a href="#t:error_class/0">error_class</a>(),
+  :bread_crumbs =&gt; [<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()],
+  :vars =&gt; <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  :stacktrace =&gt; <a href="https://hexdocs.pm/splode/0.2.9/Splode.Stacktrace.html#t:t/0">Splode.Stacktrace.t</a>() | nil,
+  :context =&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>(),
+  optional(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) =&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:class_module/0">
+
+  <div class="detail-header">
+    <a href="#t:class_module/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">class_module()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L5" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> class_module() ::
+  Ash.Error.Unknown
+  | Ash.Error.Framework
+  | Ash.Error.Invalid
+  | Ash.Error.Forbidden</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:error_class/0">
+
+  <div class="detail-header">
+    <a href="#t:error_class/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">error_class()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L5" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> error_class() :: :unknown | :framework | :invalid | :forbidden</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:error_input/0">
+
+  <div class="detail-header">
+    <a href="#t:error_input/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">error_input()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L28" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> error_input() ::
+  <a href="#t:ash_error/0">ash_error</a>()
+  | <a href="#t:error_keyword/0">error_keyword</a>()
+  | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()
+  | <a href="#t:ash_error_subject/0">ash_error_subject</a>()
+  | <a href="https://hexdocs.pm/elixir/Exception.html#t:t/0">Exception.t</a>()
+  | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:error_keyword/0">
+
+  <div class="detail-header">
+    <a href="#t:error_keyword/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">error_keyword()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L21" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> error_keyword() :: [<a href="#t:error_keyword_option/0">error_keyword_option</a>()]</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:error_keyword_option/0">
+
+  <div class="detail-header">
+    <a href="#t:error_keyword_option/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">error_keyword_option()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L14" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> error_keyword_option() ::
+  {:field, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()}
+  | {:fields, [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()]}
+  | {:value, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}
+  | {:message, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()}
+  | {:path, [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()]}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:path/0">
+
+  <div class="detail-header">
+    <a href="#t:path/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">path()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L25" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> path() :: [<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>()]</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:path_input/0">
+
+  <div class="detail-header">
+    <a href="#t:path_input/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">path_input()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L26" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> path_input() ::
+  [<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>()] | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L5" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %{
+  :__struct__ =&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>(),
+  :__exception__ =&gt; true,
+  :class =&gt; <a href="#t:error_class/0">error_class</a>(),
+  :bread_crumbs =&gt; [<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()],
+  :vars =&gt; <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  :stacktrace =&gt; <a href="https://hexdocs.pm/splode/0.2.9/Splode.Stacktrace.html#t:t/0">Splode.Stacktrace.t</a>() | nil,
+  :context =&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>(),
+  optional(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) =&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="ash_error?/1">
+
+  <div class="detail-header">
+    <a href="#ash_error?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ash_error?(value)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L199" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> ash_error?(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Returns whether or not a term is an Ash.Error type.</p>
+  </section>
+</section>
+<section class="detail" id="error_descriptions/1">
+
+  <div class="detail-header">
+    <a href="#error_descriptions/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">error_descriptions(errors)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L175" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> error_descriptions(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>() | [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()]) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Converts errors into a single <code class="inline">String.t</code>.</p>
+  </section>
+</section>
+<section class="detail" id="set_path/2">
+
+  <div class="detail-header">
+    <a href="#set_path/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_path(errors, path)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L207" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_path(<a href="#t:ash_error/0">ash_error</a>() | [<a href="#t:ash_error/0">ash_error</a>()], <a href="#t:path_input/0">path_input</a>()) ::
+  <a href="#t:ash_error/0">ash_error</a>() | [<a href="#t:ash_error/0">ash_error</a>()]</pre>
+
+          <pre translate="no"><span class="attribute">@spec</span> set_path(<a href="#t:ash_error_subject/0">ash_error_subject</a>(), <a href="#t:path_input/0">path_input</a>()) :: <a href="#t:ash_error_subject/0">ash_error_subject</a>()</pre>
+
+      </div>
+
+<p>This function prepends the provided path to any existing path on the errors.</p>
+  </section>
+</section>
+<section class="detail" id="splode_error?/2">
+
+  <div class="detail-header">
+    <a href="#splode_error?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">splode_error?(arg1, splode)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L5" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="to_ash_error/3">
+
+    <span id="to_ash_error/1"></span>
+
+    <span id="to_ash_error/2"></span>
+
+  <div class="detail-header">
+    <a href="#to_ash_error/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_ash_error(value, stacktrace \\ nil, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L47" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_ash_error(
+  <a href="#t:error_input/0">error_input</a>() | [<a href="#t:error_input/0">error_input</a>()],
+  <a href="https://hexdocs.pm/elixir/Exception.html#t:stacktrace/0">Exception.stacktrace</a>() | nil,
+  <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:ash_error/0">ash_error</a>() | [<a href="#t:ash_error/0">ash_error</a>()]</pre>
+
+      </div>
+
+<p>Converts a value to an Ash exception.</p><p>The supported inputs to this function can be provided to various places,
+like <a href="Ash.Query.xhtml#add_error/2"><code class="inline">Ash.Query.add_error/2</code></a>, <a href="Ash.Changeset.xhtml#add_error/2"><code class="inline">Ash.Changeset.add_error/2</code></a> and <a href="Ash.ActionInput.xhtml#add_error/2"><code class="inline">Ash.ActionInput.add_error/2</code></a>.</p><p>Additionally, any place that you can <em>return</em> an error you can return instead a valid
+error input.</p><p>See <a href="error-handling.xhtml">the error handling guide</a> for more.</p>
+  </section>
+</section>
+<section class="detail" id="to_error_class/2">
+
+    <span id="to_error_class/1"></span>
+
+  <div class="detail-header">
+    <a href="#to_error_class/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_error_class(value, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L72" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_error_class(
+  <a href="#t:ash_error_subject/0">ash_error_subject</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>() | [<a href="#t:ash_error_subject/0">ash_error_subject</a>()] | [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()],
+  <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Converts a value to an Ash.Error type.</p>
+  </section>
+</section>
+<section class="detail" id="unwrap!/2">
+
+    <span id="unwrap!/1"></span>
+
+  <div class="detail-header">
+    <a href="#unwrap!/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">unwrap!(result, opts \\ nil)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/error/error.ex#L5" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Raises an error if the result is an error, otherwise returns the result</p><p>Alternatively, you can use the <code class="inline">defsplode</code> macro, which does this automatically.</p><h3 id="unwrap!/2-options" class="section-heading"><a href="#unwrap!/2-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h3><ul><li><code class="inline">:error_opts</code> - Options to pass to <code class="inline">to_error/2</code> when converting the returned error</li><li><code class="inline">:unknown_error_opts</code> - Options to pass to the unknown error if the function returns only <code class="inline">:error</code>.
+not necessary if your function always returns <code class="inline">{:error, error}</code>.</li></ul><h3 id="unwrap!/2-examples" class="section-heading"><a href="#unwrap!/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h3><p>  def function(arg) do</p><pre><code class="makeup elixir" translate="no"><samp class="k">case</samp><samp class="w"> </samp><samp class="n">do_something</samp><samp class="p" data-group-id="8778398169-1">(</samp><samp class="n">arg</samp><samp class="p" data-group-id="8778398169-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8778398169-2">do</samp><samp class="w">
+  </samp><samp class="ss">:success</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="ss">:ok</samp><samp class="w">
+  </samp><samp class="p" data-group-id="8778398169-3">{</samp><samp class="ss">:success</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="p" data-group-id="8778398169-3">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="8778398169-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="p" data-group-id="8778398169-4">}</samp><samp class="w">
+  </samp><samp class="p" data-group-id="8778398169-5">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">error</samp><samp class="p" data-group-id="8778398169-5">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="8778398169-6">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">error</samp><samp class="p" data-group-id="8778398169-6">}</samp><samp class="w">
+</samp><samp class="k" data-group-id="8778398169-2">end</samp></code></pre><p>  end</p><p>  def function!(arg) do</p><pre><code class="makeup elixir" translate="no"><samp class="nc">YourErrors</samp><samp class="o">.</samp><samp class="n">unwrap!</samp><samp class="p" data-group-id="7548186341-1">(</samp><samp class="n">function</samp><samp class="p" data-group-id="7548186341-2">(</samp><samp class="n">arg</samp><samp class="p" data-group-id="7548186341-2">)</samp><samp class="p" data-group-id="7548186341-1">)</samp></code></pre><p>  end</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

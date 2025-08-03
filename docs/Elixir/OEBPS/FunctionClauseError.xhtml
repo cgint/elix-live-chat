@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>FunctionClauseError - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+FunctionClauseError <small>exception</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>An exception raised when a function call doesn't match any defined clause.</p><p>The following fields of this exception are public and can be accessed freely:</p><ul><li><code class="inline">:module</code> (<a href="typespecs.xhtml#built-in-types"><code class="inline">module/0</code></a>) - the module name</li><li><code class="inline">:function</code> (<a href="typespecs.xhtml#basic-types"><code class="inline">atom/0</code></a>) - the function name</li><li><code class="inline">:arity</code> (<a href="typespecs.xhtml#basic-types"><code class="inline">non_neg_integer/0</code></a>) - the arity of the function</li></ul><p>For example, if you try to call a function such as <a href="URI.xhtml#parse/1"><code class="inline">URI.parse/1</code></a> with something
+other than a string, the error would look like:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="4330539001-1">%</samp><samp class="nc" data-group-id="4330539001-1">FunctionClauseError</samp><samp class="p" data-group-id="4330539001-1">{</samp><samp class="w">
+  </samp><samp class="ss">module</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">URI</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">function</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:parse</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">arity</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="c1"># Other private fields...</samp><samp class="w">
+</samp><samp class="p" data-group-id="4330539001-1">}</samp></code></pre>
+      </section>
+
+
+
+
+  </body>
+</html>

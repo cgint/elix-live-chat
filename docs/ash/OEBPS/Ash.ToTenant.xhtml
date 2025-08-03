@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.ToTenant - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.ToTenant <small>protocol</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Converts a value to a tenant. To add this to a resource, implement the protocol like so:application</p><p>What this should do is entirely dependent on how you've set up your tenants. This example assumes
+that you want the tenant to be <code class="inline">org_#{organization_id}</code>, but it could also be something like
+<code class="inline">organization.schema</code>.</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.Organization</samp><samp class="w"> </samp><samp class="k" data-group-id="1966634120-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Ash.Resource</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="w">
+
+  </samp><samp class="n">...</samp><samp class="w">
+
+  </samp><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Ash.ToTenant</samp><samp class="w"> </samp><samp class="k" data-group-id="1966634120-2">do</samp><samp class="w">
+    </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">to_tenant</samp><samp class="p" data-group-id="1966634120-3">(</samp><samp class="p" data-group-id="1966634120-4">%{</samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">id</samp><samp class="p" data-group-id="1966634120-4">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_resource</samp><samp class="p" data-group-id="1966634120-3">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;org_</samp><samp class="si" data-group-id="1966634120-5">#{</samp><samp class="n">id</samp><samp class="si" data-group-id="1966634120-5">}</samp><samp class="s">&quot;</samp><samp class="w">
+  </samp><samp class="k" data-group-id="1966634120-2">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="1966634120-1">end</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_tenant/2" data-no-tooltip="" translate="no">to_tenant(value, resource)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/to_tenant.ex#L22" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="to_tenant/2">
+
+  <div class="detail-header">
+    <a href="#to_tenant/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_tenant(value, resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/to_tenant.ex#L25" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_tenant(<a href="#t:t/0">t</a>(), <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

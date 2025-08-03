@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Float - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Float 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Functions for working with floating-point numbers.</p><p>For mathematical operations on top of floating-points,
+see Erlang's <a href="https://www.erlang.org/doc/apps/stdlib/math.html"><code class="inline">:math</code></a> module.</p><h2 id="module-kernel-functions">Kernel functions</h2><p>There are functions related to floating-point numbers on the <a href="Kernel.xhtml"><code class="inline">Kernel</code></a> module
+too. Here is a list of them:</p><ul><li><a href="Kernel.xhtml#round/1"><code class="inline">Kernel.round/1</code></a>: rounds a number to the nearest integer.</li><li><a href="Kernel.xhtml#trunc/1"><code class="inline">Kernel.trunc/1</code></a>: returns the integer part of a number.</li></ul><h2 id="module-known-issues">Known issues</h2><p>There are some very well known problems with floating-point numbers
+and arithmetic due to the fact most decimal fractions cannot be
+represented by a floating-point binary and most operations are not exact,
+but operate on approximations. Those issues are not specific
+to Elixir, they are a property of floating point representation itself.</p><p>For example, the numbers 0.1 and 0.01 are two of them, what means the result
+of squaring 0.1 does not give 0.01 neither the closest representable. Here is
+what happens in this case:</p><ul><li>The closest representable number to 0.1 is 0.1000000014</li><li>The closest representable number to 0.01 is 0.0099999997</li><li>Doing 0.1 * 0.1 should return 0.01, but because 0.1 is actually 0.1000000014,
+the result is 0.010000000000000002, and because this is not the closest
+representable number to 0.01, you'll get the wrong result for this operation</li></ul><p>There are also other known problems like flooring or rounding numbers. See
+<a href="#round/2"><code class="inline">round/2</code></a> and <a href="#floor/2"><code class="inline">floor/2</code></a> for more details about them.</p><p>To learn more about floating-point arithmetic visit:</p><ul><li><a href="http://0.30000000000000004.com/">0.30000000000000004.com</a></li><li><a href="https://floating-point-gui.de/">What Every Programmer Should Know About Floating-Point Arithmetic</a></li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:precision_range/0" data-no-tooltip="" translate="no">precision_range()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ceil/2" data-no-tooltip="" translate="no">ceil(number, precision \\ 0)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Rounds a float to the smallest float greater than or equal to <code class="inline">number</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#floor/2" data-no-tooltip="" translate="no">floor(number, precision \\ 0)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Rounds a float to the largest float less than or equal to <code class="inline">number</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#max_finite/0" data-no-tooltip="" translate="no">max_finite()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the maximum finite value for a float.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#min_finite/0" data-no-tooltip="" translate="no">min_finite()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the minimum finite value for a float.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#parse/1" data-no-tooltip="" translate="no">parse(binary)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Parses a binary into a float.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#pow/2" data-no-tooltip="" translate="no">pow(base, exponent)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Computes <code class="inline">base</code> raised to power of <code class="inline">exponent</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ratio/1" data-no-tooltip="" translate="no">ratio(float)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a pair of integers whose ratio is exactly equal
+to the original float and with a positive denominator.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#round/2" data-no-tooltip="" translate="no">round(float, precision \\ 0)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Rounds a floating-point value to an arbitrary number of fractional
+digits (between 0 and 15).</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_charlist/1" data-no-tooltip="" translate="no">to_charlist(float)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a charlist which corresponds to the shortest text representation
+of the given float.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_string/1" data-no-tooltip="" translate="no">to_string(float)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a binary which corresponds to the shortest text representation
+of the given float.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:precision_range/0">
+
+  <div class="detail-header">
+    <a href="#t:precision_range/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">precision_range()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/float.ex#L50" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> precision_range() :: 0..15</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="ceil/2">
+
+    <span id="ceil/1"></span>
+
+  <div class="detail-header">
+    <a href="#ceil/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ceil(number, precision \\ 0)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/float.ex#L285" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> ceil(<a href="typespecs.xhtml#basic-types">float</a>(), <a href="#t:precision_range/0">precision_range</a>()) :: <a href="typespecs.xhtml#basic-types">float</a>()</pre>
+
+      </div>
+
+<p>Rounds a float to the smallest float greater than or equal to <code class="inline">number</code>.</p><p><a href="#ceil/2"><code class="inline">ceil/2</code></a> also accepts a precision to round a floating-point value down
+to an arbitrary number of fractional digits (between 0 and 15).</p><p>The operation is performed on the binary floating point, without a
+conversion to decimal.</p><p>The behavior of <a href="#ceil/2"><code class="inline">ceil/2</code></a> for floats can be surprising. For example:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ceil</samp><samp class="p" data-group-id="5912732295-1">(</samp><samp class="o">-</samp><samp class="mf">12.52</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="5912732295-1">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mf">12.51</samp></code></pre><p>One may have expected it to ceil to -12.52. This is not a bug.
+Most decimal fractions cannot be represented as a binary floating point
+and therefore the number above is internally represented as -12.51999999,
+which explains the behavior above.</p><p>This function always returns floats. <a href="Kernel.xhtml#trunc/1"><code class="inline">Kernel.trunc/1</code></a> may be used instead to
+truncate the result to an integer afterwards.</p><h2 id="ceil/2-examples" class="section-heading"><a href="#ceil/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ceil</samp><samp class="p" data-group-id="1875401146-1">(</samp><samp class="mf">34.25</samp><samp class="p" data-group-id="1875401146-1">)</samp><samp class="w">
+</samp><samp class="mf">35.0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ceil</samp><samp class="p" data-group-id="1875401146-2">(</samp><samp class="o">-</samp><samp class="mf">56.5</samp><samp class="p" data-group-id="1875401146-2">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mf">56.0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ceil</samp><samp class="p" data-group-id="1875401146-3">(</samp><samp class="mf">34.251</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="1875401146-3">)</samp><samp class="w">
+</samp><samp class="mf">34.26</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ceil</samp><samp class="p" data-group-id="1875401146-4">(</samp><samp class="o">-</samp><samp class="mf">0.01</samp><samp class="p" data-group-id="1875401146-4">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mf">0.0</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="floor/2">
+
+    <span id="floor/1"></span>
+
+  <div class="detail-header">
+    <a href="#floor/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">floor(number, precision \\ 0)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/float.ex#L236" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> floor(<a href="typespecs.xhtml#basic-types">float</a>(), <a href="#t:precision_range/0">precision_range</a>()) :: <a href="typespecs.xhtml#basic-types">float</a>()</pre>
+
+      </div>
+
+<p>Rounds a float to the largest float less than or equal to <code class="inline">number</code>.</p><p><a href="#floor/2"><code class="inline">floor/2</code></a> also accepts a precision to round a floating-point value down
+to an arbitrary number of fractional digits (between 0 and 15).
+The operation is performed on the binary floating point, without a
+conversion to decimal.</p><p>This function always returns a float. <a href="Kernel.xhtml#trunc/1"><code class="inline">Kernel.trunc/1</code></a> may be used instead to
+truncate the result to an integer afterwards.</p><h2 id="floor/2-known-issues" class="section-heading"><a href="#floor/2-known-issues" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Known issues</span></h2><p>The behavior of <a href="#floor/2"><code class="inline">floor/2</code></a> for floats can be surprising. For example:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">floor</samp><samp class="p" data-group-id="2037861647-1">(</samp><samp class="mf">12.52</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="2037861647-1">)</samp><samp class="w">
+</samp><samp class="mf">12.51</samp></code></pre><p>One may have expected it to floor to 12.52. This is not a bug.
+Most decimal fractions cannot be represented as a binary floating point
+and therefore the number above is internally represented as 12.51999999,
+which explains the behavior above.</p><h2 id="floor/2-examples" class="section-heading"><a href="#floor/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">floor</samp><samp class="p" data-group-id="8744537017-1">(</samp><samp class="mf">34.25</samp><samp class="p" data-group-id="8744537017-1">)</samp><samp class="w">
+</samp><samp class="mf">34.0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">floor</samp><samp class="p" data-group-id="8744537017-2">(</samp><samp class="o">-</samp><samp class="mf">56.5</samp><samp class="p" data-group-id="8744537017-2">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mf">57.0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">floor</samp><samp class="p" data-group-id="8744537017-3">(</samp><samp class="mf">34.259</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="8744537017-3">)</samp><samp class="w">
+</samp><samp class="mf">34.25</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="max_finite/0">
+
+  <div class="detail-header">
+    <a href="#max_finite/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">max_finite()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/float.ex#L65" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> max_finite() :: <a href="typespecs.xhtml#basic-types">float</a>()</pre>
+
+      </div>
+
+<p>Returns the maximum finite value for a float.</p><h2 id="max_finite/0-examples" class="section-heading"><a href="#max_finite/0-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">max_finite</samp><samp class="p" data-group-id="8024750282-1">(</samp><samp class="p" data-group-id="8024750282-1">)</samp><samp class="w">
+</samp><samp class="mf">1.7976931348623157e308</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="min_finite/0">
+
+  <div class="detail-header">
+    <a href="#min_finite/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">min_finite()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/float.ex#L77" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> min_finite() :: <a href="typespecs.xhtml#basic-types">float</a>()</pre>
+
+      </div>
+
+<p>Returns the minimum finite value for a float.</p><h2 id="min_finite/0-examples" class="section-heading"><a href="#min_finite/0-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">min_finite</samp><samp class="p" data-group-id="1234239842-1">(</samp><samp class="p" data-group-id="1234239842-1">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mf">1.7976931348623157e308</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="parse/1">
+
+  <div class="detail-header">
+    <a href="#parse/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">parse(binary)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/float.ex#L151" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> parse(<a href="typespecs.xhtml#built-in-types">binary</a>()) :: {<a href="typespecs.xhtml#basic-types">float</a>(), <a href="typespecs.xhtml#built-in-types">binary</a>()} | :error</pre>
+
+      </div>
+
+<p>Parses a binary into a float.</p><p>If successful, returns a tuple in the form of <code class="inline">{float, remainder_of_binary}</code>;
+when the binary cannot be coerced into a valid float, the atom <code class="inline">:error</code> is
+returned.</p><p>If the size of float exceeds the maximum size of <code class="inline">1.7976931348623157e+308</code>,
+<code class="inline">:error</code> is returned even though the textual representation itself might be
+well formed.</p><p>If you want to convert a string-formatted float directly to a float,
+<a href="String.xhtml#to_float/1"><code class="inline">String.to_float/1</code></a> can be used instead.</p><h2 id="parse/1-examples" class="section-heading"><a href="#parse/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="0182930561-1">(</samp><samp class="s">&quot;34&quot;</samp><samp class="p" data-group-id="0182930561-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0182930561-2">{</samp><samp class="mf">34.0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;&quot;</samp><samp class="p" data-group-id="0182930561-2">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="0182930561-3">(</samp><samp class="s">&quot;34.25&quot;</samp><samp class="p" data-group-id="0182930561-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0182930561-4">{</samp><samp class="mf">34.25</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;&quot;</samp><samp class="p" data-group-id="0182930561-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="0182930561-5">(</samp><samp class="s">&quot;56.5xyz&quot;</samp><samp class="p" data-group-id="0182930561-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0182930561-6">{</samp><samp class="mf">56.5</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;xyz&quot;</samp><samp class="p" data-group-id="0182930561-6">}</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="0182930561-7">(</samp><samp class="s">&quot;.12&quot;</samp><samp class="p" data-group-id="0182930561-7">)</samp><samp class="w">
+</samp><samp class="ss">:error</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="0182930561-8">(</samp><samp class="s">&quot;pi&quot;</samp><samp class="p" data-group-id="0182930561-8">)</samp><samp class="w">
+</samp><samp class="ss">:error</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">parse</samp><samp class="p" data-group-id="0182930561-9">(</samp><samp class="s">&quot;1.7976931348623159e+308&quot;</samp><samp class="p" data-group-id="0182930561-9">)</samp><samp class="w">
+</samp><samp class="ss">:error</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="pow/2">
+
+  <div class="detail-header">
+    <a href="#pow/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">pow(base, exponent)</h1>
+
+        <span class="note">(since 1.12.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/float.ex#L116" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> pow(<a href="typespecs.xhtml#basic-types">float</a>(), <a href="typespecs.xhtml#built-in-types">number</a>()) :: <a href="typespecs.xhtml#basic-types">float</a>()</pre>
+
+      </div>
+
+<p>Computes <code class="inline">base</code> raised to power of <code class="inline">exponent</code>.</p><p><code class="inline">base</code> must be a float and <code class="inline">exponent</code> can be any number.
+However, if a negative base and a fractional exponent
+are given, it raises <a href="ArithmeticError.xhtml"><code class="inline">ArithmeticError</code></a>.</p><p>It always returns a float. See <a href="Integer.xhtml#pow/2"><code class="inline">Integer.pow/2</code></a> for
+exponentiation that returns integers.</p><h2 id="pow/2-examples" class="section-heading"><a href="#pow/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="7784328096-1">(</samp><samp class="mf">2.0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p" data-group-id="7784328096-1">)</samp><samp class="w">
+</samp><samp class="mf">1.0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="7784328096-2">(</samp><samp class="mf">2.0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="7784328096-2">)</samp><samp class="w">
+</samp><samp class="mf">2.0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="7784328096-3">(</samp><samp class="mf">2.0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">10</samp><samp class="p" data-group-id="7784328096-3">)</samp><samp class="w">
+</samp><samp class="mf">1024.0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="7784328096-4">(</samp><samp class="mf">2.0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">1</samp><samp class="p" data-group-id="7784328096-4">)</samp><samp class="w">
+</samp><samp class="mf">0.5</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="7784328096-5">(</samp><samp class="mf">2.0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="mi">3</samp><samp class="p" data-group-id="7784328096-5">)</samp><samp class="w">
+</samp><samp class="mf">0.125</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="7784328096-6">(</samp><samp class="mf">3.0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mf">1.5</samp><samp class="p" data-group-id="7784328096-6">)</samp><samp class="w">
+</samp><samp class="mf">5.196152422706632</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="7784328096-7">(</samp><samp class="o">-</samp><samp class="mf">2.0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="7784328096-7">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mf">8.0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="7784328096-8">(</samp><samp class="o">-</samp><samp class="mf">2.0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p" data-group-id="7784328096-8">)</samp><samp class="w">
+</samp><samp class="mf">16.0</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">pow</samp><samp class="p" data-group-id="7784328096-9">(</samp><samp class="o">-</samp><samp class="mf">1.0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mf">0.5</samp><samp class="p" data-group-id="7784328096-9">)</samp><samp class="w">
+</samp><samp class="gt">** (ArithmeticError) bad argument in arithmetic expression</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="ratio/1">
+
+  <div class="detail-header">
+    <a href="#ratio/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ratio(float)</h1>
+
+        <span class="note">(since 1.4.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/float.ex#L524" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> ratio(<a href="typespecs.xhtml#basic-types">float</a>()) :: {<a href="typespecs.xhtml#basic-types">integer</a>(), <a href="typespecs.xhtml#basic-types">pos_integer</a>()}</pre>
+
+      </div>
+
+<p>Returns a pair of integers whose ratio is exactly equal
+to the original float and with a positive denominator.</p><h2 id="ratio/1-examples" class="section-heading"><a href="#ratio/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ratio</samp><samp class="p" data-group-id="8672710508-1">(</samp><samp class="mf">0.0</samp><samp class="p" data-group-id="8672710508-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8672710508-2">{</samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="8672710508-2">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ratio</samp><samp class="p" data-group-id="8672710508-3">(</samp><samp class="mf">3.14</samp><samp class="p" data-group-id="8672710508-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8672710508-4">{</samp><samp class="mi">7070651414971679</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2251799813685248</samp><samp class="p" data-group-id="8672710508-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ratio</samp><samp class="p" data-group-id="8672710508-5">(</samp><samp class="o">-</samp><samp class="mf">3.14</samp><samp class="p" data-group-id="8672710508-5">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8672710508-6">{</samp><samp class="o">-</samp><samp class="mi">7070651414971679</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2251799813685248</samp><samp class="p" data-group-id="8672710508-6">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ratio</samp><samp class="p" data-group-id="8672710508-7">(</samp><samp class="mf">1.5</samp><samp class="p" data-group-id="8672710508-7">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8672710508-8">{</samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="8672710508-8">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ratio</samp><samp class="p" data-group-id="8672710508-9">(</samp><samp class="o">-</samp><samp class="mf">1.5</samp><samp class="p" data-group-id="8672710508-9">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8672710508-10">{</samp><samp class="o">-</samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="8672710508-10">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ratio</samp><samp class="p" data-group-id="8672710508-11">(</samp><samp class="mf">16.0</samp><samp class="p" data-group-id="8672710508-11">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8672710508-12">{</samp><samp class="mi">16</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="8672710508-12">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">ratio</samp><samp class="p" data-group-id="8672710508-13">(</samp><samp class="o">-</samp><samp class="mf">16.0</samp><samp class="p" data-group-id="8672710508-13">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8672710508-14">{</samp><samp class="o">-</samp><samp class="mi">16</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="8672710508-14">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="round/2">
+
+    <span id="round/1"></span>
+
+  <div class="detail-header">
+    <a href="#round/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">round(float, precision \\ 0)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/float.ex#L347" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> round(<a href="typespecs.xhtml#basic-types">float</a>(), <a href="#t:precision_range/0">precision_range</a>()) :: <a href="typespecs.xhtml#basic-types">float</a>()</pre>
+
+      </div>
+
+<p>Rounds a floating-point value to an arbitrary number of fractional
+digits (between 0 and 15).</p><p>The rounding direction always ties to half up. The operation is
+performed on the binary floating point, without a conversion to decimal.</p><p>This function only accepts floats and always returns a float. Use
+<a href="Kernel.xhtml#round/1"><code class="inline">Kernel.round/1</code></a> if you want a function that accepts both floats
+and integers and always returns an integer.</p><h2 id="round/2-known-issues" class="section-heading"><a href="#round/2-known-issues" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Known issues</span></h2><p>The behavior of <a href="#round/2"><code class="inline">round/2</code></a> for floats can be surprising. For example:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">round</samp><samp class="p" data-group-id="8690041809-1">(</samp><samp class="mf">5.5675</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="8690041809-1">)</samp><samp class="w">
+</samp><samp class="mf">5.567</samp></code></pre><p>One may have expected it to round to the half up 5.568. This is not a bug.
+Most decimal fractions cannot be represented as a binary floating point
+and therefore the number above is internally represented as 5.567499999,
+which explains the behavior above. If you want exact rounding for decimals,
+you must use a decimal library. The behavior above is also in accordance
+to reference implementations, such as &quot;Correctly Rounded Binary-Decimal and
+Decimal-Binary Conversions&quot; by David M. Gay.</p><h2 id="round/2-examples" class="section-heading"><a href="#round/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">round</samp><samp class="p" data-group-id="8507468436-1">(</samp><samp class="mf">12.5</samp><samp class="p" data-group-id="8507468436-1">)</samp><samp class="w">
+</samp><samp class="mf">13.0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">round</samp><samp class="p" data-group-id="8507468436-2">(</samp><samp class="mf">5.5674</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="8507468436-2">)</samp><samp class="w">
+</samp><samp class="mf">5.567</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">round</samp><samp class="p" data-group-id="8507468436-3">(</samp><samp class="mf">5.5675</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="8507468436-3">)</samp><samp class="w">
+</samp><samp class="mf">5.567</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">round</samp><samp class="p" data-group-id="8507468436-4">(</samp><samp class="o">-</samp><samp class="mf">5.5674</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="8507468436-4">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mf">5.567</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">round</samp><samp class="p" data-group-id="8507468436-5">(</samp><samp class="o">-</samp><samp class="mf">5.5675</samp><samp class="p" data-group-id="8507468436-5">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mf">6.0</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">round</samp><samp class="p" data-group-id="8507468436-6">(</samp><samp class="mf">12.341444444444441</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">15</samp><samp class="p" data-group-id="8507468436-6">)</samp><samp class="w">
+</samp><samp class="mf">12.341444444444441</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">round</samp><samp class="p" data-group-id="8507468436-7">(</samp><samp class="o">-</samp><samp class="mf">0.01</samp><samp class="p" data-group-id="8507468436-7">)</samp><samp class="w">
+</samp><samp class="o">-</samp><samp class="mf">0.0</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="to_charlist/1">
+
+  <div class="detail-header">
+    <a href="#to_charlist/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_charlist(float)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/float.ex#L595" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_charlist(<a href="typespecs.xhtml#basic-types">float</a>()) :: <a href="typespecs.xhtml#built-in-types">charlist</a>()</pre>
+
+      </div>
+
+<p>Returns a charlist which corresponds to the shortest text representation
+of the given float.</p><p>It uses the algorithm presented in &quot;Ryū: fast float-to-string conversion&quot;
+in Proceedings of the SIGPLAN '2018 Conference on Programming Language
+Design and Implementation.</p><p>For a configurable representation, use <a href="https://www.erlang.org/doc/apps/erts/erlang.html#float_to_list/2"><code class="inline">:erlang.float_to_list/2</code></a>.</p><p>Inlined by the compiler.</p><h2 id="to_charlist/1-examples" class="section-heading"><a href="#to_charlist/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">to_charlist</samp><samp class="p" data-group-id="6709005365-1">(</samp><samp class="mf">7.0</samp><samp class="p" data-group-id="6709005365-1">)</samp><samp class="w">
+</samp><samp class="s">~c&quot;7.0&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="to_string/1">
+
+  <div class="detail-header">
+    <a href="#to_string/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_string(float)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/float.ex#L624" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_string(<a href="typespecs.xhtml#basic-types">float</a>()) :: <a href="String.xhtml#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Returns a binary which corresponds to the shortest text representation
+of the given float.</p><p>The underlying algorithm changes depending on the Erlang/OTP version:</p><ul><li><p>For OTP &gt;= 24, it uses the algorithm presented in &quot;Ryū: fast
+float-to-string conversion&quot; in Proceedings of the SIGPLAN '2018
+Conference on Programming Language Design and Implementation.</p></li><li><p>For OTP &lt; 24, it uses the algorithm presented in &quot;Printing Floating-Point
+Numbers Quickly and Accurately&quot; in Proceedings of the SIGPLAN '1996
+Conference on Programming Language Design and Implementation.</p></li></ul><p>For a configurable representation, use <a href="https://www.erlang.org/doc/apps/erts/erlang.html#float_to_binary/2"><code class="inline">:erlang.float_to_binary/2</code></a>.</p><p>Inlined by the compiler.</p><h2 id="to_string/1-examples" class="section-heading"><a href="#to_string/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Float</samp><samp class="o">.</samp><samp class="n">to_string</samp><samp class="p" data-group-id="6411630910-1">(</samp><samp class="mf">7.0</samp><samp class="p" data-group-id="6411630910-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;7.0&quot;</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.ColocatedHook - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.ColocatedHook 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A special HEEx <code class="inline">:type</code> that extracts <a href="js-interop.xhtml#client-hooks-via-phx-hook">hooks</a>
+from a co-located <code class="inline">&lt;script&gt;</code> tag at compile time.</p><p>Note: To use <code class="inline">ColocatedHook</code>, you need to run Phoenix 1.8+.</p><h2 id="module-introduction">Introduction</h2><p>Colocated hooks are defined as with <code class="inline">:type={Phoenix.LiveView.ColocatedHook}</code>:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.DemoLive</samp><samp class="w"> </samp><samp class="k" data-group-id="8611327960-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">MyAppWeb</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:live_view</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">mount</samp><samp class="p" data-group-id="8611327960-2">(</samp><samp class="c">_params</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_session</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="p" data-group-id="8611327960-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8611327960-3">do</samp><samp class="w">
+    </samp><samp class="p" data-group-id="8611327960-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">socket</samp><samp class="p" data-group-id="8611327960-4">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="8611327960-3">end</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">render</samp><samp class="p" data-group-id="8611327960-5">(</samp><samp class="n">assigns</samp><samp class="p" data-group-id="8611327960-5">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8611327960-6">do</samp><samp class="w">
+    </samp><samp class="sx">~H&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="p">&lt;</samp><samp class="nt">input</samp><samp class="w"> </samp><samp class="na">type</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">text</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">name</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">user[phone_number]</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">u</samp><samp class="s2">s</samp><samp class="s2">e</samp><samp class="s2">r</samp><samp class="s2">-</samp><samp class="s2">p</samp><samp class="s2">h</samp><samp class="s2">o</samp><samp class="s2">n</samp><samp class="s2">e</samp><samp class="s2">-</samp><samp class="s2">n</samp><samp class="s2">u</samp><samp class="s2">m</samp><samp class="s2">b</samp><samp class="s2">e</samp><samp class="s2">r</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">phx-hook</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">.PhoneNumber</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="p">/&gt;</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="p">&lt;</samp><samp class="nt">script</samp><samp class="w"> </samp><samp class="na">:type</samp><samp class="p">=</samp><samp class="p" data-group-id="7909655148-1">{</samp><samp class="nc">Phoenix.LiveView.ColocatedHook</samp><samp class="p" data-group-id="7909655148-1">}</samp><samp class="w"> </samp><samp class="na">name</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">.PhoneNumber</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">      </samp><samp class="o">export</samp><samp class="w"> </samp><samp class="k">default</samp><samp class="w"> </samp><samp class="p" data-group-id="7909655148-2">{</samp><samp class="w">
+        </samp><samp class="n">mounted</samp><samp class="p" data-group-id="8611327960-7">(</samp><samp class="p" data-group-id="8611327960-7">)</samp><samp class="w"> </samp><samp class="p" data-group-id="8611327960-8">{</samp><samp class="w">
+          </samp><samp class="n">this</samp><samp class="o">.</samp><samp class="n">el</samp><samp class="o">.</samp><samp class="n">addEventListener</samp><samp class="p" data-group-id="8611327960-9">(</samp><samp class="s">&quot;input&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">e</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="8611327960-10">{</samp><samp class="w">
+            </samp><samp class="n">let</samp><samp class="w"> </samp><samp class="n">match</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">this</samp><samp class="o">.</samp><samp class="n">el</samp><samp class="o">.</samp><samp class="n">value</samp><samp class="o">.</samp><samp class="n">replace</samp><samp class="p" data-group-id="8611327960-11">(</samp><samp class="o">/</samp><samp class="err">\</samp><samp class="nc">D</samp><samp class="o">/</samp><samp class="n">g</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;&quot;</samp><samp class="p" data-group-id="8611327960-11">)</samp><samp class="o">.</samp><samp class="n">match</samp><samp class="p" data-group-id="8611327960-12">(</samp><samp class="o">/</samp><samp class="o">^</samp><samp class="p" data-group-id="8611327960-13">(</samp><samp class="err">\</samp><samp class="n">d</samp><samp class="p" data-group-id="8611327960-14">{</samp><samp class="mi">3</samp><samp class="p" data-group-id="8611327960-14">}</samp><samp class="p" data-group-id="8611327960-13">)</samp><samp class="p" data-group-id="8611327960-15">(</samp><samp class="err">\</samp><samp class="n">d</samp><samp class="p" data-group-id="8611327960-16">{</samp><samp class="mi">3</samp><samp class="p" data-group-id="8611327960-16">}</samp><samp class="p" data-group-id="8611327960-15">)</samp><samp class="p" data-group-id="8611327960-17">(</samp><samp class="err">\</samp><samp class="n">d</samp><samp class="p" data-group-id="8611327960-18">{</samp><samp class="mi">4</samp><samp class="p" data-group-id="8611327960-18">}</samp><samp class="p" data-group-id="8611327960-17">)</samp><samp class="err">$</samp><samp class="o">/</samp><samp class="p" data-group-id="8611327960-12">)</samp><samp class="w">
+            </samp><samp class="k">if</samp><samp class="p" data-group-id="8611327960-19">(</samp><samp class="n">match</samp><samp class="p" data-group-id="8611327960-19">)</samp><samp class="w"> </samp><samp class="p" data-group-id="8611327960-20">{</samp><samp class="w">
+              </samp><samp class="n">this</samp><samp class="o">.</samp><samp class="n">el</samp><samp class="o">.</samp><samp class="n">value</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="err">`</samp><samp class="err">$</samp><samp class="p" data-group-id="8611327960-21">{</samp><samp class="n">match</samp><samp class="p" data-group-id="8611327960-22">[</samp><samp class="mi">1</samp><samp class="p" data-group-id="8611327960-22">]</samp><samp class="p" data-group-id="8611327960-21">}</samp><samp class="o">-</samp><samp class="err">$</samp><samp class="p" data-group-id="8611327960-23">{</samp><samp class="n">match</samp><samp class="p" data-group-id="8611327960-24">[</samp><samp class="mi">2</samp><samp class="p" data-group-id="8611327960-24">]</samp><samp class="p" data-group-id="8611327960-23">}</samp><samp class="o">-</samp><samp class="err">$</samp><samp class="p" data-group-id="8611327960-25">{</samp><samp class="n">match</samp><samp class="p" data-group-id="8611327960-26">[</samp><samp class="mi">3</samp><samp class="p" data-group-id="8611327960-26">]</samp><samp class="p" data-group-id="8611327960-25">}</samp><samp class="err">`</samp><samp class="w">
+            </samp><samp class="p" data-group-id="8611327960-20">}</samp><samp class="w">
+          </samp><samp class="p" data-group-id="8611327960-10">}</samp><samp class="p" data-group-id="8611327960-9">)</samp><samp class="w">
+        </samp><samp class="p" data-group-id="8611327960-8">}</samp><samp class="w">
+      </samp><samp class="p" data-group-id="7909655148-2">}</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="p">&lt;/</samp><samp class="nt">script</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="sx">&quot;&quot;&quot;</samp><samp class="w">
+  </samp><samp class="k" data-group-id="8611327960-6">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="8611327960-1">end</samp></code></pre><p>You can read more about the internals of colocated hooks in the <a href="Phoenix.LiveView.ColocatedJS.xhtml#internals">documentation for colocated JS</a>.
+A brief summary: at compile time, the hook's code is extracted into a special folder, typically in your <code class="inline">_build</code> directory.
+Each hook is also <code class="inline">import</code>ed into a special <em>manifest</em> file. The manifest file provides
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export">a named export</a>
+which allows it to be imported by any JavaScript bundler that supports <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules">ES modules</a>:</p><pre><code class="makeup javascript" translate="no"><samp class="k">import</samp><samp class="w"> </samp><samp class="p">{</samp><samp class="nv">hooks</samp><samp class="p">}</samp><samp class="w"> </samp><samp class="k">from</samp><samp class="w"> </samp><samp class="p">&quot;</samp><samp class="s2">phoenix-colocated/my_app</samp><samp class="p">&quot;</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="nb">console</samp><samp class="p">.</samp><samp class="nf">log</samp><samp class="p">(</samp><samp class="nv">hooks</samp><samp class="p">)</samp><samp class="p">;</samp><samp class="w">
+</samp><samp class="cm">/*</samp><samp class="w">
+</samp><samp class="cm">{
+</samp><samp class="cm">  &quot;MyAppWeb.DemoLive.PhoneNumber&quot;: {...},
+</samp><samp class="cm">  ...
+</samp><samp class="cm">}
+</samp><samp class="cm">*/</samp></code></pre><section role="note" class="admonition info"><h4 class="admonition-title info">Compilation order</h4><p>Colocated hooks are only written when the corresponding component is compiled.
+Therefore, whenever you need to access a colocated hook, you need to ensure
+<a href="https://hexdocs.pm/mix/Mix.Tasks.Compile.html"><code class="inline">mix compile</code></a> runs first. This automatically happens in development.</p><p>If you have a custom mix alias, instead of</p><pre><code class="makeup elixir" translate="no"><samp class="ss">release</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="6116074952-1">[</samp><samp class="s">&quot;assets.deploy&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;release&quot;</samp><samp class="p" data-group-id="6116074952-1">]</samp></code></pre><p>do</p><pre><code class="makeup elixir" translate="no"><samp class="ss">release</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3353868563-1">[</samp><samp class="s">&quot;compile&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;assets.deploy&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;release&quot;</samp><samp class="p" data-group-id="3353868563-1">]</samp></code></pre><p>to ensure that all colocated hooks are extracted before esbuild or any other bundler runs.</p></section><h2 id="module-options">Options</h2><p>Colocated hooks are configured through the attributes of the <code class="inline">&lt;script&gt;</code> tag.
+The supported attributes are:</p><ul><li><p><code class="inline">name</code> - The name of the hook. This is required and must start with a dot,
+for example: <code class="inline">name=&quot;.myhook&quot;</code>. The same name must be used when referring to this
+hook in the <code class="inline">phx-hook</code> attribute of another HTML element.</p></li><li><p><code class="inline">runtime</code> - If present, the hook is not extracted, but instead registered at runtime.
+You should only use this option if you know that you need it. It comes with some limitations:</p><ol><li>The content is not processed by any bundler, therefore it must only use features
+supported by the targeted browsers.</li><li>You need to take special care about any <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP">Content Security Policies</a>
+that may be in place. See the section on runtime hooks below for more details.</li></ol></li></ul><h2 id="module-runtime-hooks">Runtime hooks</h2><p>Runtime hooks are a special kind of colocated hook that are not removed from the DOM
+when rendering the component. Instead, the hook's code is executed directly in the
+browser with no bundler involved.</p><p>One example where this can be useful is when you are creating a custom page for a library
+like <code class="inline">Phoenix.LiveDashboard</code>. The live dashboard already bundles its hooks, therefore there
+is no way to add new hooks to the bundle when the live dashboard is used inside your application.</p><p>Because of this, runtime hooks must also use a slightly different syntax. While in normal
+colocated hooks you'd write an <code class="inline">export default</code> statement, runtime hooks must evaluate to the
+hook itself:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">script</samp><samp class="w"> </samp><samp class="na">:type</samp><samp class="p">=</samp><samp class="p" data-group-id="8225507356-1">{</samp><samp class="nc">Phoenix.LiveView.ColocatedHook</samp><samp class="p" data-group-id="8225507356-1">}</samp><samp class="w"> </samp><samp class="na">name</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">.MyHook</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">runtime</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p" data-group-id="8225507356-2">{</samp><samp class="w">
+    </samp><samp class="n">mounted</samp><samp class="p" data-group-id="8225507356-ex-1">(</samp><samp class="p" data-group-id="8225507356-ex-1">)</samp><samp class="w"> </samp><samp class="p" data-group-id="8225507356-ex-2">{</samp><samp class="w">
+      </samp><samp class="n">...</samp><samp class="w">
+    </samp><samp class="p" data-group-id="8225507356-ex-2">}</samp><samp class="w">
+  </samp><samp class="p" data-group-id="8225507356-2">}</samp><samp class="w">
+</samp><samp class="p">&lt;/</samp><samp class="nt">script</samp><samp class="p">&gt;</samp></code></pre><p>This is because the hook's code is wrapped by LiveView into something like this:</p><pre><code class="makeup javascript" translate="no"><samp class="nb">window</samp><samp class="p">[</samp><samp class="p">&quot;</samp><samp class="s2">phx_hook_HASH</samp><samp class="p">&quot;</samp><samp class="p">]</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="kt">function</samp><samp class="p">(</samp><samp class="p">)</samp><samp class="w"> </samp><samp class="p">{</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="k">return</samp><samp class="w"> </samp><samp class="p">{</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="nf">mounted</samp><samp class="p">(</samp><samp class="p">)</samp><samp class="w"> </samp><samp class="p">{</samp><samp class="w">
+</samp><samp class="w">      </samp><samp class="o">...</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="p">}</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p">}</samp><samp class="w">
+</samp><samp class="p">}</samp></code></pre><p>Still, even for runtime hooks, the hook's name needs to start with a dot and is automatically
+prefixed with the module name to avoid conflicts with other hooks.</p><p>When using runtime hooks, it is important to think about any limitations that content security
+policies may impose. If CSP is involved, the only way to use runtime hooks is by using CSP nonces:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">script</samp><samp class="w"> </samp><samp class="na">:type</samp><samp class="p">=</samp><samp class="p" data-group-id="9839534550-1">{</samp><samp class="nc">Phoenix.LiveView.ColocatedHook</samp><samp class="p" data-group-id="9839534550-1">}</samp><samp class="w"> </samp><samp class="na">name</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">.MyHook</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">runtime</samp><samp class="w"> </samp><samp class="na">nonce</samp><samp class="p">=</samp><samp class="p" data-group-id="9839534550-2">{</samp><samp class="na">@script_csp_nonce</samp><samp class="p" data-group-id="9839534550-2">}</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="kt">function</samp><samp class="p">(</samp><samp class="p">)</samp><samp class="w"> </samp><samp class="p" data-group-id="9839534550-3">{</samp><samp class="w">
+    </samp><samp class="n">return</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p">;</samp><samp class="w">
+  </samp><samp class="p" data-group-id="9839534550-3">}</samp><samp class="w">
+</samp><samp class="p">&lt;/</samp><samp class="nt">script</samp><samp class="p">&gt;</samp></code></pre><p>This is assuming that the <code class="inline">@script_csp_nonce</code> assign contains the nonce value that is also
+sent in the <code class="inline">Content-Security-Policy</code> header.</p>
+      </section>
+
+
+
+
+  </body>
+</html>

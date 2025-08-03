@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.Router - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.Router 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Provides LiveView routing for Phoenix routers.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#fetch_live_flash/2" data-no-tooltip="" translate="no">fetch_live_flash(conn, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Fetches the LiveView and merges with the controller flash.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#live/4" data-no-tooltip="" translate="no">live(path, live_view, action \\ nil, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Defines a LiveView route.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#live_session/3" data-no-tooltip="" translate="no">live_session(name, opts \\ [], list)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Defines a live session for live redirects within a group of live routes.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="fetch_live_flash/2">
+
+    <span id="fetch_live_flash/1"></span>
+
+  <div class="detail-header">
+    <a href="#fetch_live_flash/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">fetch_live_flash(conn, opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/router.ex#L342" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Fetches the LiveView and merges with the controller flash.</p><p>Replaces the default <code class="inline">:fetch_flash</code> plug used by <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Phoenix.Router.html"><code class="inline">Phoenix.Router</code></a>.</p><h2 id="fetch_live_flash/2-examples" class="section-heading"><a href="#fetch_live_flash/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.Router</samp><samp class="w"> </samp><samp class="k" data-group-id="2940202514-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">LiveGenWeb</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:router</samp><samp class="w">
+  </samp><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveView.Router</samp><samp class="w">
+
+  </samp><samp class="n">pipeline</samp><samp class="w"> </samp><samp class="ss">:browser</samp><samp class="w"> </samp><samp class="k" data-group-id="2940202514-2">do</samp><samp class="w">
+    </samp><samp class="n">...</samp><samp class="w">
+    </samp><samp class="n">plug</samp><samp class="w"> </samp><samp class="ss">:fetch_live_flash</samp><samp class="w">
+  </samp><samp class="k" data-group-id="2940202514-2">end</samp><samp class="w">
+  </samp><samp class="n">...</samp><samp class="w">
+</samp><samp class="k" data-group-id="2940202514-1">end</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="live/4">
+
+    <span id="live/2"></span>
+
+    <span id="live/3"></span>
+
+  <div class="detail-header">
+    <a href="#live/4" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">live(path, live_view, action \\ nil, opts \\ [])</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/router.ex#L100" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Defines a LiveView route.</p><p>A LiveView can be routed to by using the <code class="inline">live</code> macro with a path and
+the name of the LiveView:</p><pre><code class="makeup elixir" translate="no"><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/thermostat&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">ThermostatLive</samp></code></pre><p>To navigate to this route within your app, you can use <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Phoenix.VerifiedRoutes.html"><code class="inline">Phoenix.VerifiedRoutes</code></a>:</p><pre><code class="makeup elixir" translate="no"><samp class="n">push_navigate</samp><samp class="p" data-group-id="0774967506-1">(</samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sx">~p&quot;/thermostat&quot;</samp><samp class="p" data-group-id="0774967506-1">)</samp><samp class="w">
+</samp><samp class="n">push_patch</samp><samp class="p" data-group-id="0774967506-2">(</samp><samp class="n">socket</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sx">~p&quot;/thermostat?page=</samp><samp class="si" data-group-id="0774967506-3">#{</samp><samp class="n">page</samp><samp class="si" data-group-id="0774967506-3">}</samp><samp class="sx">&quot;</samp><samp class="p" data-group-id="0774967506-2">)</samp></code></pre><section role="note" class="admonition info"><h4 class="admonition-title info">HTTP requests</h4><p>The HTTP request method that a route defined by the <a href="#live/4"><code class="inline">live/4</code></a> macro
+responds to is <code class="inline">GET</code>.</p></section><h2 id="live/4-actions-and-live-navigation" class="section-heading"><a href="#live/4-actions-and-live-navigation" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Actions and live navigation</span></h2><p>It is common for a LiveView to have multiple states and multiple URLs.
+For example, you can have a single LiveView that lists all articles on
+your web app. For each article there is an &quot;Edit&quot; button which, when
+pressed, opens up a modal on the same page to edit the article. It is a
+best practice to use live navigation in those cases, so when you click
+edit, the URL changes to &quot;/articles/1/edit&quot;, even though you are still
+within the same LiveView. Similarly, you may also want to show a &quot;New&quot;
+button, which opens up the modal to create new entries, and you want
+this to be reflected in the URL as &quot;/articles/new&quot;.</p><p>In order to make it easier to recognize the current &quot;action&quot; your
+LiveView is on, you can pass the action option when defining LiveViews
+too:</p><pre><code class="makeup elixir" translate="no"><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/articles&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">ArticleLive.Index</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:index</samp><samp class="w">
+</samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/articles/new&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">ArticleLive.Index</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:new</samp><samp class="w">
+</samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/articles/:id/edit&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">ArticleLive.Index</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:edit</samp></code></pre><p>The current action will always be available inside the LiveView as
+the <code class="inline">@live_action</code> assign, that can be used to render a LiveComponent:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nf">.live_component</samp><samp class="w"> </samp><samp class="na">:if</samp><samp class="p">=</samp><samp class="p" data-group-id="1900764522-1">{</samp><samp class="na">@live_action</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="ss">:new</samp><samp class="p" data-group-id="1900764522-1">}</samp><samp class="w"> </samp><samp class="na">module</samp><samp class="p">=</samp><samp class="p" data-group-id="1900764522-2">{</samp><samp class="nc">MyAppWeb.ArticleLive.FormComponent</samp><samp class="p" data-group-id="1900764522-2">}</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">f</samp><samp class="s2">o</samp><samp class="s2">r</samp><samp class="s2">m</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="p">/&gt;</samp></code></pre><p>Or can be used to show or hide parts of the template:</p><pre><code class="makeup heex" translate="no"><samp class="p" data-group-id="1155179833-1">{</samp><samp class="k">if</samp><samp class="w"> </samp><samp class="na">@live_action</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="ss">:edit</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">render</samp><samp class="p" data-group-id="1155179833-ex-1">(</samp><samp class="s">&quot;form.html&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="na">@user</samp><samp class="p" data-group-id="1155179833-ex-1">)</samp><samp class="p" data-group-id="1155179833-1">}</samp></code></pre><p>Note that <code class="inline">@live_action</code> will be <code class="inline">nil</code> if no action is given on the route definition.</p><h2 id="live/4-options" class="section-heading"><a href="#live/4-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><p><code class="inline">:container</code> - an optional tuple for the HTML tag and DOM attributes to
+be used for the LiveView container. For example: <code class="inline">{:li, style: &quot;color: blue;&quot;}</code>.
+See <a href="Phoenix.Component.xhtml#live_render/3"><code class="inline">Phoenix.Component.live_render/3</code></a> for more information and examples.</p></li><li><p><code class="inline">:as</code> - optionally configures the named helper. Defaults to <code class="inline">:live</code> when
+using a LiveView without actions or defaults to the LiveView name when using
+actions.</p></li><li><p><code class="inline">:metadata</code> - a map to optional feed metadata used on telemetry events and route info,
+for example: <code class="inline">%{route_name: :foo, access: :user}</code>. This data can be retrieved by
+calling <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Phoenix.Router.html#route_info/4"><code class="inline">Phoenix.Router.route_info/4</code></a> with the <code class="inline">uri</code> from the <code class="inline">handle_params</code>
+callback. This can be used to customize a LiveView which may be invoked from
+different routes.</p></li><li><p><code class="inline">:private</code> - an optional map of private data to put in the <em>plug connection</em>,
+for example: <code class="inline">%{route_name: :foo, access: :user}</code>. The data will be available
+inside <code class="inline">conn.private</code> in plug functions.</p></li></ul><h2 id="live/4-examples" class="section-heading"><a href="#live/4-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyApp.Router</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Phoenix.Router</samp><samp class="w">
+  </samp><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveView.Router</samp><samp class="w">
+
+  </samp><samp class="n">scope</samp><samp class="w"> </samp><samp class="s">&quot;/&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyApp</samp><samp class="w"> </samp><samp class="k" data-group-id="4307717136-1">do</samp><samp class="w">
+    </samp><samp class="n">pipe_through</samp><samp class="w"> </samp><samp class="p" data-group-id="4307717136-2">[</samp><samp class="ss">:browser</samp><samp class="p" data-group-id="4307717136-2">]</samp><samp class="w">
+
+    </samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/thermostat&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">ThermostatLive</samp><samp class="w">
+    </samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/clock&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">ClockLive</samp><samp class="w">
+    </samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/dashboard&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">DashboardLive</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">container</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4307717136-3">{</samp><samp class="ss">:main</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">class</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;row&quot;</samp><samp class="p" data-group-id="4307717136-3">}</samp><samp class="w">
+  </samp><samp class="k" data-group-id="4307717136-1">end</samp><samp class="w">
+</samp><samp class="k">end</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Router.Helpers</samp><samp class="o">.</samp><samp class="n">live_path</samp><samp class="p" data-group-id="4307717136-4">(</samp><samp class="nc">MyApp.Endpoint</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyApp.ThermostatLive</samp><samp class="p" data-group-id="4307717136-4">)</samp><samp class="w">
+</samp><samp class="s">&quot;/thermostat&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="live_session/3">
+
+    <span id="live_session/2"></span>
+
+  <div class="detail-header">
+    <a href="#live_session/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">live_session(name, opts \\ [], list)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/router.ex#L217" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Defines a live session for live redirects within a group of live routes.</p><p><a href="#live_session/3"><code class="inline">live_session/3</code></a> allow routes defined with <a href="#live/4"><code class="inline">live/4</code></a> to support
+<code class="inline">navigate</code> redirects from the client with navigation purely over the existing
+websocket connection. This allows live routes defined in the router to
+mount a new root LiveView without additional HTTP requests to the server.
+For backwards compatibility reasons, all live routes defined outside
+of any live session are considered part of a single unnamed live session.</p><h2 id="live_session/3-security-considerations" class="section-heading"><a href="#live_session/3-security-considerations" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Security Considerations</span></h2><p>In a regular web application, we perform authentication and authorization
+checks on every request. Given LiveViews start as a regular HTTP request,
+they share the authentication logic with regular requests through plugs.
+Once the user is authenticated, we typically validate the sessions on
+the <code class="inline">mount</code> callback. Authorization rules generally happen on <code class="inline">mount</code>
+(for instance, is the user allowed to see this page?) and also on
+<code class="inline">handle_event</code> (is the user allowed to delete this item?). Performing
+authorization on mount is important because <code class="inline">navigate</code>s <em>do not go
+through the plug pipeline</em>.</p><p><code class="inline">live_session</code> can be used to draw boundaries between groups of LiveViews.
+Redirecting between <code class="inline">live_session</code>s will always force a full page reload
+and establish a brand new LiveView connection. This is useful when LiveViews
+require different authentication strategies or simply when they use different
+root layouts (as the root layout is not updated between live redirects).</p><p>Please <a href="security-model.xhtml">read our guide on the security model</a> for a
+detailed description and general tips on authentication, authorization,
+and more.</p><section role="note" class="admonition warning"><h4 class="admonition-title warning"><code class="inline">live_session</code> and <code class="inline">forward</code></h4><p><code class="inline">live_session</code> does not currently work with <code class="inline">forward</code>. LiveView expects
+your <code class="inline">live</code> routes to always be directly defined within the main router
+of your application.</p></section><section role="note" class="admonition warning"><h4 class="admonition-title warning"><code class="inline">live_session</code> and <code class="inline">scope</code></h4><p>Aliases set with <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Phoenix.Router.html#scope/2"><code class="inline">Phoenix.Router.scope/2</code></a> are not expanded in <code class="inline">live_session</code> arguments.
+You must use the full module name instead.</p></section><h2 id="live_session/3-options" class="section-heading"><a href="#live_session/3-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><p><code class="inline">:session</code> - An optional extra session map or MFA tuple to be merged with
+the LiveView session. For example, <code class="inline">%{&quot;admin&quot; =&gt; true}</code> or <code class="inline">{MyMod, :session, []}</code>.
+For MFA, the function is invoked and the <a href="https://hexdocs.pm/plug/1.18.1/Plug.Conn.html"><code class="inline">Plug.Conn</code></a> struct is prepended
+to the arguments list.</p></li><li><p><code class="inline">:root_layout</code> - An optional root layout tuple for the initial HTTP render to
+override any existing root layout set in the router.</p></li><li><p><code class="inline">:on_mount</code> - An optional list of hooks to attach to the mount lifecycle <em>of
+each LiveView in the session</em>. See <a href="Phoenix.LiveView.xhtml#on_mount/1"><code class="inline">Phoenix.LiveView.on_mount/1</code></a>. Passing a
+single value is also accepted.</p></li><li><p><code class="inline">:layout</code> - An optional layout the LiveView will be rendered in. Setting
+this option overrides the layout via <code class="inline">use Phoenix.LiveView</code>. This option
+may be overridden inside a LiveView by returning <code class="inline">{:ok, socket, layout: ...}</code>
+from the mount callback</p></li></ul><h2 id="live_session/3-examples" class="section-heading"><a href="#live_session/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">scope</samp><samp class="w"> </samp><samp class="s">&quot;/&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyAppWeb</samp><samp class="w"> </samp><samp class="k" data-group-id="3061193051-1">do</samp><samp class="w">
+  </samp><samp class="n">pipe_through</samp><samp class="w"> </samp><samp class="ss">:browser</samp><samp class="w">
+
+  </samp><samp class="n">live_session</samp><samp class="w"> </samp><samp class="ss">:default</samp><samp class="w"> </samp><samp class="k" data-group-id="3061193051-2">do</samp><samp class="w">
+    </samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/feed&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">FeedLive</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:index</samp><samp class="w">
+    </samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/status&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">StatusLive</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:index</samp><samp class="w">
+    </samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/status/:id&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">StatusLive</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:show</samp><samp class="w">
+  </samp><samp class="k" data-group-id="3061193051-2">end</samp><samp class="w">
+
+  </samp><samp class="n">live_session</samp><samp class="w"> </samp><samp class="ss">:admin</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">on_mount</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.AdminLiveAuth</samp><samp class="w"> </samp><samp class="k" data-group-id="3061193051-3">do</samp><samp class="w">
+    </samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/admin&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">AdminDashboardLive</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:index</samp><samp class="w">
+    </samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/admin/posts&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">AdminPostLive</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:index</samp><samp class="w">
+  </samp><samp class="k" data-group-id="3061193051-3">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="3061193051-1">end</samp></code></pre><p>In the example above, we have two live sessions. Live navigation between live views
+in the different sessions is not possible and will always require a full page reload.
+This is important in the example above because the <code class="inline">:admin</code> live session has authentication
+requirements, defined by <code class="inline">on_mount: MyAppWeb.AdminLiveAuth</code>, that the other LiveViews
+do not have.</p><p>If you have both regular HTTP routes (via get, post, etc) and <code class="inline">live</code> routes, then
+you need to perform the same authentication and authorization rules in both.
+For example, if you were to add a <code class="inline">get &quot;/admin/health&quot;</code> route, then you must create
+your own plug that performs the same authentication and authorization rules as
+<code class="inline">MyAppWeb.AdminLiveAuth</code>, and then pipe through it:</p><pre><code class="makeup elixir" translate="no"><samp class="n">scope</samp><samp class="w"> </samp><samp class="s">&quot;/&quot;</samp><samp class="w"> </samp><samp class="k" data-group-id="0118096631-1">do</samp><samp class="w">
+  </samp><samp class="c1"># Regular routes</samp><samp class="w">
+  </samp><samp class="n">pipe_through</samp><samp class="w"> </samp><samp class="p" data-group-id="0118096631-2">[</samp><samp class="nc">MyAppWeb.AdminPlugAuth</samp><samp class="p" data-group-id="0118096631-2">]</samp><samp class="w">
+  </samp><samp class="n">get</samp><samp class="w"> </samp><samp class="s">&quot;/admin/health&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">AdminHealthController</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:index</samp><samp class="w">
+
+  </samp><samp class="c1"># Live routes</samp><samp class="w">
+  </samp><samp class="n">live_session</samp><samp class="w"> </samp><samp class="ss">:admin</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">on_mount</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.AdminLiveAuth</samp><samp class="w"> </samp><samp class="k" data-group-id="0118096631-3">do</samp><samp class="w">
+    </samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/admin&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">AdminDashboardLive</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:index</samp><samp class="w">
+    </samp><samp class="n">live</samp><samp class="w"> </samp><samp class="s">&quot;/admin/posts&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">AdminPostLive</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:index</samp><samp class="w">
+  </samp><samp class="k" data-group-id="0118096631-3">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="0118096631-1">end</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

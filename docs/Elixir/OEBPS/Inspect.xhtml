@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Inspect - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Inspect <small>protocol</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>The <a href="Inspect.xhtml"><code class="inline">Inspect</code></a> protocol converts an Elixir data structure into an
+algebra document.</p><p>This is typically done when you want to customize how your own
+structs are inspected in logs and the terminal.</p><p>This documentation refers to implementing the <a href="Inspect.xhtml"><code class="inline">Inspect</code></a> protocol
+for your own data structures. To learn more about using inspect,
+see <a href="Kernel.xhtml#inspect/2"><code class="inline">Kernel.inspect/2</code></a> and <a href="IO.xhtml#inspect/2"><code class="inline">IO.inspect/2</code></a>.</p><h2 id="module-inspect-representation">Inspect representation</h2><p>There are typically three choices of inspect representation. In order
+to understand them, let's imagine we have the following <code class="inline">User</code> struct:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">User</samp><samp class="w"> </samp><samp class="k" data-group-id="3130929444-1">do</samp><samp class="w">
+  </samp><samp class="kd">defstruct</samp><samp class="w"> </samp><samp class="p" data-group-id="3130929444-2">[</samp><samp class="ss">:id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:name</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:address</samp><samp class="p" data-group-id="3130929444-2">]</samp><samp class="w">
+</samp><samp class="k" data-group-id="3130929444-1">end</samp></code></pre><p>Our choices are:</p><ol><li><p>Print the struct using Elixir's struct syntax, for example:
+<code class="inline">%User{address: &quot;Earth&quot;, id: 13, name: &quot;Jane&quot;}</code>. This is the
+default representation and best choice if all struct fields
+are public.</p></li><li><p>Print using the <code class="inline">#User&lt;...&gt;</code> notation, for example: <code class="inline">#User&lt;id: 13, name: &quot;Jane&quot;, ...&gt;</code>.
+This notation does not emit valid Elixir code and is typically
+used when the struct has private fields (for example, you may want
+to hide the field <code class="inline">:address</code> to redact person identifiable information).</p></li><li><p>Print the struct using the expression syntax, for example:
+<code class="inline">User.new(13, &quot;Jane&quot;, &quot;Earth&quot;)</code>. This assumes there is a <code class="inline">User.new/3</code>
+function. This option is mostly used as an alternative to option 2
+for representing custom data structures, such as <a href="MapSet.xhtml"><code class="inline">MapSet</code></a>, <a href="Date.Range.xhtml"><code class="inline">Date.Range</code></a>,
+and others.</p></li></ol><p>You can implement the Inspect protocol for your own structs while
+adhering to the conventions above. Option 1 is the default representation
+and you can quickly achieve option 2 by deriving the <a href="Inspect.xhtml"><code class="inline">Inspect</code></a> protocol.
+For option 3, you need your custom implementation.</p><h2 id="module-deriving">Deriving</h2><p>The <a href="Inspect.xhtml"><code class="inline">Inspect</code></a> protocol can be derived to customize the order of fields
+(the default is alphabetical) and hide certain fields from structs,
+so they don't show up in logs, inspects and similar. The latter is
+especially useful for fields containing private information.</p><p>The supported options are:</p><ul><li><p><code class="inline">:only</code> - only include the given fields when inspecting.</p></li><li><p><code class="inline">:except</code> - remove the given fields when inspecting.</p></li><li><p><code class="inline">:optional</code> - (since v1.14.0) do not include a field if it
+matches its default value. This can be used to simplify the
+struct representation at the cost of hiding information.</p></li></ul><p>Whenever <code class="inline">:only</code> or <code class="inline">:except</code> are used to restrict fields,
+the struct will be printed using the <code class="inline">#User&lt;...&gt;</code> notation,
+as the struct can no longer be copy and pasted as valid Elixir
+code. Let's see an example:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">User</samp><samp class="w"> </samp><samp class="k" data-group-id="2221037019-1">do</samp><samp class="w">
+  </samp><samp class="na">@derive</samp><samp class="w"> </samp><samp class="p" data-group-id="2221037019-2">{</samp><samp class="nc">Inspect</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">only</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2221037019-3">[</samp><samp class="ss">:id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:name</samp><samp class="p" data-group-id="2221037019-3">]</samp><samp class="p" data-group-id="2221037019-2">}</samp><samp class="w">
+  </samp><samp class="kd">defstruct</samp><samp class="w"> </samp><samp class="p" data-group-id="2221037019-4">[</samp><samp class="ss">:id</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:name</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:address</samp><samp class="p" data-group-id="2221037019-4">]</samp><samp class="w">
+</samp><samp class="k" data-group-id="2221037019-1">end</samp><samp class="w">
+
+</samp><samp class="n">inspect</samp><samp class="p" data-group-id="2221037019-5">(</samp><samp class="p" data-group-id="2221037019-6">%</samp><samp class="nc" data-group-id="2221037019-6">User</samp><samp class="p" data-group-id="2221037019-6">{</samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Jane&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">address</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Earth&quot;</samp><samp class="p" data-group-id="2221037019-6">}</samp><samp class="p" data-group-id="2221037019-5">)</samp><samp class="w">
+</samp><samp class="c1">#=&gt; #User&lt;id: 1, name: &quot;Jane&quot;, ...&gt;</samp></code></pre><p>If you use only the <code class="inline">:optional</code> option, the struct will still be
+printed as <code class="inline">%User{...}</code>.</p><h2 id="module-custom-implementation">Custom implementation</h2><p>You can also define your custom protocol implementation by
+defining the <a href="#inspect/2"><code class="inline">inspect/2</code></a> function. The function receives the
+entity to be inspected followed by the inspecting options,
+represented by the struct <a href="Inspect.Opts.xhtml"><code class="inline">Inspect.Opts</code></a>. Building of the
+algebra document is done with <a href="Inspect.Algebra.xhtml"><code class="inline">Inspect.Algebra</code></a>.</p><p>Many times, inspecting a structure can be implemented in function
+of existing entities. For example, here is <a href="MapSet.xhtml"><code class="inline">MapSet</code></a>'s <a href="#inspect/2"><code class="inline">inspect/2</code></a>
+implementation:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Inspect</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">for</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MapSet</samp><samp class="w"> </samp><samp class="k" data-group-id="5174818531-1">do</samp><samp class="w">
+  </samp><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Inspect.Algebra</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">inspect</samp><samp class="p" data-group-id="5174818531-2">(</samp><samp class="n">map_set</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="p" data-group-id="5174818531-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5174818531-3">do</samp><samp class="w">
+    </samp><samp class="n">concat</samp><samp class="p" data-group-id="5174818531-4">(</samp><samp class="p" data-group-id="5174818531-5">[</samp><samp class="s">&quot;MapSet.new(&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Inspect.List</samp><samp class="o">.</samp><samp class="n">inspect</samp><samp class="p" data-group-id="5174818531-6">(</samp><samp class="nc">MapSet</samp><samp class="o">.</samp><samp class="n">to_list</samp><samp class="p" data-group-id="5174818531-7">(</samp><samp class="n">map_set</samp><samp class="p" data-group-id="5174818531-7">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">opts</samp><samp class="p" data-group-id="5174818531-6">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;)&quot;</samp><samp class="p" data-group-id="5174818531-5">]</samp><samp class="p" data-group-id="5174818531-4">)</samp><samp class="w">
+  </samp><samp class="k" data-group-id="5174818531-3">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="5174818531-1">end</samp></code></pre><p>The <a href="Inspect.Algebra.xhtml#concat/1"><code class="inline">concat/1</code></a> function comes from
+<a href="Inspect.Algebra.xhtml"><code class="inline">Inspect.Algebra</code></a> and it concatenates algebra documents together.
+In the example above it is concatenating the string <code class="inline">&quot;MapSet.new(&quot;</code>,
+the document returned by <a href="Inspect.Algebra.xhtml#to_doc/2"><code class="inline">Inspect.Algebra.to_doc/2</code></a>, and the final
+string <code class="inline">&quot;)&quot;</code>. Therefore, the MapSet with the numbers 1, 2, and 3
+will be printed as:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MapSet</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="6396209642-1">(</samp><samp class="p" data-group-id="6396209642-2">[</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="6396209642-2">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k" data-group-id="6396209642-3">fn</samp><samp class="w"> </samp><samp class="n">x</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="n">x</samp><samp class="w"> </samp><samp class="o">*</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="w"> </samp><samp class="k" data-group-id="6396209642-3">end</samp><samp class="p" data-group-id="6396209642-1">)</samp><samp class="w">
+</samp><samp class="nc">MapSet</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="6396209642-4">(</samp><samp class="p" data-group-id="6396209642-5">[</samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">4</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p" data-group-id="6396209642-5">]</samp><samp class="p" data-group-id="6396209642-4">)</samp></code></pre><p>In other words, <a href="MapSet.xhtml"><code class="inline">MapSet</code></a>'s inspect representation returns an expression
+that, when evaluated, builds the <a href="MapSet.xhtml"><code class="inline">MapSet</code></a> itself.</p><h3 id="module-error-handling">Error handling</h3><p>In case there is an error while your structure is being inspected,
+Elixir will raise an <a href="ArgumentError.xhtml"><code class="inline">ArgumentError</code></a> error and will automatically fall back
+to a raw representation for printing the structure. Furthermore, you
+must be careful when debugging your own Inspect implementation, as calls
+to <a href="IO.xhtml#inspect/2"><code class="inline">IO.inspect/2</code></a> or <a href="Kernel.xhtml#dbg/1"><code class="inline">dbg/1</code></a> may trigger an infinite loop (as in order to
+inspect/debug the data structure, you must call <code class="inline">inspect</code> itself).</p><p>Here are some tips:</p><ul><li><p>For debugging, use <a href="IO.xhtml#inspect/2"><code class="inline">IO.inspect/2</code></a> with the <code class="inline">structs: false</code> option,
+which disables custom printing and avoids calling the Inspect
+implementation recursively</p></li><li><p>To access the underlying error on your custom <a href="Inspect.xhtml"><code class="inline">Inspect</code></a> implementation,
+you may invoke the protocol directly. For example, we could invoke the
+<code class="inline">Inspect.MapSet</code> implementation above as:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Inspect.MapSet</samp><samp class="o">.</samp><samp class="n">inspect</samp><samp class="p" data-group-id="1119457940-1">(</samp><samp class="nc">MapSet</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="1119457940-2">(</samp><samp class="p" data-group-id="1119457940-2">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1119457940-3">%</samp><samp class="nc" data-group-id="1119457940-3">Inspect.Opts</samp><samp class="p" data-group-id="1119457940-3">{</samp><samp class="p" data-group-id="1119457940-3">}</samp><samp class="p" data-group-id="1119457940-1">)</samp></code></pre></li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>All the types that implement this protocol.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#inspect/2" data-no-tooltip="" translate="no">inspect(term, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts <code class="inline">term</code> into an algebra document.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/inspect.ex#L6" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: <a href="typespecs.xhtml#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>All the types that implement this protocol.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="inspect/2">
+
+  <div class="detail-header">
+    <a href="#inspect/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">inspect(term, opts)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/inspect.ex#L230" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> inspect(<a href="#t:t/0">t</a>(), <a href="Inspect.Opts.xhtml#t:t/0">Inspect.Opts.t</a>()) :: <a href="Inspect.Algebra.xhtml#t:t/0">Inspect.Algebra.t</a>()</pre>
+
+      </div>
+
+<p>Converts <code class="inline">term</code> into an algebra document.</p><p>This function shouldn't be invoked directly, unless when implementing
+a custom <code class="inline">inspect_fun</code> to be given to <a href="Inspect.Opts.xhtml"><code class="inline">Inspect.Opts</code></a>. Everywhere else,
+<a href="Inspect.Algebra.xhtml#to_doc/2"><code class="inline">Inspect.Algebra.to_doc/2</code></a> should be preferred as it handles structs
+and exceptions.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

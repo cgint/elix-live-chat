@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Type.Tuple - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Type.Tuple 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Represents a tuple stored in the data layer as a map.</p><p>A builtin type that can be referenced via <code class="inline">:tuple</code></p><ul><li><code class="inline">:fields</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">keyword/0</code></a>) - Required. The types of the fields in the tuple, and their constraints.<br/>This type is stored as a map under the hood, keyed by the field name,
+and is represented in memory as a tuple.<br/>Example constraints:  <pre><code class="makeup elixir" translate="no"><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">fields</samp><samp class="p">:</samp><samp class="w">  </samp><samp class="p" data-group-id="2276276615-1">[</samp><samp class="w">
+              </samp><samp class="ss">amount</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2276276615-2">[</samp><samp class="w">
+                </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:integer</samp><samp class="p">,</samp><samp class="w">
+                </samp><samp class="ss">description</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;The amount of the transaction&quot;</samp><samp class="p">,</samp><samp class="w">
+                </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2276276615-3">[</samp><samp class="w">
+                  </samp><samp class="ss">max</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">10</samp><samp class="w">
+                </samp><samp class="p" data-group-id="2276276615-3">]</samp><samp class="w">
+              </samp><samp class="p" data-group-id="2276276615-2">]</samp><samp class="p">,</samp><samp class="w">
+              </samp><samp class="ss">currency</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2276276615-4">[</samp><samp class="w">
+                </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p">,</samp><samp class="w">
+                </samp><samp class="ss">allow_nil?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">false</samp><samp class="p">,</samp><samp class="w">
+                </samp><samp class="ss">description</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;The currency code of the transaction&quot;</samp><samp class="p">,</samp><samp class="w">
+                </samp><samp class="ss">constraints</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2276276615-5">[</samp><samp class="w">
+                  </samp><samp class="ss">max_length</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="w">
+                </samp><samp class="p" data-group-id="2276276615-5">]</samp><samp class="w">
+              </samp><samp class="p" data-group-id="2276276615-4">]</samp><samp class="w">
+            </samp><samp class="p" data-group-id="2276276615-1">]</samp><samp class="w">  </samp></code></pre><code class="inline">allow_nil?</code> is <code class="inline">true</code> by default.<ul><li><p><code class="inline">:type</code> (an <a href="Ash.Type.xhtml"><code class="inline">Ash.Type</code></a>) - Required.</p></li><li><p><code class="inline">:allow_nil?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - The default value is <code class="inline">true</code>.</p></li><li><p><code class="inline">:description</code> (<a href="https://hexdocs.pm/elixir/String.html#t:t/0"><code class="inline">String.t/0</code></a>)</p></li><li><p><code class="inline">:constraints</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">keyword/0</code></a>) - The default value is <code class="inline">[]</code>.</p></li></ul></li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_change?/0" data-no-tooltip="" translate="no">handle_change?()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#prepare_change?/0" data-no-tooltip="" translate="no">prepare_change?()</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="handle_change?/0">
+
+  <div class="detail-header">
+    <a href="#handle_change?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_change?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/tuple.ex#L1" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="prepare_change?/0">
+
+  <div class="detail-header">
+    <a href="#prepare_change?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">prepare_change?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/tuple.ex#L1" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

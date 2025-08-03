@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Protocol - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Protocol <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Reference and functions for working with protocols.</p><p>A protocol specifies an API that should be defined by its
+implementations. A protocol is defined with <a href="Kernel.xhtml#defprotocol/2"><code class="inline">Kernel.defprotocol/2</code></a>
+and its implementations with <a href="Kernel.xhtml#defimpl/3"><code class="inline">Kernel.defimpl/3</code></a>.</p><h2 id="module-example">Example</h2><p>In Elixir, we have two nouns for checking how many items there
+are in a data structure: <code class="inline">length</code> and <code class="inline">size</code>.  <code class="inline">length</code> means the
+information must be computed. For example, <code class="inline">length(list)</code> needs to
+traverse the whole list to calculate its length. On the other hand,
+<code class="inline">tuple_size(tuple)</code> and <code class="inline">byte_size(binary)</code> do not depend on the
+tuple and binary size as the size information is precomputed in
+the data structure.</p><p>Although Elixir includes specific functions such as <code class="inline">tuple_size</code>,
+<code class="inline">binary_size</code> and <code class="inline">map_size</code>, sometimes we want to be able to
+retrieve the size of a data structure regardless of its type.
+In Elixir we can write polymorphic code, i.e. code that works
+with different shapes/types, by using protocols. A size protocol
+could be implemented as follows:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defprotocol</samp><samp class="w"> </samp><samp class="nc">Size</samp><samp class="w"> </samp><samp class="k" data-group-id="2380589051-1">do</samp><samp class="w">
+  </samp><samp class="na">@doc</samp><samp class="w"> </samp><samp class="s">&quot;Calculates the size (and not the length!) of a data structure&quot;</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">size</samp><samp class="p" data-group-id="2380589051-2">(</samp><samp class="n">data</samp><samp class="p" data-group-id="2380589051-2">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="2380589051-1">end</samp></code></pre><p>Now that the protocol can be implemented for every data structure
+the protocol may have a compliant implementation for:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Size</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">for</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">BitString</samp><samp class="w"> </samp><samp class="k" data-group-id="1258513577-1">do</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">size</samp><samp class="p" data-group-id="1258513577-2">(</samp><samp class="n">binary</samp><samp class="p" data-group-id="1258513577-2">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">byte_size</samp><samp class="p" data-group-id="1258513577-3">(</samp><samp class="n">binary</samp><samp class="p" data-group-id="1258513577-3">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="1258513577-1">end</samp><samp class="w">
+
+</samp><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Size</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">for</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="w"> </samp><samp class="k" data-group-id="1258513577-4">do</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">size</samp><samp class="p" data-group-id="1258513577-5">(</samp><samp class="n">map</samp><samp class="p" data-group-id="1258513577-5">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">map_size</samp><samp class="p" data-group-id="1258513577-6">(</samp><samp class="n">map</samp><samp class="p" data-group-id="1258513577-6">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="1258513577-4">end</samp><samp class="w">
+
+</samp><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Size</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">for</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Tuple</samp><samp class="w"> </samp><samp class="k" data-group-id="1258513577-7">do</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">size</samp><samp class="p" data-group-id="1258513577-8">(</samp><samp class="n">tuple</samp><samp class="p" data-group-id="1258513577-8">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">tuple_size</samp><samp class="p" data-group-id="1258513577-9">(</samp><samp class="n">tuple</samp><samp class="p" data-group-id="1258513577-9">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="1258513577-7">end</samp></code></pre><p>Finally, we can use the <code class="inline">Size</code> protocol to call the correct implementation:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Size</samp><samp class="o">.</samp><samp class="n">size</samp><samp class="p" data-group-id="6154855301-1">(</samp><samp class="p" data-group-id="6154855301-2">{</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="6154855301-2">}</samp><samp class="p" data-group-id="6154855301-1">)</samp><samp class="w">
+</samp><samp class="c1"># =&gt; 2</samp><samp class="w">
+</samp><samp class="nc">Size</samp><samp class="o">.</samp><samp class="n">size</samp><samp class="p" data-group-id="6154855301-3">(</samp><samp class="p" data-group-id="6154855301-4">%{</samp><samp class="ss">key</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:value</samp><samp class="p" data-group-id="6154855301-4">}</samp><samp class="p" data-group-id="6154855301-3">)</samp><samp class="w">
+</samp><samp class="c1"># =&gt; 1</samp></code></pre><p>Note that we didn't implement it for lists as we don't have the
+<code class="inline">size</code> information on lists, rather its value needs to be
+computed with <code class="inline">length</code>.</p><p>The data structure you are implementing the protocol for
+must be the first argument to all functions defined in the
+protocol.</p><p>It is possible to implement protocols for all Elixir types:</p><ul><li>Structs (see the &quot;Protocols and Structs&quot; section below)</li><li><a href="Tuple.xhtml"><code class="inline">Tuple</code></a></li><li><a href="Atom.xhtml"><code class="inline">Atom</code></a></li><li><a href="List.xhtml"><code class="inline">List</code></a></li><li><code class="inline">BitString</code></li><li><a href="Integer.xhtml"><code class="inline">Integer</code></a></li><li><a href="Float.xhtml"><code class="inline">Float</code></a></li><li><a href="Function.xhtml"><code class="inline">Function</code></a></li><li><code class="inline">PID</code></li><li><a href="Map.xhtml"><code class="inline">Map</code></a></li><li><a href="Port.xhtml"><code class="inline">Port</code></a></li><li><code class="inline">Reference</code></li><li><code class="inline">Any</code> (see the &quot;Fallback to <code class="inline">Any</code>&quot; section below)</li></ul><h2 id="module-protocols-and-structs">Protocols and Structs</h2><p>The real benefit of protocols comes when mixed with structs.
+For instance, Elixir ships with many data types implemented as
+structs, like <a href="MapSet.xhtml"><code class="inline">MapSet</code></a>. We can implement the <code class="inline">Size</code> protocol
+for those types as well:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Size</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">for</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MapSet</samp><samp class="w"> </samp><samp class="k" data-group-id="9637003494-1">do</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">size</samp><samp class="p" data-group-id="9637003494-2">(</samp><samp class="n">map_set</samp><samp class="p" data-group-id="9637003494-2">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MapSet</samp><samp class="o">.</samp><samp class="n">size</samp><samp class="p" data-group-id="9637003494-3">(</samp><samp class="n">map_set</samp><samp class="p" data-group-id="9637003494-3">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="9637003494-1">end</samp></code></pre><p>When implementing a protocol for a struct, the <code class="inline">:for</code> option can
+be omitted if the <a href="Kernel.xhtml#defimpl/3"><code class="inline">defimpl/3</code></a> call is inside the module that defines
+the struct:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">User</samp><samp class="w"> </samp><samp class="k" data-group-id="1673705537-1">do</samp><samp class="w">
+  </samp><samp class="kd">defstruct</samp><samp class="w"> </samp><samp class="p" data-group-id="1673705537-2">[</samp><samp class="ss">:email</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:name</samp><samp class="p" data-group-id="1673705537-2">]</samp><samp class="w">
+
+  </samp><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Size</samp><samp class="w"> </samp><samp class="k" data-group-id="1673705537-3">do</samp><samp class="w">
+    </samp><samp class="c1"># two fields</samp><samp class="w">
+    </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">size</samp><samp class="p" data-group-id="1673705537-4">(</samp><samp class="p" data-group-id="1673705537-5">%</samp><samp class="nc" data-group-id="1673705537-5">User</samp><samp class="p" data-group-id="1673705537-5">{</samp><samp class="p" data-group-id="1673705537-5">}</samp><samp class="p" data-group-id="1673705537-4">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="w">
+  </samp><samp class="k" data-group-id="1673705537-3">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="1673705537-1">end</samp></code></pre><p>If a protocol implementation is not found for a given type,
+invoking the protocol will raise unless it is configured to
+fall back to <code class="inline">Any</code>. Conveniences for building implementations
+on top of existing ones are also available, look at <a href="Kernel.xhtml#defstruct/1"><code class="inline">defstruct/1</code></a>
+for more information about deriving protocols.</p><h2 id="module-fallback-to-any">Fallback to <code class="inline">Any</code></h2><p>In some cases, it may be convenient to provide a default
+implementation for all types. This can be achieved by setting
+the <code class="inline">@fallback_to_any</code> attribute to <code class="inline">true</code> in the protocol
+definition:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defprotocol</samp><samp class="w"> </samp><samp class="nc">Size</samp><samp class="w"> </samp><samp class="k" data-group-id="4449629411-1">do</samp><samp class="w">
+  </samp><samp class="na">@fallback_to_any</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">size</samp><samp class="p" data-group-id="4449629411-2">(</samp><samp class="n">data</samp><samp class="p" data-group-id="4449629411-2">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="4449629411-1">end</samp></code></pre><p>The <code class="inline">Size</code> protocol can now be implemented for <code class="inline">Any</code>:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Size</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">for</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Any</samp><samp class="w"> </samp><samp class="k" data-group-id="1388776306-1">do</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">size</samp><samp class="p" data-group-id="1388776306-2">(</samp><samp class="bp">_</samp><samp class="p" data-group-id="1388776306-2">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="w">
+</samp><samp class="k" data-group-id="1388776306-1">end</samp></code></pre><p>Although the implementation above is arguably not a reasonable
+one. For example, it makes no sense to say a PID or an integer
+have a size of <code class="inline">0</code>. That's one of the reasons why <code class="inline">@fallback_to_any</code>
+is an opt-in behavior. For the majority of protocols, raising
+an error when a protocol is not implemented is the proper behavior.</p><h2 id="module-multiple-implementations">Multiple implementations</h2><p>Protocols can also be implemented for multiple types at once:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defprotocol</samp><samp class="w"> </samp><samp class="nc">Reversible</samp><samp class="w"> </samp><samp class="k" data-group-id="9001930087-1">do</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">reverse</samp><samp class="p" data-group-id="9001930087-2">(</samp><samp class="n">term</samp><samp class="p" data-group-id="9001930087-2">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="9001930087-1">end</samp><samp class="w">
+
+</samp><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Reversible</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">for</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9001930087-3">[</samp><samp class="nc">Map</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">List</samp><samp class="p" data-group-id="9001930087-3">]</samp><samp class="w"> </samp><samp class="k" data-group-id="9001930087-4">do</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">reverse</samp><samp class="p" data-group-id="9001930087-5">(</samp><samp class="n">term</samp><samp class="p" data-group-id="9001930087-5">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Enum</samp><samp class="o">.</samp><samp class="n">reverse</samp><samp class="p" data-group-id="9001930087-6">(</samp><samp class="n">term</samp><samp class="p" data-group-id="9001930087-6">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="9001930087-4">end</samp></code></pre><p>Inside <a href="Kernel.xhtml#defimpl/3"><code class="inline">defimpl/3</code></a>, you can use <code class="inline">@protocol</code> to access the protocol
+being implemented and <code class="inline">@for</code> to access the module it is being
+defined for.</p><h2 id="module-types">Types</h2><p>Defining a protocol automatically defines a zero-arity type named <code class="inline">t</code>, which
+can be used as follows:</p><pre><code class="makeup elixir" translate="no"><samp class="na">@spec</samp><samp class="w"> </samp><samp class="n">print_size</samp><samp class="p" data-group-id="5587527355-1">(</samp><samp class="nc">Size</samp><samp class="o">.</samp><samp class="n">t</samp><samp class="p" data-group-id="5587527355-2">(</samp><samp class="p" data-group-id="5587527355-2">)</samp><samp class="p" data-group-id="5587527355-1">)</samp><samp class="w"> </samp><samp class="o">::</samp><samp class="w"> </samp><samp class="ss">:ok</samp><samp class="w">
+</samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">print_size</samp><samp class="p" data-group-id="5587527355-3">(</samp><samp class="n">data</samp><samp class="p" data-group-id="5587527355-3">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5587527355-4">do</samp><samp class="w">
+  </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w">
+    </samp><samp class="k">case</samp><samp class="w"> </samp><samp class="nc">Size</samp><samp class="o">.</samp><samp class="n">size</samp><samp class="p" data-group-id="5587527355-5">(</samp><samp class="n">data</samp><samp class="p" data-group-id="5587527355-5">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5587527355-6">do</samp><samp class="w">
+      </samp><samp class="mi">0</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="s">&quot;data has no items&quot;</samp><samp class="w">
+      </samp><samp class="mi">1</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="s">&quot;data has one item&quot;</samp><samp class="w">
+      </samp><samp class="n">n</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="s">&quot;data has </samp><samp class="si" data-group-id="5587527355-7">#{</samp><samp class="n">n</samp><samp class="si" data-group-id="5587527355-7">}</samp><samp class="s"> items&quot;</samp><samp class="w">
+    </samp><samp class="k" data-group-id="5587527355-6">end</samp><samp class="w">
+
+  </samp><samp class="nc">IO</samp><samp class="o">.</samp><samp class="n">puts</samp><samp class="p" data-group-id="5587527355-8">(</samp><samp class="n">result</samp><samp class="p" data-group-id="5587527355-8">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="5587527355-4">end</samp></code></pre><p>The <code class="inline">@spec</code> above expresses that all types allowed to implement the
+given protocol are valid argument types for the given function.</p><h2 id="module-configuration">Configuration</h2><p>The following module attributes are available to configure a protocol:</p><ul><li><p><code class="inline">@fallback_to_any</code> - when true, enables protocol dispatch to
+fallback to any</p></li><li><p><code class="inline">@undefined_impl_description</code> - a string with additional description
+to be used on <a href="Protocol.UndefinedError.xhtml"><code class="inline">Protocol.UndefinedError</code></a> when looking up the implementation
+fails. This option is only applied if <code class="inline">@fallback_to_any</code> is not set to true</p></li></ul><h2 id="module-consolidation">Consolidation</h2><p>In order to speed up protocol dispatching, whenever all protocol implementations
+are known up-front, typically after all Elixir code in a project is compiled,
+Elixir provides a feature called <em>protocol consolidation</em>. Consolidation directly
+links protocols to their implementations in a way that invoking a function from a
+consolidated protocol is equivalent to invoking two remote functions - one to
+identify the correct implementation, and another to call the implementation.</p><p>Protocol consolidation is applied by default to all Mix projects during compilation.
+This may be an issue during test. For instance, if you want to implement a protocol
+during test, the implementation will have no effect, as the protocol has already been
+consolidated. One possible solution is to include compilation directories that are
+specific to your test environment in your mix.exs:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">project</samp><samp class="w"> </samp><samp class="k" data-group-id="1841569720-1">do</samp><samp class="w">
+  </samp><samp class="n">...</samp><samp class="w">
+  </samp><samp class="ss">elixirc_paths</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">elixirc_paths</samp><samp class="p" data-group-id="1841569720-2">(</samp><samp class="nc">Mix</samp><samp class="o">.</samp><samp class="n">env</samp><samp class="p" data-group-id="1841569720-3">(</samp><samp class="p" data-group-id="1841569720-3">)</samp><samp class="p" data-group-id="1841569720-2">)</samp><samp class="w">
+  </samp><samp class="n">...</samp><samp class="w">
+</samp><samp class="k" data-group-id="1841569720-1">end</samp><samp class="w">
+
+</samp><samp class="kd">defp</samp><samp class="w"> </samp><samp class="nf">elixirc_paths</samp><samp class="p" data-group-id="1841569720-4">(</samp><samp class="ss">:test</samp><samp class="p" data-group-id="1841569720-4">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1841569720-5">[</samp><samp class="s">&quot;lib&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;test/support&quot;</samp><samp class="p" data-group-id="1841569720-5">]</samp><samp class="w">
+</samp><samp class="kd">defp</samp><samp class="w"> </samp><samp class="nf">elixirc_paths</samp><samp class="p" data-group-id="1841569720-6">(</samp><samp class="bp">_</samp><samp class="p" data-group-id="1841569720-6">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1841569720-7">[</samp><samp class="s">&quot;lib&quot;</samp><samp class="p" data-group-id="1841569720-7">]</samp></code></pre><p>And then you can define the implementations specific to the test environment
+inside <code class="inline">test/support/some_file.ex</code>.</p><p>Another approach is to disable protocol consolidation during tests in your
+mix.exs:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">project</samp><samp class="w"> </samp><samp class="k" data-group-id="2673343814-1">do</samp><samp class="w">
+  </samp><samp class="n">...</samp><samp class="w">
+  </samp><samp class="ss">consolidate_protocols</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Mix</samp><samp class="o">.</samp><samp class="n">env</samp><samp class="p" data-group-id="2673343814-2">(</samp><samp class="p" data-group-id="2673343814-2">)</samp><samp class="w"> </samp><samp class="o">!=</samp><samp class="w"> </samp><samp class="ss">:test</samp><samp class="w">
+  </samp><samp class="n">...</samp><samp class="w">
+</samp><samp class="k" data-group-id="2673343814-1">end</samp></code></pre><p>If you are using <a href="https://hexdocs.pm/mix/Mix.html#install/2"><code class="inline">Mix.install/2</code></a>, you can do by passing the <code class="inline">consolidate_protocols</code>
+option:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Mix</samp><samp class="o">.</samp><samp class="n">install</samp><samp class="p" data-group-id="7173880771-1">(</samp><samp class="w">
+  </samp><samp class="n">deps</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">consolidate_protocols</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">false</samp><samp class="w">
+</samp><samp class="p" data-group-id="7173880771-1">)</samp></code></pre><p>Although doing so is not recommended as it may affect the performance of
+your code.</p><p>Finally, note all protocols are compiled with <code class="inline">debug_info</code> set to <code class="inline">true</code>,
+regardless of the option set by the <code class="inline">elixirc</code> compiler. The debug info is
+used for consolidation and it is removed after consolidation unless
+globally set.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:__deriving__/2" data-no-tooltip="" translate="no">__deriving__(module, term)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>An optional callback to be implemented by protocol authors for custom deriving.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:__protocol__/1" data-no-tooltip="" translate="no">__protocol__(atom)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A function available in all protocol definitions that returns protocol metadata.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:impl_for/1" data-no-tooltip="" translate="no">impl_for(term)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A function available in all protocol definitions that returns the implementation
+for the given <code class="inline">term</code> or nil.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:impl_for!/1" data-no-tooltip="" translate="no">impl_for!(term)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A function available in all protocol definitions that returns the implementation
+for the given <code class="inline">term</code> or raises.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_impl!/2" data-no-tooltip="" translate="no">assert_impl!(protocol, base)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Checks if the given module is loaded and is an implementation
+of the given protocol.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_protocol!/1" data-no-tooltip="" translate="no">assert_protocol!(module)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Checks if the given module is loaded and is protocol.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#consolidate/2" data-no-tooltip="" translate="no">consolidate(protocol, types)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Receives a protocol and a list of implementations and
+consolidates the given protocol.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#consolidated?/1" data-no-tooltip="" translate="no">consolidated?(protocol)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns <code class="inline">true</code> if the protocol was consolidated.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#derive/3" data-no-tooltip="" translate="no">derive(protocol, module, options \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Derives the <code class="inline">protocol</code> for <code class="inline">module</code> with the given options.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#extract_impls/2" data-no-tooltip="" translate="no">extract_impls(protocol, paths)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Extracts all types implemented for the given protocol from
+the given paths.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#extract_protocols/1" data-no-tooltip="" translate="no">extract_protocols(paths)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Extracts all protocols from the given paths.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+
+        <div class="callbacks-list">
+<section class="detail" id="c:__deriving__/2">
+
+  <div class="detail-header">
+    <a href="#c:__deriving__/2" class="detail-link" data-no-tooltip="" aria-label="Link to this macrocallback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">__deriving__(module, term)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/protocol.ex#L262" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@macrocallback</span> __deriving__(<a href="typespecs.xhtml#built-in-types">module</a>(), <a href="typespecs.xhtml#built-in-types">term</a>()) :: <a href="Macro.xhtml#t:t/0">Macro.t</a>()</pre>
+
+      </div>
+
+<p>An optional callback to be implemented by protocol authors for custom deriving.</p><p>It must return a quoted expression that implements the protocol for the given module.</p><p>See <a href="#derive/3"><code class="inline">Protocol.derive/3</code></a> for an example.</p>
+  </section>
+</section>
+<section class="detail" id="c:__protocol__/1">
+
+  <div class="detail-header">
+    <a href="#c:__protocol__/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">__protocol__(atom)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/protocol.ex#L234" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> __protocol__(:consolidated?) :: <a href="typespecs.xhtml#built-in-types">boolean</a>()</pre>
+
+          <pre translate="no"><span class="attribute">@callback</span> __protocol__(:functions) :: [{<a href="typespecs.xhtml#basic-types">atom</a>(), <a href="typespecs.xhtml#built-in-types">arity</a>()}]</pre>
+
+          <pre translate="no"><span class="attribute">@callback</span> __protocol__(:impls) :: {:consolidated, [<a href="typespecs.xhtml#built-in-types">module</a>()]} | :not_consolidated</pre>
+
+          <pre translate="no"><span class="attribute">@callback</span> __protocol__(:module) :: <a href="typespecs.xhtml#built-in-types">module</a>()</pre>
+
+      </div>
+
+<p>A function available in all protocol definitions that returns protocol metadata.</p>
+  </section>
+</section>
+<section class="detail" id="c:impl_for/1">
+
+  <div class="detail-header">
+    <a href="#c:impl_for/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">impl_for(term)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/protocol.ex#L245" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> impl_for(<a href="typespecs.xhtml#built-in-types">term</a>()) :: <a href="typespecs.xhtml#built-in-types">module</a>() | nil</pre>
+
+      </div>
+
+<p>A function available in all protocol definitions that returns the implementation
+for the given <code class="inline">term</code> or nil.</p><p>If <code class="inline">@fallback_to_any</code> is true, <code class="inline">nil</code> is never returned.</p>
+  </section>
+</section>
+<section class="detail" id="c:impl_for!/1">
+
+  <div class="detail-header">
+    <a href="#c:impl_for!/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">impl_for!(term)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/protocol.ex#L253" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> impl_for!(<a href="typespecs.xhtml#built-in-types">term</a>()) :: <a href="typespecs.xhtml#built-in-types">module</a>()</pre>
+
+      </div>
+
+<p>A function available in all protocol definitions that returns the implementation
+for the given <code class="inline">term</code> or raises.</p><p>If <code class="inline">@fallback_to_any</code> is true, it never raises.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="assert_impl!/2">
+
+  <div class="detail-header">
+    <a href="#assert_impl!/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_impl!(protocol, base)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/protocol.ex#L345" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> assert_impl!(<a href="typespecs.xhtml#built-in-types">module</a>(), <a href="typespecs.xhtml#built-in-types">module</a>()) :: :ok</pre>
+
+      </div>
+
+<p>Checks if the given module is loaded and is an implementation
+of the given protocol.</p><p>Returns <code class="inline">:ok</code> if so, otherwise raises <a href="ArgumentError.xhtml"><code class="inline">ArgumentError</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="assert_protocol!/1">
+
+  <div class="detail-header">
+    <a href="#assert_protocol!/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_protocol!(module)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/protocol.ex#L316" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> assert_protocol!(<a href="typespecs.xhtml#built-in-types">module</a>()) :: :ok</pre>
+
+      </div>
+
+<p>Checks if the given module is loaded and is protocol.</p><p>Returns <code class="inline">:ok</code> if so, otherwise raises <a href="ArgumentError.xhtml"><code class="inline">ArgumentError</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="consolidate/2">
+
+  <div class="detail-header">
+    <a href="#consolidate/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">consolidate(protocol, types)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/protocol.ex#L559" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> consolidate(<a href="typespecs.xhtml#built-in-types">module</a>(), [<a href="typespecs.xhtml#built-in-types">module</a>()]) ::
+  {:ok, <a href="typespecs.xhtml#built-in-types">binary</a>()} | {:error, :not_a_protocol} | {:error, :no_beam_info}</pre>
+
+      </div>
+
+<p>Receives a protocol and a list of implementations and
+consolidates the given protocol.</p><p>Consolidation happens by changing the protocol <code class="inline">impl_for</code>
+in the abstract format to have fast lookup rules. Usually
+the list of implementations to use during consolidation
+are retrieved with the help of <a href="#extract_impls/2"><code class="inline">extract_impls/2</code></a>.</p><p>It returns the updated version of the protocol bytecode.
+If the first element of the tuple is <code class="inline">:ok</code>, it means
+the protocol was consolidated.</p><p>A given bytecode or protocol implementation can be checked
+to be consolidated or not by analyzing the protocol
+attribute:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Protocol</samp><samp class="o">.</samp><samp class="n">consolidated?</samp><samp class="p" data-group-id="9142318052-1">(</samp><samp class="nc">Enumerable</samp><samp class="p" data-group-id="9142318052-1">)</samp></code></pre><p>This function does not load the protocol at any point
+nor loads the new bytecode for the compiled module.
+However, each implementation must be available and
+it will be loaded.</p>
+  </section>
+</section>
+<section class="detail" id="consolidated?/1">
+
+  <div class="detail-header">
+    <a href="#consolidated?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">consolidated?(protocol)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/protocol.ex#L527" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> consolidated?(<a href="typespecs.xhtml#built-in-types">module</a>()) :: <a href="typespecs.xhtml#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Returns <code class="inline">true</code> if the protocol was consolidated.</p>
+  </section>
+</section>
+<section class="detail" id="derive/3">
+
+    <span id="derive/2"></span>
+
+  <div class="detail-header">
+    <a href="#derive/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">derive(protocol, module, options \\ [])</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/protocol.ex#L424" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Derives the <code class="inline">protocol</code> for <code class="inline">module</code> with the given options.</p><p>Every time you derive a protocol, Elixir will verify if the protocol
+has implemented the <a href="#c:__deriving__/2"><code class="inline">Protocol.__deriving__/2</code></a> callback. If so,
+the callback will be invoked and it should define the implementation
+module. Otherwise an implementation that simply points to the <code class="inline">Any</code>
+implementation is automatically derived.</p><h2 id="derive/3-examples" class="section-heading"><a href="#derive/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="kd">defprotocol</samp><samp class="w"> </samp><samp class="nc">Derivable</samp><samp class="w"> </samp><samp class="k" data-group-id="5517814202-1">do</samp><samp class="w">
+  </samp><samp class="na">@impl</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="w">
+  </samp><samp class="kd">defmacro</samp><samp class="w"> </samp><samp class="nf">__deriving__</samp><samp class="p" data-group-id="5517814202-2">(</samp><samp class="n">module</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">options</samp><samp class="p" data-group-id="5517814202-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5517814202-3">do</samp><samp class="w">
+    </samp><samp class="c1"># If you need to load struct metadata, you may call:</samp><samp class="w">
+    </samp><samp class="c1"># struct_info = Macro.struct_info!(module, __CALLER__)</samp><samp class="w">
+
+    </samp><samp class="k">quote</samp><samp class="w"> </samp><samp class="k" data-group-id="5517814202-4">do</samp><samp class="w">
+      </samp><samp class="kd">defimpl</samp><samp class="w"> </samp><samp class="nc">Derivable</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">for</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="k">unquote</samp><samp class="p" data-group-id="5517814202-5">(</samp><samp class="n">module</samp><samp class="p" data-group-id="5517814202-5">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5517814202-6">do</samp><samp class="w">
+        </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">ok</samp><samp class="p" data-group-id="5517814202-7">(</samp><samp class="n">arg</samp><samp class="p" data-group-id="5517814202-7">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5517814202-8">do</samp><samp class="w">
+          </samp><samp class="p" data-group-id="5517814202-9">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">arg</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="k">unquote</samp><samp class="p" data-group-id="5517814202-10">(</samp><samp class="n">options</samp><samp class="p" data-group-id="5517814202-10">)</samp><samp class="p" data-group-id="5517814202-9">}</samp><samp class="w">
+        </samp><samp class="k" data-group-id="5517814202-8">end</samp><samp class="w">
+      </samp><samp class="k" data-group-id="5517814202-6">end</samp><samp class="w">
+    </samp><samp class="k" data-group-id="5517814202-4">end</samp><samp class="w">
+  </samp><samp class="k" data-group-id="5517814202-3">end</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">ok</samp><samp class="p" data-group-id="5517814202-11">(</samp><samp class="n">arg</samp><samp class="p" data-group-id="5517814202-11">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="5517814202-1">end</samp></code></pre><p>Once the protocol is defined, there are two ways it can be
+derived. The first is by using the <code class="inline">@derive</code> module attribute
+by the time you define the struct:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">ImplStruct</samp><samp class="w"> </samp><samp class="k" data-group-id="1316392004-1">do</samp><samp class="w">
+  </samp><samp class="na">@derive</samp><samp class="w"> </samp><samp class="p" data-group-id="1316392004-2">[</samp><samp class="nc">Derivable</samp><samp class="p" data-group-id="1316392004-2">]</samp><samp class="w">
+  </samp><samp class="kd">defstruct</samp><samp class="w"> </samp><samp class="ss">a</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">b</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="w">
+</samp><samp class="k" data-group-id="1316392004-1">end</samp><samp class="w">
+
+</samp><samp class="nc">Derivable</samp><samp class="o">.</samp><samp class="n">ok</samp><samp class="p" data-group-id="1316392004-3">(</samp><samp class="p" data-group-id="1316392004-4">%</samp><samp class="nc" data-group-id="1316392004-4">ImplStruct</samp><samp class="p" data-group-id="1316392004-4">{</samp><samp class="p" data-group-id="1316392004-4">}</samp><samp class="p" data-group-id="1316392004-3">)</samp><samp class="w">
+</samp><samp class="c1">#=&gt; {:ok, %ImplStruct{a: 0, b: 0}, []}</samp></code></pre><p>If the struct has already been defined, you can call this macro:</p><pre><code class="makeup elixir" translate="no"><samp class="kn">require</samp><samp class="w"> </samp><samp class="nc">Protocol</samp><samp class="w">
+</samp><samp class="nc">Protocol</samp><samp class="o">.</samp><samp class="n">derive</samp><samp class="p" data-group-id="3745904306-1">(</samp><samp class="nc">Derivable</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">ImplStruct</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:oops</samp><samp class="p" data-group-id="3745904306-1">)</samp><samp class="w">
+</samp><samp class="nc">Derivable</samp><samp class="o">.</samp><samp class="n">ok</samp><samp class="p" data-group-id="3745904306-2">(</samp><samp class="p" data-group-id="3745904306-3">%</samp><samp class="nc" data-group-id="3745904306-3">ImplStruct</samp><samp class="p" data-group-id="3745904306-3">{</samp><samp class="ss">a</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">b</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="3745904306-3">}</samp><samp class="p" data-group-id="3745904306-2">)</samp><samp class="w">
+</samp><samp class="c1">#=&gt; {:ok, %ImplStruct{a: 1, b: 1}, :oops}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="extract_impls/2">
+
+  <div class="detail-header">
+    <a href="#extract_impls/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">extract_impls(protocol, paths)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/protocol.ex#L480" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> extract_impls(<a href="typespecs.xhtml#built-in-types">module</a>(), [<a href="typespecs.xhtml#built-in-types">charlist</a>() | <a href="String.xhtml#t:t/0">String.t</a>()]) :: [<a href="typespecs.xhtml#basic-types">atom</a>()]</pre>
+
+      </div>
+
+<p>Extracts all types implemented for the given protocol from
+the given paths.</p><p>The paths can be either a charlist or a string. Internally
+they are worked on as charlists, so passing them as lists
+avoid extra conversion.</p><p>Does not load any of the implementations.</p><h2 id="extract_impls/2-examples" class="section-heading"><a href="#extract_impls/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Get Elixir&#39;s ebin directory path and retrieve all protocols</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">path</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Application</samp><samp class="o">.</samp><samp class="n">app_dir</samp><samp class="p" data-group-id="3539394520-1">(</samp><samp class="ss">:elixir</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;ebin&quot;</samp><samp class="p" data-group-id="3539394520-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">mods</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Protocol</samp><samp class="o">.</samp><samp class="n">extract_impls</samp><samp class="p" data-group-id="3539394520-2">(</samp><samp class="nc">Enumerable</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3539394520-3">[</samp><samp class="n">path</samp><samp class="p" data-group-id="3539394520-3">]</samp><samp class="p" data-group-id="3539394520-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">List</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="n">mods</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="extract_protocols/1">
+
+  <div class="detail-header">
+    <a href="#extract_protocols/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">extract_protocols(paths)</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/protocol.ex#L451" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> extract_protocols([<a href="typespecs.xhtml#built-in-types">charlist</a>() | <a href="String.xhtml#t:t/0">String.t</a>()]) :: [<a href="typespecs.xhtml#basic-types">atom</a>()]</pre>
+
+      </div>
+
+<p>Extracts all protocols from the given paths.</p><p>The paths can be either a charlist or a string. Internally
+they are worked on as charlists, so passing them as lists
+avoid extra conversion.</p><p>Does not load any of the protocols.</p><h2 id="extract_protocols/1-examples" class="section-heading"><a href="#extract_protocols/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Get Elixir&#39;s ebin directory path and retrieve all protocols</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">path</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Application</samp><samp class="o">.</samp><samp class="n">app_dir</samp><samp class="p" data-group-id="5984383030-1">(</samp><samp class="ss">:elixir</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;ebin&quot;</samp><samp class="p" data-group-id="5984383030-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">mods</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Protocol</samp><samp class="o">.</samp><samp class="n">extract_protocols</samp><samp class="p" data-group-id="5984383030-2">(</samp><samp class="p" data-group-id="5984383030-3">[</samp><samp class="n">path</samp><samp class="p" data-group-id="5984383030-3">]</samp><samp class="p" data-group-id="5984383030-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Enumerable</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="n">mods</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

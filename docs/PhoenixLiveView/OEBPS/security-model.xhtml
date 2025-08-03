@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Security considerations - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Security considerations</h1>
+<p>LiveView begins its life-cycle as a regular HTTP request. Then a stateful
+connection is established. Both the HTTP request and the stateful connection
+receive the client data via parameters and session.</p><p>This means that any session validation must happen both in the HTTP request
+(plug pipeline) and the stateful connection (LiveView mount).</p><h2 id="authentication-vs-authorization">Authentication vs authorization</h2><p>When speaking about security, there are two terms commonly used:
+authentication and authorization. Authentication is about identifying
+a user. Authorization is about telling if a user has access to a certain
+resource or feature in the system.</p><p>In a regular web application, once a user is authenticated, for example by
+entering their email and password, or by using a third-party service such as
+Google, Twitter, or Facebook, a token identifying the user is stored in the
+session, which is a cookie (a key-value pair) stored in the user's browser.</p><p>Every time there is a request, we read the value from the session, and, if
+valid, we fetch the user stored in the session from the database. The session
+is automatically validated by Phoenix and tools like <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Mix.Tasks.Phx.Gen.Auth.html"><code class="inline">mix phx.gen.auth</code></a> can
+generate the building blocks of an authentication system for you.</p><p>Once the user is authenticated, they may perform many actions on the page,
+and some of those actions require specific permissions. This is called
+authorization and the specific rules often change per application.</p><p>In a regular web application, we perform authentication and authorization
+checks on every request. Given LiveViews start as a regular HTTP request,
+they share the authentication logic with regular requests through plugs.
+The request starts in your endpoint, which then invokes the router.
+Plugs are used to ensure the user is authenticated and stores the
+relevant information in the session.</p><p>Once the user is authenticated, we typically validate the sessions on
+the <code class="inline">mount</code> callback. Authorization rules generally happen on <code class="inline">mount</code>
+(for instance, is the user allowed to see this page?) and also on
+<code class="inline">handle_event</code> (is the user allowed to delete this item?).</p><h2 id="live_session"><code class="inline">live_session</code></h2><p>The primary mechanism for grouping LiveViews is via the
+<a href="Phoenix.LiveView.Router.xhtml#live_session/2"><code class="inline">Phoenix.LiveView.Router.live_session/2</code></a>. LiveView will then ensure
+that navigation events within the same <code class="inline">live_session</code> skip the regular
+HTTP requests without going through the plug pipeline. Events across
+live sessions will go through the router.</p><p>For example, imagine you need to authenticate two distinct types of users.
+Your regular users login via email and password, and you have an admin
+dashboard that uses HTTP auth. You can specify different <code class="inline">live_session</code>s
+for each authentication flow:</p><pre><code class="makeup elixir" translate="no"><span class="n">scope</span><span class="w"> </span><span class="s">&quot;/&quot;</span><span class="w"> </span><span class="k" data-group-id="7229339347-1">do</span><span class="w">
+  </span><span class="n">pipe_through</span><span class="w"> </span><span class="p" data-group-id="7229339347-2">[</span><span class="ss">:authenticate_user</span><span class="p" data-group-id="7229339347-2">]</span><span class="w">
+  </span><span class="n">get</span><span class="w"> </span><span class="n">...</span><span class="w">
+
+  </span><span class="n">live_session</span><span class="w"> </span><span class="ss">:default</span><span class="w"> </span><span class="k" data-group-id="7229339347-3">do</span><span class="w">
+    </span><span class="n">live</span><span class="w"> </span><span class="n">...</span><span class="w">
+  </span><span class="k" data-group-id="7229339347-3">end</span><span class="w">
+</span><span class="k" data-group-id="7229339347-1">end</span><span class="w">
+
+</span><span class="n">scope</span><span class="w"> </span><span class="s">&quot;/admin&quot;</span><span class="w"> </span><span class="k" data-group-id="7229339347-4">do</span><span class="w">
+  </span><span class="n">pipe_through</span><span class="w"> </span><span class="p" data-group-id="7229339347-5">[</span><span class="ss">:http_auth_admin</span><span class="p" data-group-id="7229339347-5">]</span><span class="w">
+  </span><span class="n">get</span><span class="w"> </span><span class="n">...</span><span class="w">
+
+  </span><span class="n">live_session</span><span class="w"> </span><span class="ss">:admin</span><span class="w"> </span><span class="k" data-group-id="7229339347-6">do</span><span class="w">
+    </span><span class="n">live</span><span class="w"> </span><span class="n">...</span><span class="w">
+  </span><span class="k" data-group-id="7229339347-6">end</span><span class="w">
+</span><span class="k" data-group-id="7229339347-4">end</span></code></pre><p>Now every time you try to navigate to an admin panel, and out of it,
+a regular page navigation will happen and a brand new live connection
+will be established.</p><p>It is worth remembering that LiveViews require their own security checks,
+so we use <code class="inline">pipe_through</code> above to protect the regular routes (get, post, etc.)
+and the LiveViews should run their own checks on the <code class="inline">mount</code> callback
+(or using <a href="Phoenix.LiveView.xhtml#on_mount/1"><code class="inline">Phoenix.LiveView.on_mount/1</code></a> hooks).</p><p>For this purpose, you can combine <code class="inline">live_session</code> with <code class="inline">on_mount</code>, as well
+as other options, such as the <code class="inline">:root_layout</code>. Instead of declaring <code class="inline">on_mount</code>
+on every LiveView, you can declare it at the router level and it will enforce
+it on all LiveViews under it:</p><pre><code class="makeup elixir" translate="no"><span class="n">scope</span><span class="w"> </span><span class="s">&quot;/&quot;</span><span class="w"> </span><span class="k" data-group-id="3280959335-1">do</span><span class="w">
+  </span><span class="n">pipe_through</span><span class="w"> </span><span class="p" data-group-id="3280959335-2">[</span><span class="ss">:authenticate_user</span><span class="p" data-group-id="3280959335-2">]</span><span class="w">
+
+  </span><span class="n">live_session</span><span class="w"> </span><span class="ss">:default</span><span class="p">,</span><span class="w"> </span><span class="ss">on_mount</span><span class="p">:</span><span class="w"> </span><span class="nc">MyAppWeb.UserLiveAuth</span><span class="w"> </span><span class="k" data-group-id="3280959335-3">do</span><span class="w">
+    </span><span class="n">live</span><span class="w"> </span><span class="n">...</span><span class="w">
+  </span><span class="k" data-group-id="3280959335-3">end</span><span class="w">
+</span><span class="k" data-group-id="3280959335-1">end</span><span class="w">
+
+</span><span class="n">scope</span><span class="w"> </span><span class="s">&quot;/admin&quot;</span><span class="w"> </span><span class="k" data-group-id="3280959335-4">do</span><span class="w">
+  </span><span class="n">pipe_through</span><span class="w"> </span><span class="p" data-group-id="3280959335-5">[</span><span class="ss">:authenticate_admin</span><span class="p" data-group-id="3280959335-5">]</span><span class="w">
+
+  </span><span class="n">live_session</span><span class="w"> </span><span class="ss">:admin</span><span class="p">,</span><span class="w"> </span><span class="ss">on_mount</span><span class="p">:</span><span class="w"> </span><span class="nc">MyAppWeb.AdminLiveAuth</span><span class="w"> </span><span class="k" data-group-id="3280959335-6">do</span><span class="w">
+    </span><span class="n">live</span><span class="w"> </span><span class="n">...</span><span class="w">
+  </span><span class="k" data-group-id="3280959335-6">end</span><span class="w">
+</span><span class="k" data-group-id="3280959335-4">end</span></code></pre><p>Each live route under the <code class="inline">:default</code> <code class="inline">live_session</code> will invoke
+the <code class="inline">MyAppWeb.UserLiveAuth</code> hook on mount. This module was defined
+earlier in this guide. We will also pipe regular web requests through
+<code class="inline">:authenticate_user</code>, which must execute the same checks as
+<code class="inline">MyAppWeb.UserLiveAuth</code>, but tailored to plug.</p><p>Similarly, the <code class="inline">:admin</code> <code class="inline">live_session</code> has its own authentication
+flow, powered by <code class="inline">MyAppWeb.AdminLiveAuth</code>. It also defines a plug
+equivalent named <code class="inline">:authenticate_admin</code>, which will be used by any
+regular request. If there are no regular web requests defined under
+a live session, then the <code class="inline">pipe_through</code> checks are not necessary.</p><p>Declaring the <code class="inline">on_mount</code> on <code class="inline">live_session</code> is exactly the same as
+declaring it in each LiveView. Let's talk about which logic we typically
+execute on mount.</p><h2 id="mounting-considerations">Mounting considerations</h2><p>The <a href="Phoenix.LiveView.xhtml#c:mount/3"><code class="inline">mount/3</code></a> callback is invoked both on
+the initial HTTP mount and when LiveView is connected. Therefore, any
+authorization performed during mount will cover all scenarios.</p><p>Once the user is authenticated and stored in the session, the logic to fetch the user and further authorize its account needs to happen inside LiveView. For example, if you have the following plugs:</p><pre><code class="makeup elixir" translate="no"><span class="n">plug</span><span class="w"> </span><span class="ss">:ensure_user_authenticated</span><span class="w">
+</span><span class="n">plug</span><span class="w"> </span><span class="ss">:ensure_user_confirmed</span></code></pre><p>Then the <a href="Phoenix.LiveView.xhtml#c:mount/3"><code class="inline">mount/3</code></a> callback of your LiveView
+should execute those same verifications:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">mount</span><span class="p" data-group-id="2544859701-1">(</span><span class="c">_params</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2544859701-2">%{</span><span class="s">&quot;user_id&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">user_id</span><span class="p" data-group-id="2544859701-2">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c">_session</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="2544859701-1">)</span><span class="w"> </span><span class="k" data-group-id="2544859701-3">do</span><span class="w">
+  </span><span class="n">socket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">assign</span><span class="p" data-group-id="2544859701-4">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">current_user</span><span class="p">:</span><span class="w"> </span><span class="nc">Accounts</span><span class="o">.</span><span class="n">get_user!</span><span class="p" data-group-id="2544859701-5">(</span><span class="n">user_id</span><span class="p" data-group-id="2544859701-5">)</span><span class="p" data-group-id="2544859701-4">)</span><span class="w">
+
+  </span><span class="n">socket</span><span class="w"> </span><span class="o">=</span><span class="w">
+    </span><span class="k">if</span><span class="w"> </span><span class="n">socket</span><span class="o">.</span><span class="n">assigns</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">confirmed_at</span><span class="w"> </span><span class="k" data-group-id="2544859701-6">do</span><span class="w">
+      </span><span class="n">socket</span><span class="w">
+    </span><span class="k" data-group-id="2544859701-6">else</span><span class="w">
+      </span><span class="n">redirect</span><span class="p" data-group-id="2544859701-7">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">to</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/login&quot;</span><span class="p" data-group-id="2544859701-7">)</span><span class="w">
+    </span><span class="k" data-group-id="2544859701-6">end</span><span class="w">
+
+  </span><span class="p" data-group-id="2544859701-8">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="2544859701-8">}</span><span class="w">
+</span><span class="k" data-group-id="2544859701-3">end</span></code></pre><p>The <code class="inline">on_mount</code> hook allows you to encapsulate this logic and execute it on every mount:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyAppWeb.UserLiveAuth</span><span class="w"> </span><span class="k" data-group-id="7738379590-1">do</span><span class="w">
+  </span><span class="kn">import</span><span class="w"> </span><span class="nc">Phoenix.Component</span><span class="w">
+  </span><span class="kn">import</span><span class="w"> </span><span class="nc">Phoenix.LiveView</span><span class="w">
+  </span><span class="kn">alias</span><span class="w"> </span><span class="nc">MyAppWeb.Accounts</span><span class="w"> </span><span class="c1"># from `mix phx.gen.auth`</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">on_mount</span><span class="p" data-group-id="7738379590-2">(</span><span class="ss">:default</span><span class="p">,</span><span class="w"> </span><span class="c">_params</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7738379590-3">%{</span><span class="s">&quot;user_token&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">user_token</span><span class="p" data-group-id="7738379590-3">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c">_session</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="7738379590-2">)</span><span class="w"> </span><span class="k" data-group-id="7738379590-4">do</span><span class="w">
+    </span><span class="n">socket</span><span class="w"> </span><span class="o">=</span><span class="w">
+      </span><span class="n">assign_new</span><span class="p" data-group-id="7738379590-5">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">:current_user</span><span class="p">,</span><span class="w"> </span><span class="k" data-group-id="7738379590-6">fn</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">
+        </span><span class="nc">Accounts</span><span class="o">.</span><span class="n">get_user_by_session_token</span><span class="p" data-group-id="7738379590-7">(</span><span class="n">user_token</span><span class="p" data-group-id="7738379590-7">)</span><span class="w">
+      </span><span class="k" data-group-id="7738379590-6">end</span><span class="p" data-group-id="7738379590-5">)</span><span class="w">
+
+    </span><span class="k">if</span><span class="w"> </span><span class="n">socket</span><span class="o">.</span><span class="n">assigns</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">confirmed_at</span><span class="w"> </span><span class="k" data-group-id="7738379590-8">do</span><span class="w">
+      </span><span class="p" data-group-id="7738379590-9">{</span><span class="ss">:cont</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="7738379590-9">}</span><span class="w">
+    </span><span class="k" data-group-id="7738379590-8">else</span><span class="w">
+      </span><span class="p" data-group-id="7738379590-10">{</span><span class="ss">:halt</span><span class="p">,</span><span class="w"> </span><span class="n">redirect</span><span class="p" data-group-id="7738379590-11">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">to</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/login&quot;</span><span class="p" data-group-id="7738379590-11">)</span><span class="p" data-group-id="7738379590-10">}</span><span class="w">
+    </span><span class="k" data-group-id="7738379590-8">end</span><span class="w">
+  </span><span class="k" data-group-id="7738379590-4">end</span><span class="w">
+</span><span class="k" data-group-id="7738379590-1">end</span></code></pre><p>We use <a href="Phoenix.Component.xhtml#assign_new/3"><code class="inline">assign_new/3</code></a>. This is a
+convenience to avoid fetching the <code class="inline">current_user</code> multiple times across
+parent-child LiveViews.</p><p>Now we can use the hook whenever relevant. One option is to specify
+the hook in your router under <code class="inline">live_session</code>:</p><pre><code class="makeup elixir" translate="no"><span class="n">live_session</span><span class="w"> </span><span class="ss">:default</span><span class="p">,</span><span class="w"> </span><span class="ss">on_mount</span><span class="p">:</span><span class="w"> </span><span class="nc">MyAppWeb.UserLiveAuth</span><span class="w"> </span><span class="k" data-group-id="7089517759-1">do</span><span class="w">
+  </span><span class="c1"># Your routes</span><span class="w">
+</span><span class="k" data-group-id="7089517759-1">end</span></code></pre><p>Alternatively, you can either specify the hook directly in the LiveView:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyAppWeb.PageLive</span><span class="w"> </span><span class="k" data-group-id="4127707986-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">MyAppWeb</span><span class="p">,</span><span class="w"> </span><span class="ss">:live_view</span><span class="w">
+  </span><span class="n">on_mount</span><span class="w"> </span><span class="nc">MyAppWeb.UserLiveAuth</span><span class="w">
+
+  </span><span class="n">...</span><span class="w">
+</span><span class="k" data-group-id="4127707986-1">end</span></code></pre><p>If you prefer, you can add the hook to <code class="inline">def live_view</code> under <code class="inline">MyAppWeb</code>,
+to run it on all LiveViews by default:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">live_view</span><span class="w"> </span><span class="k" data-group-id="0095172270-1">do</span><span class="w">
+  </span><span class="k">quote</span><span class="w"> </span><span class="k" data-group-id="0095172270-2">do</span><span class="w">
+    </span><span class="kn">use</span><span class="w"> </span><span class="nc">Phoenix.LiveView</span><span class="w">
+
+    </span><span class="n">on_mount</span><span class="w"> </span><span class="nc">MyAppWeb.UserLiveAuth</span><span class="w">
+    </span><span class="k">unquote</span><span class="p" data-group-id="0095172270-3">(</span><span class="n">html_helpers</span><span class="p" data-group-id="0095172270-4">(</span><span class="p" data-group-id="0095172270-4">)</span><span class="p" data-group-id="0095172270-3">)</span><span class="w">
+  </span><span class="k" data-group-id="0095172270-2">end</span><span class="w">
+</span><span class="k" data-group-id="0095172270-1">end</span></code></pre><h2 id="events-considerations">Events considerations</h2><p>Every time the user performs an action on your system, you should verify if the user
+is authorized to do so, regardless if you are using LiveViews or not. For example,
+imagine a user can see all projects in a web application, but they may not have
+permission to delete any of them. At the UI level, you handle this accordingly
+by not showing the delete button in the projects listing, but a savvy user can
+directly talk to the server and request a deletion anyway. For this reason, <strong>you
+must always verify permissions on the server</strong>.</p><p>In LiveView, most actions are handled by the <code class="inline">handle_event</code> callback. Therefore,
+you typically authorize the user within those callbacks. In the scenario just
+described, one might implement this:</p><pre><code class="makeup elixir" translate="no"><span class="n">on_mount</span><span class="w"> </span><span class="nc">MyAppWeb.UserLiveAuth</span><span class="w">
+
+</span><span class="kd">def</span><span class="w"> </span><span class="nf">mount</span><span class="p" data-group-id="3725900659-1">(</span><span class="c">_params</span><span class="p">,</span><span class="w"> </span><span class="c">_session</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="3725900659-1">)</span><span class="w"> </span><span class="k" data-group-id="3725900659-2">do</span><span class="w">
+  </span><span class="p" data-group-id="3725900659-3">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">load_projects</span><span class="p" data-group-id="3725900659-4">(</span><span class="n">socket</span><span class="p" data-group-id="3725900659-4">)</span><span class="p" data-group-id="3725900659-3">}</span><span class="w">
+</span><span class="k" data-group-id="3725900659-2">end</span><span class="w">
+
+</span><span class="kd">def</span><span class="w"> </span><span class="nf">handle_event</span><span class="p" data-group-id="3725900659-5">(</span><span class="s">&quot;delete_project&quot;</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3725900659-6">%{</span><span class="s">&quot;project_id&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">project_id</span><span class="p" data-group-id="3725900659-6">}</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="3725900659-5">)</span><span class="w"> </span><span class="k" data-group-id="3725900659-7">do</span><span class="w">
+  </span><span class="nc">Project</span><span class="o">.</span><span class="n">delete!</span><span class="p" data-group-id="3725900659-8">(</span><span class="n">socket</span><span class="o">.</span><span class="n">assigns</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span><span class="w"> </span><span class="n">project_id</span><span class="p" data-group-id="3725900659-8">)</span><span class="w">
+  </span><span class="p" data-group-id="3725900659-9">{</span><span class="ss">:noreply</span><span class="p">,</span><span class="w"> </span><span class="n">update</span><span class="p" data-group-id="3725900659-10">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">:projects</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nc">Enum</span><span class="o">.</span><span class="n">reject</span><span class="p" data-group-id="3725900659-11">(</span><span class="ni">&amp;1</span><span class="p">,</span><span class="w"> </span><span class="k" data-group-id="3725900659-12">fn</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">project_id</span><span class="w"> </span><span class="k" data-group-id="3725900659-12">end</span><span class="p" data-group-id="3725900659-11">)</span><span class="p">}</span><span class="w">
+</span><span class="k">end</span><span class="w">
+
+</span><span class="kd">defp</span><span class="w"> </span><span class="nf">load_projects</span><span class="p" data-group-id="3725900659-13">(</span><span class="n">socket</span><span class="p" data-group-id="3725900659-13">)</span><span class="w"> </span><span class="k" data-group-id="3725900659-14">do</span><span class="w">
+  </span><span class="n">projects</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Project</span><span class="o">.</span><span class="n">all_projects</span><span class="p" data-group-id="3725900659-15">(</span><span class="n">socket</span><span class="o">.</span><span class="n">assigns</span><span class="o">.</span><span class="n">current_user</span><span class="p" data-group-id="3725900659-15">)</span><span class="w">
+  </span><span class="n">assign</span><span class="p" data-group-id="3725900659-16">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">projects</span><span class="p">:</span><span class="w"> </span><span class="n">projects</span><span class="p" data-group-id="3725900659-16">)</span><span class="w">
+</span><span class="k" data-group-id="3725900659-14">end</span></code></pre><p>First, we used <code class="inline">on_mount</code> to authenticate the user based on the data stored in
+the session. Then we load all projects based on the authenticated user. Now,
+whenever there is a request to delete a project, we still pass the current user
+as argument to the <code class="inline">Project</code> context, so it verifies if the user is allowed to
+delete it or not. In case it cannot delete, it is fine to just raise an exception.
+After all, users are not meant to trigger this code path anyway (unless they are
+fiddling with something they are not supposed to!).</p><h2 id="disconnecting-all-instances-of-a-live-user">Disconnecting all instances of a live user</h2><p>So far, the security model between LiveView and regular web applications have
+been remarkably similar. After all, we must always authenticate and authorize
+every user. The main difference between them happens on logout or when revoking
+access.</p><p>Because LiveView is a permanent connection between client and server, if a user
+is logged out, or removed from the system, this change won't reflect on the
+LiveView part unless the user reloads the page.</p><p>Luckily, it is possible to address this by setting a <code class="inline">live_socket_id</code> in the
+session. For example, when logging in a user, you could do:</p><pre><code class="makeup elixir" translate="no"><span class="n">conn</span><span class="w">
+</span><span class="o">|&gt;</span><span class="w"> </span><span class="n">put_session</span><span class="p" data-group-id="3188499117-1">(</span><span class="ss">:current_user_id</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p" data-group-id="3188499117-1">)</span><span class="w">
+</span><span class="o">|&gt;</span><span class="w"> </span><span class="n">put_session</span><span class="p" data-group-id="3188499117-2">(</span><span class="ss">:live_socket_id</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;users_socket:</span><span class="si" data-group-id="3188499117-3">#{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si" data-group-id="3188499117-3">}</span><span class="s">&quot;</span><span class="p" data-group-id="3188499117-2">)</span></code></pre><p>Now all LiveView sockets will be identified and listen to the given <code class="inline">live_socket_id</code>.
+You can then disconnect all live users identified by said ID by broadcasting on
+the topic:</p><pre><code class="makeup elixir" translate="no"><span class="nc">MyAppWeb.Endpoint</span><span class="o">.</span><span class="n">broadcast</span><span class="p" data-group-id="9023124670-1">(</span><span class="s">&quot;users_socket:</span><span class="si" data-group-id="9023124670-2">#{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si" data-group-id="9023124670-2">}</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;disconnect&quot;</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="9023124670-3">%{</span><span class="p" data-group-id="9023124670-3">}</span><span class="p" data-group-id="9023124670-1">)</span></code></pre><blockquote><p>Note: If you use <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Mix.Tasks.Phx.Gen.Auth.html"><code class="inline">mix phx.gen.auth</code></a> to generate your authentication system,
+lines to that effect are already present in the generated code. The generated
+code uses a <code class="inline">user_token</code> instead of referring to the <code class="inline">user_id</code>.</p></blockquote><p>Once a LiveView is disconnected, the client will attempt to reestablish
+the connection and re-execute the <a href="Phoenix.LiveView.xhtml#c:mount/3"><code class="inline">mount/3</code></a>
+callback. In this case, if the user is no longer logged in or it no longer has
+access to the current resource, <code class="inline">mount/3</code> will fail and the user will be
+redirected.</p><p>This is the same mechanism provided by <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Phoenix.Channel.html"><code class="inline">Phoenix.Channel</code></a>s. Therefore, if
+your application uses both channels and LiveViews, you can use the same
+technique to disconnect any stateful connection.</p><h2 id="summing-up">Summing up</h2><p>The important concepts to keep in mind are:</p><ul><li><p><code class="inline">live_session</code> can be used to draw boundaries between groups of
+LiveViews. While you could use <code class="inline">live_session</code> to draw lines between
+different authorization rules, doing so would lead to frequent page
+reloads. For this reason, we typically use <code class="inline">live_session</code> to enforce
+different <em>authentication</em> requirements or whenever you need to
+change root layouts</p></li><li><p>Your authentication logic (logging the user in) is typically part of
+your regular web request pipeline and it is shared by both controllers
+and LiveViews. Authentication then stores the user information in the
+session. Regular web requests use <code class="inline">plug</code> to read the user from a session,
+LiveViews read it inside an <code class="inline">on_mount</code> callback. This is typically a
+single database lookup on both cases. Running <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Mix.Tasks.Phx.Gen.Auth.html"><code class="inline">mix phx.gen.auth</code></a> sets
+up all that is necessary</p></li><li><p>Once authenticated, your authorization logic in LiveViews will happen
+both during <code class="inline">mount</code> (such as &quot;can the user see this page?&quot;) and during
+events (like &quot;can the user delete this item?&quot;). Those rules are often
+domain/business specific, and typically happen in your context modules.
+This is also a requirement for regular requests and responses</p></li></ul>
+
+  </body>
+</html>

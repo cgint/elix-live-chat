@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.UUIDv7 - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.UUIDv7 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Helpers for working with UUIDs version 7.</p><p><a href="https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7">RFC 9562</a></p><p>Used for generating UUIDs version 7 with increased clock precision for better monotonicity,
+as described by method 3 of the [Section 6.2](<a href="https://www.rfc-editor.org/rfc/rfc9562#name-monotonicity-and-counters">https://www.rfc-editor.org/rfc/rfc9562#name-monotonicity-and-counters</a></p><p>Inspired by the work of <a href="https://github.com/ryanwinchester/">Ryan Winchester</a> on <a href="https://github.com/ryanwinchester/uuidv7">uuidv7</a></p><h2 id="module-examples">Examples</h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">UUIDv7</samp><samp class="o">.</samp><samp class="n">generate</samp><samp class="p" data-group-id="8940553917-1">(</samp><samp class="p" data-group-id="8940553917-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;018e90d8-06e8-7f9f-bfd7-6730ba98a51b&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">UUIDv7</samp><samp class="o">.</samp><samp class="n">bingenerate</samp><samp class="p" data-group-id="8940553917-2">(</samp><samp class="p" data-group-id="8940553917-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8940553917-3">&lt;&lt;</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">142</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">144</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">216</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">232</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">127</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">159</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">191</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">215</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">103</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">48</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">186</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">152</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">165</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">27</samp><samp class="p" data-group-id="8940553917-3">&gt;&gt;</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:raw/0" data-no-tooltip="" translate="no">raw()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A raw binary representation of a UUID.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A hex-encoded UUID string.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#bingenerate/0" data-no-tooltip="" translate="no">bingenerate()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates a version 7 UUID in the binary format.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#decode/1" data-no-tooltip="" translate="no">decode(raw_uuid)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Decode a string representation of a UUID to the raw binary version.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#encode/1" data-no-tooltip="" translate="no">encode(hex_uuid)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Encode a raw UUID to the string representation.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#extract_timestamp/1" data-no-tooltip="" translate="no">extract_timestamp(uuid)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Extract the millisecond timestamp from the UUID.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#generate/0" data-no-tooltip="" translate="no">generate()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Generates a version 7 UUID using submilliseconds for increased clock precision.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:raw/0">
+
+  <div class="detail-header">
+    <a href="#t:raw/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">raw()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/uuid_v7.ex#L30" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> raw() :: &lt;&lt;_::128&gt;&gt;</pre>
+
+      </div>
+
+<p>A raw binary representation of a UUID.</p>
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/uuid_v7.ex#L25" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: &lt;&lt;_::288&gt;&gt;</pre>
+
+      </div>
+
+<p>A hex-encoded UUID string.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="bingenerate/0">
+
+  <div class="detail-header">
+    <a href="#bingenerate/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">bingenerate()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/uuid_v7.ex#L57" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> bingenerate() :: <a href="#t:raw/0">raw</a>()</pre>
+
+      </div>
+
+<p>Generates a version 7 UUID in the binary format.</p><h2 id="bingenerate/0-example" class="section-heading"><a href="#bingenerate/0-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">UUIDv7</samp><samp class="o">.</samp><samp class="n">bingenerate</samp><samp class="p" data-group-id="4066934958-1">(</samp><samp class="p" data-group-id="4066934958-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="4066934958-2">&lt;&lt;</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">142</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">144</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">216</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">232</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">127</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">159</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">191</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">215</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">103</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">48</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">186</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">152</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">165</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">27</samp><samp class="p" data-group-id="4066934958-2">&gt;&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="decode/1">
+
+  <div class="detail-header">
+    <a href="#decode/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">decode(raw_uuid)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/uuid_v7.ex#L148" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> decode(<a href="#t:t/0">t</a>() | <a href="#t:raw/0">raw</a>()) :: <a href="#t:raw/0">raw</a>() | :error</pre>
+
+      </div>
+
+<p>Decode a string representation of a UUID to the raw binary version.</p><h2 id="decode/1-example" class="section-heading"><a href="#decode/1-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">UUIDv7</samp><samp class="o">.</samp><samp class="n">decode</samp><samp class="p" data-group-id="6838660777-1">(</samp><samp class="s">&quot;018e90d8-06e8-7f9f-bfd7-6730ba98a51b&quot;</samp><samp class="p" data-group-id="6838660777-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="6838660777-2">&lt;&lt;</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">142</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">144</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">216</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">232</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">127</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">159</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">191</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">215</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">103</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">48</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">186</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">152</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">165</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">27</samp><samp class="p" data-group-id="6838660777-2">&gt;&gt;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="encode/1">
+
+  <div class="detail-header">
+    <a href="#encode/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">encode(hex_uuid)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/uuid_v7.ex#L101" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> encode(<a href="#t:t/0">t</a>() | <a href="#t:raw/0">raw</a>()) :: <a href="#t:t/0">t</a>() | :error</pre>
+
+      </div>
+
+<p>Encode a raw UUID to the string representation.</p><h2 id="encode/1-example" class="section-heading"><a href="#encode/1-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">UUIDv7</samp><samp class="o">.</samp><samp class="n">encode</samp><samp class="p" data-group-id="5171531903-1">(</samp><samp class="p" data-group-id="5171531903-2">&lt;&lt;</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">142</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">144</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">216</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">6</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">232</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">127</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">159</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">191</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">215</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">103</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">48</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">186</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">152</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">165</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">27</samp><samp class="p" data-group-id="5171531903-2">&gt;&gt;</samp><samp class="p" data-group-id="5171531903-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;018e90d8-06e8-7f9f-bfd7-6730ba98a51b&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="extract_timestamp/1">
+
+  <div class="detail-header">
+    <a href="#extract_timestamp/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">extract_timestamp(uuid)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/uuid_v7.ex#L85" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> extract_timestamp(<a href="#t:t/0">t</a>() | <a href="#t:raw/0">raw</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>Extract the millisecond timestamp from the UUID.</p><h2 id="extract_timestamp/1-example" class="section-heading"><a href="#extract_timestamp/1-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">UUIDv7</samp><samp class="o">.</samp><samp class="n">extract_timestamp</samp><samp class="p" data-group-id="1565688542-1">(</samp><samp class="s">&quot;018ecb40-c457-73e6-a400-000398daddd9&quot;</samp><samp class="p" data-group-id="1565688542-1">)</samp><samp class="w">
+</samp><samp class="mi">1712807003223</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="generate/0">
+
+  <div class="detail-header">
+    <a href="#generate/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">generate()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/uuid_v7.ex#L45" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> generate() :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Generates a version 7 UUID using submilliseconds for increased clock precision.</p><h2 id="generate/0-example" class="section-heading"><a href="#generate/0-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">UUIDv7</samp><samp class="o">.</samp><samp class="n">generate</samp><samp class="p" data-group-id="5375646119-1">(</samp><samp class="p" data-group-id="5375646119-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;018e90d8-06e8-7f9f-bfd7-6730ba98a51b&quot;</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

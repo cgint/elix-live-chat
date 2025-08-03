@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Sort - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Sort 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Utilities and types for sorting.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:sort_item/0" data-no-tooltip="" translate="no">sort_item()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:sort_order/0" data-no-tooltip="" translate="no">sort_order()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#expr_sort/2" data-no-tooltip="" translate="no">expr_sort(expression, type \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Builds an expression to be used in a sort statement. Prefer to use <a><code class="inline">Ash.Expr.calc/2</code></a> instead.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#parse_input/3" data-no-tooltip="" translate="no">parse_input(resource, sort, handler \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A utility for parsing sorts provided from external input. Only allows sorting on public fields.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#parse_input!/3" data-no-tooltip="" translate="no">parse_input!(resource, sort, handler \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Same as <a><code class="inline">parse_input/2</code></a> except raises any errors</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#parse_sort/4" data-no-tooltip="" translate="no">parse_sort(resource, sort, handler \\ nil, public_only? \\ true)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#reverse/1" data-no-tooltip="" translate="no">reverse(sort)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Reverses an Ash sort statement.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#runtime_sort/3" data-no-tooltip="" translate="no">runtime_sort(results, sort, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A utility for sorting a list of records at runtime.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:sort_item/0">
+
+  <div class="detail-header">
+    <a href="#t:sort_item/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">sort_item()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/sort/sort.ex#L9" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> sort_item() ::
+  <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()
+  | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()
+  | {<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), <a href="#t:sort_order/0">sort_order</a>()}
+  | %Ash.Query.Calculation{
+      async?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      calc_name: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      constraints: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      context: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      filterable?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      load: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      module: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      name: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      opts: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      required_loads: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      select: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      sensitive?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      sortable?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+      type: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()
+    }
+  | {%Ash.Query.Calculation{
+       async?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       calc_name: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       constraints: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       context: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       filterable?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       load: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       module: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       name: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       opts: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       required_loads: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       select: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       sensitive?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       sortable?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+       type: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()
+     }, <a href="#t:sort_order/0">sort_order</a>()}
+  | {<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), {<a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>(), <a href="#t:sort_order/0">sort_order</a>()}}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:sort_order/0">
+
+  <div class="detail-header">
+    <a href="#t:sort_order/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">sort_order()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/sort/sort.ex#L6" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> sort_order() ::
+  :asc
+  | :desc
+  | :asc_nils_first
+  | :asc_nils_last
+  | :desc_nils_first
+  | :desc_nils_last</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/sort/sort.ex#L17" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: [<a href="#t:sort_item/0">sort_item</a>()] | <a href="#t:sort_item/0">sort_item</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="expr_sort/2">
+
+    <span id="expr_sort/1"></span>
+
+  <div class="detail-header">
+    <a href="#expr_sort/2" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">expr_sort(expression, type \\ nil)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/sort/sort.ex#L36" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> expr_sort(<a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>(), <a href="Ash.Type.xhtml#t:t/0">Ash.Type.t</a>() | nil) :: <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()</pre>
+
+      </div>
+
+<p>Builds an expression to be used in a sort statement. Prefer to use <a href="Ash.Expr.xhtml#calc/2"><code class="inline">Ash.Expr.calc/2</code></a> instead.</p><p>For example:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Ash.Query</samp><samp class="o">.</samp><samp class="n">sort</samp><samp class="p" data-group-id="2924026190-1">(</samp><samp class="n">query</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Ash.Sort</samp><samp class="o">.</samp><samp class="n">expr_sort</samp><samp class="p" data-group-id="2924026190-2">(</samp><samp class="n">author</samp><samp class="o">.</samp><samp class="n">full_name</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p" data-group-id="2924026190-2">)</samp><samp class="p" data-group-id="2924026190-1">)</samp><samp class="w">
+
+</samp><samp class="nc">Ash.Query</samp><samp class="o">.</samp><samp class="n">sort</samp><samp class="p" data-group-id="2924026190-3">(</samp><samp class="n">query</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2924026190-4">[</samp><samp class="p" data-group-id="2924026190-5">{</samp><samp class="nc">Ash.Sort</samp><samp class="o">.</samp><samp class="n">expr_sort</samp><samp class="p" data-group-id="2924026190-6">(</samp><samp class="n">author</samp><samp class="o">.</samp><samp class="n">full_name</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="p" data-group-id="2924026190-6">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:desc_nils_first</samp><samp class="p" data-group-id="2924026190-5">}</samp><samp class="p" data-group-id="2924026190-4">]</samp><samp class="p" data-group-id="2924026190-3">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="parse_input/3">
+
+    <span id="parse_input/2"></span>
+
+  <div class="detail-header">
+    <a href="#parse_input/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">parse_input(resource, sort, handler \\ nil)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/sort/sort.ex#L91" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> parse_input(
+  <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()
+  | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | {<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), <a href="#t:sort_order/0">sort_order</a>()} | [<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()]]
+  | nil,
+  nil | (<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() -&gt; nil | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | {<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()})
+) :: {:ok, <a href="#t:t/0">t</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>A utility for parsing sorts provided from external input. Only allows sorting on public fields.</p><p>See <a href="Ash.Query.xhtml#sort/3"><code class="inline">Ash.Query.sort/3</code></a> for supported formats.</p><h2 id="parse_input/3-handling-specific-values" class="section-heading"><a href="#parse_input/3-handling-specific-values" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Handling specific values</span></h2><p>A handler function may be provided that takes a string, and returns the relevant sort
+It won't be given any prefixes, only the field. This allows for things like parsing the calculation values
+out of the sort, or setting calculation values if they are not included in the sort string.</p><p>To return calculation parameters, return <code class="inline">{:field, %{param: :value}}</code>. This will end up as something
+like <code class="inline">{:field, {%{param: :value}, :desc}}</code>, with the corresponding sort order.</p><p>This handler function will only be called if you pass in a string or list of strings for the sort.
+Atoms will be assumed to have already been handled. The handler should return <code class="inline">nil</code> if it is not handling
+the given field.</p>
+  </section>
+</section>
+<section class="detail" id="parse_input!/3">
+
+    <span id="parse_input!/2"></span>
+
+  <div class="detail-header">
+    <a href="#parse_input!/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">parse_input!(resource, sort, handler \\ nil)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/sort/sort.ex#L130" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Same as <a href="#parse_input/2"><code class="inline">parse_input/2</code></a> except raises any errors</p><p>See <a href="#parse_input/2"><code class="inline">parse_input/2</code></a> for more.</p>
+  </section>
+</section>
+<section class="detail" id="parse_sort/4">
+
+    <span id="parse_sort/2"></span>
+
+    <span id="parse_sort/3"></span>
+
+  <div class="detail-header">
+    <a href="#parse_sort/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">parse_sort(resource, sort, handler \\ nil, public_only? \\ true)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/sort/sort.ex#L140" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="reverse/1">
+
+  <div class="detail-header">
+    <a href="#reverse/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">reverse(sort)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/sort/sort.ex#L515" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Reverses an Ash sort statement.</p>
+  </section>
+</section>
+<section class="detail" id="runtime_sort/3">
+
+    <span id="runtime_sort/2"></span>
+
+  <div class="detail-header">
+    <a href="#runtime_sort/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">runtime_sort(results, sort, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/sort/sort.ex#L551" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>A utility for sorting a list of records at runtime.</p><p>For example:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Ash.Sort</samp><samp class="o">.</samp><samp class="n">runtime_sort</samp><samp class="p" data-group-id="9095795657-1">(</samp><samp class="p" data-group-id="9095795657-2">[</samp><samp class="n">record1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">record2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">record3</samp><samp class="p" data-group-id="9095795657-2">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:asc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:desc_nils_last</samp><samp class="p" data-group-id="9095795657-1">)</samp></code></pre><p>Keep in mind that it is unrealistic to expect this runtime sort to always
+be exactly the same as a sort that may have been applied by your data layer.
+This is especially true for strings. For example, <code class="inline">Postgres</code> strings have a
+collation that affects their sorting, making it unpredictable from the perspective
+of a tool using the database: <a href="https://www.postgresql.org/docs/current/collation.html">https://www.postgresql.org/docs/current/collation.html</a></p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

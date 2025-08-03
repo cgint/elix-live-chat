@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.Logger - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.Logger 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Instrumenter to handle logging of <a href="Phoenix.LiveView.xhtml"><code class="inline">Phoenix.LiveView</code></a> and <a href="Phoenix.LiveComponent.xhtml"><code class="inline">Phoenix.LiveComponent</code></a> life-cycle events.</p><h2 id="module-installation">Installation</h2><p>The logger is installed automatically when Live View starts.
+By default, the log level is set to <code class="inline">:debug</code>.</p><h2 id="module-module-configuration">Module configuration</h2><p>The log level can be overridden for an individual Live View module:</p><pre><code class="makeup elixir" translate="no"><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveView</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">log</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:debug</samp></code></pre><p>To disable logging for an individual Live View module:</p><pre><code class="makeup elixir" translate="no"><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveView</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">log</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">false</samp></code></pre><h2 id="module-telemetry">Telemetry</h2><p>The following <a href="Phoenix.LiveView.xhtml"><code class="inline">Phoenix.LiveView</code></a> and <a href="Phoenix.LiveComponent.xhtml"><code class="inline">Phoenix.LiveComponent</code></a> events are logged:</p><ul><li><code class="inline">[:phoenix, :live_view, :mount, :start]</code></li><li><code class="inline">[:phoenix, :live_view, :mount, :stop]</code></li><li><code class="inline">[:phoenix, :live_view, :handle_params, :start]</code></li><li><code class="inline">[:phoenix, :live_view, :handle_params, :stop]</code></li><li><code class="inline">[:phoenix, :live_view, :handle_event, :start]</code></li><li><code class="inline">[:phoenix, :live_view, :handle_event, :stop]</code></li><li><code class="inline">[:phoenix, :live_component, :handle_event, :start]</code></li><li><code class="inline">[:phoenix, :live_component, :handle_event, :stop]</code></li></ul><p>See the <a href="telemetry.xhtml">Telemetry</a> guide for more information.</p><h2 id="module-parameter-filtering">Parameter filtering</h2><p>If enabled, <a href="Phoenix.LiveView.Logger.xhtml"><code class="inline">Phoenix.LiveView.Logger</code></a> will filter parameters based on the configuration of <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Phoenix.Logger.html"><code class="inline">Phoenix.Logger</code></a>.</p>
+      </section>
+
+
+
+
+  </body>
+</html>

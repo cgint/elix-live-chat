@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.Controller - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.Controller 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Helpers for rendering LiveViews from a controller.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#live_render/3" data-no-tooltip="" translate="no">live_render(conn, view, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Renders a live view from a Plug request and sends an HTML response
+from within a controller.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="live_render/3">
+
+    <span id="live_render/2"></span>
+
+  <div class="detail-header">
+    <a href="#live_render/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">live_render(conn, view, opts \\ [])</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/controller.ex#L38" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Renders a live view from a Plug request and sends an HTML response
+from within a controller.</p><p>It also automatically sets the <code class="inline">@live_module</code> assign with the value
+of the LiveView to be rendered.</p><h2 id="live_render/3-options" class="section-heading"><a href="#live_render/3-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><p>See <a href="Phoenix.Component.xhtml#live_render/3"><code class="inline">Phoenix.Component.live_render/3</code></a> for all supported options.</p><h2 id="live_render/3-examples" class="section-heading"><a href="#live_render/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">ThermostatController</samp><samp class="w"> </samp><samp class="k" data-group-id="5439244101-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">MyAppWeb</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:controller</samp><samp class="w">
+
+  </samp><samp class="c1"># &quot;use MyAppWeb, :controller&quot; should import Phoenix.LiveView.Controller.</samp><samp class="w">
+  </samp><samp class="c1"># If it does not, you can either import it there or uncomment the line below:</samp><samp class="w">
+  </samp><samp class="c1"># import Phoenix.LiveView.Controller</samp><samp class="w">
+
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">show</samp><samp class="p" data-group-id="5439244101-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="5439244101-3">%{</samp><samp class="s">&quot;id&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="n">thermostat_id</samp><samp class="p" data-group-id="5439244101-3">}</samp><samp class="p" data-group-id="5439244101-2">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5439244101-4">do</samp><samp class="w">
+    </samp><samp class="n">live_render</samp><samp class="p" data-group-id="5439244101-5">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">ThermostatLive</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">session</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5439244101-6">%{</samp><samp class="w">
+      </samp><samp class="s">&quot;thermostat_id&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="n">thermostat_id</samp><samp class="p">,</samp><samp class="w">
+      </samp><samp class="s">&quot;current_user_id&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="n">get_session</samp><samp class="p" data-group-id="5439244101-7">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:user_id</samp><samp class="p" data-group-id="5439244101-7">)</samp><samp class="w">
+    </samp><samp class="p" data-group-id="5439244101-6">}</samp><samp class="p" data-group-id="5439244101-5">)</samp><samp class="w">
+  </samp><samp class="k" data-group-id="5439244101-4">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="5439244101-1">end</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

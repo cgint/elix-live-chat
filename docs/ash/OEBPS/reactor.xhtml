@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Reactor - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Reactor</h1>
+<p><a href="Ash.Reactor.xhtml"><code class="inline">Ash.Reactor</code></a> is an extension for <a href="https://github.com/ash-project/reactor"><code class="inline">Reactor</code></a> which adds explicit support for interacting with resources via their defined actions.</p><p>See <a href="https://hexdocs.pm/reactor/01-getting-started.html">Getting started with Reactor</a> to understand the core Reactor concepts first. Then return to this guide to see how <a href="Ash.Reactor.xhtml"><code class="inline">Ash.Reactor</code></a> adds conveniences for using Reactor from Ash.</p><h2 id="usage">Usage</h2><p>You can either add the <a href="Ash.Reactor.xhtml"><code class="inline">Ash.Reactor</code></a> extension to your existing reactors eg:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyExistingReactor</span><span class="w"> </span><span class="k" data-group-id="9267256749-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Reactor</span><span class="p">,</span><span class="w"> </span><span class="ss">extensions</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9267256749-2">[</span><span class="nc">Ash.Reactor</span><span class="p" data-group-id="9267256749-2">]</span><span class="w">
+</span><span class="k" data-group-id="9267256749-1">end</span></code></pre><p>or for your convenience you can use <code class="inline">use Ash.Reactor</code> which expands to exactly the same as above.</p><h2 id="running-reactors-as-an-action">Running Reactors as an action</h2><p>Ash's <a href="actions.xhtml#generic-actions">generic actions</a> support providing a Reactor module directly as their <code class="inline">run</code> option.
+This is the preferred way for you to initiate reactors in your application. These actions could be defined on your existing resources, your you could even have a resource w/ a single action on it that runs a reactor, and no attributes/data layer etc. for example.</p><p>Notes:</p><ul><li>Every Reactor input must have a corresponding action argument.</li><li>Ash's action context is passed in as the Reactor's context (including things like actor, tenant, etc).</li><li><a href="https://hexdocs.pm/reactor/0.15.6/Reactor.html#t:options/0">Reactor runtime options</a> can be set by setting <code class="inline">run {MyReactor, opts}</code> instead of just <code class="inline">run MyReactor</code>.</li><li>If you set the <code class="inline">transaction?</code> action DSL option to true then the Reactor will be run synchronously - regardless of the value of the <code class="inline">async?</code> runtime option.</li></ul><h3 id="example">Example</h3><section role="note" class="admonition info"><h3 id="resources-can-just-have-generic-actions" class="admonition-title info">Resources can just have generic actions</h3><p>Below is a fully valid resource in its entirety. Not all resources need to have state/data layers associated with them</p></section><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Blog.Actions</span><span class="w"> </span><span class="k" data-group-id="8581005265-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource</span><span class="w">
+
+  </span><span class="n">action</span><span class="w"> </span><span class="ss">:create_post</span><span class="p">,</span><span class="w"> </span><span class="ss">:struct</span><span class="w"> </span><span class="k" data-group-id="8581005265-2">do</span><span class="w">
+    </span><span class="n">constraints</span><span class="w"> </span><span class="ss">instance_of</span><span class="p">:</span><span class="w"> </span><span class="nc">MyBlog.Post</span><span class="w">
+
+    </span><span class="n">argument</span><span class="w"> </span><span class="ss">:blog_title</span><span class="p">,</span><span class="w"> </span><span class="ss">:string</span><span class="p">,</span><span class="w"> </span><span class="ss">allow_nil?</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="w">
+    </span><span class="n">argument</span><span class="w"> </span><span class="ss">:blog_body</span><span class="p">,</span><span class="w"> </span><span class="ss">:string</span><span class="p">,</span><span class="w"> </span><span class="ss">allow_nil?</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="w">
+    </span><span class="n">argument</span><span class="w"> </span><span class="ss">:author_email</span><span class="p">,</span><span class="w"> </span><span class="ss">:ci_string</span><span class="p">,</span><span class="w"> </span><span class="ss">allow_nil?</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="w">
+
+    </span><span class="n">run</span><span class="w"> </span><span class="nc">MyApp.Blog.Reactors.CreatePost</span><span class="w">
+  </span><span class="k" data-group-id="8581005265-2">end</span><span class="w">
+</span><span class="k" data-group-id="8581005265-1">end</span></code></pre><h2 id="example-1">Example</h2><p>An example is worth 1000 words of prose:</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">ExampleReactor</span><span class="w"> </span><span class="k" data-group-id="7321088379-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Reactor</span><span class="w">
+
+  </span><span class="n">ash</span><span class="w"> </span><span class="k" data-group-id="7321088379-2">do</span><span class="w">
+    </span><span class="n">default_domain</span><span class="w"> </span><span class="nc">ExampleDomain</span><span class="w">
+  </span><span class="k" data-group-id="7321088379-2">end</span><span class="w">
+
+  </span><span class="n">input</span><span class="w"> </span><span class="ss">:customer_name</span><span class="w">
+  </span><span class="n">input</span><span class="w"> </span><span class="ss">:customer_email</span><span class="w">
+  </span><span class="n">input</span><span class="w"> </span><span class="ss">:plan_name</span><span class="w">
+  </span><span class="n">input</span><span class="w"> </span><span class="ss">:payment_nonce</span><span class="w">
+
+  </span><span class="n">create</span><span class="w"> </span><span class="ss">:create_customer</span><span class="p">,</span><span class="w"> </span><span class="nc">Customer</span><span class="w"> </span><span class="k" data-group-id="7321088379-3">do</span><span class="w">
+    </span><span class="n">inputs</span><span class="w"> </span><span class="p" data-group-id="7321088379-4">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="n">input</span><span class="p" data-group-id="7321088379-5">(</span><span class="ss">:customer_name</span><span class="p" data-group-id="7321088379-5">)</span><span class="p">,</span><span class="w"> </span><span class="ss">email</span><span class="p">:</span><span class="w"> </span><span class="n">input</span><span class="p" data-group-id="7321088379-6">(</span><span class="ss">:customer_email</span><span class="p" data-group-id="7321088379-6">)</span><span class="p" data-group-id="7321088379-4">}</span><span class="w">
+  </span><span class="k" data-group-id="7321088379-3">end</span><span class="w">
+
+  </span><span class="n">read_one</span><span class="w"> </span><span class="ss">:get_plan</span><span class="p">,</span><span class="w"> </span><span class="nc">Plan</span><span class="p">,</span><span class="w"> </span><span class="ss">:get_plan_by_name</span><span class="w"> </span><span class="k" data-group-id="7321088379-7">do</span><span class="w">
+    </span><span class="n">inputs</span><span class="w"> </span><span class="p" data-group-id="7321088379-8">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="n">input</span><span class="p" data-group-id="7321088379-9">(</span><span class="ss">:plan_name</span><span class="p" data-group-id="7321088379-9">)</span><span class="p" data-group-id="7321088379-8">}</span><span class="w">
+    </span><span class="n">fail_on_not_found?</span><span class="w"> </span><span class="no">true</span><span class="w">
+  </span><span class="k" data-group-id="7321088379-7">end</span><span class="w">
+
+  </span><span class="n">action</span><span class="w"> </span><span class="ss">:take_payment</span><span class="p">,</span><span class="w"> </span><span class="nc">PaymentProvider</span><span class="w"> </span><span class="k" data-group-id="7321088379-10">do</span><span class="w">
+    </span><span class="n">inputs</span><span class="w"> </span><span class="p" data-group-id="7321088379-11">%{</span><span class="w">
+      </span><span class="ss">nonce</span><span class="p">:</span><span class="w"> </span><span class="n">input</span><span class="p" data-group-id="7321088379-12">(</span><span class="ss">:payment_nonce</span><span class="p" data-group-id="7321088379-12">)</span><span class="p">,</span><span class="w">
+      </span><span class="ss">amount</span><span class="p">:</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="7321088379-13">(</span><span class="ss">:get_plan</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7321088379-14">[</span><span class="ss">:price</span><span class="p" data-group-id="7321088379-14">]</span><span class="p" data-group-id="7321088379-13">)</span><span class="w">
+    </span><span class="p" data-group-id="7321088379-11">}</span><span class="w">
+  </span><span class="k" data-group-id="7321088379-10">end</span><span class="w">
+
+  </span><span class="n">create</span><span class="w"> </span><span class="ss">:subscription</span><span class="p">,</span><span class="w"> </span><span class="nc">Subscription</span><span class="w"> </span><span class="k" data-group-id="7321088379-15">do</span><span class="w">
+    </span><span class="n">inputs</span><span class="w"> </span><span class="p" data-group-id="7321088379-16">%{</span><span class="w">
+      </span><span class="ss">plan_id</span><span class="p">:</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="7321088379-17">(</span><span class="ss">:get_plan</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7321088379-18">[</span><span class="ss">:id</span><span class="p" data-group-id="7321088379-18">]</span><span class="p" data-group-id="7321088379-17">)</span><span class="p">,</span><span class="w">
+      </span><span class="ss">payment_provider_id</span><span class="p">:</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="7321088379-19">(</span><span class="ss">:take_payment</span><span class="p">,</span><span class="w"> </span><span class="ss">:id</span><span class="p" data-group-id="7321088379-19">)</span><span class="w">
+    </span><span class="p" data-group-id="7321088379-16">}</span><span class="w">
+  </span><span class="k" data-group-id="7321088379-15">end</span><span class="w">
+</span><span class="k" data-group-id="7321088379-1">end</span></code></pre><h2 id="actions">Actions</h2><p>For each action type there is a corresponding step DSL, which needs a name (used
+to refer to the result of the step by other steps), a resource and optional
+action name (defaults to the primary action if one is not provided).</p><p>Actions have several common options and some specific to their particular type.
+See the <a href="dsl-ash-reactor.html">DSL documentation</a> for
+details.</p><h3 id="action-inputs">Action inputs</h3><p>Ash actions take a map of input parameters which are usually a combination of
+resource attributes and action arguments. You can provide these values as a
+single map using the <a href="dsl-ash-reactor.html#reactor-action-inputs"><code class="inline">inputs</code> DSL entity</a> with a map or keyword list which refers to Reactor inputs, results and hard-coded values via Reactor's <a href="https://hexdocs.pm/reactor/Reactor.Dsl.Argument.html#functions">predefined template functions</a>.</p><p>For action types that act on a specific resource (ie <code class="inline">update</code> and <code class="inline">destroy</code>) you can provide the value using the <a href="dsl-ash-reactor.html#reactor-update-initial"><code class="inline">initial</code> DSL option</a>.</p><h4>Example</h4><pre><code class="makeup elixir" translate="no"><span class="n">input</span><span class="w"> </span><span class="ss">:blog_title</span><span class="w">
+</span><span class="n">input</span><span class="w"> </span><span class="ss">:blog_body</span><span class="w">
+</span><span class="n">input</span><span class="w"> </span><span class="ss">:author_email</span><span class="w">
+
+</span><span class="n">read</span><span class="w"> </span><span class="ss">:get_author</span><span class="p">,</span><span class="w"> </span><span class="nc">MyBlog.Author</span><span class="p">,</span><span class="w"> </span><span class="ss">:get_author_by_email</span><span class="w"> </span><span class="k" data-group-id="7129802983-1">do</span><span class="w">
+  </span><span class="n">inputs</span><span class="w"> </span><span class="p" data-group-id="7129802983-2">%{</span><span class="ss">email</span><span class="p">:</span><span class="w"> </span><span class="n">input</span><span class="p" data-group-id="7129802983-3">(</span><span class="ss">:author_email</span><span class="p" data-group-id="7129802983-3">)</span><span class="p" data-group-id="7129802983-2">}</span><span class="w">
+</span><span class="k" data-group-id="7129802983-1">end</span><span class="w">
+
+</span><span class="n">create</span><span class="w"> </span><span class="ss">:create_post</span><span class="p">,</span><span class="w"> </span><span class="nc">MyBlog.Post</span><span class="p">,</span><span class="w"> </span><span class="ss">:create</span><span class="w"> </span><span class="k" data-group-id="7129802983-4">do</span><span class="w">
+  </span><span class="n">inputs</span><span class="w"> </span><span class="p" data-group-id="7129802983-5">%{</span><span class="w">
+    </span><span class="ss">title</span><span class="p">:</span><span class="w"> </span><span class="n">input</span><span class="p" data-group-id="7129802983-6">(</span><span class="ss">:blog</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7129802983-7">[</span><span class="ss">:title</span><span class="p" data-group-id="7129802983-7">]</span><span class="p" data-group-id="7129802983-6">)</span><span class="p">,</span><span class="w">
+    </span><span class="ss">body</span><span class="p">:</span><span class="w"> </span><span class="n">input</span><span class="p" data-group-id="7129802983-8">(</span><span class="ss">:blog</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7129802983-9">[</span><span class="ss">:body</span><span class="p" data-group-id="7129802983-9">]</span><span class="p" data-group-id="7129802983-8">)</span><span class="p">,</span><span class="w">
+    </span><span class="ss">author_id</span><span class="p">:</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="7129802983-10">(</span><span class="ss">:get_author</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7129802983-11">[</span><span class="ss">:email</span><span class="p" data-group-id="7129802983-11">]</span><span class="p" data-group-id="7129802983-10">)</span><span class="w">
+  </span><span class="p" data-group-id="7129802983-5">}</span><span class="w">
+</span><span class="k" data-group-id="7129802983-4">end</span><span class="w">
+
+</span><span class="n">update</span><span class="w"> </span><span class="ss">:author_post_count</span><span class="p">,</span><span class="w"> </span><span class="nc">MyBlog.Author</span><span class="p">,</span><span class="w"> </span><span class="ss">:update_post_count</span><span class="w"> </span><span class="k" data-group-id="7129802983-12">do</span><span class="w">
+  </span><span class="n">wait_for</span><span class="w"> </span><span class="ss">:create_post</span><span class="w">
+  </span><span class="n">initial</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="7129802983-13">(</span><span class="ss">:get_author</span><span class="p" data-group-id="7129802983-13">)</span><span class="w">
+</span><span class="k" data-group-id="7129802983-12">end</span><span class="w">
+
+</span><span class="n">return</span><span class="w"> </span><span class="ss">:create_post</span></code></pre><h2 id="handling-failure">Handling failure</h2><p>Reactor is a saga executor, which means that when failure occurs it tries to
+clean up any intermediate state left behind. By default the <code class="inline">create</code>, <code class="inline">update</code>
+and <code class="inline">destroy</code> steps do not specify any behaviour for what to do when there is a
+failure downstream in the reactor. This can be changed by providing both an
+<code class="inline">undo_action</code> and changing the step's <code class="inline">undo</code> option to either
+<code class="inline">:outside_transaction</code> or <code class="inline">:always</code> depending on your resource and datalayer
+semantics.</p><h3 id="the-undo-option">The <code class="inline">undo</code> option</h3><ul><li><code class="inline">:never</code> - this is the default, and means that the reactor will never try and
+undo the action's work. This is the most performant option, as it means that
+the reactor doesn't need to store as many intermediate values.</li><li><code class="inline">:outside_transaction</code> - this option allows the step to decide at runtime
+whether it should support undo based on whether the action is being run within
+a transaction. If it is, then no undo is required because the transaction
+will rollback.</li><li><code class="inline">:always</code> - this forces the step to always undo it's work on failure.</li></ul><h3 id="the-undo_action-option">The <code class="inline">undo_action</code> option</h3><p>The behaviour of the <code class="inline">undo_action</code> is action specific:</p><ul><li>For <code class="inline">create</code> actions, the <code class="inline">undo_action</code> should be the name of a <code class="inline">destroy</code>
+action with no specific requirements.</li><li>For <code class="inline">update</code> actions, the <code class="inline">undo_action</code> should also be an <code class="inline">update</code> action
+which takes a <code class="inline">changeset</code> argument, which will contain the <a href="Ash.Changeset.xhtml"><code class="inline">Ash.Changeset</code></a>
+which was used to execute the original update.</li><li>For <code class="inline">destroy</code> actions, the <code class="inline">undo_action</code> should be the name of a <code class="inline">create</code>
+action which takes a <code class="inline">record</code> argument, which will contain the
+resource record which was used destroyed.</li></ul><h3 id="transactions">Transactions</h3><p>You can use the <code class="inline">transaction</code> step type to wrap a group of steps inside a data layer transaction, however the following caveats apply:</p><ul><li>All steps inside a transaction must happen in the same process, so the steps
+inside the transaction will only ever be executed synchronously.</li><li>Notifications will be sent only when the transaction is committed.</li></ul><h4>Example</h4><pre><code class="makeup elixir" translate="no"><span class="n">input</span><span class="w"> </span><span class="ss">:blog_title</span><span class="w">
+</span><span class="n">input</span><span class="w"> </span><span class="ss">:blog_body</span><span class="w">
+</span><span class="n">input</span><span class="w"> </span><span class="ss">:author_email</span><span class="w">
+
+</span><span class="n">read</span><span class="w"> </span><span class="ss">:get_author</span><span class="p">,</span><span class="w"> </span><span class="nc">MyBlog.Author</span><span class="p">,</span><span class="w"> </span><span class="ss">:get_author_by_email</span><span class="w"> </span><span class="k" data-group-id="5654606272-1">do</span><span class="w">
+  </span><span class="n">inputs</span><span class="w"> </span><span class="p" data-group-id="5654606272-2">%{</span><span class="ss">email</span><span class="p">:</span><span class="w"> </span><span class="n">input</span><span class="p" data-group-id="5654606272-3">(</span><span class="ss">:author_email</span><span class="p" data-group-id="5654606272-3">)</span><span class="p" data-group-id="5654606272-2">}</span><span class="w">
+</span><span class="k" data-group-id="5654606272-1">end</span><span class="w">
+
+</span><span class="n">transaction</span><span class="w"> </span><span class="ss">:create_post_transaction</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5654606272-4">[</span><span class="nc">MyBlog.Post</span><span class="p">,</span><span class="w"> </span><span class="nc">MyBlog.Author</span><span class="p" data-group-id="5654606272-4">]</span><span class="w"> </span><span class="k" data-group-id="5654606272-5">do</span><span class="w">
+  </span><span class="n">create</span><span class="w"> </span><span class="ss">:create_post</span><span class="p">,</span><span class="w"> </span><span class="nc">MyBlog.Post</span><span class="p">,</span><span class="w"> </span><span class="ss">:create</span><span class="w"> </span><span class="k" data-group-id="5654606272-6">do</span><span class="w">
+    </span><span class="n">inputs</span><span class="w"> </span><span class="p" data-group-id="5654606272-7">%{</span><span class="w">
+      </span><span class="ss">title</span><span class="p">:</span><span class="w"> </span><span class="n">input</span><span class="p" data-group-id="5654606272-8">(</span><span class="ss">:blog</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5654606272-9">[</span><span class="ss">:title</span><span class="p" data-group-id="5654606272-9">]</span><span class="p" data-group-id="5654606272-8">)</span><span class="p">,</span><span class="w">
+      </span><span class="ss">body</span><span class="p">:</span><span class="w"> </span><span class="n">input</span><span class="p" data-group-id="5654606272-10">(</span><span class="ss">:blog</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5654606272-11">[</span><span class="ss">:body</span><span class="p" data-group-id="5654606272-11">]</span><span class="p" data-group-id="5654606272-10">)</span><span class="p">,</span><span class="w">
+      </span><span class="ss">author_id</span><span class="p">:</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="5654606272-12">(</span><span class="ss">:get_author</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5654606272-13">[</span><span class="ss">:email</span><span class="p" data-group-id="5654606272-13">]</span><span class="p" data-group-id="5654606272-12">)</span><span class="w">
+    </span><span class="p" data-group-id="5654606272-7">}</span><span class="w">
+  </span><span class="k" data-group-id="5654606272-6">end</span><span class="w">
+
+  </span><span class="n">update</span><span class="w"> </span><span class="ss">:author_post_count</span><span class="p">,</span><span class="w"> </span><span class="nc">MyBlog.Author</span><span class="p">,</span><span class="w"> </span><span class="ss">:update_post_count</span><span class="w"> </span><span class="k" data-group-id="5654606272-14">do</span><span class="w">
+    </span><span class="n">wait_for</span><span class="w"> </span><span class="ss">:create_post</span><span class="w">
+    </span><span class="n">initial</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="5654606272-15">(</span><span class="ss">:get_author</span><span class="p" data-group-id="5654606272-15">)</span><span class="w">
+  </span><span class="k" data-group-id="5654606272-14">end</span><span class="w">
+
+  </span><span class="n">return</span><span class="w"> </span><span class="ss">:create_post</span><span class="w">
+</span><span class="k" data-group-id="5654606272-5">end</span><span class="w">
+
+</span><span class="n">return</span><span class="w"> </span><span class="ss">:create_post_transaction</span></code></pre><h2 id="notifications">Notifications</h2><p>Because a reactor has transaction-like semantics notifications are automatically batched and only sent upon successful completion of the reactor.</p>
+
+  </body>
+</html>

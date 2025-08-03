@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Manual Actions - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Manual Actions</h1>
+<p>Manual actions allow you to control how an action is performed instead of dispatching to a data layer. To do this, specify the <code class="inline">manual</code> option with a module that adopts the appropriate behavior.</p><p>Manual actions are a way to implement an action in a fully custom way. This can be a very useful escape hatch when you have something that you are finding difficult to model with Ash's builtin tools.</p><h2 id="manual-creates-updates-destroy">Manual Creates/Updates/Destroy</h2><p>For manual create, update and destroy actions, a module is passed that uses one of the following (<a href="Ash.Resource.ManualCreate.xhtml"><code class="inline">Ash.Resource.ManualCreate</code></a>, <a href="Ash.Resource.ManualUpdate.xhtml"><code class="inline">Ash.Resource.ManualUpdate</code></a> and <a href="Ash.Resource.ManualDestroy.xhtml"><code class="inline">Ash.Resource.ManualDestroy</code></a>).</p><p>For example:</p><pre><code class="makeup elixir" translate="no"><span class="n">create</span><span class="w"> </span><span class="ss">:special_create</span><span class="w"> </span><span class="k" data-group-id="3083509029-1">do</span><span class="w">
+  </span><span class="n">manual</span><span class="w"> </span><span class="nc">MyApp.DoCreate</span><span class="w">
+</span><span class="k" data-group-id="3083509029-1">end</span><span class="w">
+
+</span><span class="c1"># The implementation</span><span class="w">
+</span><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.DoCreate</span><span class="w"> </span><span class="k" data-group-id="3083509029-2">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource.ManualCreate</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">create</span><span class="p" data-group-id="3083509029-3">(</span><span class="n">changeset</span><span class="p">,</span><span class="w"> </span><span class="bp">_</span><span class="p">,</span><span class="w"> </span><span class="bp">_</span><span class="p" data-group-id="3083509029-3">)</span><span class="w"> </span><span class="k" data-group-id="3083509029-4">do</span><span class="w">
+    </span><span class="n">record</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">create_the_record</span><span class="p" data-group-id="3083509029-5">(</span><span class="n">changeset</span><span class="p" data-group-id="3083509029-5">)</span><span class="w">
+    </span><span class="p" data-group-id="3083509029-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">record</span><span class="p" data-group-id="3083509029-6">}</span><span class="w">
+
+    </span><span class="c1"># An `{:error, error}` tuple should be returned if something failed</span><span class="w">
+  </span><span class="k" data-group-id="3083509029-4">end</span><span class="w">
+</span><span class="k" data-group-id="3083509029-2">end</span></code></pre><p>The underlying record can be retrieved from <code class="inline">changeset.data</code> for update and destroy manual actions. The changeset given to the manual action will be after any <code class="inline">before_action</code> hooks, and before any <code class="inline">after_action</code> hooks.</p><h2 id="manual-read-actions">Manual Read Actions</h2><p>Manual read actions work the same, except the will also get the &quot;data layer query&quot;. For AshPostgres, this means you get the ecto query that would have been run. You can use <a href="Ash.Query.xhtml#apply_to/3"><code class="inline">Ash.Query.apply_to/3</code></a> to apply a query to records in memory. This allows you to fetch the data in a way that is not possible with the data layer, but still honor the query that was provided to.</p><pre><code class="makeup elixir" translate="no"><span class="c1"># in the resource</span><span class="w">
+</span><span class="n">actions</span><span class="w"> </span><span class="k" data-group-id="7148796218-1">do</span><span class="w">
+  </span><span class="n">read</span><span class="w"> </span><span class="ss">:action_name</span><span class="w"> </span><span class="k" data-group-id="7148796218-2">do</span><span class="w">
+    </span><span class="n">manual</span><span class="w"> </span><span class="nc">MyApp.ManualRead</span><span class="w">
+    </span><span class="c1"># or `{MyApp.ManualRead, ...opts}`</span><span class="w">
+  </span><span class="k" data-group-id="7148796218-2">end</span><span class="w">
+</span><span class="k" data-group-id="7148796218-1">end</span><span class="w">
+
+</span><span class="c1"># the implementation</span><span class="w">
+</span><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.ManualRead</span><span class="w"> </span><span class="k" data-group-id="7148796218-3">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource.ManualRead</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">read</span><span class="p" data-group-id="7148796218-4">(</span><span class="n">ash_query</span><span class="p">,</span><span class="w"> </span><span class="n">ecto_query</span><span class="p">,</span><span class="w"> </span><span class="c">_opts</span><span class="p">,</span><span class="w"> </span><span class="c">_context</span><span class="p" data-group-id="7148796218-4">)</span><span class="w"> </span><span class="k" data-group-id="7148796218-5">do</span><span class="w">
+    </span><span class="n">...</span><span class="w">
+    </span><span class="p" data-group-id="7148796218-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">query_results</span><span class="p" data-group-id="7148796218-6">}</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p" data-group-id="7148796218-7">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p" data-group-id="7148796218-7">}</span><span class="w">
+  </span><span class="k" data-group-id="7148796218-5">end</span><span class="w">
+</span><span class="k" data-group-id="7148796218-3">end</span></code></pre><p>In addition to returning query results, you can return a <code class="inline">t:Ash.Resource.ManualRead.extra_info()</code>.
+This contains a <code class="inline">full_count</code> key, which can be used when paginating to set the total count of records.</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.ManualRead</span><span class="w"> </span><span class="k" data-group-id="1971475767-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource.ManualRead</span><span class="w">
+
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">read</span><span class="p" data-group-id="1971475767-2">(</span><span class="n">ash_query</span><span class="p">,</span><span class="w"> </span><span class="n">ecto_query</span><span class="p">,</span><span class="w"> </span><span class="c">_opts</span><span class="p">,</span><span class="w"> </span><span class="c">_context</span><span class="p" data-group-id="1971475767-2">)</span><span class="w"> </span><span class="k" data-group-id="1971475767-3">do</span><span class="w">
+    </span><span class="p" data-group-id="1971475767-4">%{</span><span class="s">&quot;data&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;count&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">count</span><span class="p" data-group-id="1971475767-4">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_some_api_request</span><span class="p" data-group-id="1971475767-5">(</span><span class="n">...</span><span class="p" data-group-id="1971475767-5">)</span><span class="w">
+    </span><span class="k">if</span><span class="w"> </span><span class="n">ash_query</span><span class="o">.</span><span class="n">page</span><span class="p" data-group-id="1971475767-6">[</span><span class="ss">:count</span><span class="p" data-group-id="1971475767-6">]</span><span class="w"> </span><span class="k" data-group-id="1971475767-7">do</span><span class="w">
+      </span><span class="p" data-group-id="1971475767-8">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">query_results</span><span class="p" data-group-id="1971475767-8">}</span><span class="w">
+    </span><span class="k" data-group-id="1971475767-7">else</span><span class="w">
+      </span><span class="p" data-group-id="1971475767-9">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">query_results</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="1971475767-10">%{</span><span class="ss">full_count</span><span class="p">:</span><span class="w"> </span><span class="n">count</span><span class="p" data-group-id="1971475767-10">}</span><span class="p" data-group-id="1971475767-9">}</span><span class="w"> 
+    </span><span class="k" data-group-id="1971475767-7">end</span><span class="w">
+  </span><span class="k" data-group-id="1971475767-3">end</span><span class="w">
+</span><span class="k" data-group-id="1971475767-1">end</span><span class="w">
+</span></code></pre><h3 id="modifying-the-query">Modifying the query</h3><p>As an alternative to manual read actions, you can also provide the <code class="inline">modify_query</code> option, which takes an <code class="inline">MFA</code> and allows low level manipulation of the query just before it is dispatched to the data layer.</p><p>For example:</p><pre><code class="makeup elixir" translate="no"><span class="n">read</span><span class="w"> </span><span class="ss">:read</span><span class="w"> </span><span class="k" data-group-id="9138307103-1">do</span><span class="w">
+  </span><span class="n">modify_query</span><span class="w"> </span><span class="p" data-group-id="9138307103-2">{</span><span class="nc">MyApp.ModifyQuery</span><span class="p">,</span><span class="w"> </span><span class="ss">:modify</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="9138307103-3">[</span><span class="p" data-group-id="9138307103-3">]</span><span class="p" data-group-id="9138307103-2">}</span><span class="w">
+</span><span class="k" data-group-id="9138307103-1">end</span><span class="w">
+
+</span><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.ModifyQuery</span><span class="w"> </span><span class="k" data-group-id="9138307103-4">do</span><span class="w">
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">modify</span><span class="p" data-group-id="9138307103-5">(</span><span class="n">ash_query</span><span class="p">,</span><span class="w"> </span><span class="n">data_layer_query</span><span class="p" data-group-id="9138307103-5">)</span><span class="w"> </span><span class="k" data-group-id="9138307103-6">do</span><span class="w">
+    </span><span class="p" data-group-id="9138307103-7">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">modify_data_layer_query</span><span class="p" data-group-id="9138307103-8">(</span><span class="n">data_layer_query</span><span class="p" data-group-id="9138307103-8">)</span><span class="p" data-group-id="9138307103-7">}</span><span class="w">
+  </span><span class="k" data-group-id="9138307103-6">end</span><span class="w">
+</span><span class="k" data-group-id="9138307103-4">end</span></code></pre><p>This can be used as a last-resort escape hatch when you want to still use resource actions but need to do something that you can't do easily with Ash tools. As with any low level escape hatch, here be dragons.</p>
+
+  </body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>mix ash.gen.resource - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+mix ash.gen.resource 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Generate and configure an Ash.Resource.</p><p>If the domain does not exist, we create it. If it does, we add the resource to it if it is not already present.</p><h2 id="module-example">Example</h2><pre><code class="makeup bash" translate="no"><samp class="">mix ash.gen.resource Helpdesk.Support.Ticket \
+</samp><samp class="">  --default-actions read \
+</samp><samp class="">  --uuid-primary-key id \
+</samp><samp class="">  --attribute subject:string:required:public \
+</samp><samp class="">  --relationship belongs_to:representative:Helpdesk.Support.Representative \
+</samp><samp class="">  --timestamps \
+</samp><samp class="">  --extend postgres,graphql
+</samp><samp class="">
+</samp></code></pre><h2 id="module-options">Options</h2><ul><li><code class="inline">--attribute</code> or <code class="inline">-a</code> - An attribute or comma separated list of attributes to add, as <code class="inline">name:type</code>. Modifiers: <code class="inline">primary_key</code>, <code class="inline">array</code>, <code class="inline">public</code>, <code class="inline">sensitive</code>, and <code class="inline">required</code>. i.e <code class="inline">-a name:string:required</code></li><li><code class="inline">--relationship</code> or <code class="inline">-r</code> - A relationship or comma separated list of relationships to add, as <code class="inline">type:name:dest</code>. Modifiers: <code class="inline">public</code>. <code class="inline">belongs_to</code> only modifiers: <code class="inline">primary_key</code>, <code class="inline">sensitive</code>, and <code class="inline">required</code>. i.e <code class="inline">-r belongs_to:author:MyApp.Accounts.Author:required</code></li><li><code class="inline">--default-actions</code> - A csv list of default action types to add. The <code class="inline">create</code> and <code class="inline">update</code> actions accept the public attributes being added.</li><li><code class="inline">--uuid-primary-key</code> or <code class="inline">-u</code> - Adds a UUIDv4 primary key with that name. i.e <code class="inline">-u id</code></li><li><code class="inline">--uuid-v7-primary-key</code> - Adds a UUIDv7 primary key with that name.</li><li><code class="inline">--integer-primary-key</code> or <code class="inline">-i</code> - Adds an integer primary key with that name. i.e <code class="inline">-i id</code></li><li><code class="inline">--domain</code> or <code class="inline">-d</code> - The domain module to add the resource to. i.e <code class="inline">-d MyApp.MyDomain</code>. This defaults to the resource's module name, minus the last segment.</li><li><code class="inline">--extend</code> or <code class="inline">-e</code> - A comma separated list of modules or builtins to extend the resource with. i.e <code class="inline">-e postgres,Some.Extension</code></li><li><code class="inline">--base</code> or <code class="inline">-b</code> - The base module to use for the resource. i.e <code class="inline">-b Ash.Resource</code>. Requires that the module is in <code class="inline">config :your_app, :base_resources</code></li><li><code class="inline">--timestamps</code> or <code class="inline">-t</code> - If set adds <code class="inline">inserted_at</code> and <code class="inline">updated_at</code> timestamps to the resource.</li><li><code class="inline">--ignore-if-exists</code> - Does nothing if the resource already exists</li><li><code class="inline">--conflicts</code> - How to handle conflicts when the same attribute, relationship, or action already exists. Options: <code class="inline">ignore</code> (default), <code class="inline">replace</code>
+ <code class="inline">ignore</code> will ignore your addition for that attribute, relationship, or action. <code class="inline">replace</code> will remove the existing one in favor of yours.</li></ul>
+      </section>
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,3741 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Type - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Type <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>The <a href="Ash.Type.xhtml"><code class="inline">Ash.Type</code></a> behaviour is used to define a value type in Ash.</p><h2 id="module-built-in-types">Built in types</h2><ul><li><code class="inline">:map</code> - <a href="Ash.Type.Map.xhtml"><code class="inline">Ash.Type.Map</code></a></li><li><code class="inline">:keyword</code> - <a href="Ash.Type.Keyword.xhtml"><code class="inline">Ash.Type.Keyword</code></a></li><li><code class="inline">:term</code> - <a href="Ash.Type.Term.xhtml"><code class="inline">Ash.Type.Term</code></a></li><li><code class="inline">:atom</code> - <a href="Ash.Type.Atom.xhtml"><code class="inline">Ash.Type.Atom</code></a></li><li><code class="inline">:tuple</code> - <a href="Ash.Type.Tuple.xhtml"><code class="inline">Ash.Type.Tuple</code></a></li><li><code class="inline">:string</code> - <a href="Ash.Type.String.xhtml"><code class="inline">Ash.Type.String</code></a></li><li><code class="inline">:integer</code> - <a href="Ash.Type.Integer.xhtml"><code class="inline">Ash.Type.Integer</code></a></li><li><code class="inline">:file</code> - <a href="Ash.Type.File.xhtml"><code class="inline">Ash.Type.File</code></a></li><li><code class="inline">:float</code> - <a href="Ash.Type.Float.xhtml"><code class="inline">Ash.Type.Float</code></a></li><li><code class="inline">:duration_name</code> - <a href="Ash.Type.DurationName.xhtml"><code class="inline">Ash.Type.DurationName</code></a></li><li><code class="inline">:function</code> - <a href="Ash.Type.Function.xhtml"><code class="inline">Ash.Type.Function</code></a></li><li><code class="inline">:boolean</code> - <a href="Ash.Type.Boolean.xhtml"><code class="inline">Ash.Type.Boolean</code></a></li><li><code class="inline">:struct</code> - <a href="Ash.Type.Struct.xhtml"><code class="inline">Ash.Type.Struct</code></a></li><li><code class="inline">:uuid</code> - <a href="Ash.Type.UUID.xhtml"><code class="inline">Ash.Type.UUID</code></a></li><li><code class="inline">:uuid_v7</code> - <a href="Ash.Type.UUIDv7.xhtml"><code class="inline">Ash.Type.UUIDv7</code></a></li><li><code class="inline">:binary</code> - <a href="Ash.Type.Binary.xhtml"><code class="inline">Ash.Type.Binary</code></a></li><li><code class="inline">:date</code> - <a href="Ash.Type.Date.xhtml"><code class="inline">Ash.Type.Date</code></a></li><li><code class="inline">:time</code> - <a href="Ash.Type.Time.xhtml"><code class="inline">Ash.Type.Time</code></a></li><li><code class="inline">:time_usec</code> - <a href="Ash.Type.TimeUsec.xhtml"><code class="inline">Ash.Type.TimeUsec</code></a></li><li><code class="inline">:decimal</code> - <a href="Ash.Type.Decimal.xhtml"><code class="inline">Ash.Type.Decimal</code></a></li><li><code class="inline">:ci_string</code> - <a href="Ash.Type.CiString.xhtml"><code class="inline">Ash.Type.CiString</code></a></li><li><code class="inline">:naive_datetime</code> - <a href="Ash.Type.NaiveDatetime.xhtml"><code class="inline">Ash.Type.NaiveDatetime</code></a></li><li><code class="inline">:utc_datetime</code> - <a href="Ash.Type.UtcDatetime.xhtml"><code class="inline">Ash.Type.UtcDatetime</code></a></li><li><code class="inline">:utc_datetime_usec</code> - <a href="Ash.Type.UtcDatetimeUsec.xhtml"><code class="inline">Ash.Type.UtcDatetimeUsec</code></a></li><li><code class="inline">:datetime</code> - <a href="Ash.Type.DateTime.xhtml"><code class="inline">Ash.Type.DateTime</code></a></li><li><code class="inline">:duration</code> - <a href="Ash.Type.Duration.xhtml"><code class="inline">Ash.Type.Duration</code></a></li><li><code class="inline">:url_encoded_binary</code> - <a href="Ash.Type.UrlEncodedBinary.xhtml"><code class="inline">Ash.Type.UrlEncodedBinary</code></a></li><li><code class="inline">:union</code> - <a href="Ash.Type.Union.xhtml"><code class="inline">Ash.Type.Union</code></a></li><li><code class="inline">:module</code> - <a href="Ash.Type.Module.xhtml"><code class="inline">Ash.Type.Module</code></a></li><li><code class="inline">:vector</code> - <a href="Ash.Type.Vector.xhtml"><code class="inline">Ash.Type.Vector</code></a></li></ul><h2 id="module-lists-arrays">Lists/Arrays</h2><p>To specify a list of values, use <code class="inline">{:array, Type}</code>. Arrays are special, and have special constraints:</p><ul><li><p><code class="inline">:items</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - Constraints for the elements of the list. See the contained type's docs for more.</p></li><li><p><code class="inline">:min_length</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">non_neg_integer/0</code></a>) - A minimum length for the items.</p></li><li><p><code class="inline">:max_length</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">non_neg_integer/0</code></a>) - A maximum length for the items.</p></li><li><p><code class="inline">:nil_items?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not the list can contain nil items. The default value is <code class="inline">false</code>.</p></li><li><p><code class="inline">:remove_nil_items?</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">boolean/0</code></a>) - Whether or not to remove the nil items from the list instead of adding errors. The default value is <code class="inline">false</code>.</p></li><li><p><code class="inline">:empty_values</code> (list of <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - A set of values that, if encountered, will be considered an empty list. The default value is <code class="inline">[&quot;&quot;]</code>.</p></li></ul><h2 id="module-defining-custom-types">Defining Custom Types</h2><p>Generally you add <code class="inline">use Ash.Type</code> to your module (it is possible to add <code class="inline">@behaviour Ash.Type</code> and define everything yourself, but this is more work and error-prone).</p><p>Another option is to use <a href="Ash.Type.NewType.xhtml"><code class="inline">Ash.Type.NewType</code></a>, which supports defining a new type that
+is the combination of an existing type and custom constraints.
+This can be helpful when defining a custom attribute (e.g. struct) for a resource.</p><p>Simple example of a float custom type</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">GenTracker.AshFloat</samp><samp class="w"> </samp><samp class="k" data-group-id="0371819708-1">do</samp><samp class="w">
+  </samp><samp class="kn">use</samp><samp class="w"> </samp><samp class="nc">Ash.Type</samp><samp class="w">
+
+  </samp><samp class="na">@impl</samp><samp class="w"> </samp><samp class="nc">Ash.Type</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">storage_type</samp><samp class="p" data-group-id="0371819708-2">(</samp><samp class="bp">_</samp><samp class="p" data-group-id="0371819708-2">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:float</samp><samp class="w">
+
+  </samp><samp class="na">@impl</samp><samp class="w"> </samp><samp class="nc">Ash.Type</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">cast_input</samp><samp class="p" data-group-id="0371819708-3">(</samp><samp class="no">nil</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="0371819708-3">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0371819708-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="no">nil</samp><samp class="p" data-group-id="0371819708-4">}</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">cast_input</samp><samp class="p" data-group-id="0371819708-5">(</samp><samp class="n">value</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="0371819708-5">)</samp><samp class="w"> </samp><samp class="k" data-group-id="0371819708-6">do</samp><samp class="w">
+    </samp><samp class="nc">Ecto.Type</samp><samp class="o">.</samp><samp class="n">cast</samp><samp class="p" data-group-id="0371819708-7">(</samp><samp class="ss">:float</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">value</samp><samp class="p" data-group-id="0371819708-7">)</samp><samp class="w">
+  </samp><samp class="k" data-group-id="0371819708-6">end</samp><samp class="w">
+
+  </samp><samp class="na">@impl</samp><samp class="w"> </samp><samp class="nc">Ash.Type</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">cast_stored</samp><samp class="p" data-group-id="0371819708-8">(</samp><samp class="no">nil</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="0371819708-8">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0371819708-9">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="no">nil</samp><samp class="p" data-group-id="0371819708-9">}</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">cast_stored</samp><samp class="p" data-group-id="0371819708-10">(</samp><samp class="n">value</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="0371819708-10">)</samp><samp class="w"> </samp><samp class="k" data-group-id="0371819708-11">do</samp><samp class="w">
+    </samp><samp class="nc">Ecto.Type</samp><samp class="o">.</samp><samp class="n">load</samp><samp class="p" data-group-id="0371819708-12">(</samp><samp class="ss">:float</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">value</samp><samp class="p" data-group-id="0371819708-12">)</samp><samp class="w">
+  </samp><samp class="k" data-group-id="0371819708-11">end</samp><samp class="w">
+
+  </samp><samp class="na">@impl</samp><samp class="w"> </samp><samp class="nc">Ash.Type</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">dump_to_native</samp><samp class="p" data-group-id="0371819708-13">(</samp><samp class="no">nil</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="0371819708-13">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">do</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0371819708-14">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="no">nil</samp><samp class="p" data-group-id="0371819708-14">}</samp><samp class="w">
+  </samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">dump_to_native</samp><samp class="p" data-group-id="0371819708-15">(</samp><samp class="n">value</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="0371819708-15">)</samp><samp class="w"> </samp><samp class="k" data-group-id="0371819708-16">do</samp><samp class="w">
+    </samp><samp class="nc">Ecto.Type</samp><samp class="o">.</samp><samp class="n">dump</samp><samp class="p" data-group-id="0371819708-17">(</samp><samp class="ss">:float</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">value</samp><samp class="p" data-group-id="0371819708-17">)</samp><samp class="w">
+  </samp><samp class="k" data-group-id="0371819708-16">end</samp><samp class="w">
+</samp><samp class="k" data-group-id="0371819708-1">end</samp></code></pre><h3 id="module-overriding-the-array-type-behaviour">Overriding the <code class="inline">{:array, type}</code> behaviour</h3><p>By defining the <code class="inline">*_array</code> versions of <code class="inline">cast_input</code>, <code class="inline">cast_stored</code>, <code class="inline">dump_to_native</code> and <code class="inline">apply_constraints</code>, you can
+override how your type behaves as a collection. This is how the features of embedded
+resources are implemented. No need to implement them unless you wish to override the
+default behaviour. Your type is responsible for handling nil values in each callback as well.</p><p>All the Ash built-in types are implemented with <code class="inline">use Ash.Type</code> so they are good
+examples to look at to create your own <a href="Ash.Type.xhtml"><code class="inline">Ash.Type</code></a>.</p><h3 id="module-short-names">Short names</h3><p>You can define short <code class="inline">:atom_names</code> for your custom types by adding them to your Ash configuration:</p><pre><code class="makeup elixir" translate="no"><samp class="n">config</samp><samp class="w"> </samp><samp class="ss">:ash</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:custom_types</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1547831608-1">[</samp><samp class="ss">ash_float</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">GenTracker.AshFloat</samp><samp class="p" data-group-id="1547831608-1">]</samp></code></pre><p>Doing this will require a recompilation of the <code class="inline">:ash</code> dependency which can be triggered by calling:</p><pre><code class="makeup bash" translate="no"><samp class="gp unselectable">$ </samp><samp class="">mix deps.compile ash --force
+</samp></code></pre><h2 id="module-composite-types">Composite Types</h2><p>Composite types are composite <em>in the data layer</em>. Many data layers do not support this, but some (like AshPostgres),
+do. To define a composite type, the following things should be true:</p><ol><li>A casted value should be a map or struct, for example for a point: <code class="inline">%{x: 1, y: 2}</code></li><li>The data layer must support composite types, and the data layer representation will be a tuple, i.e <code class="inline">{1, 2}</code></li><li>Define <code class="inline">def composite?(_), do: true</code> in your composite type</li><li>Define the type &amp; constraints of each item in the tuple, and its name in the map
+representation: <code class="inline">def composite_types(_), do: [{:x, :integer, []}, {:y, :integer, []}]</code>.
+You can also define a storage key for each item in the tuple, if the underlying type implementation
+has a different reference for an item, i.e <code class="inline">def composite_types(_), do: [{:x, :x_coord, :integer, []}, {:y, :y_coord, :integer, []}]</code></li></ol><p>With the above implemented, your composite type can be used in expressions, for example:</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Ash.Query</samp><samp class="o">.</samp><samp class="n">filter</samp><samp class="p" data-group-id="2579325669-1">(</samp><samp class="n">expr</samp><samp class="p" data-group-id="2579325669-2">(</samp><samp class="n">coordinates</samp><samp class="p" data-group-id="2579325669-3">[</samp><samp class="ss">:x</samp><samp class="p" data-group-id="2579325669-3">]</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="2579325669-2">)</samp><samp class="p" data-group-id="2579325669-1">)</samp></code></pre><p>And you can also <em>construct</em> composite types in expressions, for example:</p><pre><code class="makeup elixir" translate="no"><samp class="n">calculate</samp><samp class="w"> </samp><samp class="ss">:coordinates</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:composite_point</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">expr</samp><samp class="p" data-group-id="0263682927-1">(</samp><samp class="w">
+  </samp><samp class="n">composite_type</samp><samp class="p" data-group-id="0263682927-2">(</samp><samp class="p" data-group-id="0263682927-3">%{</samp><samp class="ss">x</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">some_value</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">y</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">some_other_value</samp><samp class="p" data-group-id="0263682927-3">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Point</samp><samp class="p" data-group-id="0263682927-2">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0263682927-1">)</samp></code></pre><h2 id="module-constraints">Constraints</h2><p>Constraints are a way of validating an input type. This validation can be used in both attributes and arguments. The kinds of constraints you can apply depends on the type of data. You can find all types in <a href="Ash.Type.xhtml"><code class="inline">Ash.Type</code></a> . Each type has its own page on which the available constraints are listed. For example in <a href="Ash.Type.String.xhtml"><code class="inline">Ash.Type.String</code></a> you can find 5 constraints:</p><ul><li><code class="inline">:max_length</code></li><li><code class="inline">:min_length</code></li><li><code class="inline">:match</code></li><li><code class="inline">:trim?</code></li><li><code class="inline">:allow_empty?</code></li></ul><p>You can also discover these constraints from iex:</p><pre><code class="makeup bash" translate="no"><samp class="gp unselectable">$ </samp><samp class="">iex -S mix
+</samp><samp class="">iex(1)&gt; Ash.Type.String.constraints
+</samp><samp class="">[
+</samp><samp class="">  max_length: [
+</samp><samp class="">    type: :non_neg_integer,
+</samp><samp class="">    doc: &quot;Enforces a maximum length on the value&quot;
+</samp><samp class="">  ],
+</samp><samp class="">  min_length: [
+</samp><samp class="">    type: :non_neg_integer,
+</samp><samp class="">    doc: &quot;Enforces a minimum length on the value&quot;
+</samp><samp class="">  ],
+</samp><samp class="">  match: [
+</samp><samp class="">    type: :regex_as_mfa,
+</samp><samp class="">    doc: &quot;Enforces that the string matches a passed in regex&quot;
+</samp><samp class="">  ],
+</samp><samp class="">  trim?: [type: :boolean, doc: &quot;Trims the value.&quot;, default: true],
+</samp><samp class="">  allow_empty?: [
+</samp><samp class="">    type: :boolean,
+</samp><samp class="">    doc: &quot;If false, the value is set to `nil` if it&#39;s empty.&quot;,
+</samp><samp class="">    default: false
+</samp><samp class="">  ]
+</samp><samp class="">]
+</samp></code></pre><h3 id="module-attribute-example">Attribute example</h3><p>To show how constraints can be used in a attribute, here is an example attribute describing a username:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">defmodule</samp><samp class="w"> </samp><samp class="nc">MyProject.MyDomain.Account</samp><samp class="w"> </samp><samp class="k" data-group-id="4771103647-1">do</samp><samp class="w">
+  </samp><samp class="c1"># ...</samp><samp class="w">
+
+  </samp><samp class="n">code_interface</samp><samp class="w"> </samp><samp class="k" data-group-id="4771103647-2">do</samp><samp class="w">
+    </samp><samp class="n">define</samp><samp class="w"> </samp><samp class="ss">:create</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">action</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:create</samp><samp class="w">
+  </samp><samp class="k" data-group-id="4771103647-2">end</samp><samp class="w">
+
+  </samp><samp class="n">actions</samp><samp class="w"> </samp><samp class="k" data-group-id="4771103647-3">do</samp><samp class="w">
+    </samp><samp class="n">default</samp><samp class="w"> </samp><samp class="p" data-group-id="4771103647-4">[</samp><samp class="ss">:create</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:read</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:update</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:destroy</samp><samp class="p" data-group-id="4771103647-4">]</samp><samp class="w">
+  </samp><samp class="k" data-group-id="4771103647-3">end</samp><samp class="w">
+
+  </samp><samp class="n">attributes</samp><samp class="w"> </samp><samp class="k" data-group-id="4771103647-5">do</samp><samp class="w">
+    </samp><samp class="n">uuid_primary_key</samp><samp class="w"> </samp><samp class="ss">:id</samp><samp class="w">
+
+    </samp><samp class="n">attribute</samp><samp class="w"> </samp><samp class="ss">:username</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:string</samp><samp class="w"> </samp><samp class="k" data-group-id="4771103647-6">do</samp><samp class="w">
+      </samp><samp class="n">constraints</samp><samp class="w"> </samp><samp class="p" data-group-id="4771103647-7">[</samp><samp class="w">
+        </samp><samp class="ss">max_length</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">20</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">min_length</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">match</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;^[a-z_-]*$&quot;</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">trim?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p">,</samp><samp class="w">
+        </samp><samp class="ss">allow_empty?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">false</samp><samp class="w">
+      </samp><samp class="p" data-group-id="4771103647-7">]</samp><samp class="w">
+    </samp><samp class="k" data-group-id="4771103647-6">end</samp><samp class="w">
+  </samp><samp class="k" data-group-id="4771103647-5">end</samp><samp class="w">
+
+  </samp><samp class="c1"># ...</samp><samp class="w">
+</samp><samp class="k" data-group-id="4771103647-1">end</samp></code></pre><p>If, when creating or updating this attribute, one of the constraints are not met, an error will be given telling you which constraint was broken. See below:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex(1)&gt; </samp><samp class="nc">MyProject.MyDomain.Account</samp><samp class="o">.</samp><samp class="n">create!</samp><samp class="p" data-group-id="7603617836-1">(</samp><samp class="p" data-group-id="7603617836-2">%{</samp><samp class="ss">username</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;hi&quot;</samp><samp class="p" data-group-id="7603617836-2">}</samp><samp class="p" data-group-id="7603617836-1">)</samp><samp class="w">
+
+</samp><samp class="gt">** (Ash.Error.Invalid) Invalid Error</samp><samp class="w">
+
+</samp><samp class="o">*</samp><samp class="w"> </samp><samp class="nc">Invalid</samp><samp class="w"> </samp><samp class="n">value</samp><samp class="w"> </samp><samp class="n">provided</samp><samp class="w"> </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="ss">username</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">length</samp><samp class="w"> </samp><samp class="n">must</samp><samp class="w"> </samp><samp class="n">be</samp><samp class="w"> </samp><samp class="n">greater</samp><samp class="w"> </samp><samp class="n">than</samp><samp class="w"> </samp><samp class="ow">or</samp><samp class="w"> </samp><samp class="n">equal</samp><samp class="w"> </samp><samp class="n">to</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="o">.</samp><samp class="w">
+
+</samp><samp class="s">&quot;hi&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex(2)&gt; </samp><samp class="nc">MyProject.MyDomain.Account</samp><samp class="o">.</samp><samp class="n">create!</samp><samp class="p" data-group-id="7603617836-3">(</samp><samp class="p" data-group-id="7603617836-4">%{</samp><samp class="ss">username</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Hello there this is a long string&quot;</samp><samp class="p" data-group-id="7603617836-4">}</samp><samp class="p" data-group-id="7603617836-3">)</samp><samp class="w">
+
+</samp><samp class="gt">** (Ash.Error.Invalid) Invalid Error</samp><samp class="w">
+
+</samp><samp class="o">*</samp><samp class="w"> </samp><samp class="nc">Invalid</samp><samp class="w"> </samp><samp class="n">value</samp><samp class="w"> </samp><samp class="n">provided</samp><samp class="w"> </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="ss">username</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">length</samp><samp class="w"> </samp><samp class="n">must</samp><samp class="w"> </samp><samp class="n">be</samp><samp class="w"> </samp><samp class="n">less</samp><samp class="w"> </samp><samp class="n">than</samp><samp class="w"> </samp><samp class="ow">or</samp><samp class="w"> </samp><samp class="n">equal</samp><samp class="w"> </samp><samp class="n">to</samp><samp class="w"> </samp><samp class="mi">20</samp><samp class="o">.</samp><samp class="w">
+
+</samp><samp class="s">&quot;Hello there this is a long string&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex(3)&gt; </samp><samp class="nc">MyProject.MyDomain.Account</samp><samp class="o">.</samp><samp class="n">create!</samp><samp class="p" data-group-id="7603617836-5">(</samp><samp class="p" data-group-id="7603617836-6">%{</samp><samp class="ss">username</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;hello there&quot;</samp><samp class="p" data-group-id="7603617836-6">}</samp><samp class="p" data-group-id="7603617836-5">)</samp><samp class="w">
+</samp><samp class="gt">** (Ash.Error.Invalid) Invalid Error</samp><samp class="w">
+
+</samp><samp class="o">*</samp><samp class="w"> </samp><samp class="nc">Invalid</samp><samp class="w"> </samp><samp class="n">value</samp><samp class="w"> </samp><samp class="n">provided</samp><samp class="w"> </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="ss">username</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">must</samp><samp class="w"> </samp><samp class="n">match</samp><samp class="w"> </samp><samp class="n">the</samp><samp class="w"> </samp><samp class="n">pattern</samp><samp class="w"> </samp><samp class="sr">~r/^[a-z_-]*$/</samp><samp class="o">.</samp><samp class="w">
+
+</samp><samp class="s">&quot;hello there&quot;</samp><samp class="w">
+
+</samp><samp class="gp unselectable">iex(4)&gt; </samp><samp class="nc">MyProject.MyDomain.Account</samp><samp class="o">.</samp><samp class="n">create!</samp><samp class="p" data-group-id="7603617836-7">(</samp><samp class="p" data-group-id="7603617836-8">%{</samp><samp class="ss">username</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;&quot;</samp><samp class="p" data-group-id="7603617836-8">}</samp><samp class="p" data-group-id="7603617836-7">)</samp><samp class="w">
+</samp><samp class="gt">** (Ash.Error.Invalid) Invalid Error</samp><samp class="w">
+
+</samp><samp class="o">*</samp><samp class="w"> </samp><samp class="n">attribute</samp><samp class="w"> </samp><samp class="n">title</samp><samp class="w"> </samp><samp class="n">is</samp><samp class="w"> </samp><samp class="n">required</samp></code></pre><p>It will give you the resource as usual on successful requests:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex(5)&gt; </samp><samp class="nc">MyProject.MyDomain.Account</samp><samp class="o">.</samp><samp class="n">create!</samp><samp class="p" data-group-id="0171456884-1">(</samp><samp class="p" data-group-id="0171456884-2">%{</samp><samp class="ss">username</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="0171456884-2">}</samp><samp class="p" data-group-id="0171456884-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0171456884-3">#</samp><samp class="nc" data-group-id="0171456884-3">MyProject.MyDomain.Account</samp><samp class="p" data-group-id="0171456884-3">&lt;</samp><samp class="w">
+  </samp><samp class="ss">__meta__</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0171456884-4">#</samp><samp class="nc" data-group-id="0171456884-4">Ecto.Schema.Metadata</samp><samp class="p" data-group-id="0171456884-4">&lt;</samp><samp class="ss">:loaded</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;account&quot;</samp><samp class="p" data-group-id="0171456884-4">&gt;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;7ba467dd-277c-4916-88ae-f62c93fee7a3&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">username</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="n">...</samp><samp class="w">
+</samp><samp class="p" data-group-id="0171456884-3">&gt;</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:constraints/0" data-no-tooltip="" translate="no">constraints()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A keyword list of constraints for a type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:error/0" data-no-tooltip="" translate="no">error()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>An error value that can be returned from various callbacks</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:load_context/0" data-no-tooltip="" translate="no">load_context()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The context that is provided to the <a><code class="inline">load/4</code></a> callback.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:merge_load_context/0" data-no-tooltip="" translate="no">merge_load_context()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The context that is provided to the <a><code class="inline">merge_load/4</code></a> callback.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A valid Ash.Type</p></div>
+
+    </div>
+
+</div>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:apply_atomic_constraints/2" data-no-tooltip="" translate="no">apply_atomic_constraints(new_value, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Applies type constraints within an expression.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:apply_atomic_constraints_array/2" data-no-tooltip="" translate="no">apply_atomic_constraints_array(new_value, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Applies type constraints to a list of values within an expression. See <a><code class="inline">apply_atomic_constraints/2</code></a> for more.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:apply_constraints/2" data-no-tooltip="" translate="no">apply_constraints(term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Called after casting, to apply additional constraints to the value.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:apply_constraints_array/2" data-no-tooltip="" translate="no">apply_constraints_array(list, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Called after casting a list of values, to apply additional constraints to the value.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:array_constraints/0" data-no-tooltip="" translate="no">array_constraints()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a <a><code class="inline">Spark.Options</code></a> spec for the additional constraints supported when used in a list.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:can_load?/1" data-no-tooltip="" translate="no">can_load?(constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not <a><code class="inline">load/4</code></a> can be used. Defined automatically</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:cast_atomic/2" data-no-tooltip="" translate="no">cast_atomic(new_value, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Casts a value within an expression.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:cast_atomic_array/2" data-no-tooltip="" translate="no">cast_atomic_array(new_value, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Casts a list of values within an expression. See <a><code class="inline">cast_atomic/2</code></a> for more.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:cast_in_query?/1" data-no-tooltip="" translate="no">cast_in_query?(constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not data layers that build queries should attempt to type cast values of this type while doing so.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:cast_input/2" data-no-tooltip="" translate="no">cast_input(term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Attempt to cast unknown, potentially user-provided input, into a valid instance of the type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:cast_input_array/2" data-no-tooltip="" translate="no">cast_input_array(list, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Attempt to cast a list of unknown, potentially user-provided inputs, into a list of valid instances of type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:cast_stored/2" data-no-tooltip="" translate="no">cast_stored(term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Attempt to load a stored value from the data layer into a valid instance of the type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:cast_stored_array/2" data-no-tooltip="" translate="no">cast_stored_array(list, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Attempt to load a list of stored values from the data layer into a list of valid instances of the type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:coerce/2" data-no-tooltip="" translate="no">coerce(term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Attempt to coerce unknown, potentially user-provided input, into a valid instance of the type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:composite?/1" data-no-tooltip="" translate="no">composite?(constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Return true if the type is a composite type, meaning it is made up of one or more values. How this works is up to the data layer.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:composite_types/1" data-no-tooltip="" translate="no">composite_types(constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Information about each member of the composite type, if it is a composite type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:constraints/0" data-no-tooltip="" translate="no">constraints()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a <a><code class="inline">Spark.Options</code></a> spec for the constraints supported by the type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:custom_apply_constraints_array?/0" data-no-tooltip="" translate="no">custom_apply_constraints_array?()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not an <a><code class="inline">apply_constraints_array/2</code></a> callback has been defined. This is defined automatically.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:describe/1" data-no-tooltip="" translate="no">describe(constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Describes a type given its constraints. Can be used to generate docs, for example.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:dump_to_embedded/2" data-no-tooltip="" translate="no">dump_to_embedded(term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Transform a valid instance of the type into a format that can be JSON encoded.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:dump_to_embedded_array/2" data-no-tooltip="" translate="no">dump_to_embedded_array(list, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Transform a list of valid instances of the type into a format that can be JSON encoded.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:dump_to_native/2" data-no-tooltip="" translate="no">dump_to_native(term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Transform a valid instance of the type into a format that the data layer can store.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:dump_to_native_array/2" data-no-tooltip="" translate="no">dump_to_native_array(list, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Transform a list of valid instance of the type into a format that the data layer can store.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:ecto_type/0" data-no-tooltip="" translate="no">ecto_type()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The underlying Ecto.Type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:embedded?/0" data-no-tooltip="" translate="no">embedded?()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not the type is an embedded resource. This is defined by embedded resources, you should not define this.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:equal?/2" data-no-tooltip="" translate="no">equal?(term, term)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Determine if two valid instances of the type are equal.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:evaluate_operator/1" data-no-tooltip="" translate="no">evaluate_operator(term)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The implementation for any overloaded implementations.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:generator/1" data-no-tooltip="" translate="no">generator(constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>An Enumerable that produces valid instances of the type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:get_rewrites/4" data-no-tooltip="" translate="no">get_rewrites(merged_load, calculation, path, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets any &quot;rewrites&quot; necessary to apply a given load statement.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:handle_change/3" data-no-tooltip="" translate="no">handle_change(old_term, new_term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>React to a changing value. This could be used, for example, to have a type like <code class="inline">:strictly_increasing_integer</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:handle_change_array/3" data-no-tooltip="" translate="no">handle_change_array(old_term, new_term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>React to a changing list of values. This could be used, for example, to have a type like <code class="inline">:unique_integer</code>, which when used in a list all items must be unique.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:handle_change_array?/0" data-no-tooltip="" translate="no">handle_change_array?()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not a custom <a><code class="inline">handle_change_array/3</code></a> has been defined by the type. Defined automatically.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:include_source/2" data-no-tooltip="" translate="no">include_source(constraints, t)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Add the source changeset to the constraints, in cases where it is needed for type casting logic</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:init/1" data-no-tooltip="" translate="no">init(constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Useful for typed data layers (like ash_postgres) to instruct them not to attempt to cast input values.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:load/4" data-no-tooltip="" translate="no">load(values, load, constraints, context)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Applies a load statement through a list of values.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:loaded?/4" data-no-tooltip="" translate="no">loaded?(value, path_to_load, constraints, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Checks if the given path has been loaded on the type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:matches_type?/2" data-no-tooltip="" translate="no">matches_type?(term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not the value a valid instance of the type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:may_support_atomic_update?/1" data-no-tooltip="" translate="no">may_support_atomic_update?(constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not a value with given constraints may support being cast atomic</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:merge_load/4" data-no-tooltip="" translate="no">merge_load(left, right, constraints, context)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Merges a load statement with an existing load statement for the type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:operator_overloads/0" data-no-tooltip="" translate="no">operator_overloads()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A map of operators with overloaded implementations.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:prepare_change/3" data-no-tooltip="" translate="no">prepare_change(old_term, new_uncasted_term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Prepare a change, given the old value and the new uncasted value.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:prepare_change_array/3" data-no-tooltip="" translate="no">prepare_change_array(old_term, new_uncasted_term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Prepare a changing list of values, given the old value and the new uncasted value.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:prepare_change_array?/0" data-no-tooltip="" translate="no">prepare_change_array?()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not a custom <a><code class="inline">prepare_change_array/3</code></a> has been defined by the type. Defined automatically.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:rewrite/3" data-no-tooltip="" translate="no">rewrite(value, list, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Apply any &quot;rewrites&quot; necessary to provide the results of a load statement to calculations that depended on a given load.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:simple_equality?/0" data-no-tooltip="" translate="no">simple_equality?()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not <code class="inline">==</code> can be used to compare instances of the type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:storage_type/0" data-no-tooltip="" translate="no">storage_type()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The storage type, which should be known by a data layer supporting this type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:storage_type/1" data-no-tooltip="" translate="no">storage_type(constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The storage type, which should be known by a data layer supporting this type.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#apply_atomic_constraints/3" data-no-tooltip="" translate="no">apply_atomic_constraints(type, term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Applies a types constraints to an expression.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#apply_constraints/3" data-no-tooltip="" translate="no">apply_constraints(type, term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Confirms if a casted value matches the provided constraints.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#array_constraints/1" data-no-tooltip="" translate="no">array_constraints(type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the array constraints for a type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ash_type?/1" data-no-tooltip="" translate="no">ash_type?(module)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the value is a builtin type or adopts the <a><code class="inline">Ash.Type</code></a> behaviour</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#builtin?/1" data-no-tooltip="" translate="no">builtin?(type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the type is an ash builtin type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#can_load?/2" data-no-tooltip="" translate="no">can_load?(type, constraints \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the type supports nested loads</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#cast_atomic/3" data-no-tooltip="" translate="no">cast_atomic(type, term, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Modifies an expression to apply a type's casting logic to the value it produces.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#cast_in_query?/2" data-no-tooltip="" translate="no">cast_in_query?(type, constraints \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns <code class="inline">true</code> if the type should be cast in underlying queries</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#cast_input/3" data-no-tooltip="" translate="no">cast_input(type, term, constraints \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Casts input (e.g. unknown) data to an instance of the type, or errors</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#cast_stored/3" data-no-tooltip="" translate="no">cast_stored(type, term, constraints \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Casts a value from the data store to an instance of the type, or errors</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#coerce/3" data-no-tooltip="" translate="no">coerce(type, term, constraints \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Coerces input (e.g. unknown) data to an instance of the type, or errors.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#composite?/2" data-no-tooltip="" translate="no">composite?(type, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the type is a composite type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#composite_types/2" data-no-tooltip="" translate="no">composite_types(type, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the wrapped composite types</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#constraints/1" data-no-tooltip="" translate="no">constraints(type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the constraint schema for a type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#describe/2" data-no-tooltip="" translate="no">describe(type, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Calls the type's <code class="inline">describe</code> function with the given constraints</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#determine_types/2" data-no-tooltip="" translate="no">determine_types(types, values)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Determine types for a given function or operator.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#dump_to_embedded/3" data-no-tooltip="" translate="no">dump_to_embedded(type, term, constraints \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Casts a value from the Elixir type to a value that can be embedded in another data structure.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#dump_to_native/3" data-no-tooltip="" translate="no">dump_to_native(type, term, constraints \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Casts a value from the Elixir type to a value that the data store can persist</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ecto_type/1" data-no-tooltip="" translate="no">ecto_type(type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the ecto compatible type for an Ash.Type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#embedded_type?/1" data-no-tooltip="" translate="no">embedded_type?(type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns true if the type is an embedded resource</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#equal?/3" data-no-tooltip="" translate="no">equal?(type, left, right)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Determines if two values of a given type are equal.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#generator/2" data-no-tooltip="" translate="no">generator(type, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the StreamData generator for a given type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_rewrites/5" data-no-tooltip="" translate="no">get_rewrites(type, merged_load, calculation, path, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the load rewrites for a given type, load, calculation and path.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_type/1" data-no-tooltip="" translate="no">get_type(value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the type module for a given short name or module</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_type!/1" data-no-tooltip="" translate="no">get_type!(value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the type module for a given short name or module,
+ensures that it is a valid <code class="inline">type</code></p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_change/4" data-no-tooltip="" translate="no">handle_change(type, old_value, new_value, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Process the old casted values alongside the new casted values.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_change_array?/1" data-no-tooltip="" translate="no">handle_change_array?(type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Handles the change of a given array of values for an attribute change. Runs after casting.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#include_source/3" data-no-tooltip="" translate="no">include_source(type, changeset_or_query, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Provides the changeset, action_input or query to the type, to potentially store in its constraints.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#init/2" data-no-tooltip="" translate="no">init(type, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Initializes the constraints according to the underlying type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#load/5" data-no-tooltip="" translate="no">load(type, value, loads, constraints, context)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Apply a load statement to a value.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#loaded?/5" data-no-tooltip="" translate="no">loaded?(type, values, load, constraints, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Checks if a given path has been loaded on a type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#matches_type?/3" data-no-tooltip="" translate="no">matches_type?(type, value, constraints \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Detects as a best effort if an arbitrary value matches the given type</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#merge_load/5" data-no-tooltip="" translate="no">merge_load(type, left, right, constraints, context)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Merges two load statements for a given type.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#prepare_change/4" data-no-tooltip="" translate="no">prepare_change(type, old_value, new_value, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Process the old casted values alongside the new <em>un</em>casted values.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#prepare_change_array?/1" data-no-tooltip="" translate="no">prepare_change_array?(type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Prepares a given array of values for an attribute change. Runs before casting.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#rewrite/4" data-no-tooltip="" translate="no">rewrite(type, value, rewrites, constraints)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Applies rewrites to a given value.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#short_names/0" data-no-tooltip="" translate="no">short_names()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the list of available type short names</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#simple_equality?/1" data-no-tooltip="" translate="no">simple_equality?(type)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Determines if a type can be compared using the <code class="inline">==</code> operator.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#storage_type/2" data-no-tooltip="" translate="no">storage_type(type, constraints \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the <em>underlying</em> storage type (the underlying type of the <em>ecto type</em> of the <em>ash type</em>)</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:constraints/0">
+
+  <div class="detail-header">
+    <a href="#t:constraints/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">constraints()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L293" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> constraints() :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()</pre>
+
+      </div>
+
+<p>A keyword list of constraints for a type</p>
+  </section>
+</section>
+<section class="detail" id="t:error/0">
+
+  <div class="detail-header">
+    <a href="#t:error/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">error()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L297" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> error() ::
+  :error
+  | {:error,
+     <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()
+     | [field: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), fields: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()], message: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), value: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()]
+     | <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}</pre>
+
+      </div>
+
+<p>An error value that can be returned from various callbacks</p>
+  </section>
+</section>
+<section class="detail" id="t:load_context/0">
+
+  <div class="detail-header">
+    <a href="#t:load_context/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">load_context()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L310" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> load_context() :: %{
+  domain: <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>(),
+  actor: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>() | nil,
+  tenant: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  tracer: [<a href="Ash.Tracer.xhtml#t:t/0">Ash.Tracer.t</a>()] | <a href="Ash.Tracer.xhtml#t:t/0">Ash.Tracer.t</a>() | nil,
+  authorize?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>() | nil
+}</pre>
+
+      </div>
+
+<p>The context that is provided to the <a href="#c:load/4"><code class="inline">load/4</code></a> callback.</p>
+  </section>
+</section>
+<section class="detail" id="t:merge_load_context/0">
+
+  <div class="detail-header">
+    <a href="#t:merge_load_context/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">merge_load_context()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L324" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> merge_load_context() :: %{
+  domain: <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>(),
+  calc_name: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  calc_load: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  calc_path: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()],
+  reuse_values?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>(),
+  strict_loads?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>(),
+  initial_data: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  relationship_path: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()],
+  authorize?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()
+}</pre>
+
+      </div>
+
+<p>The context that is provided to the <a href="#c:merge_load/4"><code class="inline">merge_load/4</code></a> callback.</p>
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L295" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>() | {:array, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()}</pre>
+
+      </div>
+
+<p>A valid Ash.Type</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:apply_atomic_constraints/2">
+
+  <div class="detail-header">
+    <a href="#c:apply_atomic_constraints/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">apply_atomic_constraints(new_value, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L526" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> apply_atomic_constraints(new_value :: <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>(), <a href="#t:constraints/0">constraints</a>()) ::
+  :ok | {:ok, <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()} | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}</pre>
+
+      </div>
+
+<p>Applies type constraints within an expression.</p>
+  </section>
+</section>
+<section class="detail" id="c:apply_atomic_constraints_array/2">
+
+  <div class="detail-header">
+    <a href="#c:apply_atomic_constraints_array/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">apply_atomic_constraints_array(new_value, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L537" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> apply_atomic_constraints_array(new_value :: <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>(), <a href="#t:constraints/0">constraints</a>()) ::
+  :ok | {:ok, <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()} | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}</pre>
+
+      </div>
+
+<p>Applies type constraints to a list of values within an expression. See <a href="#c:apply_atomic_constraints/2"><code class="inline">apply_atomic_constraints/2</code></a> for more.</p>
+  </section>
+</section>
+<section class="detail" id="c:apply_constraints/2">
+
+  <div class="detail-header">
+    <a href="#c:apply_constraints/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">apply_constraints(term, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L485" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> apply_constraints(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) ::
+  {:ok, new_value :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | :ok | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>Called after casting, to apply additional constraints to the value.</p>
+  </section>
+</section>
+<section class="detail" id="c:apply_constraints_array/2">
+
+  <div class="detail-header">
+    <a href="#c:apply_constraints_array/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">apply_constraints_array(list, constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L495" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> apply_constraints_array([<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()], <a href="#t:constraints/0">constraints</a>()) ::
+  {:ok, new_values :: [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()]} | :ok | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>Called after casting a list of values, to apply additional constraints to the value.</p><p>If not defined, <a href="#c:apply_constraints/2"><code class="inline">apply_constraints/2</code></a> is called for each item.</p>
+  </section>
+</section>
+<section class="detail" id="c:array_constraints/0">
+
+  <div class="detail-header">
+    <a href="#c:array_constraints/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">array_constraints()</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L482" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> array_constraints() :: <a href="#t:constraints/0">constraints</a>()</pre>
+
+      </div>
+
+<p>Returns a <a href="https://hexdocs.pm/spark/2.2.67/Spark.Options.html"><code class="inline">Spark.Options</code></a> spec for the additional constraints supported when used in a list.</p>
+  </section>
+</section>
+<section class="detail" id="c:can_load?/1">
+
+  <div class="detail-header">
+    <a href="#c:can_load?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">can_load?(constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L654" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> can_load?(<a href="#t:constraints/0">constraints</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not <a href="#c:load/4"><code class="inline">load/4</code></a> can be used. Defined automatically</p>
+  </section>
+</section>
+<section class="detail" id="c:cast_atomic/2">
+
+  <div class="detail-header">
+    <a href="#c:cast_atomic/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">cast_atomic(new_value, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L518" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> cast_atomic(new_value :: <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>(), <a href="#t:constraints/0">constraints</a>()) ::
+  {:atomic, <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()} | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()} | {:not_atomic, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()}</pre>
+
+      </div>
+
+<p>Casts a value within an expression.</p><p>For instance, if you had a type like <code class="inline">:non_neg_integer</code>, you might do:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">cast_atomic</samp><samp class="p" data-group-id="8090928551-1">(</samp><samp class="n">value</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_constraints</samp><samp class="p" data-group-id="8090928551-1">)</samp><samp class="w">  </samp><samp class="k" data-group-id="8090928551-2">do</samp><samp class="w">
+  </samp><samp class="n">expr</samp><samp class="p" data-group-id="8090928551-3">(</samp><samp class="w">
+    </samp><samp class="k">if</samp><samp class="w"> </samp><samp class="o">^</samp><samp class="n">value</samp><samp class="w"> </samp><samp class="o">&lt;</samp><samp class="w"> </samp><samp class="mi">0</samp><samp class="w"> </samp><samp class="k" data-group-id="8090928551-4">do</samp><samp class="w">
+      </samp><samp class="n">error</samp><samp class="p" data-group-id="8090928551-5">(</samp><samp class="nc">Ash.Error.Changes.InvalidChanges</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8090928551-6">%{</samp><samp class="ss">message</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;must be positive&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">value</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="o">^</samp><samp class="n">value</samp><samp class="p" data-group-id="8090928551-6">}</samp><samp class="p" data-group-id="8090928551-5">)</samp><samp class="w">
+    </samp><samp class="k" data-group-id="8090928551-4">else</samp><samp class="w">
+      </samp><samp class="n">value</samp><samp class="w">
+    </samp><samp class="k" data-group-id="8090928551-4">end</samp><samp class="w">
+  </samp><samp class="p" data-group-id="8090928551-3">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="8090928551-2">end</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="c:cast_atomic_array/2">
+
+  <div class="detail-header">
+    <a href="#c:cast_atomic_array/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">cast_atomic_array(new_value, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L522" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> cast_atomic_array(new_value :: <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>(), <a href="#t:constraints/0">constraints</a>()) ::
+  {:atomic, <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()} | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()} | {:not_atomic, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()}</pre>
+
+      </div>
+
+<p>Casts a list of values within an expression. See <a href="#c:cast_atomic/2"><code class="inline">cast_atomic/2</code></a> for more.</p>
+  </section>
+</section>
+<section class="detail" id="c:cast_in_query?/1">
+
+  <div class="detail-header">
+    <a href="#c:cast_in_query?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">cast_in_query?(constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L373" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> cast_in_query?(<a href="#t:constraints/0">constraints</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not data layers that build queries should attempt to type cast values of this type while doing so.</p>
+  </section>
+</section>
+<section class="detail" id="c:cast_input/2">
+
+  <div class="detail-header">
+    <a href="#c:cast_input/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">cast_input(term, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L379" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> cast_input(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()</pre>
+
+      </div>
+
+<p>Attempt to cast unknown, potentially user-provided input, into a valid instance of the type.</p>
+  </section>
+</section>
+<section class="detail" id="c:cast_input_array/2">
+
+  <div class="detail-header">
+    <a href="#c:cast_input_array/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">cast_input_array(list, constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L409" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> cast_input_array([<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()], <a href="#t:constraints/0">constraints</a>()) :: {:ok, [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()]} | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>Attempt to cast a list of unknown, potentially user-provided inputs, into a list of valid instances of type.</p><p>This callback allows to define types that are &quot;collection-aware&quot;, i.e an integer that is unique whenever
+it appears in a list.</p><p>If not defined, <a href="#c:cast_input/2"><code class="inline">cast_input/2</code></a> is called for each item.</p>
+  </section>
+</section>
+<section class="detail" id="c:cast_stored/2">
+
+  <div class="detail-header">
+    <a href="#c:cast_stored/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">cast_stored(term, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L412" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> cast_stored(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>Attempt to load a stored value from the data layer into a valid instance of the type.</p>
+  </section>
+</section>
+<section class="detail" id="c:cast_stored_array/2">
+
+  <div class="detail-header">
+    <a href="#c:cast_stored_array/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">cast_stored_array(list, constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L419" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> cast_stored_array([<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()], <a href="#t:constraints/0">constraints</a>()) :: {:ok, [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()]} | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>Attempt to load a list of stored values from the data layer into a list of valid instances of the type.</p><p>If not defined, <a href="#c:cast_stored/2"><code class="inline">cast_stored/2</code></a> is called for each item.</p>
+  </section>
+</section>
+<section class="detail" id="c:coerce/2">
+
+  <div class="detail-header">
+    <a href="#c:coerce/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">coerce(term, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L395" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> coerce(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()</pre>
+
+      </div>
+
+<p>Attempt to coerce unknown, potentially user-provided input, into a valid instance of the type.</p><h2 id="c:coerce/2-coercion-vs-casting" class="section-heading"><a href="#c:coerce/2-coercion-vs-casting" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Coercion vs Casting</span></h2><p>Coercion can be summed up as a more &quot;insistent&quot; form of casting. It means &quot;we really want to use
+this value as this type, so please try to convert it to that type&quot;. This is used in expressions as
+opposed to <code class="inline">cast_input</code>. For example, the value <code class="inline">10</code>, if passed into <code class="inline">Ash.Type.cast_input(:string, 10)</code>
+would fail to cast. However, if used in the following expression: <code class="inline">expr(type(10, :string) &lt;&gt; &quot; minutes&quot;)</code>
+the <code class="inline">10</code> would be &quot;coerced&quot; (using <a href="https://hexdocs.pm/elixir/Kernel.html#to_string/1"><code class="inline">to_string/1</code></a>) into <code class="inline">&quot;10&quot;</code>.</p><p>By default, coercion uses <a href="#cast_input/2"><code class="inline">cast_input/2</code></a> unless</p>
+  </section>
+</section>
+<section class="detail" id="c:composite?/1">
+
+  <div class="detail-header">
+    <a href="#c:composite?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">composite?(constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L545" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> composite?(<a href="#t:constraints/0">constraints</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Return true if the type is a composite type, meaning it is made up of one or more values. How this works is up to the data layer.</p><p>For example, <code class="inline">AshMoney</code> provides a type that is composite with a &quot;currency&quot; and an &quot;amount&quot;.</p>
+  </section>
+</section>
+<section class="detail" id="c:composite_types/1">
+
+  <div class="detail-header">
+    <a href="#c:composite_types/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">composite_types(constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L554" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> composite_types(<a href="#t:constraints/0">constraints</a>()) :: [
+  {name, type, <a href="#t:constraints/0">constraints</a>()} | {name, storage_key, type, <a href="#t:constraints/0">constraints</a>()}
+]
+when name: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), type: <a href="#t:t/0">t</a>(), storage_key: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()</pre>
+
+      </div>
+
+<p>Information about each member of the composite type, if it is a composite type</p><p>An example given the <code class="inline">AshMoney</code> example listed above:</p><p><code class="inline">[{:currency, :string, []}, {:amount, :decimal, []}]</code></p>
+  </section>
+</section>
+<section class="detail" id="c:constraints/0">
+
+  <div class="detail-header">
+    <a href="#c:constraints/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">constraints()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L479" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> constraints() :: <a href="#t:constraints/0">constraints</a>()</pre>
+
+      </div>
+
+<p>Returns a <a href="https://hexdocs.pm/spark/2.2.67/Spark.Options.html"><code class="inline">Spark.Options</code></a> spec for the constraints supported by the type.</p>
+  </section>
+</section>
+<section class="detail" id="c:custom_apply_constraints_array?/0">
+
+  <div class="detail-header">
+    <a href="#c:custom_apply_constraints_array?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">custom_apply_constraints_array?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L592" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> custom_apply_constraints_array?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not an <a href="#c:apply_constraints_array/2"><code class="inline">apply_constraints_array/2</code></a> callback has been defined. This is defined automatically.</p>
+  </section>
+</section>
+<section class="detail" id="c:describe/1">
+
+  <div class="detail-header">
+    <a href="#c:describe/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">describe(constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L559" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> describe(<a href="#t:constraints/0">constraints</a>()) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>Describes a type given its constraints. Can be used to generate docs, for example.</p>
+  </section>
+</section>
+<section class="detail" id="c:dump_to_embedded/2">
+
+  <div class="detail-header">
+    <a href="#c:dump_to_embedded/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">dump_to_embedded(term, constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L433" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> dump_to_embedded(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | :error</pre>
+
+      </div>
+
+<p>Transform a valid instance of the type into a format that can be JSON encoded.</p>
+  </section>
+</section>
+<section class="detail" id="c:dump_to_embedded_array/2">
+
+  <div class="detail-header">
+    <a href="#c:dump_to_embedded_array/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">dump_to_embedded_array(list, constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L440" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> dump_to_embedded_array([<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()], <a href="#t:constraints/0">constraints</a>()) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>Transform a list of valid instances of the type into a format that can be JSON encoded.</p><p>If not defined, <a href="#c:dump_to_embedded/2"><code class="inline">dump_to_embedded/2</code></a> is called for each item.</p>
+  </section>
+</section>
+<section class="detail" id="c:dump_to_native/2">
+
+  <div class="detail-header">
+    <a href="#c:dump_to_native/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">dump_to_native(term, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L423" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> dump_to_native(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>Transform a valid instance of the type into a format that the data layer can store.</p>
+  </section>
+</section>
+<section class="detail" id="c:dump_to_native_array/2">
+
+  <div class="detail-header">
+    <a href="#c:dump_to_native_array/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">dump_to_native_array(list, constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L430" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> dump_to_native_array([<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()], <a href="#t:constraints/0">constraints</a>()) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>Transform a list of valid instance of the type into a format that the data layer can store.</p><p>If not defined, <a href="#c:dump_to_native/2"><code class="inline">dump_to_native/2</code></a> is called for each item.</p>
+  </section>
+</section>
+<section class="detail" id="c:ecto_type/0">
+
+  <div class="detail-header">
+    <a href="#c:ecto_type/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ecto_type()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L376" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> ecto_type() :: <a href="https://hexdocs.pm/ecto/3.13.2/Ecto.Type.html#t:t/0">Ecto.Type.t</a>()</pre>
+
+      </div>
+
+<p>The underlying Ecto.Type.</p>
+  </section>
+</section>
+<section class="detail" id="c:embedded?/0">
+
+  <div class="detail-header">
+    <a href="#c:embedded?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">embedded?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L581" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> embedded?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not the type is an embedded resource. This is defined by embedded resources, you should not define this.</p>
+  </section>
+</section>
+<section class="detail" id="c:equal?/2">
+
+  <div class="detail-header">
+    <a href="#c:equal?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">equal?(term, term)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L566" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> equal?(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Determine if two valid instances of the type are equal.</p><p><em>Do not define this</em> if <code class="inline">==</code> is sufficient for your type. See <a href="#c:simple_equality?/0"><code class="inline">simple_equality?/0</code></a> for more.</p>
+  </section>
+</section>
+<section class="detail" id="c:evaluate_operator/1">
+
+  <div class="detail-header">
+    <a href="#c:evaluate_operator/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">evaluate_operator(term)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L363" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> evaluate_operator(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: {:known, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | :unknown | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>The implementation for any overloaded implementations.</p>
+  </section>
+</section>
+<section class="detail" id="c:generator/1">
+
+  <div class="detail-header">
+    <a href="#c:generator/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">generator(constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L589" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> generator(<a href="#t:constraints/0">constraints</a>()) :: <a href="https://hexdocs.pm/elixir/Enumerable.html#t:t/0">Enumerable.t</a>()</pre>
+
+      </div>
+
+<p>An Enumerable that produces valid instances of the type.</p><p>This can be used for property testing, or generating valid inputs for seeding.
+Typically you would use <a href="https://hexdocs.pm/stream_data/1.2.0/StreamData.html"><code class="inline">StreamData</code></a> for this.</p>
+  </section>
+</section>
+<section class="detail" id="c:get_rewrites/4">
+
+  <div class="detail-header">
+    <a href="#c:get_rewrites/4" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_rewrites(merged_load, calculation, path, constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L637" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> get_rewrites(
+  merged_load :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  calculation :: <a href="Ash.Query.Calculation.xhtml#t:t/0">Ash.Query.Calculation.t</a>(),
+  path :: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()],
+  constraints :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: [rewrite()]</pre>
+
+      </div>
+
+<p>Gets any &quot;rewrites&quot; necessary to apply a given load statement.</p><p>This is a low level tool used when types can contain instances of resources. You generally
+should not need to know how this works. See <a href="Ash.Type.Union.xhtml"><code class="inline">Ash.Type.Union</code></a> and <a href="Ash.Type.Struct.xhtml"><code class="inline">Ash.Type.Struct</code></a> for examples
+if you are trying to write a similar type.</p>
+  </section>
+</section>
+<section class="detail" id="c:handle_change/3">
+
+  <div class="detail-header">
+    <a href="#c:handle_change/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_change(old_term, new_term, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L443" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> handle_change(old_term :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), new_term :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>React to a changing value. This could be used, for example, to have a type like <code class="inline">:strictly_increasing_integer</code>.</p>
+  </section>
+</section>
+<section class="detail" id="c:handle_change_array/3">
+
+  <div class="detail-header">
+    <a href="#c:handle_change_array/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_change_array(old_term, new_term, constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L451" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> handle_change_array(old_term :: [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()], new_term :: [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()], <a href="#t:constraints/0">constraints</a>()) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>React to a changing list of values. This could be used, for example, to have a type like <code class="inline">:unique_integer</code>, which when used in a list all items must be unique.</p><p>If not defined, <a href="#c:handle_change/3"><code class="inline">handle_change/3</code></a> is called for each item with a <code class="inline">nil</code> old value.</p>
+  </section>
+</section>
+<section class="detail" id="c:handle_change_array?/0">
+
+  <div class="detail-header">
+    <a href="#c:handle_change_array?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_change_array?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L476" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> handle_change_array?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not a custom <a href="#c:handle_change_array/3"><code class="inline">handle_change_array/3</code></a> has been defined by the type. Defined automatically.</p>
+  </section>
+</section>
+<section class="detail" id="c:include_source/2">
+
+  <div class="detail-header">
+    <a href="#c:include_source/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">include_source(constraints, t)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L349" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> include_source(<a href="#t:constraints/0">constraints</a>(), <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>()) :: <a href="#t:constraints/0">constraints</a>()</pre>
+
+      </div>
+
+<p>Add the source changeset to the constraints, in cases where it is needed for type casting logic</p>
+  </section>
+</section>
+<section class="detail" id="c:init/1">
+
+  <div class="detail-header">
+    <a href="#c:init/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">init(constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L370" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> init(<a href="#t:constraints/0">constraints</a>()) :: {:ok, <a href="#t:constraints/0">constraints</a>()} | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}</pre>
+
+      </div>
+
+<p>Useful for typed data layers (like ash_postgres) to instruct them not to attempt to cast input values.</p><p>You generally won't need this, but it can be an escape hatch for certain cases.</p>
+  </section>
+</section>
+<section class="detail" id="c:load/4">
+
+  <div class="detail-header">
+    <a href="#c:load/4" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">load(values, load, constraints, context)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L600" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> load(
+  values :: [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()],
+  load :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  constraints :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="#t:load_context/0">load_context</a>()
+) :: {:ok, [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()]} | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}</pre>
+
+      </div>
+
+<p>Applies a load statement through a list of values.</p><p>This allows types to support load statements, like <a href="Ash.Type.Union.xhtml"><code class="inline">Ash.Type.Union</code></a>, embedded resources,
+or the <a href="Ash.Type.Struct.xhtml"><code class="inline">Ash.Type.Struct</code></a> when it is an <code class="inline">instance_of</code> a resource.</p>
+  </section>
+</section>
+<section class="detail" id="c:loaded?/4">
+
+  <div class="detail-header">
+    <a href="#c:loaded?/4" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">loaded?(value, path_to_load, constraints, opts)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L611" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> loaded?(
+  value :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  path_to_load :: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()],
+  constraints :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Checks if the given path has been loaded on the type.</p>
+  </section>
+</section>
+<section class="detail" id="c:matches_type?/2">
+
+  <div class="detail-header">
+    <a href="#c:matches_type?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">matches_type?(term, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L399" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> matches_type?(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not the value a valid instance of the type.</p>
+  </section>
+</section>
+<section class="detail" id="c:may_support_atomic_update?/1">
+
+  <div class="detail-header">
+    <a href="#c:may_support_atomic_update?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">may_support_atomic_update?(constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L534" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> may_support_atomic_update?(<a href="#t:constraints/0">constraints</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not a value with given constraints may support being cast atomic</p><p>Defaults to checking if <code class="inline">cast_atomic/2</code> is defined on the type.</p>
+  </section>
+</section>
+<section class="detail" id="c:merge_load/4">
+
+  <div class="detail-header">
+    <a href="#c:merge_load/4" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">merge_load(left, right, constraints, context)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L621" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> merge_load(
+  left :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  right :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  constraints :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="#t:merge_load_context/0">merge_load_context</a>() | nil
+) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="#t:error/0">error</a>()} | :error</pre>
+
+      </div>
+
+<p>Merges a load statement with an existing load statement for the type.</p>
+  </section>
+</section>
+<section class="detail" id="c:operator_overloads/0">
+
+  <div class="detail-header">
+    <a href="#c:operator_overloads/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">operator_overloads()</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L358" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> operator_overloads() :: %{optional(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) =&gt; %{optional(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) =&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()}}</pre>
+
+      </div>
+
+<p>A map of operators with overloaded implementations.</p><p>These will only be honored if the type is placed in <code class="inline">config :ash, :known_types, [...Type]</code></p><p>A corresponding <code class="inline">evaluate_operator/1</code> clause should match.</p>
+  </section>
+</section>
+<section class="detail" id="c:prepare_change/3">
+
+  <div class="detail-header">
+    <a href="#c:prepare_change/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">prepare_change(old_term, new_uncasted_term, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L457" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> prepare_change(old_term :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), new_uncasted_term :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>Prepare a change, given the old value and the new uncasted value.</p>
+  </section>
+</section>
+<section class="detail" id="c:prepare_change_array/3">
+
+  <div class="detail-header">
+    <a href="#c:prepare_change_array/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">prepare_change_array(old_term, new_uncasted_term, constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L465" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> prepare_change_array(
+  old_term :: [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()],
+  new_uncasted_term :: [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()],
+  <a href="#t:constraints/0">constraints</a>()
+) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | <a href="#t:error/0">error</a>()</pre>
+
+      </div>
+
+<p>Prepare a changing list of values, given the old value and the new uncasted value.</p><p>If not defined, <a href="#c:prepare_change/3"><code class="inline">prepare_change/3</code></a> is called for each item with a <code class="inline">nil</code> old value.</p>
+  </section>
+</section>
+<section class="detail" id="c:prepare_change_array?/0">
+
+  <div class="detail-header">
+    <a href="#c:prepare_change_array?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">prepare_change_array?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L473" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> prepare_change_array?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not a custom <a href="#c:prepare_change_array/3"><code class="inline">prepare_change_array/3</code></a> has been defined by the type. Defined automatically.</p>
+  </section>
+</section>
+<section class="detail" id="c:rewrite/3">
+
+  <div class="detail-header">
+    <a href="#c:rewrite/3" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">rewrite(value, list, constraints)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L651" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> rewrite(value :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), [rewrite()], constraints :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()) ::
+  value :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>Apply any &quot;rewrites&quot; necessary to provide the results of a load statement to calculations that depended on a given load.</p><p>This is a low level tool used when types can contain instances of resources. You generally
+should not need to know how this works. See <a href="Ash.Type.Union.xhtml"><code class="inline">Ash.Type.Union</code></a> and <a href="Ash.Type.Struct.xhtml"><code class="inline">Ash.Type.Struct</code></a> for examples
+if you are trying to write a similar type.</p>
+  </section>
+</section>
+<section class="detail" id="c:simple_equality?/0">
+
+  <div class="detail-header">
+    <a href="#c:simple_equality?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">simple_equality?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L578" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> simple_equality?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not <code class="inline">==</code> can be used to compare instances of the type.</p><p>This is defined automatically to return <code class="inline">false</code> if <a href="#c:equal?/2"><code class="inline">equal?/2</code></a> is defined.</p><p>Types that cannot be compared using <code class="inline">==</code> incur significant runtime costs when used in certain ways.
+For example, if a resource's primary key cannot be compared with <code class="inline">==</code>, we cannot do things like key
+a list of records by their primary key. Implementing <a href="#c:equal?/2"><code class="inline">equal?/2</code></a> will cause various code paths to be considerably
+slower, so only do it when necessary.</p>
+  </section>
+</section>
+<section class="detail" id="c:storage_type/0">
+
+  <div class="detail-header">
+    <a href="#c:storage_type/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">storage_type()</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L341" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> storage_type() :: <a href="https://hexdocs.pm/ecto/3.13.2/Ecto.Type.html#t:t/0">Ecto.Type.t</a>()</pre>
+
+      </div>
+
+<p>The storage type, which should be known by a data layer supporting this type.</p><p>Use <a href="#c:storage_type/1"><code class="inline">storage_type/1</code></a>, as this will be deprecated in the future.</p>
+  </section>
+</section>
+<section class="detail" id="c:storage_type/1">
+
+  <div class="detail-header">
+    <a href="#c:storage_type/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">storage_type(constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L346" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> storage_type(<a href="#t:constraints/0">constraints</a>()) :: <a href="https://hexdocs.pm/ecto/3.13.2/Ecto.Type.html#t:t/0">Ecto.Type.t</a>()</pre>
+
+      </div>
+
+<p>The storage type, which should be known by a data layer supporting this type.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="apply_atomic_constraints/3">
+
+  <div class="detail-header">
+    <a href="#apply_atomic_constraints/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">apply_atomic_constraints(type, term, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1415" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> apply_atomic_constraints(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) ::
+  {:ok, <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()} | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}</pre>
+
+      </div>
+
+<p>Applies a types constraints to an expression.</p><p>This delegates to the underlying types implementation of <a href="#c:apply_atomic_constraints/2"><code class="inline">apply_atomic_constraints/2</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="apply_constraints/3">
+
+  <div class="detail-header">
+    <a href="#apply_constraints/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">apply_constraints(type, term, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1198" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> apply_constraints(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>Confirms if a casted value matches the provided constraints.</p>
+  </section>
+</section>
+<section class="detail" id="array_constraints/1">
+
+  <div class="detail-header">
+    <a href="#array_constraints/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">array_constraints(type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L714" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Gets the array constraints for a type</p>
+  </section>
+</section>
+<section class="detail" id="ash_type?/1">
+
+  <div class="detail-header">
+    <a href="#ash_type?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ash_type?(module)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L954" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> ash_type?(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Returns true if the value is a builtin type or adopts the <a href="Ash.Type.xhtml"><code class="inline">Ash.Type</code></a> behaviour</p>
+  </section>
+</section>
+<section class="detail" id="builtin?/1">
+
+  <div class="detail-header">
+    <a href="#builtin?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">builtin?(type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L689" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns true if the type is an ash builtin type</p>
+  </section>
+</section>
+<section class="detail" id="can_load?/2">
+
+  <div class="detail-header">
+    <a href="#can_load?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">can_load?(type, constraints \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1682" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> can_load?(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Returns true if the type supports nested loads</p>
+  </section>
+</section>
+<section class="detail" id="cast_atomic/3">
+
+  <div class="detail-header">
+    <a href="#cast_atomic/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">cast_atomic(type, term, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1371" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> cast_atomic(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>()) ::
+  {:atomic, <a href="Ash.Expr.xhtml#t:t/0">Ash.Expr.t</a>()}
+  | {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}
+  | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}
+  | {:not_atomic, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()}</pre>
+
+      </div>
+
+<p>Modifies an expression to apply a type's casting logic to the value it produces.</p><p>This delegates to the underlying types implementation of <a href="#c:cast_atomic/2"><code class="inline">cast_atomic/2</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="cast_in_query?/2">
+
+  <div class="detail-header">
+    <a href="#cast_in_query?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">cast_in_query?(type, constraints \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1326" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns <code class="inline">true</code> if the type should be cast in underlying queries</p>
+  </section>
+</section>
+<section class="detail" id="cast_input/3">
+
+  <div class="detail-header">
+    <a href="#cast_input/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">cast_input(type, term, constraints \\ nil)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L969" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> cast_input(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>() | nil) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="Ash.Error.xhtml#t:error_input/0">Ash.Error.error_input</a>()} | :error</pre>
+
+      </div>
+
+<p>Casts input (e.g. unknown) data to an instance of the type, or errors</p><p>Maps to <a href="https://hexdocs.pm/ecto/3.13.2/Ecto.Type.html#cast/2"><code class="inline">Ecto.Type.cast/2</code></a></p>
+  </section>
+</section>
+<section class="detail" id="cast_stored/3">
+
+  <div class="detail-header">
+    <a href="#cast_stored/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">cast_stored(type, term, constraints \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1173" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> cast_stored(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>() | nil) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>()} | :error</pre>
+
+      </div>
+
+<p>Casts a value from the data store to an instance of the type, or errors</p><p>Maps to <a href="https://hexdocs.pm/ecto/3.13.2/Ecto.Type.html#load/2"><code class="inline">Ecto.Type.load/2</code></a></p>
+  </section>
+</section>
+<section class="detail" id="coerce/3">
+
+  <div class="detail-header">
+    <a href="#coerce/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">coerce(type, term, constraints \\ nil)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1072" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> coerce(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>() | nil) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()} | :error</pre>
+
+      </div>
+
+<p>Coerces input (e.g. unknown) data to an instance of the type, or errors.</p><p>See <a href="#c:coerce/2"><code class="inline">Ash.Type.coerce/2</code></a></p>
+  </section>
+</section>
+<section class="detail" id="composite?/2">
+
+  <div class="detail-header">
+    <a href="#composite?/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">composite?(type, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L774" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> composite?(
+  <a href="#t:t/0">t</a>(),
+  <a href="#t:constraints/0">constraints</a>()
+) :: <a href="https://hexdocs.pm/elixir/Enumerable.html#t:t/0">Enumerable.t</a>()</pre>
+
+      </div>
+
+<p>Returns true if the type is a composite type</p>
+  </section>
+</section>
+<section class="detail" id="composite_types/2">
+
+  <div class="detail-header">
+    <a href="#composite_types/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">composite_types(type, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L784" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> composite_types(
+  <a href="#t:t/0">t</a>(),
+  <a href="#t:constraints/0">constraints</a>()
+) :: <a href="https://hexdocs.pm/elixir/Enumerable.html#t:t/0">Enumerable.t</a>()</pre>
+
+      </div>
+
+<p>Returns the wrapped composite types</p>
+  </section>
+</section>
+<section class="detail" id="constraints/1">
+
+  <div class="detail-header">
+    <a href="#constraints/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">constraints(type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1316" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> constraints(<a href="#t:t/0">t</a>()) :: <a href="#t:constraints/0">constraints</a>()</pre>
+
+      </div>
+
+<p>Returns the constraint schema for a type</p>
+  </section>
+</section>
+<section class="detail" id="describe/2">
+
+  <div class="detail-header">
+    <a href="#describe/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">describe(type, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L703" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Calls the type's <code class="inline">describe</code> function with the given constraints</p>
+  </section>
+</section>
+<section class="detail" id="determine_types/2">
+
+  <div class="detail-header">
+    <a href="#determine_types/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">determine_types(types, values)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L2101" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Determine types for a given function or operator.</p>
+  </section>
+</section>
+<section class="detail" id="dump_to_embedded/3">
+
+  <div class="detail-header">
+    <a href="#dump_to_embedded/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">dump_to_embedded(type, term, constraints \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1446" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> dump_to_embedded(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>() | nil) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>()} | :error</pre>
+
+      </div>
+
+<p>Casts a value from the Elixir type to a value that can be embedded in another data structure.</p><p>Embedded resources expect to be stored in JSON, so this allows things like UUIDs to be stored
+as strings in embedded resources instead of binary.</p>
+  </section>
+</section>
+<section class="detail" id="dump_to_native/3">
+
+  <div class="detail-header">
+    <a href="#dump_to_native/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">dump_to_native(type, term, constraints \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1345" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> dump_to_native(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="#t:constraints/0">constraints</a>() | nil) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>()} | :error</pre>
+
+      </div>
+
+<p>Casts a value from the Elixir type to a value that the data store can persist</p><p>Maps to <a href="https://hexdocs.pm/ecto/3.13.2/Ecto.Type.html#dump/2"><code class="inline">Ecto.Type.dump/2</code></a></p>
+  </section>
+</section>
+<section class="detail" id="ecto_type/1">
+
+  <div class="detail-header">
+    <a href="#ecto_type/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ecto_type(type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L938" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> ecto_type(<a href="#t:t/0">t</a>()) :: <a href="https://hexdocs.pm/ecto/3.13.2/Ecto.Type.html#t:t/0">Ecto.Type.t</a>()</pre>
+
+      </div>
+
+<p>Returns the ecto compatible type for an Ash.Type.</p><p>If you <code class="inline">use Ash.Type</code>, this is created for you. For builtin types
+this may return a corresponding ecto builtin type (atom)</p>
+  </section>
+</section>
+<section class="detail" id="embedded_type?/1">
+
+  <div class="detail-header">
+    <a href="#embedded_type?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">embedded_type?(type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L693" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns true if the type is an embedded resource</p>
+  </section>
+</section>
+<section class="detail" id="equal?/3">
+
+  <div class="detail-header">
+    <a href="#equal?/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">equal?(type, left, right)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1470" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> equal?(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Determines if two values of a given type are equal.</p><p>Maps to <a href="https://hexdocs.pm/ecto/3.13.2/Ecto.Type.html#equal?/3"><code class="inline">Ecto.Type.equal?/3</code></a></p>
+  </section>
+</section>
+<section class="detail" id="generator/2">
+
+  <div class="detail-header">
+    <a href="#generator/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">generator(type, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L803" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> generator(
+  <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>() | {:array, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()},
+  <a href="#t:constraints/0">constraints</a>()
+) :: <a href="https://hexdocs.pm/elixir/Enumerable.html#t:t/0">Enumerable.t</a>()</pre>
+
+      </div>
+
+<p>Returns the StreamData generator for a given type</p>
+  </section>
+</section>
+<section class="detail" id="get_rewrites/5">
+
+  <div class="detail-header">
+    <a href="#get_rewrites/5" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_rewrites(type, merged_load, calculation, path, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1614" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Gets the load rewrites for a given type, load, calculation and path.</p><p>This is used for defining types that support a nested load statement.
+See the embedded type and union type implementations for examples of how
+to use this.</p>
+  </section>
+</section>
+<section class="detail" id="get_type/1">
+
+  <div class="detail-header">
+    <a href="#get_type/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_type(value)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L725" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> get_type(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>() | {:array, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()}) ::
+  <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>() | {:array, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()}</pre>
+
+      </div>
+
+<p>Gets the type module for a given short name or module</p>
+  </section>
+</section>
+<section class="detail" id="get_type!/1">
+
+  <div class="detail-header">
+    <a href="#get_type!/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_type!(value)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L750" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> get_type!(<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>() | {:array, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()}) ::
+  <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>() | {:array, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()}</pre>
+
+      </div>
+
+<p>Gets the type module for a given short name or module,
+ensures that it is a valid <code class="inline">type</code></p><h2 id="get_type!/1-raises" class="section-heading"><a href="#get_type!/1-raises" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Raises</span></h2><ul><li><a href="https://hexdocs.pm/elixir/RuntimeError.html"><code class="inline">RuntimeError</code></a>: If the provided type module is not found or invalid.</li></ul>
+  </section>
+</section>
+<section class="detail" id="handle_change/4">
+
+  <div class="detail-header">
+    <a href="#handle_change/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_change(type, old_value, new_value, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L850" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Process the old casted values alongside the new casted values.</p><p>This is leveraged by embedded types to know if something is being updated
+or destroyed. This is not called on creates.</p>
+  </section>
+</section>
+<section class="detail" id="handle_change_array?/1">
+
+  <div class="detail-header">
+    <a href="#handle_change_array?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_change_array?(type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1702" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> handle_change_array?(<a href="#t:t/0">t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Handles the change of a given array of values for an attribute change. Runs after casting.</p>
+  </section>
+</section>
+<section class="detail" id="include_source/3">
+
+  <div class="detail-header">
+    <a href="#include_source/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">include_source(type, changeset_or_query, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1492" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> include_source(
+  <a href="#t:t/0">t</a>(),
+  <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>() | <a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>() | <a href="Ash.ActionInput.xhtml#t:t/0">Ash.ActionInput.t</a>(),
+  <a href="#t:constraints/0">constraints</a>()
+) :: <a href="#t:constraints/0">constraints</a>()</pre>
+
+      </div>
+
+<p>Provides the changeset, action_input or query to the type, to potentially store in its constraints.</p><p>This is used for embedded types to allow accessing the parent changeset in certain cases.</p>
+  </section>
+</section>
+<section class="detail" id="init/2">
+
+  <div class="detail-header">
+    <a href="#init/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">init(type, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L889" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> init(<a href="#t:t/0">t</a>(), <a href="#t:constraints/0">constraints</a>()) :: {:ok, <a href="#t:constraints/0">constraints</a>()} | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}</pre>
+
+      </div>
+
+<p>Initializes the constraints according to the underlying type</p>
+  </section>
+</section>
+<section class="detail" id="load/5">
+
+  <div class="detail-header">
+    <a href="#load/5" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">load(type, value, loads, constraints, context)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1581" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> load(
+  type :: <a href="#t:t/0">t</a>(),
+  values :: [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()],
+  load :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  constraints :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="#t:load_context/0">load_context</a>()
+) :: {:ok, [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()]} | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}</pre>
+
+      </div>
+
+<p>Apply a load statement to a value.</p><p>This is used for types that can be &quot;loaded through&quot;. For example, maps, unions and structs.
+If they have keys that are embedded types, for example, we want to be able to apply a load
+statements to their contents.</p>
+  </section>
+</section>
+<section class="detail" id="loaded?/5">
+
+  <div class="detail-header">
+    <a href="#loaded?/5" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">loaded?(type, values, load, constraints, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1545" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> loaded?(
+  type :: <a href="#t:t/0">t</a>(),
+  value_or_values :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  path_to_load :: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()],
+  constraints :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Checks if a given path has been loaded on a type.</p><p>This is used to &quot;load through&quot; types. For more see <a href="#load/5"><code class="inline">load/5</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="matches_type?/3">
+
+  <div class="detail-header">
+    <a href="#matches_type?/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">matches_type?(type, value, constraints \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1148" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Detects as a best effort if an arbitrary value matches the given type</p>
+  </section>
+</section>
+<section class="detail" id="merge_load/5">
+
+  <div class="detail-header">
+    <a href="#merge_load/5" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">merge_load(type, left, right, constraints, context)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1518" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> merge_load(
+  type :: <a href="#t:t/0">t</a>(),
+  left :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  right :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  constraints :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>(),
+  context :: <a href="#t:merge_load_context/0">merge_load_context</a>() | nil
+) :: {:ok, [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()]} | :error | {:error, <a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()}</pre>
+
+      </div>
+
+<p>Merges two load statements for a given type.</p><p>This is used to &quot;load through&quot; types. For more see <a href="#load/5"><code class="inline">load/5</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="prepare_change/4">
+
+  <div class="detail-header">
+    <a href="#prepare_change/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">prepare_change(type, old_value, new_value, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L871" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Process the old casted values alongside the new <em>un</em>casted values.</p><p>This is leveraged by embedded types to know if something is being updated
+or destroyed. This is not called on creates.</p>
+  </section>
+</section>
+<section class="detail" id="prepare_change_array?/1">
+
+  <div class="detail-header">
+    <a href="#prepare_change_array?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">prepare_change_array?(type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1692" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> prepare_change_array?(<a href="#t:t/0">t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Prepares a given array of values for an attribute change. Runs before casting.</p>
+  </section>
+</section>
+<section class="detail" id="rewrite/4">
+
+  <div class="detail-header">
+    <a href="#rewrite/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">rewrite(type, value, rewrites, constraints)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1630" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Applies rewrites to a given value.</p><p>This is used for defining types that support a nested load statement.
+See the embedded type and union type implementations for examples of how
+to use this.</p>
+  </section>
+</section>
+<section class="detail" id="short_names/0">
+
+  <div class="detail-header">
+    <a href="#short_names/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">short_names()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L686" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns the list of available type short names</p>
+  </section>
+</section>
+<section class="detail" id="simple_equality?/1">
+
+  <div class="detail-header">
+    <a href="#simple_equality?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">simple_equality?(type)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L1714" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> simple_equality?(<a href="#t:t/0">t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Determines if a type can be compared using the <code class="inline">==</code> operator.</p>
+  </section>
+</section>
+<section class="detail" id="storage_type/2">
+
+  <div class="detail-header">
+    <a href="#storage_type/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">storage_type(type, constraints \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/type/type.ex#L927" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns the <em>underlying</em> storage type (the underlying type of the <em>ecto type</em> of the <em>ash type</em>)</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

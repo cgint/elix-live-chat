@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Query.Function - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Query.Function <small>behaviour</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A function is a predicate with an arguments list.</p><p>For more information on being a predicate, see <a href="Ash.Filter.Predicate.xhtml"><code class="inline">Ash.Filter.Predicate</code></a>. Most of the complexities
+are there. A function must meet both behaviours.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:arg/0" data-no-tooltip="" translate="no">arg()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-callbacks summary">
+  <h2>
+    <a href="#callbacks">Callbacks</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:args/0" data-no-tooltip="" translate="no">args()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The number and types of arguments supported.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:can_return_nil?/1" data-no-tooltip="" translate="no">can_return_nil?(func)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not the function return nil.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:eager_evaluate?/0" data-no-tooltip="" translate="no">eager_evaluate?()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not the function can be evaluated eagerly. For example, <code class="inline">now()</code> cannot be.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:evaluate/1" data-no-tooltip="" translate="no">evaluate(func)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Evaluate a function when all arguments are known valid values</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:evaluate_nil_inputs?/0" data-no-tooltip="" translate="no">evaluate_nil_inputs?()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>If <code class="inline">true</code>, will be allowed to evaluate <code class="inline">nil</code> inputs.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:name/0" data-no-tooltip="" translate="no">name()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The name of the function</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:new/1" data-no-tooltip="" translate="no">new(list)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Instantiate a new function with the provided arguments</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:partial_evaluate/1" data-no-tooltip="" translate="no">partial_evaluate(func)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Evaluate a function when some or no arguments are known valid values</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:predicate?/0" data-no-tooltip="" translate="no">predicate?()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not the function is a predicate (takes a reference as the first argument, a value as the second, and returns a boolean)</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:private?/0" data-no-tooltip="" translate="no">private?()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not the function should be usable when parsing input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#c:returns/0" data-no-tooltip="" translate="no">returns()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The return type for each corresponding set of args.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#evaluate/1" data-no-tooltip="" translate="no">evaluate(func)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Evaluate the operator with provided inputs</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new/2" data-no-tooltip="" translate="no">new(mod, args)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ordinal/1" data-no-tooltip="" translate="no">ordinal(num)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Attaches the appropriate suffix to refer to an ordinal number, e.g 1 -&gt; &quot;1st&quot;</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#try_cast_arguments/2" data-no-tooltip="" translate="no">try_cast_arguments(configured_args, args)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:arg/0">
+
+  <div class="detail-header">
+    <a href="#t:arg/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">arg()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L11" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> arg() :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="callbacks" class="details-list">
+        <h1 class="section-heading">Callbacks</h1>
+        <div class="callbacks-list">
+<section class="detail" id="c:args/0">
+
+  <div class="detail-header">
+    <a href="#c:args/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">args()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L15" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> args() :: [<a href="#t:arg/0">arg</a>()] | :var_args</pre>
+
+      </div>
+
+<p>The number and types of arguments supported.</p>
+  </section>
+</section>
+<section class="detail" id="c:can_return_nil?/1">
+
+  <div class="detail-header">
+    <a href="#c:can_return_nil?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">can_return_nil?(func)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L41" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> can_return_nil?(func :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not the function return nil.</p>
+  </section>
+</section>
+<section class="detail" id="c:eager_evaluate?/0">
+
+  <div class="detail-header">
+    <a href="#c:eager_evaluate?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">eager_evaluate?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L35" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> eager_evaluate?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not the function can be evaluated eagerly. For example, <code class="inline">now()</code> cannot be.</p>
+  </section>
+</section>
+<section class="detail" id="c:evaluate/1">
+
+  <div class="detail-header">
+    <a href="#c:evaluate/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">evaluate(func)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L31" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> evaluate(func :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()) :: :unknown | {:known, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+
+      </div>
+
+<p>Evaluate a function when all arguments are known valid values</p>
+  </section>
+</section>
+<section class="detail" id="c:evaluate_nil_inputs?/0">
+
+  <div class="detail-header">
+    <a href="#c:evaluate_nil_inputs?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">evaluate_nil_inputs?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L48" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> evaluate_nil_inputs?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>If <code class="inline">true</code>, will be allowed to evaluate <code class="inline">nil</code> inputs.</p><p>If <code class="inline">false</code> (the default), any <code class="inline">nil</code> inputs will cause a <code class="inline">nil</code> return.</p>
+  </section>
+</section>
+<section class="detail" id="c:name/0">
+
+  <div class="detail-header">
+    <a href="#c:name/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">name()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L27" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> name() :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()</pre>
+
+      </div>
+
+<p>The name of the function</p>
+  </section>
+</section>
+<section class="detail" id="c:new/1">
+
+  <div class="detail-header">
+    <a href="#c:new/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(list)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L29" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> new([<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()]) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | <a href="https://hexdocs.pm/elixir/Exception.html#t:t/0">Exception.t</a>()}</pre>
+
+      </div>
+
+<p>Instantiate a new function with the provided arguments</p>
+  </section>
+</section>
+<section class="detail" id="c:partial_evaluate/1">
+
+  <div class="detail-header">
+    <a href="#c:partial_evaluate/1" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">partial_evaluate(func)</h1>
+
+        <span class="note">(optional)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L33" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> partial_evaluate(func) :: {:ok, func} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} when func: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()</pre>
+
+      </div>
+
+<p>Evaluate a function when some or no arguments are known valid values</p>
+  </section>
+</section>
+<section class="detail" id="c:predicate?/0">
+
+  <div class="detail-header">
+    <a href="#c:predicate?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">predicate?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L37" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> predicate?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not the function is a predicate (takes a reference as the first argument, a value as the second, and returns a boolean)</p>
+  </section>
+</section>
+<section class="detail" id="c:private?/0">
+
+  <div class="detail-header">
+    <a href="#c:private?/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">private?()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L39" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> private?() :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not the function should be usable when parsing input.</p>
+  </section>
+</section>
+<section class="detail" id="c:returns/0">
+
+  <div class="detail-header">
+    <a href="#c:returns/0" class="detail-link" data-no-tooltip="" aria-label="Link to this callback">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">returns()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L20" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@callback</span> returns() ::
+  [<a href="Ash.Type.xhtml#t:t/0">Ash.Type.t</a>() | {<a href="Ash.Type.xhtml#t:t/0">Ash.Type.t</a>(), constraints :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()}]
+  | <a href="Ash.Type.xhtml#t:t/0">Ash.Type.t</a>()
+  | {<a href="Ash.Type.xhtml#t:t/0">Ash.Type.t</a>(), constraints :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()}
+  | :unknown</pre>
+
+      </div>
+
+<p>The return type for each corresponding set of args.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="evaluate/1">
+
+  <div class="detail-header">
+    <a href="#evaluate/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">evaluate(func)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L53" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Evaluate the operator with provided inputs</p>
+  </section>
+</section>
+<section class="detail" id="new/2">
+
+  <div class="detail-header">
+    <a href="#new/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(mod, args)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L61" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="ordinal/1">
+
+  <div class="detail-header">
+    <a href="#ordinal/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ordinal(num)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L191" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Attaches the appropriate suffix to refer to an ordinal number, e.g 1 -&gt; &quot;1st&quot;</p>
+  </section>
+</section>
+<section class="detail" id="try_cast_arguments/2">
+
+  <div class="detail-header">
+    <a href="#try_cast_arguments/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">try_cast_arguments(configured_args, args)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/query/function/function.ex#L142" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

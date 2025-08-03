@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Filter.Runtime - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Filter.Runtime 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Tools to checks a record to see if it matches a filter statement, or to
+evalute expressions against records.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#filter_matches/4" data-no-tooltip="" translate="no">filter_matches(domain, records, filter, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Removes any records that don't match the filter. Automatically loads
+if necessary. If there are any ambiguous terms in the filter (e.g things
+that could only be determined by data layer), it is assumed that they
+are not matches.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#old_get_related/6" data-no-tooltip="" translate="no">old_get_related(records, list, unknown_on_unknown_refs?, join_filters, parent_stack, domain)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="filter_matches/4">
+
+    <span id="filter_matches/3"></span>
+
+  <div class="detail-header">
+    <a href="#filter_matches/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">filter_matches(domain, records, filter, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/filter/runtime.ex#L15" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Removes any records that don't match the filter. Automatically loads
+if necessary. If there are any ambiguous terms in the filter (e.g things
+that could only be determined by data layer), it is assumed that they
+are not matches.</p>
+  </section>
+</section>
+<section class="detail" id="old_get_related/6">
+
+  <div class="detail-header">
+    <a href="#old_get_related/6" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">old_get_related(records, list, unknown_on_unknown_refs?, join_filters, parent_stack, domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/filter/runtime.ex#L1282" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

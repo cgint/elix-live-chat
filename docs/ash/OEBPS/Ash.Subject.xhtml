@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Subject - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Subject 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Provides a consistent API for common operations across <a href="Ash.Changeset.xhtml"><code class="inline">Ash.Changeset</code></a>,
+<a href="Ash.Query.xhtml"><code class="inline">Ash.Query</code></a>, and <a href="Ash.ActionInput.xhtml"><code class="inline">Ash.ActionInput</code></a>. It allows you to write generic code that works
+with any of these types without needing to pattern match or special-case your logic.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:after_action_fun/0" data-no-tooltip="" translate="no">after_action_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Function type for after action hooks.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:after_transaction_fun/0" data-no-tooltip="" translate="no">after_transaction_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Function type for after transaction hooks.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:around_transaction_fun/0" data-no-tooltip="" translate="no">around_transaction_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Function type for around transaction hooks.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:before_action_fun/0" data-no-tooltip="" translate="no">before_action_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Function type for before action hooks.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:before_transaction_fun/0" data-no-tooltip="" translate="no">before_transaction_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Function type for before transaction hooks.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_error/2" data-no-tooltip="" translate="no">add_error(subject, error)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds an error or list of errors to the subject.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#after_action/3" data-no-tooltip="" translate="no">after_action(subject, callback, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds a callback to be executed after the action.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#after_transaction/3" data-no-tooltip="" translate="no">after_transaction(subject, callback, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds an after_transaction hook to the subject.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#around_transaction/3" data-no-tooltip="" translate="no">around_transaction(subject, callback, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds an around_transaction hook to the subject.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#before_action/3" data-no-tooltip="" translate="no">before_action(subject, callback, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds a callback to be executed before the action.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#before_transaction/3" data-no-tooltip="" translate="no">before_transaction(subject, callback, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds a before_transaction hook to the subject.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#delete_argument/2" data-no-tooltip="" translate="no">delete_argument(subject, argument_or_arguments)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Deletes one or more arguments from the subject.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#fetch_argument/2" data-no-tooltip="" translate="no">fetch_argument(subject, argument)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Fetches an argument value from the subject.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_argument/2" data-no-tooltip="" translate="no">get_argument(subject, argument)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets an argument value from the subject.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_argument/3" data-no-tooltip="" translate="no">get_argument(subject, argument, default \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets an argument value from the subject</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_argument_or_attribute/3" data-no-tooltip="" translate="no">get_argument_or_attribute(subject, argument_or_attribute, default \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets an argument or attribute value from a subject</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_attribute/2" data-no-tooltip="" translate="no">get_attribute(subject, attribute)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#put_context/3" data-no-tooltip="" translate="no">put_context(subject, key, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Puts a key-value pair into the subject's context.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_argument/3" data-no-tooltip="" translate="no">set_argument(subject, argument, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets a single argument on the subject.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_arguments/2" data-no-tooltip="" translate="no">set_arguments(subject, map)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets multiple arguments on the subject.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_context/2" data-no-tooltip="" translate="no">set_context(subject, map)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets the context for the subject.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_private_argument/3" data-no-tooltip="" translate="no">set_private_argument(subject, argument, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets a private argument value on the action input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_private_arguments/2" data-no-tooltip="" translate="no">set_private_arguments(subject, map)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets multiple private arguments on the subject.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:after_action_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:after_action_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">after_action_fun()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L24" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> after_action_fun() :: (<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>() -&gt;
+                         {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}
+                         | {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), [<a href="Ash.Notifier.Notification.xhtml#t:t/0">Ash.Notifier.Notification.t</a>()]}
+                         | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()})</pre>
+
+      </div>
+
+<p>Function type for after action hooks.</p><p>Receives the action input and the result of the action, and can return
+the result optionally with notifications, or an error.</p>
+  </section>
+</section>
+<section class="detail" id="t:after_transaction_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:after_transaction_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">after_transaction_fun()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L43" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> after_transaction_fun() :: (<a href="#t:t/0">t</a>(), {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()} -&gt;
+                              {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()})</pre>
+
+      </div>
+
+<p>Function type for after transaction hooks.</p><p>Receives the action input and the result of the transaction, and returns
+the result (potentially modified) or an error.</p>
+  </section>
+</section>
+<section class="detail" id="t:around_transaction_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:around_transaction_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">around_transaction_fun()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L53" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> around_transaction_fun() :: (<a href="#t:t/0">t</a>(), (<a href="#t:t/0">t</a>() -&gt; {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()}) -&gt;
+                               {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()})</pre>
+
+      </div>
+
+<p>Function type for around transaction hooks.</p><p>Receives an action input and a callback function that executes the transaction,
+and returns the result of calling the callback or an error.</p>
+  </section>
+</section>
+<section class="detail" id="t:before_action_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:before_action_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">before_action_fun()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L15" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> before_action_fun() :: (<a href="#t:t/0">t</a>() -&gt;
+                          <a href="#t:t/0">t</a>()
+                          | {<a href="#t:t/0">t</a>(),
+                             %{notifications: [<a href="Ash.Notifier.Notification.xhtml#t:t/0">Ash.Notifier.Notification.t</a>()]}})</pre>
+
+      </div>
+
+<p>Function type for before action hooks.</p><p>Receives an action input and returns a modified action input, optionally with notifications.</p>
+  </section>
+</section>
+<section class="detail" id="t:before_transaction_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:before_transaction_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">before_transaction_fun()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L35" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> before_transaction_fun() :: (<a href="#t:t/0">t</a>() -&gt; <a href="#t:t/0">t</a>() | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()})</pre>
+
+      </div>
+
+<p>Function type for before transaction hooks.</p><p>Receives an action input and returns a modified action input or an error.</p>
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L8" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>() | <a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>() | <a href="Ash.ActionInput.xhtml#t:t/0">Ash.ActionInput.t</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="add_error/2">
+
+  <div class="detail-header">
+    <a href="#add_error/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_error(subject, error)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L72" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> add_error(
+  subject :: <a href="#t:t/0">t</a>(),
+  error_input :: <a href="Ash.Error.xhtml#t:error_input/0">Ash.Error.error_input</a>() | [<a href="Ash.Error.xhtml#t:error_input/0">Ash.Error.error_input</a>()]
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds an error or list of errors to the subject.</p><p>Supports all subject types (Changeset, Query, ActionInput) and maintains
+type consistency.</p><h2 id="add_error/2-parameters" class="section-heading"><a href="#add_error/2-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to add errors to</li><li><code class="inline">errors</code> - Error or list of errors to add</li></ul>
+  </section>
+</section>
+<section class="detail" id="after_action/3">
+
+    <span id="after_action/2"></span>
+
+  <div class="detail-header">
+    <a href="#after_action/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">after_action(subject, callback, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L419" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> after_action(
+  subject :: <a href="#t:t/0">t</a>(),
+  callback :: <a href="#t:after_action_fun/0">after_action_fun</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds a callback to be executed after the action.</p><p>Note: Query only supports 2-arity callbacks and ignores opts.</p><h2 id="after_action/3-parameters" class="section-heading"><a href="#after_action/3-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to add callback to</li><li><code class="inline">callback</code> - Function that processes the result</li><li><code class="inline">opts</code> - Options including <code class="inline">:prepend?</code> (ignored for Query)</li></ul>
+  </section>
+</section>
+<section class="detail" id="after_transaction/3">
+
+    <span id="after_transaction/2"></span>
+
+  <div class="detail-header">
+    <a href="#after_transaction/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">after_transaction(subject, callback, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L553" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> after_transaction(
+  subject :: <a href="#t:t/0">t</a>(),
+  callback :: <a href="#t:after_transaction_fun/0">after_transaction_fun</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds an after_transaction hook to the subject.</p><p>After transaction hooks are executed after the database transaction completes,
+regardless of success or failure. They receive both the subject and the transaction
+result, allowing for cleanup operations, logging, or result modification.</p><h2 id="after_transaction/3-parameters" class="section-heading"><a href="#after_transaction/3-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to add the hook to (Changeset, Query, or ActionInput)</li><li><code class="inline">callback</code> - Function that takes the subject and result, returns modified result</li><li><code class="inline">opts</code> - Options including <code class="inline">:prepend?</code> to add at beginning of hooks list</li></ul><h2 id="after_transaction/3-examples" class="section-heading"><a href="#after_transaction/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Add cleanup after transaction</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">changeset</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">after_transaction</samp><samp class="p" data-group-id="5468103805-1">(</samp><samp class="k" data-group-id="5468103805-2">fn</samp><samp class="w"> </samp><samp class="n">changeset</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">cleanup_temp_resources</samp><samp class="p" data-group-id="5468103805-3">(</samp><samp class="p" data-group-id="5468103805-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">result</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="5468103805-2">end</samp><samp class="p" data-group-id="5468103805-1">)</samp><samp class="w">
+
+</samp><samp class="c1"># Log transaction outcome</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">query</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">after_transaction</samp><samp class="p" data-group-id="5468103805-4">(</samp><samp class="k" data-group-id="5468103805-5">fn</samp><samp class="w"> </samp><samp class="n">query</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k">case</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="k" data-group-id="5468103805-6">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="p" data-group-id="5468103805-7">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="5468103805-7">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Logger</samp><samp class="o">.</samp><samp class="n">info</samp><samp class="p" data-group-id="5468103805-8">(</samp><samp class="s">&quot;Query succeeded&quot;</samp><samp class="p" data-group-id="5468103805-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="p" data-group-id="5468103805-9">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">reason</samp><samp class="p" data-group-id="5468103805-9">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="nc">Logger</samp><samp class="o">.</samp><samp class="n">error</samp><samp class="p" data-group-id="5468103805-10">(</samp><samp class="s">&quot;Query failed: </samp><samp class="si" data-group-id="5468103805-11">#{</samp><samp class="n">inspect</samp><samp class="p" data-group-id="5468103805-12">(</samp><samp class="n">reason</samp><samp class="p" data-group-id="5468103805-12">)</samp><samp class="si" data-group-id="5468103805-11">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="5468103805-10">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="5468103805-6">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">result</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="5468103805-5">end</samp><samp class="p" data-group-id="5468103805-4">)</samp><samp class="w">
+
+</samp><samp class="c1"># Modify successful results</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">action_input</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">after_transaction</samp><samp class="p" data-group-id="5468103805-13">(</samp><samp class="k" data-group-id="5468103805-14">fn</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k">case</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="k" data-group-id="5468103805-15">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="p" data-group-id="5468103805-16">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">data</samp><samp class="p" data-group-id="5468103805-16">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="5468103805-17">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">put</samp><samp class="p" data-group-id="5468103805-18">(</samp><samp class="n">data</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:processed_at</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">DateTime</samp><samp class="o">.</samp><samp class="n">utc_now</samp><samp class="p" data-group-id="5468103805-19">(</samp><samp class="p" data-group-id="5468103805-19">)</samp><samp class="p" data-group-id="5468103805-18">)</samp><samp class="p" data-group-id="5468103805-17">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="n">error</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="n">error</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="5468103805-15">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="5468103805-14">end</samp><samp class="p" data-group-id="5468103805-13">)</samp></code></pre><h2 id="after_transaction/3-important-notes" class="section-heading"><a href="#after_transaction/3-important-notes" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Important Notes</span></h2><ul><li>These hooks run whether the transaction succeeds or fails</li><li>They run outside the transaction, so database operations here are not rolled back</li><li>The hook must return a result in the same format it received</li></ul><h2 id="after_transaction/3-see-also" class="section-heading"><a href="#after_transaction/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#before_transaction/3"><code class="inline">before_transaction/3</code></a> for hooks that run before the transaction starts</li><li><a href="#around_transaction/3"><code class="inline">around_transaction/3</code></a> for hooks that wrap the entire transaction</li><li><a href="#after_action/3"><code class="inline">after_action/3</code></a> for hooks that run after the action (inside transaction, success only)</li></ul>
+  </section>
+</section>
+<section class="detail" id="around_transaction/3">
+
+    <span id="around_transaction/2"></span>
+
+  <div class="detail-header">
+    <a href="#around_transaction/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">around_transaction(subject, callback, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L635" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> around_transaction(
+  subject :: <a href="#t:t/0">t</a>(),
+  callback :: <a href="#t:around_transaction_fun/0">around_transaction_fun</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds an around_transaction hook to the subject.</p><p>Around transaction hooks wrap the entire transaction execution. They receive the subject
+and a callback function that executes the transaction. This allows adding logic both
+before and after the transaction while maintaining full control over its execution.</p><h2 id="around_transaction/3-parameters" class="section-heading"><a href="#around_transaction/3-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to add the hook to (Changeset, Query, or ActionInput)</li><li><code class="inline">callback</code> - Function that takes the subject and a callback, must call the callback</li><li><code class="inline">opts</code> - Options including <code class="inline">:prepend?</code> to add at beginning of hooks list</li></ul><h2 id="around_transaction/3-examples" class="section-heading"><a href="#around_transaction/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Add timing measurements</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">changeset</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">around_transaction</samp><samp class="p" data-group-id="9253552973-1">(</samp><samp class="k" data-group-id="9253552973-2">fn</samp><samp class="w"> </samp><samp class="n">changeset</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">callback</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">start_time</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">System</samp><samp class="o">.</samp><samp class="n">monotonic_time</samp><samp class="p" data-group-id="9253552973-3">(</samp><samp class="ss">:millisecond</samp><samp class="p" data-group-id="9253552973-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">callback</samp><samp class="o">.</samp><samp class="p" data-group-id="9253552973-4">(</samp><samp class="n">changeset</samp><samp class="p" data-group-id="9253552973-4">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">duration</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">System</samp><samp class="o">.</samp><samp class="n">monotonic_time</samp><samp class="p" data-group-id="9253552973-5">(</samp><samp class="ss">:millisecond</samp><samp class="p" data-group-id="9253552973-5">)</samp><samp class="w"> </samp><samp class="o">-</samp><samp class="w"> </samp><samp class="n">start_time</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="nc">Logger</samp><samp class="o">.</samp><samp class="n">info</samp><samp class="p" data-group-id="9253552973-6">(</samp><samp class="s">&quot;Transaction took </samp><samp class="si" data-group-id="9253552973-7">#{</samp><samp class="n">duration</samp><samp class="si" data-group-id="9253552973-7">}</samp><samp class="s">ms&quot;</samp><samp class="p" data-group-id="9253552973-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">result</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="9253552973-2">end</samp><samp class="p" data-group-id="9253552973-1">)</samp><samp class="w">
+
+</samp><samp class="c1"># Add retry logic for transient failures</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">query</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">around_transaction</samp><samp class="p" data-group-id="9253552973-8">(</samp><samp class="k" data-group-id="9253552973-9">fn</samp><samp class="w"> </samp><samp class="n">query</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">callback</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k">case</samp><samp class="w"> </samp><samp class="n">callback</samp><samp class="o">.</samp><samp class="p" data-group-id="9253552973-10">(</samp><samp class="n">query</samp><samp class="p" data-group-id="9253552973-10">)</samp><samp class="w"> </samp><samp class="k" data-group-id="9253552973-11">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="p" data-group-id="9253552973-12">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9253552973-13">%{</samp><samp class="ss">retryable?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p" data-group-id="9253552973-13">}</samp><samp class="p" data-group-id="9253552973-12">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">error</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">      </samp><samp class="nc">Logger</samp><samp class="o">.</samp><samp class="n">warn</samp><samp class="p" data-group-id="9253552973-14">(</samp><samp class="s">&quot;Retrying after error: </samp><samp class="si" data-group-id="9253552973-15">#{</samp><samp class="n">inspect</samp><samp class="p" data-group-id="9253552973-16">(</samp><samp class="n">error</samp><samp class="p" data-group-id="9253552973-16">)</samp><samp class="si" data-group-id="9253552973-15">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="9253552973-14">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">      </samp><samp class="nc">:timer</samp><samp class="o">.</samp><samp class="n">sleep</samp><samp class="p" data-group-id="9253552973-17">(</samp><samp class="mi">100</samp><samp class="p" data-group-id="9253552973-17">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">      </samp><samp class="n">callback</samp><samp class="o">.</samp><samp class="p" data-group-id="9253552973-18">(</samp><samp class="n">query</samp><samp class="p" data-group-id="9253552973-18">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">      </samp><samp class="n">result</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="9253552973-11">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="9253552973-9">end</samp><samp class="p" data-group-id="9253552973-8">)</samp><samp class="w">
+
+</samp><samp class="c1"># Wrap with custom error handling</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">action_input</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">around_transaction</samp><samp class="p" data-group-id="9253552973-19">(</samp><samp class="k" data-group-id="9253552973-20">fn</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">callback</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k">try</samp><samp class="w"> </samp><samp class="k" data-group-id="9253552973-21">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="n">callback</samp><samp class="o">.</samp><samp class="p" data-group-id="9253552973-22">(</samp><samp class="n">input</samp><samp class="p" data-group-id="9253552973-22">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="9253552973-21">rescue</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="n">exception</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">      </samp><samp class="nc">Logger</samp><samp class="o">.</samp><samp class="n">error</samp><samp class="p" data-group-id="9253552973-23">(</samp><samp class="s">&quot;Transaction failed: </samp><samp class="si" data-group-id="9253552973-24">#{</samp><samp class="nc">Exception</samp><samp class="o">.</samp><samp class="n">message</samp><samp class="p" data-group-id="9253552973-25">(</samp><samp class="n">exception</samp><samp class="p" data-group-id="9253552973-25">)</samp><samp class="si" data-group-id="9253552973-24">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="9253552973-23">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">      </samp><samp class="p" data-group-id="9253552973-26">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Exception</samp><samp class="o">.</samp><samp class="n">message</samp><samp class="p" data-group-id="9253552973-27">(</samp><samp class="n">exception</samp><samp class="p" data-group-id="9253552973-27">)</samp><samp class="p" data-group-id="9253552973-26">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="9253552973-21">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="9253552973-20">end</samp><samp class="p" data-group-id="9253552973-19">)</samp></code></pre><h2 id="around_transaction/3-warning" class="section-heading"><a href="#around_transaction/3-warning" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Warning</span></h2><p>This is an advanced hook that controls transaction execution. You <strong>must</strong> call the
+callback function provided to your hook, and the return value must match the structure
+returned by the callback (typically <code class="inline">{:ok, result}</code> or <code class="inline">{:error, reason}</code>).</p><p>Failing to call the callback will prevent the transaction from executing at all.</p><h2 id="around_transaction/3-see-also" class="section-heading"><a href="#around_transaction/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#before_transaction/3"><code class="inline">before_transaction/3</code></a> and <a href="#after_transaction/3"><code class="inline">after_transaction/3</code></a> for simpler hooks</li><li><code class="inline">around_action/2</code> for wrapping just the action execution</li></ul>
+  </section>
+</section>
+<section class="detail" id="before_action/3">
+
+    <span id="before_action/2"></span>
+
+  <div class="detail-header">
+    <a href="#before_action/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">before_action(subject, callback, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L389" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> before_action(
+  subject :: <a href="#t:t/0">t</a>(),
+  callback :: <a href="#t:before_action_fun/0">before_action_fun</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds a callback to be executed before the action.</p><h2 id="before_action/3-parameters" class="section-heading"><a href="#before_action/3-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to add callback to</li><li><code class="inline">callback</code> - Function that takes and returns the subject</li><li><code class="inline">opts</code> - Options including <code class="inline">:prepend?</code> to add at beginning</li></ul>
+  </section>
+</section>
+<section class="detail" id="before_transaction/3">
+
+    <span id="before_transaction/2"></span>
+
+  <div class="detail-header">
+    <a href="#before_transaction/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">before_transaction(subject, callback, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L481" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> before_transaction(
+  subject :: <a href="#t:t/0">t</a>(),
+  callback :: <a href="#t:before_transaction_fun/0">before_transaction_fun</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds a before_transaction hook to the subject.</p><p>Before transaction hooks are executed before the database transaction begins.
+They receive the subject and must return either a modified subject or an error tuple.
+These hooks are useful for validation, authorization checks, or preparatory logic
+that should run outside of the transaction.</p><h2 id="before_transaction/3-parameters" class="section-heading"><a href="#before_transaction/3-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to add the hook to (Changeset, Query, or ActionInput)</li><li><code class="inline">callback</code> - Function that takes the subject and returns the subject or <code class="inline">{:error, reason}</code></li><li><code class="inline">opts</code> - Options including <code class="inline">:prepend?</code> to add at beginning of hooks list</li></ul><h2 id="before_transaction/3-examples" class="section-heading"><a href="#before_transaction/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Add validation before transaction starts</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">changeset</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">before_transaction</samp><samp class="p" data-group-id="9622788704-1">(</samp><samp class="k" data-group-id="9622788704-2">fn</samp><samp class="w"> </samp><samp class="n">changeset</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k">if</samp><samp class="w"> </samp><samp class="n">valid_state?</samp><samp class="p" data-group-id="9622788704-3">(</samp><samp class="n">changeset</samp><samp class="p" data-group-id="9622788704-3">)</samp><samp class="w"> </samp><samp class="k" data-group-id="9622788704-4">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="n">changeset</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="9622788704-4">else</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="p" data-group-id="9622788704-5">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Invalid state for this operation&quot;</samp><samp class="p" data-group-id="9622788704-5">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="9622788704-4">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="9622788704-2">end</samp><samp class="p" data-group-id="9622788704-1">)</samp><samp class="w">
+
+</samp><samp class="c1"># Add logging for all subject types</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">subject</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">before_transaction</samp><samp class="p" data-group-id="9622788704-6">(</samp><samp class="k" data-group-id="9622788704-7">fn</samp><samp class="w"> </samp><samp class="n">subject</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="nc">Logger</samp><samp class="o">.</samp><samp class="n">info</samp><samp class="p" data-group-id="9622788704-8">(</samp><samp class="s">&quot;Starting transaction for </samp><samp class="si" data-group-id="9622788704-9">#{</samp><samp class="n">inspect</samp><samp class="p" data-group-id="9622788704-10">(</samp><samp class="n">subject</samp><samp class="o">.</samp><samp class="n">resource</samp><samp class="p" data-group-id="9622788704-10">)</samp><samp class="si" data-group-id="9622788704-9">}</samp><samp class="s">&quot;</samp><samp class="p" data-group-id="9622788704-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">subject</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="9622788704-7">end</samp><samp class="p" data-group-id="9622788704-6">)</samp><samp class="w">
+
+</samp><samp class="c1"># Prepend a hook to run first</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">query</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">before_transaction</samp><samp class="p" data-group-id="9622788704-11">(</samp><samp class="n">check_permissions</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">prepend?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p" data-group-id="9622788704-11">)</samp></code></pre><h2 id="before_transaction/3-see-also" class="section-heading"><a href="#before_transaction/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#after_transaction/3"><code class="inline">after_transaction/3</code></a> for hooks that run after the transaction completes</li><li><a href="#around_transaction/3"><code class="inline">around_transaction/3</code></a> for hooks that wrap the entire transaction</li><li><a href="#before_action/3"><code class="inline">before_action/3</code></a> for hooks that run before the action (inside transaction)</li></ul>
+  </section>
+</section>
+<section class="detail" id="delete_argument/2">
+
+  <div class="detail-header">
+    <a href="#delete_argument/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">delete_argument(subject, argument_or_arguments)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L292" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> delete_argument(
+  subject :: <a href="#t:t/0">t</a>(),
+  argument_or_arguments :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()]
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Deletes one or more arguments from the subject.</p><h2 id="delete_argument/2-parameters" class="section-heading"><a href="#delete_argument/2-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to delete arguments from</li><li><code class="inline">arguments</code> - Single argument name or list of argument names to delete</li></ul>
+  </section>
+</section>
+<section class="detail" id="fetch_argument/2">
+
+  <div class="detail-header">
+    <a href="#fetch_argument/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">fetch_argument(subject, argument)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L229" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> fetch_argument(subject :: <a href="#t:t/0">t</a>(), argument :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) ::
+  {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | :error</pre>
+
+      </div>
+
+<p>Fetches an argument value from the subject.</p><p>Returns <code class="inline">{:ok, value}</code> if the argument exists, <code class="inline">:error</code> otherwise.
+Supports both atom and string argument names.</p><h2 id="fetch_argument/2-parameters" class="section-heading"><a href="#fetch_argument/2-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to fetch argument from</li><li><code class="inline">argument</code> - The argument name (atom or string)</li></ul>
+  </section>
+</section>
+<section class="detail" id="get_argument/2">
+
+  <div class="detail-header">
+    <a href="#get_argument/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_argument(subject, argument)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L177" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> get_argument(subject :: <a href="#t:t/0">t</a>(), argument :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>Gets an argument value from the subject.</p><p>Supports both atom and string argument names.</p><h2 id="get_argument/2-parameters" class="section-heading"><a href="#get_argument/2-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to get argument from</li><li><code class="inline">argument</code> - The argument name (atom or string)</li></ul>
+  </section>
+</section>
+<section class="detail" id="get_argument/3">
+
+  <div class="detail-header">
+    <a href="#get_argument/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_argument(subject, argument, default \\ nil)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L201" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> get_argument(subject :: <a href="#t:t/0">t</a>(), argument :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), default :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) ::
+  <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>Gets an argument value from the subject</p><p>Supports both atom and string argument names.</p><h2 id="get_argument/3-parameters" class="section-heading"><a href="#get_argument/3-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to get argument from</li><li><code class="inline">argument</code> - The argument name (atom or string)</li><li><code class="inline">default</code> - The default value to return if the argument is not found</li></ul>
+  </section>
+</section>
+<section class="detail" id="get_argument_or_attribute/3">
+
+    <span id="get_argument_or_attribute/2"></span>
+
+  <div class="detail-header">
+    <a href="#get_argument_or_attribute/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_argument_or_attribute(subject, argument_or_attribute, default \\ nil)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L145" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> get_argument_or_attribute(
+  subject :: <a href="#t:t/0">t</a>(),
+  argument_or_attribute :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(),
+  default :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()
+) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>() | nil</pre>
+
+      </div>
+
+<p>Gets an argument or attribute value from a subject</p><p>For Changesets, this will return the argument if it exists, otherwise the attribute.
+For Query and ActionInput, this only retrieves arguments.</p><h2 id="get_argument_or_attribute/3-parameters" class="section-heading"><a href="#get_argument_or_attribute/3-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to get value from</li><li><code class="inline">name</code> - The argument or attribute name (atom or string)</li><li><code class="inline">default</code> - The default value to return if the argument or attribute is not found</li></ul>
+  </section>
+</section>
+<section class="detail" id="get_attribute/2">
+
+  <div class="detail-header">
+    <a href="#get_attribute/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_attribute(subject, attribute)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L209" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> get_attribute(subject :: <a href="#t:t/0">t</a>(), attribute :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="put_context/3">
+
+  <div class="detail-header">
+    <a href="#put_context/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">put_context(subject, key, value)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L100" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> put_context(
+  subject :: <a href="#t:t/0">t</a>(),
+  key :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(),
+  value :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Puts a key-value pair into the subject's context.</p><h2 id="put_context/3-parameters" class="section-heading"><a href="#put_context/3-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to update context on</li><li><code class="inline">key</code> - The context key</li><li><code class="inline">value</code> - The value to store</li></ul>
+  </section>
+</section>
+<section class="detail" id="set_argument/3">
+
+  <div class="detail-header">
+    <a href="#set_argument/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_argument(subject, argument, value)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L268" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_argument(subject :: <a href="#t:t/0">t</a>(), argument :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), value :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) ::
+  <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Sets a single argument on the subject.</p><h2 id="set_argument/3-parameters" class="section-heading"><a href="#set_argument/3-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to set argument on</li><li><code class="inline">argument</code> - The argument name (atom or string)</li><li><code class="inline">value</code> - The value to set</li></ul>
+  </section>
+</section>
+<section class="detail" id="set_arguments/2">
+
+  <div class="detail-header">
+    <a href="#set_arguments/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_arguments(subject, map)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L252" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_arguments(subject :: <a href="#t:t/0">t</a>(), arguments :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Sets multiple arguments on the subject.</p><p>Takes a map of argument names to values and sets them all.</p><h2 id="set_arguments/2-parameters" class="section-heading"><a href="#set_arguments/2-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to set arguments on</li><li><code class="inline">arguments</code> - Map of argument names to values</li></ul>
+  </section>
+</section>
+<section class="detail" id="set_context/2">
+
+  <div class="detail-header">
+    <a href="#set_context/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_context(subject, map)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L116" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_context(subject :: <a href="#t:t/0">t</a>(), context :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Sets the context for the subject.</p><p>Merges the provided map into the subject's existing context.
+For Changeset and Query, delegates to their specific implementations.</p><h2 id="set_context/2-parameters" class="section-heading"><a href="#set_context/2-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to set context on</li><li><code class="inline">context</code> - Map of context data to merge</li></ul>
+  </section>
+</section>
+<section class="detail" id="set_private_argument/3">
+
+  <div class="detail-header">
+    <a href="#set_private_argument/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_private_argument(subject, argument, value)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L345" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_private_argument(
+  subject :: <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>() | <a href="Ash.ActionInput.xhtml#t:t/0">Ash.ActionInput.t</a>(),
+  argument :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(),
+  value :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Sets a private argument value on the action input.</p><p><em>Only supports <a href="Ash.Changeset.xhtml"><code class="inline">Ash.Changeset</code></a> and <a href="Ash.ActionInput.xhtml"><code class="inline">Ash.ActionInput</code></a> subjects.</em></p><p>Private arguments are not exposed in the public API and can only be set
+internally. This function will only work for arguments marked as <code class="inline">public?: false</code>
+in the action definition.</p><h2 id="set_private_argument/3-examples" class="section-heading"><a href="#set_private_argument/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Set a private argument (assuming :internal_flag is private)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="9172384968-1">(</samp><samp class="ss">:example</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9172384968-2">%{</samp><samp class="p" data-group-id="9172384968-2">}</samp><samp class="p" data-group-id="9172384968-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">set_private_argument</samp><samp class="p" data-group-id="9172384968-3">(</samp><samp class="ss">:internal_flag</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p" data-group-id="9172384968-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">get_argument</samp><samp class="p" data-group-id="9172384968-4">(</samp><samp class="ss">:internal_flag</samp><samp class="p" data-group-id="9172384968-4">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+
+</samp><samp class="c1"># Attempting to set a public argument as private will error</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="9172384968-5">(</samp><samp class="ss">:example</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9172384968-6">%{</samp><samp class="p" data-group-id="9172384968-6">}</samp><samp class="p" data-group-id="9172384968-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">set_private_argument</samp><samp class="p" data-group-id="9172384968-7">(</samp><samp class="ss">:public_arg</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;value&quot;</samp><samp class="p" data-group-id="9172384968-7">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">valid?</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+
+</samp><samp class="c1"># Use in action implementations for internal state</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="9172384968-8">(</samp><samp class="ss">:complex_workflow</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9172384968-9">%{</samp><samp class="ss">data</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;user_data&quot;</samp><samp class="p" data-group-id="9172384968-9">}</samp><samp class="p" data-group-id="9172384968-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.Subject</samp><samp class="o">.</samp><samp class="n">set_private_argument</samp><samp class="p" data-group-id="9172384968-10">(</samp><samp class="ss">:workflow_step</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="9172384968-10">)</samp></code></pre><h2 id="set_private_argument/3-see-also" class="section-heading"><a href="#set_private_argument/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#set_argument/3"><code class="inline">set_argument/3</code></a> for setting public arguments</li><li><code class="inline">get_argument/2-3</code> for retrieving argument values</li><li>Action argument definitions with <code class="inline">public?: false</code></li></ul>
+  </section>
+</section>
+<section class="detail" id="set_private_arguments/2">
+
+  <div class="detail-header">
+    <a href="#set_private_arguments/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_private_arguments(subject, map)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/subject.ex#L369" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_private_arguments(
+  subject :: <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>() | <a href="Ash.ActionInput.xhtml#t:t/0">Ash.ActionInput.t</a>(),
+  arguments :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Sets multiple private arguments on the subject.</p><p><em>Only supports <a href="Ash.Changeset.xhtml"><code class="inline">Ash.Changeset</code></a> and <a href="Ash.ActionInput.xhtml"><code class="inline">Ash.ActionInput</code></a> subjects.</em></p><p>Takes a map of argument names to values and sets them all as private arguments.</p><h2 id="set_private_arguments/2-parameters" class="section-heading"><a href="#set_private_arguments/2-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to set private arguments on (Changeset or ActionInput)</li><li><code class="inline">arguments</code> - Map of argument names to values</li></ul>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

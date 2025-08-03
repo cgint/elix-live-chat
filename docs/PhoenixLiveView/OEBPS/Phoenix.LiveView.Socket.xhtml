@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.Socket - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.Socket 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>The LiveView socket for Phoenix Endpoints.</p><p>This is typically mounted directly in your endpoint.</p><pre><code class="makeup elixir" translate="no"><samp class="n">socket</samp><samp class="w"> </samp><samp class="s">&quot;/live&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveView.Socket</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">websocket</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3743763798-1">[</samp><samp class="ss">connect_info</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3743763798-2">[</samp><samp class="ss">session</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="na">@session_options</samp><samp class="p" data-group-id="3743763798-2">]</samp><samp class="p" data-group-id="3743763798-1">]</samp></code></pre><p>To share an underlying transport connection between regular
+Phoenix channels and LiveView processes, <code class="inline">use Phoenix.LiveView.Socket</code>
+from your own <code class="inline">MyAppWeb.UserSocket</code> module.</p><p>Next, declare your <code class="inline">channel</code> definitions and optional <code class="inline">connect/3</code>, and
+<code class="inline">id/1</code> callbacks to handle your channel specific needs, then mount
+your own socket in your endpoint:</p><pre><code class="makeup elixir" translate="no"><samp class="n">socket</samp><samp class="w"> </samp><samp class="s">&quot;/live&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.UserSocket</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">websocket</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1167336138-1">[</samp><samp class="ss">connect_info</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1167336138-2">[</samp><samp class="ss">session</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="na">@session_options</samp><samp class="p" data-group-id="1167336138-2">]</samp><samp class="p" data-group-id="1167336138-1">]</samp></code></pre><p>If you require session options to be set at runtime, you can use
+an MFA tuple. The function it designates must return a keyword list.</p><pre><code class="makeup elixir" translate="no"><samp class="n">socket</samp><samp class="w"> </samp><samp class="s">&quot;/live&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.UserSocket</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">websocket</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0167105685-1">[</samp><samp class="ss">connect_info</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0167105685-2">[</samp><samp class="ss">session</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0167105685-3">{</samp><samp class="bp">__MODULE__</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:runtime_opts</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0167105685-4">[</samp><samp class="p" data-group-id="0167105685-4">]</samp><samp class="p" data-group-id="0167105685-3">}</samp><samp class="p" data-group-id="0167105685-2">]</samp><samp class="p" data-group-id="0167105685-1">]</samp><samp class="w">
+
+</samp><samp class="c1"># ...</samp><samp class="w">
+
+</samp><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">runtime_opts</samp><samp class="p" data-group-id="0167105685-5">(</samp><samp class="p" data-group-id="0167105685-5">)</samp><samp class="w"> </samp><samp class="k" data-group-id="0167105685-6">do</samp><samp class="w">
+  </samp><samp class="nc">Keyword</samp><samp class="o">.</samp><samp class="n">put</samp><samp class="p" data-group-id="0167105685-7">(</samp><samp class="na">@session_options</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:domain</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">host</samp><samp class="p" data-group-id="0167105685-8">(</samp><samp class="p" data-group-id="0167105685-8">)</samp><samp class="p" data-group-id="0167105685-7">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="0167105685-6">end</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:assigns/0" data-no-tooltip="" translate="no">assigns()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The data in a LiveView as stored in the socket.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:assigns_not_in_socket/0" data-no-tooltip="" translate="no">assigns_not_in_socket()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Struct returned when <code class="inline">assigns</code> is not in the socket.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:assigns/0">
+
+  <div class="detail-header">
+    <a href="#t:assigns/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assigns()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/socket.ex#L80" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> assigns() :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>() | <a href="#t:assigns_not_in_socket/0">assigns_not_in_socket</a>()</pre>
+
+      </div>
+
+<p>The data in a LiveView as stored in the socket.</p>
+  </section>
+</section>
+<section class="detail" id="t:assigns_not_in_socket/0">
+
+  <div class="detail-header">
+    <a href="#t:assigns_not_in_socket/0" class="detail-link" data-no-tooltip="" aria-label="Link to this opaque">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assigns_not_in_socket()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/socket.ex#L77" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@opaque</span> assigns_not_in_socket()</pre>
+
+      </div>
+
+<p>Struct returned when <code class="inline">assigns</code> is not in the socket.</p>
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/socket.ex#L82" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %Phoenix.LiveView.Socket{
+  assigns: <a href="#t:assigns/0">assigns</a>(),
+  endpoint: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>(),
+  host_uri: <a href="https://hexdocs.pm/elixir/URI.html#t:t/0">URI.t</a>() | :not_mounted_at_router,
+  id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  parent_pid: nil | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pid</a>(),
+  private: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>(),
+  redirected: nil | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">tuple</a>(),
+  root_pid: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pid</a>(),
+  router: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>(),
+  sticky?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  transport_pid: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pid</a>() | nil,
+  view: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">module</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

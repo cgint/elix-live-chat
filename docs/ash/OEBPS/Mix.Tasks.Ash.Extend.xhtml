@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>mix ash.extend - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+mix ash.extend 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Adds an extension or extensions to the domain/resource</p><p>Extensions can either be a fully qualified module name, or one of the following list, based on the thing being extended</p><h3 id="module-ash-domain">Ash.Domain</h3><ul><li><code class="inline">json_api</code> - <code class="inline">AshJsonApi.Domain</code></li><li><code class="inline">graphql</code> - <code class="inline">AshGraphql.Domain</code></li></ul><h3 id="module-ash-resource">Ash.Resource</h3><ul><li><code class="inline">postgres</code> - <code class="inline">AshPostgres.DataLayer</code></li><li><code class="inline">sqlite</code> - <code class="inline">AshSqlite.DataLayer</code></li><li><code class="inline">mysql</code> - <code class="inline">AshMysql.DataLayer</code></li><li><code class="inline">ets</code> - <a href="Ash.DataLayer.Ets.xhtml"><code class="inline">Ash.DataLayer.Ets</code></a></li><li><code class="inline">mnesia</code> - <a href="Ash.DataLayer.Mnesia.xhtml"><code class="inline">Ash.DataLayer.Mnesia</code></a></li><li><code class="inline">embedded</code> - <code class="inline">data_layer: :embedded</code></li><li><code class="inline">json_api</code> - <code class="inline">AshJsonApi.Resource</code></li><li><code class="inline">graphql</code> - <code class="inline">AshGraphql.Resource</code></li></ul><h2 id="module-example">Example</h2><pre><code class="makeup bash" translate="no"><samp class="">mix ash.extend My.Domain.Resource postgres,Ash.Policy.Authorizer
+</samp></code></pre>
+      </section>
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Manual Installation - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Manual Installation</h1>
+<p>This guide will walk you through the process of manually installing Ash into your project.
+If you are starting from scratch, you can use <a href="https://hexdocs.pm/mix/Mix.Tasks.New.html"><code class="inline">mix new</code></a> or <code class="inline">mix igniter.new</code> and follow these instructions.
+These installation instructions apply both to new projects and existing ones.</p><h2 id="install-setup-dependencies">Install &amp; Setup Dependencies</h2><p>See the readmes for <code class="inline">spark</code> and <code class="inline">reactor</code> for more information on their installation.
+We've included their changes here for your convenience.</p><p>Create <code class="inline">.formatter.exs</code>:</p><pre><code class="makeup elixir" translate="no"><span class="c1"># Used by &quot;mix format&quot;</span><span class="w">
+</span><span class="p" data-group-id="3669322581-1">[</span><span class="w">
+  </span><span class="ss">inputs</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3669322581-2">[</span><span class="s">&quot;{mix,.formatter}.exs&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{config,lib,test}/**/*.{ex,exs}&quot;</span><span class="p" data-group-id="3669322581-2">]</span><span class="p">,</span><span class="w">
+  </span><span class="ss">plugins</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3669322581-3">[</span><span class="nc">Spark.Formatter</span><span class="p" data-group-id="3669322581-3">]</span><span class="w">
+</span><span class="p" data-group-id="3669322581-1">]</span><span class="w">
+</span></code></pre><p>Create <code class="inline">config/config.exs</code>:</p><pre><code class="makeup elixir" translate="no"><span class="kn">import</span><span class="w"> </span><span class="nc">Config</span><span class="w">
+</span><span class="n">config</span><span class="w"> </span><span class="ss">:spark</span><span class="p">,</span><span class="w"> </span><span class="ss">formatter</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="4846346578-1">[</span><span class="ss">remove_parens?</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="4846346578-1">]</span><span class="w">
+</span></code></pre><p>Update <code class="inline">mix.exs</code>:</p><pre><code class="makeup diff" translate="no"><span class="">...</span><span class="w">
+</span><span class="">    defp deps do</span><span class="w">
+</span><span class="">      [</span><span class="w">
+</span><span class="gi">+       {:sourceror, &quot;~&gt; 1.8&quot;, only: [:dev, :test]}</span><span class="w">
+</span><span class="">        # {:dep_from_hexpm, &quot;~&gt; 0.3.0&quot;},</span><span class="w">
+</span><span class="">        # {:dep_from_git, git: &quot;https://github.com/elixir-lang/my_dep.git&quot;, tag: &quot;0.1.0&quot;}</span><span class="w">
+</span><span class="">...</span></code></pre><p>Update <code class="inline">.formatter.exs</code>:</p><pre><code class="makeup diff" translate="no"><span class="">...</span><span class="w">
+</span><span class="">  [</span><span class="w">
+</span><span class="">    inputs: [&quot;{mix,.formatter}.exs&quot;, &quot;{config,lib,test}/**/*.{ex,exs}&quot;],</span><span class="w">
+</span><span class="gd">-   plugins: [Spark.Formatter]</span><span class="w">
+</span><span class="gi">+   plugins: [Spark.Formatter],</span><span class="w">
+</span><span class="gi">+   import_deps: [:reactor]</span><span class="w">
+</span><span class="">  ]</span></code></pre><h2 id="skip-protocol-consolidation">Skip protocol consolidation</h2><p>To avoid warnings about protocol consolidation when recompiling in dev, we
+set protocolc onsolidation to happen only in non-dev environments.</p><h2 id="setup-the-formatter">Setup The Formatter</h2><p>Configure the DSL auto-formatter. This tells the formatter to remove excess parentheses
+and how to sort sections in your Ash.Resource &amp; Ash.Domain modules for consistency.</p><p>Update <code class="inline">.formatter.exs</code>:</p><pre><code class="makeup diff" translate="no"><span class="">...</span><span class="w">
+</span><span class="">    inputs: [&quot;{mix,.formatter}.exs&quot;, &quot;{config,lib,test}/**/*.{ex,exs}&quot;],</span><span class="w">
+</span><span class="">    plugins: [Spark.Formatter],</span><span class="w">
+</span><span class="gd">-   import_deps: [:reactor]</span><span class="w">
+</span><span class="gi">+   import_deps: [:ash, :reactor]</span><span class="w">
+</span><span class="">  ]</span></code></pre><p>Update <code class="inline">config/config.exs</code>:</p><pre><code class="makeup diff" translate="no"><span class="">  import Config</span><span class="w">
+</span><span class="gd">- config :spark, formatter: [remove_parens?: true]</span><span class="w">
+</span><span class="">  </span><span class="w">
+</span><span class="gi">+ config :spark,</span><span class="w">
+</span><span class="gi">+   formatter: [</span><span class="w">
+</span><span class="gi">+     remove_parens?: true,</span><span class="w">
+</span><span class="gi">+     &quot;Ash.Resource&quot;: [</span><span class="w">
+</span><span class="gi">+       section_order: [</span><span class="w">
+</span><span class="gi">+         :resource,</span><span class="w">
+</span><span class="gi">+         :code_interface,</span><span class="w">
+</span><span class="gi">+         :actions,</span><span class="w">
+</span><span class="gi">+         :policies,</span><span class="w">
+</span><span class="gi">+         :pub_sub,</span><span class="w">
+</span><span class="gi">+         :preparations,</span><span class="w">
+</span><span class="gi">+         :changes,</span><span class="w">
+</span><span class="gi">+         :validations,</span><span class="w">
+</span><span class="gi">+         :multitenancy,</span><span class="w">
+</span><span class="gi">+         :attributes,</span><span class="w">
+</span><span class="gi">+         :relationships,</span><span class="w">
+</span><span class="gi">+         :calculations,</span><span class="w">
+</span><span class="gi">+         :aggregates,</span><span class="w">
+</span><span class="gi">+         :identities</span><span class="w">
+</span><span class="gi">+       ]</span><span class="w">
+</span><span class="gi">+     ],</span><span class="w">
+</span><span class="gi">+     &quot;Ash.Domain&quot;: [section_order: [:resources, :policies, :authorization, :domain, :execution]]</span><span class="w">
+</span><span class="gi">+   ]</span><span class="w">
+</span><span class="gi">+</span></code></pre><h2 id="configure-dev-test-environments">Configure Dev/Test environments</h2><p>Configure backwards compatibility settings. See the <a href="https://hexdocs.pm/ash/backwards-compatibility-config.html">backwards compatibility guide</a>
+for an explanation of each of the configurations.</p><p>Update <code class="inline">config/config.exs</code>:</p><pre><code class="makeup diff" translate="no"><span class="">...</span><span class="w">
+</span><span class="">    ]</span><span class="w">
+</span><span class="">  </span><span class="w">
+</span><span class="gi">+ import_config &quot;#{config_env()}.exs&quot;</span><span class="w">
+</span><span class="gi">+</span></code></pre><p>Create <code class="inline">config/dev.exs</code>:</p><pre><code class="makeup elixir" translate="no"><span class="kn">import</span><span class="w"> </span><span class="nc">Config</span><span class="w">
+</span><span class="n">config</span><span class="w"> </span><span class="ss">:ash</span><span class="p">,</span><span class="w"> </span><span class="ss">policies</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9653168862-1">[</span><span class="ss">show_policy_breakdowns?</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="9653168862-1">]</span><span class="w">
+</span></code></pre><p>Create <code class="inline">config/prod.exs</code>:</p><pre><code class="makeup elixir" translate="no"><span class="kn">import</span><span class="w"> </span><span class="nc">Config</span><span class="w">
+</span></code></pre><p>Create <code class="inline">config/test.exs</code>:</p><pre><code class="makeup elixir" translate="no"><span class="kn">import</span><span class="w"> </span><span class="nc">Config</span><span class="w">
+</span><span class="n">config</span><span class="w"> </span><span class="ss">:ash</span><span class="p">,</span><span class="w"> </span><span class="ss">policies</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="1782232160-1">[</span><span class="ss">show_policy_breakdowns?</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="1782232160-1">]</span><span class="w">
+</span></code></pre><h2 id="setup-backwards-compatibility-configurations">Setup Backwards Compatibility Configurations</h2><p>Configure backwards compatibility settings. See the <a href="https://hexdocs.pm/ash/backwards-compatibility-config.html">backwards compatibility guide</a>
+for an explanation of each of the configurations.</p><p>Update <code class="inline">config/config.exs</code>:</p><pre><code class="makeup diff" translate="no"><span class="">  import Config</span><span class="w">
+</span><span class="">  </span><span class="w">
+</span><span class="gi">+ config :ash,</span><span class="w">
+</span><span class="gi">+   allow_forbidden_field_for_relationships_by_default?: true,</span><span class="w">
+</span><span class="gi">+   include_embedded_source_by_default?: false,</span><span class="w">
+</span><span class="gi">+   show_keysets_for_all_actions?: false,</span><span class="w">
+</span><span class="gi">+   default_page_type: :keyset,</span><span class="w">
+</span><span class="gi">+   policies: [no_filter_static_forbidden_reads?: false],</span><span class="w">
+</span><span class="gi">+   keep_read_action_loads_when_loading?: false,</span><span class="w">
+</span><span class="gi">+   default_actions_require_atomic?: true,</span><span class="w">
+</span><span class="gi">+   read_action_after_action_hooks_in_order?: true,</span><span class="w">
+</span><span class="gi">+   bulk_actions_default_to_errors?: true</span><span class="w">
+</span><span class="gi">+ </span><span class="w">
+</span><span class="">  config :spark,</span><span class="w">
+</span><span class="">    formatter: [</span><span class="w">
+</span><span class="">...</span></code></pre>
+
+  </body>
+</html>

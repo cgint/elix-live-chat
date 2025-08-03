@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSON - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+JSON 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>JSON encoding and decoding.</p><p>Both encoder and decoder fully conform to <a href="https://tools.ietf.org/html/rfc8259">RFC 8259</a> and
+<a href="https://ecma-international.org/publications-and-standards/standards/ecma-404/">ECMA 404</a>
+standards.</p><h2 id="module-encoding">Encoding</h2><p>Elixir built-in data structures are encoded to JSON as follows:</p><table><thead><tr><th style="text-align: left;"><strong>Elixir</strong></th><th style="text-align: left;"><strong>JSON</strong></th></tr></thead><tbody><tr><td style="text-align: left;"><code class="inline">integer() | float()</code></td><td style="text-align: left;">Number</td></tr><tr><td style="text-align: left;"><code class="inline">true | false</code></td><td style="text-align: left;">Boolean</td></tr><tr><td style="text-align: left;"><code class="inline">nil</code></td><td style="text-align: left;">Null</td></tr><tr><td style="text-align: left;"><code class="inline">binary()</code></td><td style="text-align: left;">String</td></tr><tr><td style="text-align: left;"><code class="inline">atom()</code></td><td style="text-align: left;">String</td></tr><tr><td style="text-align: left;"><code class="inline">list()</code></td><td style="text-align: left;">Array</td></tr><tr><td style="text-align: left;"><code class="inline">%{String.Chars.t() =&gt; _}</code></td><td style="text-align: left;">Object</td></tr></tbody></table><p>You may also implement the <a href="JSON.Encoder.xhtml"><code class="inline">JSON.Encoder</code></a> protocol for custom data structures.</p><h2 id="module-decoding">Decoding</h2><p>Elixir built-in data structures are decoded from JSON as follows:</p><table><thead><tr><th style="text-align: left;"><strong>JSON</strong></th><th style="text-align: left;"><strong>Elixir</strong></th></tr></thead><tbody><tr><td style="text-align: left;">Number</td><td style="text-align: left;"><code class="inline">integer() | float()</code></td></tr><tr><td style="text-align: left;">Boolean</td><td style="text-align: left;"><code class="inline">true | false</code></td></tr><tr><td style="text-align: left;">Null</td><td style="text-align: left;"><code class="inline">nil</code></td></tr><tr><td style="text-align: left;">String</td><td style="text-align: left;"><code class="inline">binary()</code></td></tr><tr><td style="text-align: left;">Object</td><td style="text-align: left;"><code class="inline">%{binary() =&gt; _}</code></td></tr></tbody></table>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:decode_error_reason/0" data-no-tooltip="" translate="no">decode_error_reason()</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:encoder/0" data-no-tooltip="" translate="no">encoder()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#decode/1" data-no-tooltip="" translate="no">decode(binary)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Decodes the given JSON.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#decode/3" data-no-tooltip="" translate="no">decode(binary, acc, decoders)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Decodes the given JSON with the given decoders.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#decode!/1" data-no-tooltip="" translate="no">decode!(binary)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Decodes the given JSON but raises an exception in case of errors.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#encode!/2" data-no-tooltip="" translate="no">encode!(term, encoder \\ &amp;protocol_encode/2)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Encodes the given term to JSON as a binary.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#encode_to_iodata!/2" data-no-tooltip="" translate="no">encode_to_iodata!(term, encoder \\ &amp;protocol_encode/2)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Encodes the given term to JSON as an iodata.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#protocol_encode/2" data-no-tooltip="" translate="no">protocol_encode(value, encoder)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>This is the default encode implementation passed to <a><code class="inline">encode!/1</code></a>.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:decode_error_reason/0">
+
+  <div class="detail-header">
+    <a href="#t:decode_error_reason/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">decode_error_reason()</h1>
+
+        <span class="note">(since 1.18.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/json.ex#L230" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> decode_error_reason() ::
+  {:unexpected_end, <a href="typespecs.xhtml#basic-types">non_neg_integer</a>()}
+  | {:invalid_byte, <a href="typespecs.xhtml#basic-types">non_neg_integer</a>(), <a href="typespecs.xhtml#built-in-types">byte</a>()}
+  | {:unexpected_sequence, <a href="typespecs.xhtml#basic-types">non_neg_integer</a>(), <a href="typespecs.xhtml#built-in-types">binary</a>()}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="t:encoder/0">
+
+  <div class="detail-header">
+    <a href="#t:encoder/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">encoder()</h1>
+
+        <span class="note">(since 1.18.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/json.ex#L228" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> encoder() :: (<a href="typespecs.xhtml#built-in-types">term</a>(), <a href="#t:encoder/0">encoder</a>() -&gt; <a href="typespecs.xhtml#built-in-types">iodata</a>())</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+
+        <div class="functions-list">
+<section class="detail" id="decode/1">
+
+  <div class="detail-header">
+    <a href="#decode/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">decode(binary)</h1>
+
+        <span class="note">(since 1.18.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/json.ex#L254" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> decode(<a href="typespecs.xhtml#built-in-types">binary</a>()) :: {:ok, <a href="typespecs.xhtml#built-in-types">term</a>()} | {:error, <a href="#t:decode_error_reason/0">decode_error_reason</a>()}</pre>
+
+      </div>
+
+<p>Decodes the given JSON.</p><p>Returns <code class="inline">{:ok, decoded}</code> or <code class="inline">{:error, reason}</code>.</p><h2 id="decode/1-examples" class="section-heading"><a href="#decode/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">JSON</samp><samp class="o">.</samp><samp class="n">decode</samp><samp class="p" data-group-id="0752806610-1">(</samp><samp class="s">&quot;[null,123,</samp><samp class="se">\&quot;</samp><samp class="s">string</samp><samp class="se">\&quot;</samp><samp class="s">,{</samp><samp class="se">\&quot;</samp><samp class="s">key</samp><samp class="se">\&quot;</samp><samp class="s">:</samp><samp class="se">\&quot;</samp><samp class="s">value</samp><samp class="se">\&quot;</samp><samp class="s">}]&quot;</samp><samp class="p" data-group-id="0752806610-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0752806610-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0752806610-3">[</samp><samp class="no">nil</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;string&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0752806610-4">%{</samp><samp class="s">&quot;key&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;value&quot;</samp><samp class="p" data-group-id="0752806610-4">}</samp><samp class="p" data-group-id="0752806610-3">]</samp><samp class="p" data-group-id="0752806610-2">}</samp></code></pre><h2 id="decode/1-error-reasons" class="section-heading"><a href="#decode/1-error-reasons" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Error reasons</span></h2><p>The error tuple will have one of the following reasons.</p><ul><li><code class="inline">{:unexpected_end, offset}</code> if <code class="inline">binary</code> contains incomplete JSON value</li><li><code class="inline">{:invalid_byte, offset, byte}</code> if <code class="inline">binary</code> contains unexpected byte or invalid UTF-8 byte</li><li><code class="inline">{:unexpected_sequence, offset, bytes}</code> if <code class="inline">binary</code> contains invalid UTF-8 escape</li></ul>
+  </section>
+</section>
+<section class="detail" id="decode/3">
+
+  <div class="detail-header">
+    <a href="#decode/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">decode(binary, acc, decoders)</h1>
+
+        <span class="note">(since 1.18.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/json.ex#L290" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> decode(<a href="typespecs.xhtml#built-in-types">binary</a>(), <a href="typespecs.xhtml#built-in-types">term</a>(), <a href="typespecs.xhtml#built-in-types">keyword</a>()) ::
+  {<a href="typespecs.xhtml#built-in-types">term</a>(), <a href="typespecs.xhtml#built-in-types">term</a>(), <a href="typespecs.xhtml#built-in-types">binary</a>()} | {:error, <a href="#t:decode_error_reason/0">decode_error_reason</a>()}</pre>
+
+      </div>
+
+<p>Decodes the given JSON with the given decoders.</p><p>Returns <code class="inline">{decoded, acc, rest}</code> or <code class="inline">{:error, reason}</code>.
+See <a href="#decode/1"><code class="inline">decode/1</code></a> for the error reasons.</p><h2 id="decode/3-decoders" class="section-heading"><a href="#decode/3-decoders" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Decoders</span></h2><p>All decoders are optional. If not provided, they will fall back to
+implementations used by the <a href="#decode/1"><code class="inline">decode/1</code></a> function:</p><ul><li>for <code class="inline">array_start</code>: <code class="inline">fn _ -&gt; [] end</code></li><li><p>for <code class="inline">array_push</code>: <code class="inline">fn elem, acc -&gt; [elem | acc] end</code></p></li><li>for <code class="inline">array_finish</code>: <code class="inline">fn acc, old_acc -&gt; {Enum.reverse(acc), old_acc} end</code></li><li>for <code class="inline">object_start</code>: <code class="inline">fn _ -&gt; [] end</code></li><li><p>for <code class="inline">object_push</code>: <code class="inline">fn key, value, acc -&gt; [{key, value} | acc] end</code></p></li><li>for <code class="inline">object_finish</code>: <code class="inline">fn acc, old_acc -&gt; {Map.new(acc), old_acc} end</code></li><li>for <code class="inline">float</code>: <code class="inline">&amp;String.to_float/1</code></li><li>for <code class="inline">integer</code>: <code class="inline">&amp;String.to_integer/1</code></li><li>for <code class="inline">string</code>: <code class="inline">&amp;Function.identity/1</code></li><li>for <code class="inline">null</code>: the atom <code class="inline">nil</code></li></ul><p>For streaming decoding, see Erlang's <code class="inline">:json</code> module.</p>
+  </section>
+</section>
+<section class="detail" id="decode!/1">
+
+  <div class="detail-header">
+    <a href="#decode!/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">decode!(binary)</h1>
+
+        <span class="note">(since 1.18.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/json.ex#L327" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> decode!(<a href="typespecs.xhtml#built-in-types">binary</a>()) :: <a href="typespecs.xhtml#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>Decodes the given JSON but raises an exception in case of errors.</p><p>Returns the decoded content. See <a href="#decode/1"><code class="inline">decode/1</code></a> for possible errors.</p><h2 id="decode!/1-examples" class="section-heading"><a href="#decode!/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">JSON</samp><samp class="o">.</samp><samp class="n">decode!</samp><samp class="p" data-group-id="9897655843-1">(</samp><samp class="s">&quot;[null,123,</samp><samp class="se">\&quot;</samp><samp class="s">string</samp><samp class="se">\&quot;</samp><samp class="s">,{</samp><samp class="se">\&quot;</samp><samp class="s">key</samp><samp class="se">\&quot;</samp><samp class="s">:</samp><samp class="se">\&quot;</samp><samp class="s">value</samp><samp class="se">\&quot;</samp><samp class="s">}]&quot;</samp><samp class="p" data-group-id="9897655843-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9897655843-2">[</samp><samp class="no">nil</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;string&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9897655843-3">%{</samp><samp class="s">&quot;key&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;value&quot;</samp><samp class="p" data-group-id="9897655843-3">}</samp><samp class="p" data-group-id="9897655843-2">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="encode!/2">
+
+    <span id="encode!/1"></span>
+
+  <div class="detail-header">
+    <a href="#encode!/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">encode!(term, encoder \\ &amp;protocol_encode/2)</h1>
+
+        <span class="note">(since 1.18.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/json.ex#L371" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> encode!(<a href="typespecs.xhtml#built-in-types">term</a>(), <a href="#t:encoder/0">encoder</a>()) :: <a href="typespecs.xhtml#built-in-types">binary</a>()</pre>
+
+      </div>
+
+<p>Encodes the given term to JSON as a binary.</p><p>The second argument is a function that is recursively
+invoked to encode a term.</p><section role="note" class="admonition tip"><h4 class="admonition-title tip">IO and performance</h4><p>If you need to encode data to be sent over the network
+or written to the filesystem, consider using the more
+efficient <a href="#encode_to_iodata!/2"><code class="inline">encode_to_iodata!/2</code></a>.</p></section><h2 id="encode!/2-examples" class="section-heading"><a href="#encode!/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="nc">JSON</samp><samp class="o">.</samp><samp class="n">encode!</samp><samp class="p" data-group-id="4471308946-1">(</samp><samp class="p" data-group-id="4471308946-2">[</samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;string&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4471308946-3">%{</samp><samp class="ss">key</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;value&quot;</samp><samp class="p" data-group-id="4471308946-3">}</samp><samp class="p" data-group-id="4471308946-2">]</samp><samp class="p" data-group-id="4471308946-1">)</samp><samp class="w">
+</samp><samp class="s">&quot;[123,</samp><samp class="se">\&quot;</samp><samp class="s">string</samp><samp class="se">\&quot;</samp><samp class="s">,{</samp><samp class="se">\&quot;</samp><samp class="s">key</samp><samp class="se">\&quot;</samp><samp class="s">:</samp><samp class="se">\&quot;</samp><samp class="s">value</samp><samp class="se">\&quot;</samp><samp class="s">}]&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="encode_to_iodata!/2">
+
+    <span id="encode_to_iodata!/1"></span>
+
+  <div class="detail-header">
+    <a href="#encode_to_iodata!/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">encode_to_iodata!(term, encoder \\ &amp;protocol_encode/2)</h1>
+
+        <span class="note">(since 1.18.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/json.ex#L392" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> encode_to_iodata!(<a href="typespecs.xhtml#built-in-types">term</a>(), <a href="#t:encoder/0">encoder</a>()) :: <a href="typespecs.xhtml#built-in-types">iodata</a>()</pre>
+
+      </div>
+
+<p>Encodes the given term to JSON as an iodata.</p><p>This is the most efficient format if the JSON is going to be
+used for IO purposes.</p><p>The second argument is a function that is recursively
+invoked to encode a term.</p><h2 id="encode_to_iodata!/2-examples" class="section-heading"><a href="#encode_to_iodata!/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">data</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">JSON</samp><samp class="o">.</samp><samp class="n">encode_to_iodata!</samp><samp class="p" data-group-id="7039319296-1">(</samp><samp class="p" data-group-id="7039319296-2">[</samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;string&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="7039319296-3">%{</samp><samp class="ss">key</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;value&quot;</samp><samp class="p" data-group-id="7039319296-3">}</samp><samp class="p" data-group-id="7039319296-2">]</samp><samp class="p" data-group-id="7039319296-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">IO</samp><samp class="o">.</samp><samp class="n">iodata_to_binary</samp><samp class="p" data-group-id="7039319296-4">(</samp><samp class="n">data</samp><samp class="p" data-group-id="7039319296-4">)</samp><samp class="w">
+</samp><samp class="s">&quot;[123,</samp><samp class="se">\&quot;</samp><samp class="s">string</samp><samp class="se">\&quot;</samp><samp class="s">,{</samp><samp class="se">\&quot;</samp><samp class="s">key</samp><samp class="se">\&quot;</samp><samp class="s">:</samp><samp class="se">\&quot;</samp><samp class="s">value</samp><samp class="se">\&quot;</samp><samp class="s">}]&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="protocol_encode/2">
+
+  <div class="detail-header">
+    <a href="#protocol_encode/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">protocol_encode(value, encoder)</h1>
+
+        <span class="note">(since 1.18.0)</span>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/json.ex#L404" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> protocol_encode(<a href="typespecs.xhtml#built-in-types">term</a>(), <a href="#t:encoder/0">encoder</a>()) :: <a href="typespecs.xhtml#built-in-types">iodata</a>()</pre>
+
+      </div>
+
+<p>This is the default encode implementation passed to <a href="#encode!/1"><code class="inline">encode!/1</code></a>.</p><p>This function is most typically passed as second argument to
+<a href="#encode!/2"><code class="inline">encode!/2</code></a> and <a href="#encode_to_iodata!/2"><code class="inline">encode_to_iodata!/2</code></a>. The default implementation
+is an optimized dispatch to the <a href="JSON.Encoder.xhtml"><code class="inline">JSON.Encoder</code></a> protocol.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

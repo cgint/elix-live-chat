@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Encrypt Attributes - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Encrypt Attributes</h1>
+<pre><code class="makeup elixir" translate="no"><span class="nc">Mix</span><span class="o">.</span><span class="n">install</span><span class="p" data-group-id="3769796478-1">(</span><span class="p" data-group-id="3769796478-2">[</span><span class="p" data-group-id="3769796478-3">{</span><span class="ss">:ash</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;~&gt; 3.0&quot;</span><span class="p" data-group-id="3769796478-3">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3769796478-4">{</span><span class="ss">:ash_cloak</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;~&gt; 0.1.0&quot;</span><span class="p" data-group-id="3769796478-4">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3769796478-5">{</span><span class="ss">:cloak</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;~&gt; 1.1&quot;</span><span class="p" data-group-id="3769796478-5">}</span><span class="p" data-group-id="3769796478-2">]</span><span class="p">,</span><span class="w">
+  </span><span class="ss">consolidate_protocols</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="w">
+</span><span class="p" data-group-id="3769796478-1">)</span><span class="w">
+
+</span><span class="nc">Application</span><span class="o">.</span><span class="n">put_env</span><span class="p" data-group-id="3769796478-6">(</span><span class="ss">:my_app</span><span class="p">,</span><span class="w"> </span><span class="nc">MyApp.Vault</span><span class="p">,</span><span class="w">
+  </span><span class="ss">ciphers</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3769796478-7">[</span><span class="w">
+    </span><span class="ss">default</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3769796478-8">{</span><span class="w">
+      </span><span class="nc">Cloak.Ciphers.AES.GCM</span><span class="p">,</span><span class="w">
+      </span><span class="ss">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AES.GCM.V1&quot;</span><span class="p">,</span><span class="w">
+      </span><span class="ss">key</span><span class="p">:</span><span class="w"> </span><span class="nc">Base</span><span class="o">.</span><span class="n">decode64!</span><span class="p" data-group-id="3769796478-9">(</span><span class="s">&quot;ETpvtowVAL7JmcxfqJ+XVQWzKrt1ynAkC0vT7AxfyNU=&quot;</span><span class="p" data-group-id="3769796478-9">)</span><span class="p">,</span><span class="w">
+      </span><span class="ss">iv_length</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="w">
+    </span><span class="p" data-group-id="3769796478-8">}</span><span class="w">
+  </span><span class="p" data-group-id="3769796478-7">]</span><span class="w">
+</span><span class="p" data-group-id="3769796478-6">)</span><span class="w">
+
+</span><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Vault</span><span class="w"> </span><span class="k" data-group-id="3769796478-10">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Cloak.Vault</span><span class="p">,</span><span class="w"> </span><span class="ss">otp_app</span><span class="p">:</span><span class="w"> </span><span class="ss">:my_app</span><span class="w">
+</span><span class="k" data-group-id="3769796478-10">end</span><span class="w">
+
+</span><span class="nc">MyApp.Vault</span><span class="o">.</span><span class="n">start_link</span><span class="p" data-group-id="3769796478-11">(</span><span class="p" data-group-id="3769796478-11">)</span></code></pre><h2 id="introduction">Introduction</h2><p>When dealing with PII(Personally Identifiable Information) or other sensitive data, we often want to encrypt this data, and control access to the decrypted values.</p><p>To do this in <a href="Ash.xhtml"><code class="inline">Ash</code></a>, we do that with <code class="inline">AshCloak</code>. See the getting started guide in <code class="inline">AshCloak</code> for installation instructions.</p><h2 id="encrypting-attributes">Encrypting attributes</h2><ol><li>If you have not yet, follow the getting started guide for <code class="inline">AshCloak</code> and <code class="inline">Cloak</code></li><li>Add the <code class="inline">AshCloak</code> extension to your resource</li><li>Configure the attributes that should be encrypted</li><li>Add any other additional desired configuration (provided by <code class="inline">AshCloak</code>)</li></ol><h2 id="examples">Examples</h2><!-- livebook:{"disable_formatting":true} --><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">User</span><span class="w"> </span><span class="k" data-group-id="0505095917-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource</span><span class="p">,</span><span class="w">
+    </span><span class="ss">domain</span><span class="p">:</span><span class="w"> </span><span class="nc">Domain</span><span class="p">,</span><span class="w">
+    </span><span class="ss">data_layer</span><span class="p">:</span><span class="w"> </span><span class="nc">Ash.DataLayer.Ets</span><span class="p">,</span><span class="w">
+    </span><span class="ss">extensions</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0505095917-2">[</span><span class="nc">AshCloak</span><span class="p" data-group-id="0505095917-2">]</span><span class="w">
+
+  </span><span class="n">cloak</span><span class="w"> </span><span class="k" data-group-id="0505095917-3">do</span><span class="w">
+    </span><span class="n">vault</span><span class="w"> </span><span class="nc">MyApp.Vault</span><span class="w">
+    </span><span class="n">attributes</span><span class="w"> </span><span class="p" data-group-id="0505095917-4">[</span><span class="ss">:ssn</span><span class="p" data-group-id="0505095917-4">]</span><span class="w">
+  </span><span class="k" data-group-id="0505095917-3">end</span><span class="w">
+
+  </span><span class="n">attributes</span><span class="w"> </span><span class="k" data-group-id="0505095917-5">do</span><span class="w">
+    </span><span class="n">uuid_primary_key</span><span class="w"> </span><span class="ss">:id</span><span class="w">
+    </span><span class="n">attribute</span><span class="w"> </span><span class="ss">:ssn</span><span class="p">,</span><span class="w"> </span><span class="ss">:string</span><span class="p">,</span><span class="w"> </span><span class="ss">allow_nil?</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="w">
+  </span><span class="k" data-group-id="0505095917-5">end</span><span class="w">
+
+  </span><span class="n">actions</span><span class="w"> </span><span class="k" data-group-id="0505095917-6">do</span><span class="w">
+    </span><span class="n">defaults</span><span class="w"> </span><span class="p" data-group-id="0505095917-7">[</span><span class="ss">:read</span><span class="p">,</span><span class="w"> </span><span class="ss">create</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0505095917-8">[</span><span class="ss">:ssn</span><span class="p" data-group-id="0505095917-8">]</span><span class="p">,</span><span class="w"> </span><span class="ss">update</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0505095917-9">[</span><span class="ss">:ssn</span><span class="p" data-group-id="0505095917-9">]</span><span class="p" data-group-id="0505095917-7">]</span><span class="w">
+  </span><span class="k" data-group-id="0505095917-6">end</span><span class="w">
+</span><span class="k" data-group-id="0505095917-1">end</span><span class="w">
+
+</span><span class="kd">defmodule</span><span class="w"> </span><span class="nc">Domain</span><span class="w"> </span><span class="k" data-group-id="0505095917-10">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Domain</span><span class="p">,</span><span class="w">
+    </span><span class="ss">validate_config_inclusion?</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="w">
+
+  </span><span class="n">resources</span><span class="w"> </span><span class="k" data-group-id="0505095917-11">do</span><span class="w">
+    </span><span class="n">resource</span><span class="w"> </span><span class="nc">User</span><span class="w"> </span><span class="k" data-group-id="0505095917-12">do</span><span class="w">
+      </span><span class="n">define</span><span class="p" data-group-id="0505095917-13">(</span><span class="ss">:create_user</span><span class="p">,</span><span class="w"> </span><span class="ss">action</span><span class="p">:</span><span class="w"> </span><span class="ss">:create</span><span class="p">,</span><span class="w"> </span><span class="ss">args</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0505095917-14">[</span><span class="ss">:ssn</span><span class="p" data-group-id="0505095917-14">]</span><span class="p" data-group-id="0505095917-13">)</span><span class="w">
+      </span><span class="n">define</span><span class="p" data-group-id="0505095917-15">(</span><span class="ss">:update_user</span><span class="p">,</span><span class="w"> </span><span class="ss">action</span><span class="p">:</span><span class="w"> </span><span class="ss">:update</span><span class="p">,</span><span class="w"> </span><span class="ss">args</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0505095917-16">[</span><span class="ss">:ssn</span><span class="p" data-group-id="0505095917-16">]</span><span class="p" data-group-id="0505095917-15">)</span><span class="w">
+      </span><span class="n">define</span><span class="p" data-group-id="0505095917-17">(</span><span class="ss">:list_users</span><span class="p">,</span><span class="w"> </span><span class="ss">action</span><span class="p">:</span><span class="w"> </span><span class="ss">:read</span><span class="p" data-group-id="0505095917-17">)</span><span class="w">
+    </span><span class="k" data-group-id="0505095917-12">end</span><span class="w">
+  </span><span class="k" data-group-id="0505095917-11">end</span><span class="w">
+</span><span class="k" data-group-id="0505095917-10">end</span></code></pre><pre><code class="makeup output" translate="no"><span class="p" data-group-id="5514510954-1">{</span><span class="ss">:module</span><span class="p">,</span><span class="w"> </span><span class="nc">Domain</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5514510954-2">&lt;&lt;</span><span class="mi">70</span><span class="p">,</span><span class="w"> </span><span class="mi">79</span><span class="p">,</span><span class="w"> </span><span class="mi">82</span><span class="p">,</span><span class="w"> </span><span class="mi">49</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p" data-group-id="5514510954-2">&gt;&gt;</span><span class="p">,</span><span class="w">
+ </span><span class="p" data-group-id="5514510954-3">[</span><span class="w">
+   </span><span class="nc">Ash.Domain.Dsl.Resources.Resource</span><span class="p">,</span><span class="w">
+   </span><span class="nc">Ash.Domain.Dsl.Resources.Options</span><span class="p">,</span><span class="w">
+   </span><span class="nc">Ash.Domain.Dsl</span><span class="p">,</span><span class="w">
+   </span><span class="p" data-group-id="5514510954-4">%{</span><span class="ss">opts</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="5514510954-5">[</span><span class="p" data-group-id="5514510954-5">]</span><span class="p">,</span><span class="w"> </span><span class="ss">entities</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="5514510954-6">[</span><span class="n">...</span><span class="p" data-group-id="5514510954-6">]</span><span class="p" data-group-id="5514510954-4">}</span><span class="p">,</span><span class="w">
+   </span><span class="nc">Ash.Domain.Dsl</span><span class="p">,</span><span class="w">
+   </span><span class="nc">Ash.Domain.Dsl.Resources.Options</span><span class="p">,</span><span class="w">
+   </span><span class="n">...</span><span class="w">
+ </span><span class="p" data-group-id="5514510954-3">]</span><span class="p" data-group-id="5514510954-1">}</span></code></pre><h2 id="data-is-encrypted-when-modified-and-is-not-displayed-when-inspecting">Data is encrypted when modified and is <em>not displayed</em> when inspecting.</h2><pre><code class="makeup elixir" translate="no"><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Domain</span><span class="o">.</span><span class="n">create_user!</span><span class="p" data-group-id="7044205575-1">(</span><span class="s">&quot;111-11-1111&quot;</span><span class="p" data-group-id="7044205575-1">)</span></code></pre><pre><code class="makeup output" translate="no"><span class="p" data-group-id="9171689414-1">#</span><span class="nc" data-group-id="9171689414-1">User</span><span class="p" data-group-id="9171689414-1">&lt;</span><span class="w">
+  </span><span class="ss">__meta__</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9171689414-2">#</span><span class="nc" data-group-id="9171689414-2">Ecto.Schema.Metadata</span><span class="p" data-group-id="9171689414-2">&lt;</span><span class="ss">:loaded</span><span class="p" data-group-id="9171689414-2">&gt;</span><span class="p">,</span><span class="w">
+  </span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bc5284fe-294a-485e-8585-06130a4bca4e&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="ss">aggregates</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9171689414-3">%{</span><span class="p" data-group-id="9171689414-3">}</span><span class="p">,</span><span class="w">
+  </span><span class="ss">calculations</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9171689414-4">%{</span><span class="p" data-group-id="9171689414-4">}</span><span class="p">,</span><span class="w">
+  </span><span class="n">...</span><span class="w">
+</span><span class="p" data-group-id="9171689414-1">&gt;</span></code></pre><pre><code class="makeup elixir" translate="no"><span class="c1"># AshCloak turned ssn into a calculation</span><span class="w">
+</span><span class="n">user</span><span class="o">.</span><span class="n">ssn</span></code></pre><pre><code class="makeup output" translate="no"><span class="p" data-group-id="1978822251-1">#</span><span class="nc" data-group-id="1978822251-1">Ash.NotLoaded</span><span class="p" data-group-id="1978822251-1">&lt;</span><span class="ss">:calculation</span><span class="p">,</span><span class="w"> </span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="ss">:ssn</span><span class="p" data-group-id="1978822251-1">&gt;</span></code></pre><pre><code class="makeup elixir" translate="no"><span class="c1"># Load the value to decrypt it on-demand</span><span class="w">
+</span><span class="nc">Ash</span><span class="o">.</span><span class="n">load!</span><span class="p" data-group-id="9036963981-1">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="ss">:ssn</span><span class="p" data-group-id="9036963981-1">)</span><span class="o">.</span><span class="n">ssn</span></code></pre><pre><code class="makeup output" translate="no"><span class="s">&quot;111-11-1111&quot;</span></code></pre>
+
+  </body>
+</html>

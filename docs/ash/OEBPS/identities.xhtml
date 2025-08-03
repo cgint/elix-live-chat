@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Identities - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Identities</h1>
+<p>Identities are a way to declare that a record (an instance of a resource) can be uniquely identified by a set of attributes. This information can be used in various ways throughout the framework. The primary key of the resource does not need to be listed as an identity.</p><h2 id="defining-an-identity">Defining an identity</h2><p>Identities are defined at the top level of a resource module, eg.</p><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.MyResource</span><span class="w"> </span><span class="k" data-group-id="3070785987-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource</span><span class="w"> </span><span class="c1">#, ...</span><span class="w">
+  </span><span class="c1"># ...</span><span class="w">
+
+  </span><span class="n">identities</span><span class="w"> </span><span class="k" data-group-id="3070785987-2">do</span><span class="w">
+    </span><span class="c1"># If the `email` attribute must be unique across all records</span><span class="w">
+    </span><span class="n">identity</span><span class="w"> </span><span class="ss">:unique_email</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3070785987-3">[</span><span class="ss">:email</span><span class="p" data-group-id="3070785987-3">]</span><span class="w">
+
+    </span><span class="c1"># If the `username` attribute must be unique for every record with a given `site` value</span><span class="w">
+    </span><span class="n">identity</span><span class="w"> </span><span class="ss">:special_usernames</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3070785987-4">[</span><span class="ss">:username</span><span class="p">,</span><span class="w"> </span><span class="ss">:site</span><span class="p" data-group-id="3070785987-4">]</span><span class="w">
+
+    </span><span class="c1"># If the `user_id` field should hold the errors for the uniqueness violation</span><span class="w">
+    </span><span class="n">identity</span><span class="w"> </span><span class="ss">:unique_email</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3070785987-5">[</span><span class="ss">:email</span><span class="p" data-group-id="3070785987-5">]</span><span class="p">,</span><span class="w"> </span><span class="ss">field_names</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3070785987-6">[</span><span class="ss">:user_id</span><span class="p" data-group-id="3070785987-6">]</span><span class="w">
+  </span><span class="k" data-group-id="3070785987-2">end</span><span class="w">
+</span><span class="k" data-group-id="3070785987-1">end</span></code></pre><p>See <code class="inline">d:Ash.Resource.Dsl.identities</code> for the full range of options available when defining identities.</p><h2 id="using-ash-get">Using <code class="inline">Ash.get</code></h2><p>This will allow these fields to be passed to <a href="Ash.xhtml#get/3"><code class="inline">Ash.get/3</code></a>, e.g <code class="inline">Ash.get(Resource, %{email: &quot;foo&quot;})</code>.</p><h2 id="using-upserts">Using upserts</h2><p>Create actions support the <code class="inline">upsert?: true</code> option, if the data layer supports it. An <code class="inline">upsert?</code> involves checking for a conflict on some set of attributes, and translating the behavior to an update in the case one is found. By default, the primary key is used when looking for duplicates, but you can set <code class="inline">[upsert?: true, upsert_identity: :identity_name]</code> to tell it to look for conflicts on a specific identity.</p><h2 id="creating-unique-constraints">Creating unique constraints</h2><p>Tools like <code class="inline">AshPostgres</code> will create unique constraints in the database automatically for each identity. These unique constraints will honor other configuration on your resource, like the <code class="inline">base_filter</code> and <a href="multitenancy.xhtml#attribute-multitenancy">attribute multitenancy</a></p><h2 id="eager-checking">Eager Checking</h2><p>Setting <code class="inline">eager_check?: true</code> on an identity will allow that identity to be checked when building a create changeset over the resource. This allows for showing quick up-front validations about whether some value is taken, for example. If the resource does not have the domain configured, you can specify the domain to use with <code class="inline">eager_check_with: DomainName</code>.</p><p>If you are using <code class="inline">AshPhoenix.Form</code>, for example, this looks for a conflicting record on each call to <code class="inline">Form.validate/2</code>.
+For updates, it is only checked if one of the involved fields is being changed.</p><p>For creates, The identity is checked unless your are performing an <code class="inline">upsert</code>, and the <code class="inline">upsert_identity</code> is this identity. Keep in mind that for this to work properly, you will need to pass the <code class="inline">upsert?: true, upsert_identity: :identity_name</code> <em>when creating the changeset</em>. The <code class="inline">primary?</code> read action is used to search for a record. This will error if you have not configured one.</p><h2 id="pre-checking">Pre Checking</h2><p><code class="inline">pre_check?</code> behaves the same as <code class="inline">eager_check?</code>, but it runs just prior to the action being committed. Useful for data layers that don't support transactions/unique constraints, or manual resources with identities. <a href="Ash.DataLayer.Ets.xhtml"><code class="inline">Ash.DataLayer.Ets</code></a> will require you to set <code class="inline">pre_check?</code> since the ETS data layer has no built in support for unique constraints. The domain can be manually specified with <code class="inline">pre_check_with: DomainName</code>.</p>
+
+  </body>
+</html>

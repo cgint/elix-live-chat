@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>CaseClauseError - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+CaseClauseError <small>exception</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>An exception raised when a term in a <a href="Kernel.SpecialForms.xhtml#case/2"><code class="inline">case/2</code></a> expression
+does not match any of the defined <code class="inline">-&gt;</code> clauses.</p><p>The following fields of this exception are public and can be accessed freely:</p><ul><li><code class="inline">:term</code> (<a href="typespecs.xhtml#built-in-types"><code class="inline">term/0</code></a>) - the term that did not match any of the clauses</li></ul><p>For example, this exception gets raised for a <a href="Kernel.SpecialForms.xhtml#case/2"><code class="inline">case/2</code></a> like the following:</p><pre><code class="makeup elixir" translate="no"><samp class="k">case</samp><samp class="w"> </samp><samp class="nc">System</samp><samp class="o">.</samp><samp class="n">unique_integer</samp><samp class="p" data-group-id="0833019920-1">(</samp><samp class="p" data-group-id="0833019920-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="0833019920-2">do</samp><samp class="w">
+  </samp><samp class="n">bin</samp><samp class="w"> </samp><samp class="ow">when</samp><samp class="w"> </samp><samp class="n">is_binary</samp><samp class="p" data-group-id="0833019920-3">(</samp><samp class="n">bin</samp><samp class="p" data-group-id="0833019920-3">)</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="ss">:oops</samp><samp class="w">
+  </samp><samp class="ss">:ok</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="ss">:neither_this_one</samp><samp class="w">
+</samp><samp class="k" data-group-id="0833019920-2">end</samp></code></pre>
+      </section>
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Context - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Context 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Functions for working with the context provided to various callbacks in Ash.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:context_keyword_list/0" data-no-tooltip="" translate="no">context_keyword_list()</a>
+
+      </div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#to_opts/2" data-no-tooltip="" translate="no">to_opts(map, opts \\ [])</a>
+
+          <span class="deprecated" title="Use `Ash.Scope.to_opts/2` instead">deprecated</span>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Copies keys from the given context map into a keyword list. Does <em>not</em> copy the <code class="inline">:domain</code> key.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:context_keyword_list/0">
+
+  <div class="detail-header">
+    <a href="#t:context_keyword_list/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">context_keyword_list()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/context.ex#L6" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> context_keyword_list() :: [
+  actor: <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  authorize?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>(),
+  tracer: <a href="Ash.Tracer.xhtml#t:t/0">Ash.Tracer.t</a>(),
+  tenant: <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()
+]</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="to_opts/2">
+
+    <span id="to_opts/1"></span>
+
+  <div class="detail-header">
+    <a href="#to_opts/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">to_opts(map, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/context.ex#L26" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+    <div class="deprecated">
+      This function is deprecated. Use `Ash.Scope.to_opts/2` instead.
+    </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> to_opts(<a href="Ash.Scope.xhtml#t:t/0">Ash.Scope.t</a>(), <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()) :: <a href="#t:context_keyword_list/0">context_keyword_list</a>()</pre>
+
+      </div>
+
+<p>Copies keys from the given context map into a keyword list. Does <em>not</em> copy the <code class="inline">:domain</code> key.</p><p>Keys copied:</p><ul><li><code class="inline">:actor</code></li><li><code class="inline">:authorize?</code></li><li><code class="inline">:tracer</code></li><li><code class="inline">:tenant</code></li><li><code class="inline">context[:shared]</code> -&gt; <code class="inline">:context</code></li></ul>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

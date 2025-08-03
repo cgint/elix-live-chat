@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>RuntimeError - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+RuntimeError <small>exception</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>An exception for a generic runtime error.</p><p>This is the exception that <a href="Kernel.xhtml#raise/1"><code class="inline">raise/1</code></a> raises when you pass it only a string as
+a message:</p><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="k">raise</samp><samp class="w"> </samp><samp class="s">&quot;oops!&quot;</samp><samp class="w">
+</samp><samp class="gt">** (RuntimeError) oops!</samp></code></pre><p>You should use this exceptions sparingly, since most of the time it might be
+better to define your own exceptions specific to your application or library.
+Sometimes, however, there are situations in which you don't expect a condition to
+happen, but you want to give a meaningful error message if it does. In those cases,
+<a href="RuntimeError.xhtml"><code class="inline">RuntimeError</code></a> can be a good choice.</p><h2 id="module-fields">Fields</h2><p><a href="RuntimeError.xhtml"><code class="inline">RuntimeError</code></a> exceptions have a single field, <code class="inline">:message</code> (a <a href="String.xhtml#t:t/0"><code class="inline">String.t/0</code></a>),
+which is public and can be accessed freely when reading or creating <a href="RuntimeError.xhtml"><code class="inline">RuntimeError</code></a>
+exceptions.</p>
+      </section>
+
+
+
+
+  </body>
+</html>

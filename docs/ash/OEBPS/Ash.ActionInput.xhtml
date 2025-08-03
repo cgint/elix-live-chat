@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.ActionInput - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.ActionInput 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Input for a custom action</p><p>Much like an <a href="Ash.Query.xhtml"><code class="inline">Ash.Query</code></a> and <a href="Ash.Changeset.xhtml"><code class="inline">Ash.Changeset</code></a> are used to provide inputs into
+CRUD actions, this struct provides the inputs required to execute a generic
+action.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:after_action_fun/0" data-no-tooltip="" translate="no">after_action_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Function type for after action hooks.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:after_transaction_fun/0" data-no-tooltip="" translate="no">after_transaction_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Function type for after transaction hooks.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:around_transaction_fun/0" data-no-tooltip="" translate="no">around_transaction_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Function type for around transaction hooks.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:before_action_fun/0" data-no-tooltip="" translate="no">before_action_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Function type for before action hooks.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:before_transaction_fun/0" data-no-tooltip="" translate="no">before_transaction_fun()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Function type for before transaction hooks.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>An action input struct for generic (non-CRUD) actions.</p></div>
+
+    </div>
+
+</div>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#add_error/3" data-no-tooltip="" translate="no">add_error(input, errors, path \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds an error to the errors list and marks the action input as invalid.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#after_action/3" data-no-tooltip="" translate="no">after_action(input, func, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds an after_action hook to the action input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#after_transaction/3" data-no-tooltip="" translate="no">after_transaction(input, func, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds an after transaction hook to the action input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#around_transaction/3" data-no-tooltip="" translate="no">around_transaction(input, func, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds an around transaction hook to the action input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#before_action/3" data-no-tooltip="" translate="no">before_action(input, func, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds a before_action hook to the action input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#before_transaction/3" data-no-tooltip="" translate="no">before_transaction(input, func, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Adds a before transaction hook to the action input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#delete_argument/2" data-no-tooltip="" translate="no">delete_argument(input, argument_or_arguments)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Deletes one or more arguments from the subject.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#fetch_argument/2" data-no-tooltip="" translate="no">fetch_argument(input, argument)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Fetches the value of an argument provided to the input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#for_action/4" data-no-tooltip="" translate="no">for_action(resource_or_input, action, params, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates a new input for a generic action.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_argument/2" data-no-tooltip="" translate="no">get_argument(input, argument)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the value of an argument provided to the input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new/2" data-no-tooltip="" translate="no">new(resource, domain \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates a new action input from a resource.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_argument/3" data-no-tooltip="" translate="no">set_argument(input, argument, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets an argument value on the action input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_context/2" data-no-tooltip="" translate="no">set_context(input, map)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Deep merges the provided map into the input context.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_private_argument/3" data-no-tooltip="" translate="no">set_private_argument(input, name, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets a private argument value on the action input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_tenant/2" data-no-tooltip="" translate="no">set_tenant(input, tenant)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets the tenant to use when calling the action.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+        <div class="types-list">
+<section class="detail" id="t:after_action_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:after_action_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">after_action_fun()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L47" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> after_action_fun() :: (<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>() -&gt;
+                         {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}
+                         | {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(), [<a href="Ash.Notifier.Notification.xhtml#t:t/0">Ash.Notifier.Notification.t</a>()]}
+                         | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()})</pre>
+
+      </div>
+
+<p>Function type for after action hooks.</p><p>Receives the action input and the result of the action, and can return
+the result optionally with notifications, or an error.</p>
+  </section>
+</section>
+<section class="detail" id="t:after_transaction_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:after_transaction_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">after_transaction_fun()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L66" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> after_transaction_fun() :: (<a href="#t:t/0">t</a>(), {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()} -&gt;
+                              {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()})</pre>
+
+      </div>
+
+<p>Function type for after transaction hooks.</p><p>Receives the action input and the result of the transaction, and returns
+the result (potentially modified) or an error.</p>
+  </section>
+</section>
+<section class="detail" id="t:around_transaction_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:around_transaction_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">around_transaction_fun()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L76" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> around_transaction_fun() :: (<a href="#t:t/0">t</a>(), (<a href="#t:t/0">t</a>() -&gt; {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()}) -&gt;
+                               {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()})</pre>
+
+      </div>
+
+<p>Function type for around transaction hooks.</p><p>Receives an action input and a callback function that executes the transaction,
+and returns the result of calling the callback or an error.</p>
+  </section>
+</section>
+<section class="detail" id="t:before_action_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:before_action_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">before_action_fun()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L39" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> before_action_fun() :: (<a href="#t:t/0">t</a>() -&gt;
+                          <a href="#t:t/0">t</a>()
+                          | {<a href="#t:t/0">t</a>(),
+                             %{notifications: [<a href="Ash.Notifier.Notification.xhtml#t:t/0">Ash.Notifier.Notification.t</a>()]}})</pre>
+
+      </div>
+
+<p>Function type for before action hooks.</p><p>Receives an action input and returns a modified action input, optionally with notifications.</p>
+  </section>
+</section>
+<section class="detail" id="t:before_transaction_fun/0">
+
+  <div class="detail-header">
+    <a href="#t:before_transaction_fun/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">before_transaction_fun()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L58" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> before_transaction_fun() :: (<a href="#t:t/0">t</a>() -&gt; <a href="#t:t/0">t</a>() | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">any</a>()})</pre>
+
+      </div>
+
+<p>Function type for before transaction hooks.</p><p>Receives an action input and returns a modified action input or an error.</p>
+  </section>
+</section>
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L87" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %Ash.ActionInput{
+  action: <a href="Ash.Resource.Actions.Action.xhtml#t:t/0">Ash.Resource.Actions.Action.t</a>() | nil,
+  after_action: [<a href="#t:after_action_fun/0">after_action_fun</a>()],
+  after_transaction: [<a href="#t:after_transaction_fun/0">after_transaction_fun</a>()],
+  arguments: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>(),
+  around_transaction: [<a href="#t:around_transaction_fun/0">around_transaction_fun</a>()],
+  before_action: [<a href="#t:before_action_fun/0">before_action_fun</a>()],
+  before_transaction: [<a href="#t:before_transaction_fun/0">before_transaction_fun</a>()],
+  context: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>(),
+  domain: <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>(),
+  errors: [<a href="Ash.Error.xhtml#t:t/0">Ash.Error.t</a>()],
+  invalid_keys: <a href="https://hexdocs.pm/elixir/MapSet.html#t:t/0">MapSet.t</a>(),
+  params: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>(),
+  resource: <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(),
+  tenant: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  to_tenant: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>(),
+  valid?: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()
+}</pre>
+
+      </div>
+
+<p>An action input struct for generic (non-CRUD) actions.</p><p>Contains all the information needed to execute a generic action including
+arguments, context, tenant information, validation state, and lifecycle hooks. Built using
+<a href="#for_action/4"><code class="inline">for_action/4</code></a> and modified with functions like <a href="#set_argument/3"><code class="inline">set_argument/3</code></a> and <a href="#set_context/2"><code class="inline">set_context/2</code></a>.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="add_error/3">
+
+    <span id="add_error/2"></span>
+
+  <div class="detail-header">
+    <a href="#add_error/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">add_error(input, errors, path \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L840" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> add_error(
+  <a href="#t:t/0">t</a>(),
+  <a href="Ash.Error.xhtml#t:error_input/0">Ash.Error.error_input</a>() | [<a href="Ash.Error.xhtml#t:error_input/0">Ash.Error.error_input</a>()],
+  <a href="Ash.Error.xhtml#t:path_input/0">Ash.Error.path_input</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds an error to the errors list and marks the action input as invalid.</p><p>This function allows you to add validation errors or other issues to the
+action input. Once an error is added, the input will be marked as invalid
+and action execution will be prevented.</p><h2 id="add_error/3-examples" class="section-heading"><a href="#add_error/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Add a simple string error</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="1274582319-1">(</samp><samp class="ss">:send_notification</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1274582319-2">%{</samp><samp class="p" data-group-id="1274582319-2">}</samp><samp class="p" data-group-id="1274582319-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">add_error</samp><samp class="p" data-group-id="1274582319-3">(</samp><samp class="s">&quot;Missing required configuration&quot;</samp><samp class="p" data-group-id="1274582319-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">valid?</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+
+</samp><samp class="c1"># Add an error with a specific path</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="1274582319-4">(</samp><samp class="ss">:process_data</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1274582319-5">%{</samp><samp class="p" data-group-id="1274582319-5">}</samp><samp class="p" data-group-id="1274582319-4">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">add_error</samp><samp class="p" data-group-id="1274582319-6">(</samp><samp class="s">&quot;Invalid format&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1274582319-7">[</samp><samp class="ss">:data</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:format</samp><samp class="p" data-group-id="1274582319-7">]</samp><samp class="p" data-group-id="1274582319-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">errors</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">List</samp><samp class="o">.</samp><samp class="n">first</samp><samp class="p" data-group-id="1274582319-8">(</samp><samp class="p" data-group-id="1274582319-8">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">get</samp><samp class="p" data-group-id="1274582319-9">(</samp><samp class="ss">:path</samp><samp class="p" data-group-id="1274582319-9">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="1274582319-10">[</samp><samp class="ss">:data</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:format</samp><samp class="p" data-group-id="1274582319-10">]</samp><samp class="w">
+
+</samp><samp class="c1"># Add multiple errors</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="1274582319-11">(</samp><samp class="ss">:complex_action</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1274582319-12">%{</samp><samp class="p" data-group-id="1274582319-12">}</samp><samp class="p" data-group-id="1274582319-11">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">add_error</samp><samp class="p" data-group-id="1274582319-13">(</samp><samp class="p" data-group-id="1274582319-14">[</samp><samp class="s">&quot;Error 1&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Error 2&quot;</samp><samp class="p" data-group-id="1274582319-14">]</samp><samp class="p" data-group-id="1274582319-13">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">length</samp><samp class="p" data-group-id="1274582319-15">(</samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">errors</samp><samp class="p" data-group-id="1274582319-15">)</samp><samp class="w">
+</samp><samp class="mi">2</samp><samp class="w">
+
+</samp><samp class="c1"># Add structured error with keyword list</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="1274582319-16">(</samp><samp class="ss">:validate_input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1274582319-17">%{</samp><samp class="p" data-group-id="1274582319-17">}</samp><samp class="p" data-group-id="1274582319-16">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">add_error</samp><samp class="p" data-group-id="1274582319-18">(</samp><samp class="ss">field</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:email</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">message</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;is invalid&quot;</samp><samp class="p" data-group-id="1274582319-18">)</samp></code></pre><h2 id="add_error/3-see-also" class="section-heading"><a href="#add_error/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="Ash.Error.xhtml#to_ash_error/3"><code class="inline">Ash.Error.to_ash_error/3</code></a> for more on supported error values</li><li>Action implementations can use this to add custom validation errors</li><li><a href="#set_argument/3"><code class="inline">set_argument/3</code></a> automatically adds errors for invalid argument values</li></ul>
+  </section>
+</section>
+<section class="detail" id="after_action/3">
+
+    <span id="after_action/2"></span>
+
+  <div class="detail-header">
+    <a href="#after_action/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">after_action(input, func, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L1024" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> after_action(
+  input :: <a href="#t:t/0">t</a>(),
+  fun :: <a href="#t:after_action_fun/0">after_action_fun</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds an after_action hook to the action input.</p><p>After action hooks are called with the action input and the result returned
+from the action. They can modify the result, perform side effects, or return
+errors to halt processing. The hook can return notifications alongside the result.</p><h2 id="after_action/3-examples" class="section-heading"><a href="#after_action/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Transform the result after action</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="1914012007-1">(</samp><samp class="ss">:calculate_stats</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1914012007-2">%{</samp><samp class="ss">data</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1914012007-3">[</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">3</samp><samp class="p" data-group-id="1914012007-3">]</samp><samp class="p" data-group-id="1914012007-2">}</samp><samp class="p" data-group-id="1914012007-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">after_action</samp><samp class="p" data-group-id="1914012007-4">(</samp><samp class="k" data-group-id="1914012007-5">fn</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">enhanced_result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">Map</samp><samp class="o">.</samp><samp class="n">put</samp><samp class="p" data-group-id="1914012007-6">(</samp><samp class="n">result</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:calculated_at</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">DateTime</samp><samp class="o">.</samp><samp class="n">utc_now</samp><samp class="p" data-group-id="1914012007-7">(</samp><samp class="p" data-group-id="1914012007-7">)</samp><samp class="p" data-group-id="1914012007-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="p" data-group-id="1914012007-8">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">enhanced_result</samp><samp class="p" data-group-id="1914012007-8">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="1914012007-5">end</samp><samp class="p" data-group-id="1914012007-4">)</samp><samp class="w">
+
+</samp><samp class="c1"># Log successful actions</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="1914012007-9">(</samp><samp class="ss">:important_action</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1914012007-10">%{</samp><samp class="p" data-group-id="1914012007-10">}</samp><samp class="p" data-group-id="1914012007-9">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">after_action</samp><samp class="p" data-group-id="1914012007-11">(</samp><samp class="k" data-group-id="1914012007-12">fn</samp><samp class="w"> </samp><samp class="n">inp</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="nc">Logger</samp><samp class="o">.</samp><samp class="n">info</samp><samp class="p" data-group-id="1914012007-13">(</samp><samp class="s">&quot;Action completed successfully&quot;</samp><samp class="p" data-group-id="1914012007-13">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="p" data-group-id="1914012007-14">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="p" data-group-id="1914012007-14">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="1914012007-12">end</samp><samp class="p" data-group-id="1914012007-11">)</samp><samp class="w">
+
+</samp><samp class="c1"># Return notifications</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="1914012007-15">(</samp><samp class="ss">:notify_users</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1914012007-16">%{</samp><samp class="ss">message</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="p" data-group-id="1914012007-16">}</samp><samp class="p" data-group-id="1914012007-15">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">after_action</samp><samp class="p" data-group-id="1914012007-17">(</samp><samp class="k" data-group-id="1914012007-18">fn</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">notification</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="1914012007-19">%</samp><samp class="nc" data-group-id="1914012007-19">Ash.Notifier.Notification</samp><samp class="p" data-group-id="1914012007-19">{</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="ss">resource</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">resource</samp><samp class="p">,</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="ss">action</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">action</samp><samp class="p">,</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="ss">data</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="p" data-group-id="1914012007-19">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="p" data-group-id="1914012007-20">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1914012007-21">[</samp><samp class="n">notification</samp><samp class="p" data-group-id="1914012007-21">]</samp><samp class="p" data-group-id="1914012007-20">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="1914012007-18">end</samp><samp class="p" data-group-id="1914012007-17">)</samp><samp class="w">
+
+</samp><samp class="c1"># Handle errors</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="1914012007-22">(</samp><samp class="ss">:risky_action</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1914012007-23">%{</samp><samp class="p" data-group-id="1914012007-23">}</samp><samp class="p" data-group-id="1914012007-22">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">after_action</samp><samp class="p" data-group-id="1914012007-24">(</samp><samp class="k" data-group-id="1914012007-25">fn</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k">if</samp><samp class="w"> </samp><samp class="n">is_error_result?</samp><samp class="p" data-group-id="1914012007-26">(</samp><samp class="n">result</samp><samp class="p" data-group-id="1914012007-26">)</samp><samp class="w"> </samp><samp class="k" data-group-id="1914012007-27">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="p" data-group-id="1914012007-28">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Action failed with custom error&quot;</samp><samp class="p" data-group-id="1914012007-28">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="1914012007-27">else</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="p" data-group-id="1914012007-29">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="p" data-group-id="1914012007-29">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="1914012007-27">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="1914012007-25">end</samp><samp class="p" data-group-id="1914012007-24">)</samp></code></pre><h2 id="after_action/3-see-also" class="section-heading"><a href="#after_action/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#before_action/3"><code class="inline">before_action/3</code></a> for hooks that run before the action executes</li><li><a href="#for_action/4"><code class="inline">for_action/4</code></a> for creating action inputs</li><li><a href="Ash.xhtml#run_action/2"><code class="inline">Ash.run_action/2</code></a> for executing the action with the input</li></ul>
+  </section>
+</section>
+<section class="detail" id="after_transaction/3">
+
+    <span id="after_transaction/2"></span>
+
+  <div class="detail-header">
+    <a href="#after_transaction/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">after_transaction(input, func, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L1092" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> after_transaction(
+  input :: <a href="#t:t/0">t</a>(),
+  fun :: <a href="#t:after_transaction_fun/0">after_transaction_fun</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds an after transaction hook to the action input.</p><p>After transaction hooks are executed after the transaction completes, regardless of success or failure.
+They receive both the input and the transaction result, and can modify the result.</p><h2 id="after_transaction/3-examples" class="section-heading"><a href="#after_transaction/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Add cleanup after transaction</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">after_transaction</samp><samp class="p" data-group-id="5388481654-1">(</samp><samp class="k" data-group-id="5388481654-2">fn</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">cleanup_resources</samp><samp class="p" data-group-id="5388481654-3">(</samp><samp class="p" data-group-id="5388481654-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">result</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="5388481654-2">end</samp><samp class="p" data-group-id="5388481654-1">)</samp></code></pre><h2 id="after_transaction/3-see-also" class="section-heading"><a href="#after_transaction/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#before_transaction/2"><code class="inline">before_transaction/2</code></a> for hooks that run before the transaction</li><li><a href="#around_transaction/2"><code class="inline">around_transaction/2</code></a> for hooks that wrap the entire transaction</li><li><a href="#after_action/2"><code class="inline">after_action/2</code></a> for hooks that run after the action (inside transaction)</li></ul>
+  </section>
+</section>
+<section class="detail" id="around_transaction/3">
+
+    <span id="around_transaction/2"></span>
+
+  <div class="detail-header">
+    <a href="#around_transaction/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">around_transaction(input, func, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L1130" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> around_transaction(
+  input :: <a href="#t:t/0">t</a>(),
+  fun :: <a href="#t:around_transaction_fun/0">around_transaction_fun</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds an around transaction hook to the action input.</p><p>Around transaction hooks wrap the entire transaction execution. They receive a callback
+function that they must call to execute the transaction, allowing them to add logic
+both before and after the transaction.</p><h2 id="around_transaction/3-examples" class="section-heading"><a href="#around_transaction/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Add retry logic around transaction</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">around_transaction</samp><samp class="p" data-group-id="7083641526-1">(</samp><samp class="k" data-group-id="7083641526-2">fn</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">callback</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k">case</samp><samp class="w"> </samp><samp class="n">callback</samp><samp class="o">.</samp><samp class="p" data-group-id="7083641526-3">(</samp><samp class="n">input</samp><samp class="p" data-group-id="7083641526-3">)</samp><samp class="w"> </samp><samp class="k" data-group-id="7083641526-4">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="p" data-group-id="7083641526-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="p" data-group-id="7083641526-5">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="7083641526-6">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="p" data-group-id="7083641526-6">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="p" data-group-id="7083641526-7">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="7083641526-8">%{</samp><samp class="ss">retryable?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p" data-group-id="7083641526-8">}</samp><samp class="p" data-group-id="7083641526-7">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="n">callback</samp><samp class="o">.</samp><samp class="p" data-group-id="7083641526-9">(</samp><samp class="n">input</samp><samp class="p" data-group-id="7083641526-9">)</samp><samp class="w"> </samp><samp class="c1"># Retry once</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="n">error</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="n">error</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="7083641526-4">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="7083641526-2">end</samp><samp class="p" data-group-id="7083641526-1">)</samp></code></pre><h2 id="around_transaction/3-see-also" class="section-heading"><a href="#around_transaction/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#before_transaction/2"><code class="inline">before_transaction/2</code></a> for hooks that run before the transaction</li><li><a href="#after_transaction/2"><code class="inline">after_transaction/2</code></a> for hooks that run after the transaction</li><li><a href="#before_action/3"><code class="inline">before_action/3</code></a> and <a href="#after_action/2"><code class="inline">after_action/2</code></a> for hooks that run inside the transaction</li></ul>
+  </section>
+</section>
+<section class="detail" id="before_action/3">
+
+    <span id="before_action/2"></span>
+
+  <div class="detail-header">
+    <a href="#before_action/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">before_action(input, func, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L957" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> before_action(
+  input :: <a href="#t:t/0">t</a>(),
+  fun :: <a href="#t:before_action_fun/0">before_action_fun</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds a before_action hook to the action input.</p><p>Before action hooks are called with the action input and can modify it before
+the action executes. They can also add errors to halt processing or return
+notifications to be processed later.</p><h2 id="before_action/3-examples" class="section-heading"><a href="#before_action/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Validate arguments before action</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="0077482908-1">(</samp><samp class="ss">:send_notification</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0077482908-2">%{</samp><samp class="ss">message</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="p" data-group-id="0077482908-2">}</samp><samp class="p" data-group-id="0077482908-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">before_action</samp><samp class="p" data-group-id="0077482908-3">(</samp><samp class="k" data-group-id="0077482908-4">fn</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k">if</samp><samp class="w"> </samp><samp class="nc">String</samp><samp class="o">.</samp><samp class="n">length</samp><samp class="p" data-group-id="0077482908-5">(</samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">arguments</samp><samp class="o">.</samp><samp class="n">message</samp><samp class="p" data-group-id="0077482908-5">)</samp><samp class="w"> </samp><samp class="o">&gt;</samp><samp class="w"> </samp><samp class="mi">100</samp><samp class="w"> </samp><samp class="k" data-group-id="0077482908-6">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">add_error</samp><samp class="p" data-group-id="0077482908-7">(</samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Message too long&quot;</samp><samp class="p" data-group-id="0077482908-7">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="0077482908-6">else</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="n">input</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="k" data-group-id="0077482908-6">end</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="0077482908-4">end</samp><samp class="p" data-group-id="0077482908-3">)</samp><samp class="w">
+
+</samp><samp class="c1"># Set computed arguments</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="0077482908-8">(</samp><samp class="ss">:process_data</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0077482908-9">%{</samp><samp class="ss">data</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;test&quot;</samp><samp class="p" data-group-id="0077482908-9">}</samp><samp class="p" data-group-id="0077482908-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">before_action</samp><samp class="p" data-group-id="0077482908-10">(</samp><samp class="k" data-group-id="0077482908-11">fn</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_argument</samp><samp class="p" data-group-id="0077482908-12">(</samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:processed_at</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">DateTime</samp><samp class="o">.</samp><samp class="n">utc_now</samp><samp class="p" data-group-id="0077482908-13">(</samp><samp class="p" data-group-id="0077482908-13">)</samp><samp class="p" data-group-id="0077482908-12">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="0077482908-11">end</samp><samp class="p" data-group-id="0077482908-10">)</samp><samp class="w">
+
+</samp><samp class="c1"># Return notifications</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="0077482908-14">(</samp><samp class="ss">:audit_action</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0077482908-15">%{</samp><samp class="p" data-group-id="0077482908-15">}</samp><samp class="p" data-group-id="0077482908-14">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">before_action</samp><samp class="p" data-group-id="0077482908-16">(</samp><samp class="k" data-group-id="0077482908-17">fn</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">notification</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="0077482908-18">%</samp><samp class="nc" data-group-id="0077482908-18">Ash.Notifier.Notification</samp><samp class="p" data-group-id="0077482908-18">{</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="ss">resource</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">resource</samp><samp class="p">,</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="ss">action</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">action</samp><samp class="p">,</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">    </samp><samp class="ss">data</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0077482908-19">%{</samp><samp class="ss">audit</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;before_action&quot;</samp><samp class="p" data-group-id="0077482908-19">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="p" data-group-id="0077482908-18">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="p" data-group-id="0077482908-20">{</samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0077482908-21">%{</samp><samp class="ss">notifications</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0077482908-22">[</samp><samp class="n">notification</samp><samp class="p" data-group-id="0077482908-22">]</samp><samp class="p" data-group-id="0077482908-21">}</samp><samp class="p" data-group-id="0077482908-20">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="0077482908-17">end</samp><samp class="p" data-group-id="0077482908-16">)</samp></code></pre><h2 id="before_action/3-options" class="section-heading"><a href="#before_action/3-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">prepend?</code> - If <code class="inline">true</code>, adds the hook to the beginning of the list instead of the end</li></ul><h2 id="before_action/3-see-also" class="section-heading"><a href="#before_action/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#after_action/2"><code class="inline">after_action/2</code></a> for hooks that run after the action completes</li><li><a href="#for_action/4"><code class="inline">for_action/4</code></a> for creating action inputs</li><li><a href="#add_error/2"><code class="inline">add_error/2</code></a> for adding validation errors in hooks</li></ul>
+  </section>
+</section>
+<section class="detail" id="before_transaction/3">
+
+    <span id="before_transaction/2"></span>
+
+  <div class="detail-header">
+    <a href="#before_transaction/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">before_transaction(input, func, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L1058" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> before_transaction(
+  input :: <a href="#t:t/0">t</a>(),
+  fun :: <a href="#t:before_transaction_fun/0">before_transaction_fun</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Adds a before transaction hook to the action input.</p><p>Before transaction hooks are executed before the transaction begins (if the action is transactional).
+They can modify the action input or halt execution by returning an error.</p><h2 id="before_transaction/3-examples" class="section-heading"><a href="#before_transaction/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Add logging before transaction</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">before_transaction</samp><samp class="p" data-group-id="3614603624-1">(</samp><samp class="k" data-group-id="3614603624-2">fn</samp><samp class="w"> </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="nc">IO</samp><samp class="o">.</samp><samp class="n">puts</samp><samp class="p" data-group-id="3614603624-3">(</samp><samp class="s">&quot;Starting transaction for action&quot;</samp><samp class="p" data-group-id="3614603624-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="n">input</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="3614603624-2">end</samp><samp class="p" data-group-id="3614603624-1">)</samp></code></pre><h2 id="before_transaction/3-see-also" class="section-heading"><a href="#before_transaction/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#after_transaction/2"><code class="inline">after_transaction/2</code></a> for hooks that run after the transaction</li><li><a href="#around_transaction/2"><code class="inline">around_transaction/2</code></a> for hooks that wrap the entire transaction</li><li><a href="#before_action/3"><code class="inline">before_action/3</code></a> for hooks that run before the action (inside transaction)</li></ul>
+  </section>
+</section>
+<section class="detail" id="delete_argument/2">
+
+  <div class="detail-header">
+    <a href="#delete_argument/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">delete_argument(input, argument_or_arguments)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L568" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> delete_argument(
+  input :: <a href="#t:t/0">t</a>(),
+  argument_or_arguments :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()]
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Deletes one or more arguments from the subject.</p><h2 id="delete_argument/2-parameters" class="section-heading"><a href="#delete_argument/2-parameters" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Parameters</span></h2><ul><li><code class="inline">subject</code> - The subject to delete arguments from</li><li><code class="inline">arguments</code> - Single argument name or list of argument names to delete</li></ul>
+  </section>
+</section>
+<section class="detail" id="fetch_argument/2">
+
+  <div class="detail-header">
+    <a href="#fetch_argument/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">fetch_argument(input, argument)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L467" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> fetch_argument(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) :: {:ok, <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()} | :error</pre>
+
+      </div>
+
+<p>Fetches the value of an argument provided to the input.</p><p>Returns <code class="inline">{:ok, value}</code> if the argument exists, or <code class="inline">:error</code> if not found.
+This is the safer alternative to <a href="#get_argument/2"><code class="inline">get_argument/2</code></a> when you need to distinguish
+between a <code class="inline">nil</code> value and a missing argument.</p><h2 id="fetch_argument/2-examples" class="section-heading"><a href="#fetch_argument/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Fetch an argument that exists</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="0211391962-1">(</samp><samp class="ss">:send_notification</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0211391962-2">%{</samp><samp class="ss">priority</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:high</samp><samp class="p" data-group-id="0211391962-2">}</samp><samp class="p" data-group-id="0211391962-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">fetch_argument</samp><samp class="p" data-group-id="0211391962-3">(</samp><samp class="ss">:priority</samp><samp class="p" data-group-id="0211391962-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0211391962-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:high</samp><samp class="p" data-group-id="0211391962-4">}</samp><samp class="w">
+
+</samp><samp class="c1"># Fetch an argument that doesn&#39;t exist</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="0211391962-5">(</samp><samp class="ss">:send_notification</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0211391962-6">%{</samp><samp class="p" data-group-id="0211391962-6">}</samp><samp class="p" data-group-id="0211391962-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">fetch_argument</samp><samp class="p" data-group-id="0211391962-7">(</samp><samp class="ss">:missing_arg</samp><samp class="p" data-group-id="0211391962-7">)</samp><samp class="w">
+</samp><samp class="ss">:error</samp><samp class="w">
+
+</samp><samp class="c1"># Distinguish between nil and missing arguments</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="0211391962-8">(</samp><samp class="ss">:example</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0211391962-9">%{</samp><samp class="ss">optional_field</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">nil</samp><samp class="p" data-group-id="0211391962-9">}</samp><samp class="p" data-group-id="0211391962-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">fetch_argument</samp><samp class="p" data-group-id="0211391962-10">(</samp><samp class="ss">:optional_field</samp><samp class="p" data-group-id="0211391962-10">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0211391962-11">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="no">nil</samp><samp class="p" data-group-id="0211391962-11">}</samp><samp class="w">
+
+</samp><samp class="c1"># Use in conditional logic</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="0211391962-12">(</samp><samp class="ss">:process</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0211391962-13">%{</samp><samp class="p" data-group-id="0211391962-13">}</samp><samp class="p" data-group-id="0211391962-12">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="k">case</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">fetch_argument</samp><samp class="p" data-group-id="0211391962-14">(</samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:mode</samp><samp class="p" data-group-id="0211391962-14">)</samp><samp class="w"> </samp><samp class="k" data-group-id="0211391962-15">do</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="p" data-group-id="0211391962-16">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">mode</samp><samp class="p" data-group-id="0211391962-16">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="s">&quot;Processing in </samp><samp class="si" data-group-id="0211391962-17">#{</samp><samp class="n">mode</samp><samp class="si" data-group-id="0211391962-17">}</samp><samp class="s"> mode&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="ss">:error</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="s">&quot;Using default processing mode&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="k" data-group-id="0211391962-15">end</samp><samp class="w">
+</samp><samp class="s">&quot;Using default processing mode&quot;</samp></code></pre><h2 id="fetch_argument/2-see-also" class="section-heading"><a href="#fetch_argument/2-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#get_argument/2"><code class="inline">get_argument/2</code></a> for simpler argument access</li><li><a href="#set_argument/3"><code class="inline">set_argument/3</code></a> for setting argument values</li><li><a href="#for_action/4"><code class="inline">for_action/4</code></a> for providing initial arguments</li></ul>
+  </section>
+</section>
+<section class="detail" id="for_action/4">
+
+    <span id="for_action/3"></span>
+
+  <div class="detail-header">
+    <a href="#for_action/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">for_action(resource_or_input, action, params, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L231" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> for_action(
+  resource_or_input :: <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>() | <a href="#t:t/0">t</a>(),
+  action :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(),
+  params :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>(),
+  opts :: <a href="https://hexdocs.pm/elixir/Keyword.html#t:t/0">Keyword.t</a>()
+) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Creates a new input for a generic action.</p><p>This is the primary way to create action inputs for generic actions. It validates
+the action exists, sets up the input with proper defaults, and validates any
+provided arguments according to the action's argument definitions.</p><h2 id="for_action/4-examples" class="section-heading"><a href="#for_action/4-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Create input for a simple action</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="0359888775-1">(</samp><samp class="ss">:send_notification</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0359888775-2">%{</samp><samp class="ss">message</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="p" data-group-id="0359888775-2">}</samp><samp class="p" data-group-id="0359888775-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0359888775-3">%</samp><samp class="nc" data-group-id="0359888775-3">Ash.ActionInput</samp><samp class="p" data-group-id="0359888775-3">{</samp><samp class="ss">action</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0359888775-4">%{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:send_notification</samp><samp class="p" data-group-id="0359888775-4">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">arguments</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0359888775-5">%{</samp><samp class="ss">message</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="p" data-group-id="0359888775-5">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="0359888775-3">}</samp><samp class="w">
+
+</samp><samp class="c1"># Create input with options</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="0359888775-6">(</samp><samp class="ss">:complex_action</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0359888775-7">%{</samp><samp class="ss">data</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;test&quot;</samp><samp class="p" data-group-id="0359888775-7">}</samp><samp class="p">,</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="ss">actor</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">current_user</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">authorize?</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p" data-group-id="0359888775-6">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="0359888775-8">%</samp><samp class="nc" data-group-id="0359888775-8">Ash.ActionInput</samp><samp class="p" data-group-id="0359888775-8">{</samp><samp class="ss">arguments</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="0359888775-9">%{</samp><samp class="ss">data</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;test&quot;</samp><samp class="p" data-group-id="0359888775-9">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="0359888775-8">}</samp><samp class="w">
+
+</samp><samp class="c1"># Create input and then modify it</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="0359888775-10">(</samp><samp class="ss">:example</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0359888775-11">%{</samp><samp class="p" data-group-id="0359888775-11">}</samp><samp class="p" data-group-id="0359888775-10">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_context</samp><samp class="p" data-group-id="0359888775-12">(</samp><samp class="p" data-group-id="0359888775-13">%{</samp><samp class="ss">source</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;api&quot;</samp><samp class="p" data-group-id="0359888775-13">}</samp><samp class="p" data-group-id="0359888775-12">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">action</samp><samp class="o">.</samp><samp class="n">name</samp><samp class="w">
+</samp><samp class="ss">:example</samp></code></pre><h2 id="for_action/4-options" class="section-heading"><a href="#for_action/4-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><p><code class="inline">:domain</code> (<a href="Ash.Domain.xhtml"><code class="inline">Ash.Domain</code></a>) - The domain to use for the action. The resource's domain is used by default.</p></li><li><p><code class="inline">:context</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">map/0</code></a>) - Context to set on the action input. The default value is <code class="inline">%{}</code>.</p></li><li><p><code class="inline">:authorize?</code> - Whether or not to run authorization on the action. Default behavior of this option is controlled by the domain.</p></li><li><p><code class="inline">:tenant</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - The tenant to use for the action.</p></li><li><p><code class="inline">:scope</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - A value that implements the <a href="Ash.Scope.ToOpts.xhtml"><code class="inline">Ash.Scope.ToOpts</code></a> protocol, for passing around actor/tenant/context in a single value. See <a href="Ash.Scope.ToOpts.xhtml"><code class="inline">Ash.Scope.ToOpts</code></a> for more.</p></li><li><p><code class="inline">:actor</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - The actor performing the action</p></li><li><p><code class="inline">:skip_unknown_inputs</code> - A list of unknown inputs to skip. Use <code class="inline">:*</code> to skip all unknown inputs.</p></li><li><p><code class="inline">:tracer</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types"><code class="inline">term/0</code></a>) - A tracer or list of tracers to trace action execution.</p></li><li><p><code class="inline">:private_arguments</code> (<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types"><code class="inline">map/0</code></a>) - A list of private arguments to be set before the action is invoked. The default value is <code class="inline">%{}</code>.</p></li></ul><h2 id="for_action/4-see-also" class="section-heading"><a href="#for_action/4-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#new/2"><code class="inline">new/2</code></a> for creating basic inputs</li><li><a href="#set_argument/3"><code class="inline">set_argument/3</code></a> for adding arguments after creation</li><li><a href="Ash.xhtml#run_action/2"><code class="inline">Ash.run_action/2</code></a> for executing the action with the input</li><li><code class="inline">d:Ash.Resource.Dsl.actions.action</code> for defining generic actions</li><li><a href="generic-actions.xhtml">Generic Actions Guide</a> for understanding generic actions</li><li><a href="actions.xhtml">Actions Guide</a> for general action concepts</li></ul>
+  </section>
+</section>
+<section class="detail" id="get_argument/2">
+
+  <div class="detail-header">
+    <a href="#get_argument/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_argument(input, argument)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L418" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> get_argument(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()</pre>
+
+      </div>
+
+<p>Gets the value of an argument provided to the input.</p><p>Returns the argument value if found, or <code class="inline">nil</code> if not found. Arguments are
+validated and cast according to the action's argument definitions when set.</p><h2 id="get_argument/2-examples" class="section-heading"><a href="#get_argument/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Get an argument that exists</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="3437803480-1">(</samp><samp class="ss">:send_email</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3437803480-2">%{</samp><samp class="ss">recipient</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;user@example.com&quot;</samp><samp class="p" data-group-id="3437803480-2">}</samp><samp class="p" data-group-id="3437803480-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">get_argument</samp><samp class="p" data-group-id="3437803480-3">(</samp><samp class="ss">:recipient</samp><samp class="p" data-group-id="3437803480-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;user@example.com&quot;</samp><samp class="w">
+
+</samp><samp class="c1"># Get an argument that doesn&#39;t exist returns nil</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="3437803480-4">(</samp><samp class="ss">:send_email</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3437803480-5">%{</samp><samp class="p" data-group-id="3437803480-5">}</samp><samp class="p" data-group-id="3437803480-4">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">get_argument</samp><samp class="p" data-group-id="3437803480-6">(</samp><samp class="ss">:missing_arg</samp><samp class="p" data-group-id="3437803480-6">)</samp><samp class="w">
+</samp><samp class="no">nil</samp><samp class="w">
+
+</samp><samp class="c1"># Arguments can be accessed by string or atom key</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="3437803480-7">(</samp><samp class="ss">:example</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3437803480-8">%{</samp><samp class="s">&quot;message&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="3437803480-8">}</samp><samp class="p" data-group-id="3437803480-7">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">get_argument</samp><samp class="p" data-group-id="3437803480-9">(</samp><samp class="ss">:message</samp><samp class="p" data-group-id="3437803480-9">)</samp><samp class="w">
+</samp><samp class="s">&quot;hello&quot;</samp></code></pre><h2 id="get_argument/2-see-also" class="section-heading"><a href="#get_argument/2-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#fetch_argument/2"><code class="inline">fetch_argument/2</code></a> for safer argument access with explicit error handling</li><li><a href="#set_argument/3"><code class="inline">set_argument/3</code></a> for setting argument values</li><li><a href="#for_action/4"><code class="inline">for_action/4</code></a> for providing initial arguments</li></ul>
+  </section>
+</section>
+<section class="detail" id="new/2">
+
+    <span id="new/1"></span>
+
+  <div class="detail-header">
+    <a href="#new/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(resource, domain \\ nil)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L130" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> new(<a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Creates a new action input from a resource.</p><p>This creates a basic action input struct that can be used as a starting point
+for building inputs for generic actions. Use <a href="#for_action/4"><code class="inline">for_action/4</code></a> to create an input
+bound to a specific action.</p><h2 id="new/2-examples" class="section-heading"><a href="#new/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Create a new action input for a resource</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="9581297405-1">(</samp><samp class="nc">MyApp.Post</samp><samp class="p" data-group-id="9581297405-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9581297405-2">%</samp><samp class="nc" data-group-id="9581297405-2">Ash.ActionInput</samp><samp class="p" data-group-id="9581297405-2">{</samp><samp class="ss">resource</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">domain</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">nil</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="9581297405-2">}</samp><samp class="w">
+
+
+</samp><samp class="c1"># Usually you&#39;ll want to use for_action/4 instead</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="9581297405-3">(</samp><samp class="ss">:send_notification</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9581297405-4">%{</samp><samp class="ss">message</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="p" data-group-id="9581297405-4">}</samp><samp class="p" data-group-id="9581297405-3">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="9581297405-5">%</samp><samp class="nc" data-group-id="9581297405-5">Ash.ActionInput</samp><samp class="p" data-group-id="9581297405-5">{</samp><samp class="ss">action</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9581297405-6">%{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:send_notification</samp><samp class="p" data-group-id="9581297405-6">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">arguments</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9581297405-7">%{</samp><samp class="ss">message</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Hello&quot;</samp><samp class="p" data-group-id="9581297405-7">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="9581297405-5">}</samp></code></pre><h2 id="new/2-see-also" class="section-heading"><a href="#new/2-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#for_action/4"><code class="inline">for_action/4</code></a> for creating action-specific inputs</li><li><a href="#set_argument/3"><code class="inline">set_argument/3</code></a> for adding arguments</li><li><a href="#set_context/2"><code class="inline">set_context/2</code></a> for adding context</li></ul>
+  </section>
+</section>
+<section class="detail" id="set_argument/3">
+
+  <div class="detail-header">
+    <a href="#set_argument/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_argument(input, argument, value)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L511" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_argument(input :: <a href="#t:t/0">t</a>(), name :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), value :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Sets an argument value on the action input.</p><p>The argument value is validated and cast according to the action's argument
+definition. If validation fails, errors will be added to the input and it
+will be marked as invalid.</p><h2 id="set_argument/3-examples" class="section-heading"><a href="#set_argument/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Set a simple argument</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="1093662057-1">(</samp><samp class="ss">:send_notification</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1093662057-2">%{</samp><samp class="p" data-group-id="1093662057-2">}</samp><samp class="p" data-group-id="1093662057-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_argument</samp><samp class="p" data-group-id="1093662057-3">(</samp><samp class="ss">:message</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Hello World&quot;</samp><samp class="p" data-group-id="1093662057-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">get_argument</samp><samp class="p" data-group-id="1093662057-4">(</samp><samp class="ss">:message</samp><samp class="p" data-group-id="1093662057-4">)</samp><samp class="w">
+</samp><samp class="s">&quot;Hello World&quot;</samp><samp class="w">
+
+</samp><samp class="c1"># Set multiple arguments by chaining</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="1093662057-5">(</samp><samp class="ss">:complex_action</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1093662057-6">%{</samp><samp class="p" data-group-id="1093662057-6">}</samp><samp class="p" data-group-id="1093662057-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_argument</samp><samp class="p" data-group-id="1093662057-7">(</samp><samp class="ss">:priority</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:high</samp><samp class="p" data-group-id="1093662057-7">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_argument</samp><samp class="p" data-group-id="1093662057-8">(</samp><samp class="ss">:batch_size</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">100</samp><samp class="p" data-group-id="1093662057-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">get_argument</samp><samp class="p" data-group-id="1093662057-9">(</samp><samp class="n">input</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:priority</samp><samp class="p" data-group-id="1093662057-9">)</samp><samp class="w">
+</samp><samp class="ss">:high</samp><samp class="w">
+
+</samp><samp class="c1"># Arguments are validated according to type</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="1093662057-10">(</samp><samp class="ss">:schedule_job</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1093662057-11">%{</samp><samp class="p" data-group-id="1093662057-11">}</samp><samp class="p" data-group-id="1093662057-10">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_argument</samp><samp class="p" data-group-id="1093662057-12">(</samp><samp class="ss">:run_at</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ld">~U[2024-01-01 10:00:00Z]</samp><samp class="p" data-group-id="1093662057-12">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">valid?</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre><h2 id="set_argument/3-see-also" class="section-heading"><a href="#set_argument/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#get_argument/2"><code class="inline">get_argument/2</code></a> for retrieving argument values</li><li><a href="#set_private_argument/3"><code class="inline">set_private_argument/3</code></a> for setting private arguments</li><li><a href="#for_action/4"><code class="inline">for_action/4</code></a> for providing initial arguments</li></ul>
+  </section>
+</section>
+<section class="detail" id="set_context/2">
+
+  <div class="detail-header">
+    <a href="#set_context/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_context(input, map)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L677" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_context(<a href="#t:t/0">t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>() | nil) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Deep merges the provided map into the input context.</p><p>Context is used to pass additional information through the action pipeline
+that can be accessed by action implementations, changes, and validations.
+The context is merged deeply, so nested maps will be combined rather than replaced.</p><p>Do not use the <code class="inline">private</code> key in your custom context, as that is reserved for
+internal use.</p><h2 id="set_context/2-examples" class="section-heading"><a href="#set_context/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Set simple context values</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="7457904055-1">(</samp><samp class="p" data-group-id="7457904055-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_context</samp><samp class="p" data-group-id="7457904055-2">(</samp><samp class="p" data-group-id="7457904055-3">%{</samp><samp class="ss">source</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;api&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user_id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">123</samp><samp class="p" data-group-id="7457904055-3">}</samp><samp class="p" data-group-id="7457904055-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">then</samp><samp class="p" data-group-id="7457904055-4">(</samp><samp class="o">&amp;</samp><samp class="w"> </samp><samp class="ni">&amp;1</samp><samp class="o">.</samp><samp class="n">context</samp><samp class="o">.</samp><samp class="n">source</samp><samp class="p" data-group-id="7457904055-4">)</samp><samp class="w">
+</samp><samp class="s">&quot;api&quot;</samp><samp class="w">
+
+</samp><samp class="c1"># Context is merged deeply</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="7457904055-5">(</samp><samp class="p" data-group-id="7457904055-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_context</samp><samp class="p" data-group-id="7457904055-6">(</samp><samp class="p" data-group-id="7457904055-7">%{</samp><samp class="ss">metadata</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7457904055-8">%{</samp><samp class="ss">version</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="7457904055-8">}</samp><samp class="p" data-group-id="7457904055-7">}</samp><samp class="p" data-group-id="7457904055-6">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_context</samp><samp class="p" data-group-id="7457904055-9">(</samp><samp class="p" data-group-id="7457904055-10">%{</samp><samp class="ss">metadata</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7457904055-11">%{</samp><samp class="ss">trace_id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;abc123&quot;</samp><samp class="p" data-group-id="7457904055-11">}</samp><samp class="p" data-group-id="7457904055-10">}</samp><samp class="p" data-group-id="7457904055-9">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">context</samp><samp class="o">.</samp><samp class="n">metadata</samp><samp class="w">
+</samp><samp class="p" data-group-id="7457904055-12">%{</samp><samp class="ss">version</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">trace_id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;abc123&quot;</samp><samp class="p" data-group-id="7457904055-12">}</samp><samp class="w">
+
+</samp><samp class="c1"># Use context in action implementations</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="7457904055-13">(</samp><samp class="ss">:process_data</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="7457904055-14">%{</samp><samp class="ss">data</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;test&quot;</samp><samp class="p" data-group-id="7457904055-14">}</samp><samp class="p" data-group-id="7457904055-13">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_context</samp><samp class="p" data-group-id="7457904055-15">(</samp><samp class="p" data-group-id="7457904055-16">%{</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="ss">request_id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;req_456&quot;</samp><samp class="p">,</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="w">  </samp><samp class="ss">feature_flags</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7457904055-17">%{</samp><samp class="ss">new_algorithm</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p" data-group-id="7457904055-17">}</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="p" data-group-id="7457904055-16">}</samp><samp class="p" data-group-id="7457904055-15">)</samp></code></pre><h2 id="set_context/2-see-also" class="section-heading"><a href="#set_context/2-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#for_action/4"><code class="inline">for_action/4</code></a> for setting context when creating inputs</li><li>Action implementations can access context for custom logic</li><li><a href="#set_tenant/2"><code class="inline">set_tenant/2</code></a> for tenant-specific context</li></ul>
+  </section>
+</section>
+<section class="detail" id="set_private_argument/3">
+
+  <div class="detail-header">
+    <a href="#set_private_argument/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_private_argument(input, name, value)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L611" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_private_argument(input :: <a href="#t:t/0">t</a>(), name :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>(), value :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Sets a private argument value on the action input.</p><p>Private arguments are not exposed in the public API and can only be set
+internally. This function will only work for arguments marked as <code class="inline">public?: false</code>
+in the action definition.</p><h2 id="set_private_argument/3-examples" class="section-heading"><a href="#set_private_argument/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Set a private argument (assuming :internal_flag is private)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="6065625088-1">(</samp><samp class="ss">:example</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6065625088-2">%{</samp><samp class="p" data-group-id="6065625088-2">}</samp><samp class="p" data-group-id="6065625088-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_private_argument</samp><samp class="p" data-group-id="6065625088-3">(</samp><samp class="ss">:internal_flag</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="no">true</samp><samp class="p" data-group-id="6065625088-3">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">get_argument</samp><samp class="p" data-group-id="6065625088-4">(</samp><samp class="ss">:internal_flag</samp><samp class="p" data-group-id="6065625088-4">)</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+
+</samp><samp class="c1"># Attempting to set a public argument as private will error</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="6065625088-5">(</samp><samp class="ss">:example</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6065625088-6">%{</samp><samp class="p" data-group-id="6065625088-6">}</samp><samp class="p" data-group-id="6065625088-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_private_argument</samp><samp class="p" data-group-id="6065625088-7">(</samp><samp class="ss">:public_arg</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;value&quot;</samp><samp class="p" data-group-id="6065625088-7">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">valid?</samp><samp class="w">
+</samp><samp class="no">false</samp><samp class="w">
+
+</samp><samp class="c1"># Use in action implementations for internal state</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="6065625088-8">(</samp><samp class="ss">:complex_workflow</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6065625088-9">%{</samp><samp class="ss">data</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;user_data&quot;</samp><samp class="p" data-group-id="6065625088-9">}</samp><samp class="p" data-group-id="6065625088-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_private_argument</samp><samp class="p" data-group-id="6065625088-10">(</samp><samp class="ss">:workflow_step</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="6065625088-10">)</samp></code></pre><h2 id="set_private_argument/3-see-also" class="section-heading"><a href="#set_private_argument/3-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#set_argument/3"><code class="inline">set_argument/3</code></a> for setting public arguments</li><li><a href="#get_argument/2"><code class="inline">get_argument/2</code></a> for retrieving argument values</li><li>Action argument definitions with <code class="inline">public?: false</code></li></ul>
+  </section>
+</section>
+<section class="detail" id="set_tenant/2">
+
+  <div class="detail-header">
+    <a href="#set_tenant/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_tenant(input, tenant)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/action_input.ex#L334" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> set_tenant(<a href="#t:t/0">t</a>(), <a href="Ash.ToTenant.xhtml#t:t/0">Ash.ToTenant.t</a>()) :: <a href="#t:t/0">t</a>()</pre>
+
+      </div>
+
+<p>Sets the tenant to use when calling the action.</p><p>In multitenant applications, this configures which tenant's data the action
+should operate on. The tenant value is used for data isolation and access control.</p><h2 id="set_tenant/2-examples" class="section-heading"><a href="#set_tenant/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Set tenant using a string identifier</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">new</samp><samp class="p" data-group-id="4555239140-1">(</samp><samp class="p" data-group-id="4555239140-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_tenant</samp><samp class="p" data-group-id="4555239140-2">(</samp><samp class="s">&quot;org_123&quot;</samp><samp class="p" data-group-id="4555239140-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">then</samp><samp class="p" data-group-id="4555239140-3">(</samp><samp class="o">&amp;</samp><samp class="w"> </samp><samp class="ni">&amp;1</samp><samp class="o">.</samp><samp class="n">tenant</samp><samp class="p" data-group-id="4555239140-3">)</samp><samp class="w">
+</samp><samp class="s">&quot;org_123&quot;</samp><samp class="w">
+
+</samp><samp class="c1"># Set tenant using a struct that implements Ash.ToTenant</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">org</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="4555239140-4">%</samp><samp class="nc" data-group-id="4555239140-4">MyApp.Organization</samp><samp class="p" data-group-id="4555239140-4">{</samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">456</samp><samp class="p" data-group-id="4555239140-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="4555239140-5">(</samp><samp class="ss">:send_notification</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4555239140-6">%{</samp><samp class="p" data-group-id="4555239140-6">}</samp><samp class="p" data-group-id="4555239140-5">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_tenant</samp><samp class="p" data-group-id="4555239140-7">(</samp><samp class="n">org</samp><samp class="p" data-group-id="4555239140-7">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">input</samp><samp class="o">.</samp><samp class="n">tenant</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="n">org</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+
+</samp><samp class="c1"># Use with action execution</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="nc">MyApp.Post</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">for_action</samp><samp class="p" data-group-id="4555239140-8">(</samp><samp class="ss">:cleanup</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4555239140-9">%{</samp><samp class="p" data-group-id="4555239140-9">}</samp><samp class="p" data-group-id="4555239140-8">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash.ActionInput</samp><samp class="o">.</samp><samp class="n">set_tenant</samp><samp class="p" data-group-id="4555239140-10">(</samp><samp class="s">&quot;tenant_456&quot;</samp><samp class="p" data-group-id="4555239140-10">)</samp><samp class="w">
+</samp><samp class="gp unselectable">...&gt; </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="nc">Ash</samp><samp class="o">.</samp><samp class="n">run_action</samp><samp class="p" data-group-id="4555239140-11">(</samp><samp class="p" data-group-id="4555239140-11">)</samp></code></pre><h2 id="set_tenant/2-see-also" class="section-heading"><a href="#set_tenant/2-see-also" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">See also</span></h2><ul><li><a href="#for_action/4"><code class="inline">for_action/4</code></a> for setting tenant when creating inputs</li><li><a href="Ash.ToTenant.xhtml"><code class="inline">Ash.ToTenant</code></a> protocol for custom tenant conversion</li><li><a href="#set_context/2"><code class="inline">set_context/2</code></a> for adding tenant to action context</li></ul>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Seed - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Seed 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Helpers for seeding data, useful for quickly creating lots of data either for database seeding or testing.</p><p>Important: this bypasses resource actions, and goes straight to the data layer. No action changes or validations are run.
+The only thing that it does at the moment is ensure that default values for attributes are set, it does not validate
+that required attributes are set (although the data layer may do that for you, e.g with ash_postgres).</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#keep_nil/0" data-no-tooltip="" translate="no">keep_nil()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns <code class="inline">:__keep_nil__</code>, allowing to ensure a default value is not used when you want the value to be <code class="inline">nil</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#seed!/1" data-no-tooltip="" translate="no">seed!(input)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Seed using a record (instance of a resource) as input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#seed!/3" data-no-tooltip="" translate="no">seed!(resource, input, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Performs a direct call to the data layer of a resource with the provided input.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#skip/0" data-no-tooltip="" translate="no">skip()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns <code class="inline">:__skip__</code>, allowing to ensure no value is generated for a given field when used with generators.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#update!/3" data-no-tooltip="" translate="no">update!(record, input, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Usage is the same as <a><code class="inline">seed!/2</code></a>, but it will update an existing record.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#upsert!/2" data-no-tooltip="" translate="no">upsert!(input, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Performs an upsert operation on the data layer of a resource with the provided input and identities.
+The usage is the same as <a><code class="inline">seed!/1</code></a>, but it will update the record if it already exists.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#upsert!/3" data-no-tooltip="" translate="no">upsert!(resource, input, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Usage is the same as <a><code class="inline">seed!/2</code></a>, but it will update the record if it already exists based on the identities.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="keep_nil/0">
+
+  <div class="detail-header">
+    <a href="#keep_nil/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">keep_nil()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/seed.ex#L337" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns <code class="inline">:__keep_nil__</code>, allowing to ensure a default value is not used when you want the value to be <code class="inline">nil</code>.</p>
+  </section>
+</section>
+<section class="detail" id="seed!/1">
+
+  <div class="detail-header">
+    <a href="#seed!/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">seed!(input)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/seed.ex#L25" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Seed using a record (instance of a resource) as input.</p><p>If the passed in struct was retrieved from the data layer already (i.e already seeded),
+then it is returned and nothing is done. Otherwise, the attributes and relationships are
+used as input to <code class="inline">seed/2</code>, after having any <code class="inline">%Ash.NotLoaded{}</code> values stripped out.</p><p>Any <code class="inline">nil</code> values will be overwritten with their default values. To avoid this, either use <code class="inline">seed/2</code>
+in which providing the key will have it not set the default values.
+If you want to force <code class="inline">nil</code> to be accepted and prevent the default value from being set, use the
+<a href="#keep_nil/0"><code class="inline">keep_nil/0</code></a> function provided here, which returns <code class="inline">:__keep_nil__</code>. Alternatively, use
+<code class="inline">seed!(Post, %{text: nil})</code>.</p><p>See <a href="#seed!/2"><code class="inline">seed!/2</code></a> for more information.</p>
+  </section>
+</section>
+<section class="detail" id="seed!/3">
+
+    <span id="seed!/2"></span>
+
+  <div class="detail-header">
+    <a href="#seed!/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">seed!(resource, input, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/seed.ex#L72" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Performs a direct call to the data layer of a resource with the provided input.</p><p>If a list is provided as input, then you will get back that many results.</p><p>To set a tenant, use the tenant option.</p>
+  </section>
+</section>
+<section class="detail" id="skip/0">
+
+  <div class="detail-header">
+    <a href="#skip/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">skip()</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/seed.ex#L342" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns <code class="inline">:__skip__</code>, allowing to ensure no value is generated for a given field when used with generators.</p>
+  </section>
+</section>
+<section class="detail" id="update!/3">
+
+    <span id="update!/2"></span>
+
+  <div class="detail-header">
+    <a href="#update!/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">update!(record, input, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/seed.ex#L313" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Usage is the same as <a href="#seed!/2"><code class="inline">seed!/2</code></a>, but it will update an existing record.</p><p>For multitenant resources, tenant will be extracted from the record if
+not provided in opts.</p>
+  </section>
+</section>
+<section class="detail" id="upsert!/2">
+
+    <span id="upsert!/1"></span>
+
+  <div class="detail-header">
+    <a href="#upsert!/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">upsert!(input, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/seed.ex#L172" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Performs an upsert operation on the data layer of a resource with the provided input and identities.
+The usage is the same as <a href="#seed!/1"><code class="inline">seed!/1</code></a>, but it will update the record if it already exists.</p><pre><code class="makeup elixir" translate="no"><samp class="nc">Ash.Seed</samp><samp class="o">.</samp><samp class="n">upsert!</samp><samp class="p" data-group-id="1847317910-1">(</samp><samp class="p" data-group-id="1847317910-2">%</samp><samp class="nc" data-group-id="1847317910-2">User</samp><samp class="p" data-group-id="1847317910-2">{</samp><samp class="ss">email</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sc">&#39;test@gmail.com&#39;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="sc">&#39;Test&#39;</samp><samp class="p" data-group-id="1847317910-2">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">identity</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:email</samp><samp class="p" data-group-id="1847317910-1">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="upsert!/3">
+
+  <div class="detail-header">
+    <a href="#upsert!/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">upsert!(resource, input, opts)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/seed.ex#L222" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Usage is the same as <a href="#seed!/2"><code class="inline">seed!/2</code></a>, but it will update the record if it already exists based on the identities.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

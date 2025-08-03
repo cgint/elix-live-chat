@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Test - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Test 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Testing helpers for Ash.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_has_error/4" data-no-tooltip="" translate="no">assert_has_error(changeset_query_or_input, error_class \\ nil, callback, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Assert that the given changeset, query, or action input has a matching error.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_stripped/1" data-no-tooltip="" translate="no">assert_stripped(expression)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>A macro for comparing Ash resources while ignoring metadata differences.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#refute_has_error/4" data-no-tooltip="" translate="no">refute_has_error(changeset_query_or_input, error_class \\ nil, callback, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Refute that the given changeset, query, or action input has a matching error.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#strip_metadata/1" data-no-tooltip="" translate="no">strip_metadata(structs)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Clears the <code class="inline">__metadata__</code> field and the underlying ecto <code class="inline">__meta__</code> field</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="assert_has_error/4">
+
+    <span id="assert_has_error/2"></span>
+
+    <span id="assert_has_error/3"></span>
+
+  <div class="detail-header">
+    <a href="#assert_has_error/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_has_error(changeset_query_or_input, error_class \\ nil, callback, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/test.ex#L23" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Assert that the given changeset, query, or action input has a matching error.</p><p>Use the optional second argument to assert that the errors (all together) are of a specific class.</p>
+  </section>
+</section>
+<section class="detail" id="assert_stripped/1">
+
+  <div class="detail-header">
+    <a href="#assert_stripped/1" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_stripped(expression)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/test.ex#L235" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>A macro for comparing Ash resources while ignoring metadata differences.</p><h2 id="assert_stripped/1-overview" class="section-heading"><a href="#assert_stripped/1-overview" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Overview</span></h2><p>Ash resources contain metadata fields (<code class="inline">__metadata__</code> and <code class="inline">__meta__</code>) that track internal state like
+loaded relationships and action history. These fields can cause equality comparisons to fail even
+when the actual data is identical. This macro uses <a href="#strip_metadata/1"><code class="inline">strip_metadata/1</code></a> to remove these fields before
+comparison.</p><h2 id="assert_stripped/1-usage" class="section-heading"><a href="#assert_stripped/1-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><p>Use when comparing resources that have gone through different processing paths, such as comparing
+seeded data with data that has been processed through resource actions.</p><h2 id="assert_stripped/1-supported-operators" class="section-heading"><a href="#assert_stripped/1-supported-operators" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Supported Operators</span></h2><ul><li><code class="inline">==</code> and <code class="inline">===</code> - Equality comparison</li><li><code class="inline">!=</code> and <code class="inline">!==</code> - Inequality comparison</li><li><code class="inline">in</code> and <code class="inline">not in</code> - Membership testing</li></ul><h2 id="assert_stripped/1-examples" class="section-heading"><a href="#assert_stripped/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="c1"># Compare resources</samp><samp class="w">
+</samp><samp class="n">assert_stripped</samp><samp class="w"> </samp><samp class="n">user1</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="n">user2</samp><samp class="w">
+</samp><samp class="n">assert_stripped</samp><samp class="w"> </samp><samp class="p" data-group-id="6496347736-1">[</samp><samp class="n">user1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user2</samp><samp class="p" data-group-id="6496347736-1">]</samp><samp class="w"> </samp><samp class="o">===</samp><samp class="w"> </samp><samp class="p" data-group-id="6496347736-2">[</samp><samp class="n">user3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user4</samp><samp class="p" data-group-id="6496347736-2">]</samp><samp class="w">
+</samp><samp class="n">assert_stripped</samp><samp class="w"> </samp><samp class="n">user1</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="p" data-group-id="6496347736-3">[</samp><samp class="n">user2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user4</samp><samp class="p" data-group-id="6496347736-3">]</samp><samp class="w">
+</samp><samp class="n">assert_stripped</samp><samp class="w"> </samp><samp class="n">user1</samp><samp class="w"> </samp><samp class="ow">not</samp><samp class="w"> </samp><samp class="ow">in</samp><samp class="w"> </samp><samp class="p" data-group-id="6496347736-4">[</samp><samp class="n">user2</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user3</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">user4</samp><samp class="p" data-group-id="6496347736-4">]</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="refute_has_error/4">
+
+    <span id="refute_has_error/2"></span>
+
+    <span id="refute_has_error/3"></span>
+
+  <div class="detail-header">
+    <a href="#refute_has_error/4" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">refute_has_error(changeset_query_or_input, error_class \\ nil, callback, opts \\ [])</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/test.ex#L115" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Refute that the given changeset, query, or action input has a matching error.</p><p>The <code class="inline">error_class</code> argument has been deprecated and should not be used.</p>
+  </section>
+</section>
+<section class="detail" id="strip_metadata/1">
+
+  <div class="detail-header">
+    <a href="#strip_metadata/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">strip_metadata(structs)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/test.ex#L176" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Clears the <code class="inline">__metadata__</code> field and the underlying ecto <code class="inline">__meta__</code> field</p><p>This allows for easier comparison of changeset/query results</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

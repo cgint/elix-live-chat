@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.HTMLFormatter - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.HTMLFormatter 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Format HEEx templates from <code class="inline">.heex</code> files or <code class="inline">~H</code> sigils.</p><p>This is a <a href="https://hexdocs.pm/mix/Mix.Tasks.Format.html"><code class="inline">mix format</code></a> <a href="https://hexdocs.pm/mix/main/Mix.Tasks.Format.html#module-plugins">plugin</a>.</p><h2 id="module-setup">Setup</h2><p>Add it as a plugin to your <code class="inline">.formatter.exs</code> file and make sure to put
+the <code class="inline">heex</code> extension in the <code class="inline">inputs</code> option.</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="8326344903-1">[</samp><samp class="w">
+  </samp><samp class="ss">plugins</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8326344903-2">[</samp><samp class="nc">Phoenix.LiveView.HTMLFormatter</samp><samp class="p" data-group-id="8326344903-2">]</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">inputs</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8326344903-3">[</samp><samp class="s">&quot;*.{heex,ex,exs}&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;priv/*/seeds.exs&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;{config,lib,test}/**/*.{heex,ex,exs}&quot;</samp><samp class="p" data-group-id="8326344903-3">]</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="c1"># ...</samp><samp class="w">
+</samp><samp class="p" data-group-id="8326344903-1">]</samp></code></pre><section role="note" class="admonition info"><h3 id="module-for-umbrella-projects" class="admonition-title info">For umbrella projects</h3><p>In umbrella projects you must also change two files at the umbrella root,
+add <code class="inline">:phoenix_live_view</code> to your <code class="inline">deps</code> in the <code class="inline">mix.exs</code> file
+and add <code class="inline">plugins: [Phoenix.LiveView.HTMLFormatter]</code> in the <code class="inline">.formatter.exs</code> file.
+This is because the formatter does not attempt to load the dependencies of
+all children applications.</p></section><h3 id="module-editor-support">Editor support</h3><p>Most editors that support <a href="https://hexdocs.pm/mix/Mix.Tasks.Format.html"><code class="inline">mix format</code></a> integration should automatically format
+<code class="inline">.heex</code> and <code class="inline">~H</code> templates. Other editors may require custom integration or
+even provide additional functionality. Here are some reference posts:</p><ul><li><a href="https://pragmaticstudio.com/tutorials/formatting-heex-templates-in-vscode">Formatting HEEx templates in VS Code</a></li></ul><h2 id="module-options">Options</h2><ul><li><p><code class="inline">:line_length</code> - The Elixir formatter defaults to a maximum line length
+of 98 characters, which can be overwritten with the <code class="inline">:line_length</code> option
+in your <code class="inline">.formatter.exs</code> file.</p></li><li><p><code class="inline">:heex_line_length</code> - change the line length only for the HEEx formatter.</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="6276840675-1">[</samp><samp class="w">
+  </samp><samp class="c1"># ...omitted</samp><samp class="w">
+  </samp><samp class="ss">heex_line_length</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">300</samp><samp class="w">
+</samp><samp class="p" data-group-id="6276840675-1">]</samp></code></pre></li><li><p><code class="inline">:migrate_eex_to_curly_interpolation</code> - Automatically migrate single expression
+<code class="inline">&lt;%= ... %&gt;</code> EEx expression to the curly braces one. Defaults to true.</p></li><li><p><code class="inline">:attribute_formatters</code> - Specify formatters for certain attributes.</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="4298805623-1">[</samp><samp class="w">
+  </samp><samp class="ss">plugins</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4298805623-2">[</samp><samp class="nc">Phoenix.LiveView.HTMLFormatter</samp><samp class="p" data-group-id="4298805623-2">]</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">attribute_formatters</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4298805623-3">%{</samp><samp class="ss">class</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">ClassFormatter</samp><samp class="p" data-group-id="4298805623-3">}</samp><samp class="p">,</samp><samp class="w">
+</samp><samp class="p" data-group-id="4298805623-1">]</samp></code></pre></li><li><p><code class="inline">:inline_matcher</code> - a list of regular expressions to determine if a component
+should be treated as inline.
+Defaults to <code class="inline">[&quot;link&quot;, &quot;button&quot;]</code>, which treats any component with <code class="inline">link</code>
+or <code class="inline">button</code> in its name as inline.
+Can be disabled by setting it to an empty list.</p></li></ul><h2 id="module-formatting">Formatting</h2><p>This formatter tries to be as consistent as possible with the Elixir formatter
+and also take into account &quot;block&quot; and &quot;inline&quot; HTML elements.</p><p>In the past, HTML elements were categorized as either &quot;block-level&quot; or
+&quot;inline&quot;. While now these concepts are specified by CSS, the historical
+distinction remains as it typically dictates the default browser rendering
+behavior. In particular, adding or removing whitespace between the start and
+end tags of a block-level element will not change the rendered output, while
+it may for inline elements.</p><p>The following links further explain these concepts:</p><ul><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Block-level_content">https://developer.mozilla.org/en-US/docs/Glossary/Block-level_content</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Inline-level_content">https://developer.mozilla.org/en-US/docs/Glossary/Inline-level_content</a></li></ul><p>Given HTML like this:</p><pre><code class="makeup heex" translate="no"><samp class="w">  </samp><samp class="p">&lt;</samp><samp class="nt">section</samp><samp class="p">&gt;</samp><samp class="p">&lt;</samp><samp class="nt">h1</samp><samp class="p">&gt;</samp><samp class="w">   </samp><samp class="p">&lt;</samp><samp class="nt">b</samp><samp class="p">&gt;</samp><samp class="p" data-group-id="3464795047-1">{</samp><samp class="na">@user</samp><samp class="o">.</samp><samp class="n">name</samp><samp class="p" data-group-id="3464795047-1">}</samp><samp class="p">&lt;/</samp><samp class="nt">b</samp><samp class="p">&gt;</samp><samp class="p">&lt;/</samp><samp class="nt">h1</samp><samp class="p">&gt;</samp><samp class="p">&lt;/</samp><samp class="nt">section</samp><samp class="p">&gt;</samp></code></pre><p>It will be formatted as:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">section</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p">&lt;</samp><samp class="nt">h1</samp><samp class="p">&gt;</samp><samp class="p">&lt;</samp><samp class="nt">b</samp><samp class="p">&gt;</samp><samp class="p" data-group-id="6408752886-1">{</samp><samp class="na">@user</samp><samp class="o">.</samp><samp class="n">name</samp><samp class="p" data-group-id="6408752886-1">}</samp><samp class="p">&lt;/</samp><samp class="nt">b</samp><samp class="p">&gt;</samp><samp class="p">&lt;/</samp><samp class="nt">h1</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;/</samp><samp class="nt">section</samp><samp class="p">&gt;</samp></code></pre><p>A block element will go to the next line, while inline elements will be kept in the current line
+as long as they fit within the configured line length.</p><p>It will also keep inline elements in their own lines if you intentionally write them this way:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">section</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p">&lt;</samp><samp class="nt">h1</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">    </samp><samp class="p">&lt;</samp><samp class="nt">b</samp><samp class="p">&gt;</samp><samp class="p" data-group-id="3724890748-1">{</samp><samp class="na">@user</samp><samp class="o">.</samp><samp class="n">name</samp><samp class="p" data-group-id="3724890748-1">}</samp><samp class="p">&lt;/</samp><samp class="nt">b</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p">&lt;/</samp><samp class="nt">h1</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;/</samp><samp class="nt">section</samp><samp class="p">&gt;</samp></code></pre><p>This formatter will place all attributes on their own lines when they do not all fit in the
+current line. Therefore this:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">section</samp><samp class="w"> </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">u</samp><samp class="s2">s</samp><samp class="s2">e</samp><samp class="s2">r</samp><samp class="s2">-</samp><samp class="s2">s</samp><samp class="s2">e</samp><samp class="s2">c</samp><samp class="s2">t</samp><samp class="s2">i</samp><samp class="s2">o</samp><samp class="s2">n</samp><samp class="s2">-</samp><samp class="s2">i</samp><samp class="s2">d</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">class</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">s</samp><samp class="s2">m</samp><samp class="s2">:</samp><samp class="s2">f</samp><samp class="s2">o</samp><samp class="s2">c</samp><samp class="s2">u</samp><samp class="s2">s</samp><samp class="s2">:</samp><samp class="s2">b</samp><samp class="s2">l</samp><samp class="s2">o</samp><samp class="s2">c</samp><samp class="s2">k </samp><samp class="s2">f</samp><samp class="s2">l</samp><samp class="s2">e</samp><samp class="s2">x </samp><samp class="s2">w</samp><samp class="s2">-</samp><samp class="s2">f</samp><samp class="s2">u</samp><samp class="s2">l</samp><samp class="s2">l </samp><samp class="s2">p</samp><samp class="s2">-</samp><samp class="s2">3</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">send-event</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p">&lt;</samp><samp class="nt">p</samp><samp class="p">&gt;</samp><samp class="n">Hi</samp><samp class="p">&lt;/</samp><samp class="nt">p</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;/</samp><samp class="nt">section</samp><samp class="p">&gt;</samp></code></pre><p>Will be formatted to:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">section</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="na">id</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">u</samp><samp class="s2">s</samp><samp class="s2">e</samp><samp class="s2">r</samp><samp class="s2">-</samp><samp class="s2">s</samp><samp class="s2">e</samp><samp class="s2">c</samp><samp class="s2">t</samp><samp class="s2">i</samp><samp class="s2">o</samp><samp class="s2">n</samp><samp class="s2">-</samp><samp class="s2">i</samp><samp class="s2">d</samp><samp class="p">&quot;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="na">class</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">s</samp><samp class="s2">m</samp><samp class="s2">:</samp><samp class="s2">f</samp><samp class="s2">o</samp><samp class="s2">c</samp><samp class="s2">u</samp><samp class="s2">s</samp><samp class="s2">:</samp><samp class="s2">b</samp><samp class="s2">l</samp><samp class="s2">o</samp><samp class="s2">c</samp><samp class="s2">k </samp><samp class="s2">f</samp><samp class="s2">l</samp><samp class="s2">e</samp><samp class="s2">x </samp><samp class="s2">w</samp><samp class="s2">-</samp><samp class="s2">f</samp><samp class="s2">u</samp><samp class="s2">l</samp><samp class="s2">l </samp><samp class="s2">p</samp><samp class="s2">-</samp><samp class="s2">3</samp><samp class="p">&quot;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="na">phx-click</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">send-event</samp><samp class="p">&quot;</samp><samp class="w">
+</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p">&lt;</samp><samp class="nt">p</samp><samp class="p">&gt;</samp><samp class="n">Hi</samp><samp class="p">&lt;/</samp><samp class="nt">p</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="p">&lt;/</samp><samp class="nt">section</samp><samp class="p">&gt;</samp></code></pre><p>This formatter <strong>does not</strong> format Elixir expressions with <code class="inline">do...end</code>.
+The content within it will be formatted accordingly though. Therefore, the given
+input:</p><pre><code class="makeup eex" translate="no"><samp class="p" data-group-id="5032935185-1">&lt;%=</samp><samp class="w"> </samp><samp class="n">live_redirect</samp><samp class="p" data-group-id="5032935185-ex-1">(</samp><samp class="w">
+       </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;/my/path&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">class</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;my class&quot;</samp><samp class="w">
+</samp><samp class="p" data-group-id="5032935185-ex-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="5032935185-ex-2">do</samp><samp class="w"> </samp><samp class="p" data-group-id="5032935185-1">%&gt;</samp><samp class="">
+        My Link
+</samp><samp class="p" data-group-id="5032935185-2">&lt;%</samp><samp class="w"> </samp><samp class="k" data-group-id="5032935185-ex-2">end</samp><samp class="w"> </samp><samp class="p" data-group-id="5032935185-2">%&gt;</samp></code></pre><p>Will be formatted to</p><pre><code class="makeup eex" translate="no"><samp class="p" data-group-id="8769064736-1">&lt;%=</samp><samp class="w"> </samp><samp class="n">live_redirect</samp><samp class="p" data-group-id="8769064736-ex-1">(</samp><samp class="w">
+       </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;/my/path&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">class</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;my class&quot;</samp><samp class="w">
+</samp><samp class="p" data-group-id="8769064736-ex-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="8769064736-ex-2">do</samp><samp class="w"> </samp><samp class="p" data-group-id="8769064736-1">%&gt;</samp><samp class="">
+  My Link
+</samp><samp class="p" data-group-id="8769064736-2">&lt;%</samp><samp class="w"> </samp><samp class="k" data-group-id="8769064736-ex-2">end</samp><samp class="w"> </samp><samp class="p" data-group-id="8769064736-2">%&gt;</samp></code></pre><p>Note that only the text <code class="inline">My Link</code> has been formatted.</p><h3 id="module-intentional-new-lines">Intentional new lines</h3><p>The formatter will keep intentional new lines. However, the formatter will
+always keep a maximum of one line break in case you have multiple ones:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">p</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  text
+</samp><samp class="w">
+</samp><samp class="w">
+</samp><samp class="n">  text
+</samp><samp class="p">&lt;/</samp><samp class="nt">p</samp><samp class="p">&gt;</samp></code></pre><p>Will be formatted to:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">p</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="n">  text
+</samp><samp class="w">
+</samp><samp class="n">  text
+</samp><samp class="p">&lt;/</samp><samp class="nt">p</samp><samp class="p">&gt;</samp></code></pre><h3 id="module-inline-elements">Inline elements</h3><p>We don't format inline elements when there is a text without whitespace before
+or after the element. Otherwise it would compromise what is rendered adding
+an extra whitespace.</p><p>The formatter will consider these tags as inline elements:</p><ul><li><code class="inline">&lt;a&gt;</code></li><li><code class="inline">&lt;abbr&gt;</code></li><li><code class="inline">&lt;acronym&gt;</code></li><li><code class="inline">&lt;audio&gt;</code></li><li><code class="inline">&lt;b&gt;</code></li><li><code class="inline">&lt;bdi&gt;</code></li><li><code class="inline">&lt;bdo&gt;</code></li><li><code class="inline">&lt;big&gt;</code></li><li><code class="inline">&lt;br&gt;</code></li><li><code class="inline">&lt;button&gt;</code></li><li><code class="inline">&lt;canvas&gt;</code></li><li><code class="inline">&lt;cite&gt;</code></li><li><code class="inline">&lt;code&gt;</code></li><li><code class="inline">&lt;data&gt;</code></li><li><code class="inline">&lt;datalist&gt;</code></li><li><code class="inline">&lt;del&gt;</code></li><li><code class="inline">&lt;dfn&gt;</code></li><li><code class="inline">&lt;em&gt;</code></li><li><code class="inline">&lt;embed&gt;</code></li><li><code class="inline">&lt;i&gt;</code></li><li><code class="inline">&lt;iframe&gt;</code></li><li><code class="inline">&lt;img&gt;</code></li><li><code class="inline">&lt;input&gt;</code></li><li><code class="inline">&lt;ins&gt;</code></li><li><code class="inline">&lt;kbd&gt;</code></li><li><code class="inline">&lt;label&gt;</code></li><li><code class="inline">&lt;map&gt;</code></li><li><code class="inline">&lt;mark&gt;</code></li><li><code class="inline">&lt;meter&gt;</code></li><li><code class="inline">&lt;noscript&gt;</code></li><li><code class="inline">&lt;object&gt;</code></li><li><code class="inline">&lt;output&gt;</code></li><li><code class="inline">&lt;picture&gt;</code></li><li><code class="inline">&lt;progress&gt;</code></li><li><code class="inline">&lt;q&gt;</code></li><li><code class="inline">&lt;ruby&gt;</code></li><li><code class="inline">&lt;s&gt;</code></li><li><code class="inline">&lt;samp&gt;</code></li><li><code class="inline">&lt;select&gt;</code></li><li><code class="inline">&lt;slot&gt;</code></li><li><code class="inline">&lt;small&gt;</code></li><li><code class="inline">&lt;span&gt;</code></li><li><code class="inline">&lt;strong&gt;</code></li><li><code class="inline">&lt;sub&gt;</code></li><li><code class="inline">&lt;sup&gt;</code></li><li><code class="inline">&lt;svg&gt;</code></li><li><code class="inline">&lt;template&gt;</code></li><li><code class="inline">&lt;textarea&gt;</code></li><li><code class="inline">&lt;time&gt;</code></li><li><code class="inline">&lt;u&gt;</code></li><li><code class="inline">&lt;tt&gt;</code></li><li><code class="inline">&lt;var&gt;</code></li><li><code class="inline">&lt;video&gt;</code></li><li><code class="inline">&lt;wbr&gt;</code></li><li>Tags/components that match the <code class="inline">:inline_matcher</code> option.</li></ul><p>All other tags are considered block elements.</p><h2 id="module-skip-formatting">Skip formatting</h2><p>In case you don't want part of your HTML to be automatically formatted.
+You can use the special <code class="inline">phx-no-format</code> attribute so that the formatter will
+skip the element block. Note that this attribute will not be rendered.</p><p>Therefore:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nf">.textarea</samp><samp class="w"> </samp><samp class="na">phx-no-format</samp><samp class="p">&gt;</samp><samp class="n">My content</samp><samp class="p">&lt;/</samp><samp class="nf">.textarea</samp><samp class="p">&gt;</samp></code></pre><p>Will be kept as is your code editor, but rendered as:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">textarea</samp><samp class="p">&gt;</samp><samp class="n">My content</samp><samp class="p">&lt;/</samp><samp class="nt">textarea</samp><samp class="p">&gt;</samp></code></pre>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#is_tag_open/1" data-no-tooltip="" translate="no">is_tag_open(tag_type)</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="is_tag_open/1">
+
+  <div class="detail-header">
+    <a href="#is_tag_open/1" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">is_tag_open(tag_type)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/html_formatter.ex#L275" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

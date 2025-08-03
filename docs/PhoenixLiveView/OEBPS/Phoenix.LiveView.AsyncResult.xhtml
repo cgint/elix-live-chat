@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.AsyncResult - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.AsyncResult 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Provides a data structure for tracking the state of an async assign.</p><p>See the <code class="inline">Async Operations</code> section of the <a href="Phoenix.LiveView.xhtml"><code class="inline">Phoenix.LiveView</code></a> docs for more information.</p><h2 id="module-fields">Fields</h2><ul><li><code class="inline">:ok?</code> - When true, indicates the <code class="inline">:result</code> has been set successfully at least once.</li><li><code class="inline">:loading</code> - The current loading state</li><li><code class="inline">:failed</code> - The current failed state</li><li><code class="inline">:result</code> - The successful result of the async task</li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#failed/2" data-no-tooltip="" translate="no">failed(result, reason)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Updates the failed state.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#loading/0" data-no-tooltip="" translate="no">loading()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates an async result in loading state.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#loading/1" data-no-tooltip="" translate="no">loading(result)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Updates the loading state.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#loading/2" data-no-tooltip="" translate="no">loading(result, loading_state)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Updates the loading state of an existing <code class="inline">async_result</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ok/1" data-no-tooltip="" translate="no">ok(value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates a successful result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#ok/2" data-no-tooltip="" translate="no">ok(result, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Updates the successful result.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="failed/2">
+
+  <div class="detail-header">
+    <a href="#failed/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">failed(result, reason)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/async_result.ex#L97" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Updates the failed state.</p><p>When failed, the loading state will be reset to <code class="inline">nil</code>.
+If the result was previously <code class="inline">ok?</code>, both <code class="inline">result</code> and
+<code class="inline">failed</code> will be set.</p><h2 id="failed/2-examples" class="section-heading"><a href="#failed/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">AsyncResult</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="p" data-group-id="0411061618-1">(</samp><samp class="p" data-group-id="0411061618-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">AsyncResult</samp><samp class="o">.</samp><samp class="n">failed</samp><samp class="p" data-group-id="0411061618-2">(</samp><samp class="n">result</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0411061618-3">{</samp><samp class="ss">:exit</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:boom</samp><samp class="p" data-group-id="0411061618-3">}</samp><samp class="p" data-group-id="0411061618-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">failed</samp><samp class="w">
+</samp><samp class="p" data-group-id="0411061618-4">{</samp><samp class="ss">:exit</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:boom</samp><samp class="p" data-group-id="0411061618-4">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="w">
+</samp><samp class="no">nil</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="loading/0">
+
+  <div class="detail-header">
+    <a href="#loading/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">loading()</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/async_result.ex#L34" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Creates an async result in loading state.</p><h2 id="loading/0-examples" class="section-heading"><a href="#loading/0-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">AsyncResult</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="p" data-group-id="8709594066-1">(</samp><samp class="p" data-group-id="8709594066-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">ok?</samp><samp class="w">
+</samp><samp class="no">false</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="loading/1">
+
+  <div class="detail-header">
+    <a href="#loading/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">loading(result)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/async_result.ex#L53" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Updates the loading state.</p><p>When loading, the failed state will be reset to <code class="inline">nil</code>.</p><h2 id="loading/1-examples" class="section-heading"><a href="#loading/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">AsyncResult</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="p" data-group-id="6630377370-1">(</samp><samp class="p" data-group-id="6630377370-2">%{</samp><samp class="ss">my</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:loading_state</samp><samp class="p" data-group-id="6630377370-2">}</samp><samp class="p" data-group-id="6630377370-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="w">
+</samp><samp class="p" data-group-id="6630377370-3">%{</samp><samp class="ss">my</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:loading_state</samp><samp class="p" data-group-id="6630377370-3">}</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">AsyncResult</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="p" data-group-id="6630377370-4">(</samp><samp class="n">result</samp><samp class="p" data-group-id="6630377370-4">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="w">
+</samp><samp class="no">true</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="loading/2">
+
+  <div class="detail-header">
+    <a href="#loading/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">loading(result, loading_state)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/async_result.ex#L76" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Updates the loading state of an existing <code class="inline">async_result</code>.</p><p>When loading, the failed state will be reset to <code class="inline">nil</code>.
+If the result was previously <code class="inline">ok?</code>, both <code class="inline">result</code> and
+<code class="inline">loading</code> will be set.</p><h2 id="loading/2-examples" class="section-heading"><a href="#loading/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">AsyncResult</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="p" data-group-id="4154709235-1">(</samp><samp class="p" data-group-id="4154709235-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">AsyncResult</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="p" data-group-id="4154709235-2">(</samp><samp class="n">result</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4154709235-3">%{</samp><samp class="ss">my</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:other_state</samp><samp class="p" data-group-id="4154709235-3">}</samp><samp class="p" data-group-id="4154709235-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="w">
+</samp><samp class="p" data-group-id="4154709235-4">%{</samp><samp class="ss">my</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="ss">:other_state</samp><samp class="p" data-group-id="4154709235-4">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="ok/1">
+
+  <div class="detail-header">
+    <a href="#ok/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ok(value)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/async_result.ex#L116" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Creates a successful result.</p><p>The <code class="inline">:ok?</code> field will also be set to <code class="inline">true</code> to indicate this result has
+completed successfully at least once, regardless of future state changes.</p><h3 id="ok/1-examples" class="section-heading"><a href="#ok/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h3><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">AsyncResult</samp><samp class="o">.</samp><samp class="n">ok</samp><samp class="p" data-group-id="8193660382-1">(</samp><samp class="s">&quot;initial result&quot;</samp><samp class="p" data-group-id="8193660382-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">ok?</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">result</samp><samp class="w">
+</samp><samp class="s">&quot;initial result&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="ok/2">
+
+  <div class="detail-header">
+    <a href="#ok/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">ok(result, value)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/async_result.ex#L140" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Updates the successful result.</p><p>The <code class="inline">:ok?</code> field will also be set to <code class="inline">true</code> to indicate this result has
+completed successfully at least once, regardless of future state changes.</p><p>When ok'd, the loading and failed state will be reset to <code class="inline">nil</code>.</p><h2 id="ok/2-examples" class="section-heading"><a href="#ok/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">AsyncResult</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="p" data-group-id="0080454151-1">(</samp><samp class="p" data-group-id="0080454151-1">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="nc">AsyncResult</samp><samp class="o">.</samp><samp class="n">ok</samp><samp class="p" data-group-id="0080454151-2">(</samp><samp class="n">result</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;completed&quot;</samp><samp class="p" data-group-id="0080454151-2">)</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">ok?</samp><samp class="w">
+</samp><samp class="no">true</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">result</samp><samp class="w">
+</samp><samp class="s">&quot;completed&quot;</samp><samp class="w">
+</samp><samp class="gp unselectable">iex&gt; </samp><samp class="n">result</samp><samp class="o">.</samp><samp class="n">loading</samp><samp class="w">
+</samp><samp class="no">nil</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>IO.Stream - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+IO.Stream 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Defines an <a href="IO.Stream.xhtml"><code class="inline">IO.Stream</code></a> struct returned by <a href="IO.xhtml#stream/2"><code class="inline">IO.stream/2</code></a> and <a href="IO.xhtml#binstream/2"><code class="inline">IO.binstream/2</code></a>.</p><p>The following fields are public:</p><ul><li><code class="inline">device</code>        - the IO device</li><li><code class="inline">raw</code>           - a boolean indicating if bin functions should be used</li><li><code class="inline">line_or_bytes</code> - if reading should read lines or a given number of bytes</li></ul><p>It is worth noting that an IO stream has side effects and every time you go
+over the stream you may get different results.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-types summary">
+  <h2>
+    <a href="#types">Types</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:t/0" data-no-tooltip="" translate="no">t()</a>
+
+      </div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="types" class="details-list">
+        <h1 class="section-heading">Types</h1>
+
+        <div class="types-list">
+<section class="detail" id="t:t/0">
+
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">t()</h1>
+
+
+        <a href="https://github.com/elixir-lang/elixir/blob/v1.18.4/lib/elixir/lib/io/stream.ex#L27" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@type</span> t() :: %IO.Stream{
+  device: <a href="IO.xhtml#t:device/0">IO.device</a>(),
+  line_or_bytes: :line | <a href="typespecs.xhtml#basic-types">non_neg_integer</a>(),
+  raw: <a href="typespecs.xhtml#built-in-types">boolean</a>()
+}</pre>
+
+      </div>
+
+
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

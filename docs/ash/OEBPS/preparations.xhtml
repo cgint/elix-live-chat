@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Preparations - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Preparations</h1>
+<p>Preparations are the primary way of customizing read action behavior, and are also supported by generic actions. If you are familiar with <a href="https://hexdocs.pm/plug/1.18.1/Plug.html"><code class="inline">Plug</code></a>, you can think of an <a href="Ash.Resource.Preparation.xhtml"><code class="inline">Ash.Resource.Preparation</code></a> as the equivalent of a <a href="https://hexdocs.pm/plug/1.18.1/Plug.html"><code class="inline">Plug</code></a> for queries and action inputs. At its most basic, a preparation will take a query or action input and return a new query or action input. Preparations can be simple, like adding a filter or a sort, or more complex, attaching hooks to be executed within the lifecycle of the action.</p><h2 id="builtin-preparations">Builtin Preparations</h2><p>There are builtin preparations that can be used, and are automatically imported into your resources. See <a href="Ash.Resource.Preparation.Builtins.xhtml"><code class="inline">Ash.Resource.Preparation.Builtins</code></a> for more.</p><p>The primary preparation you will use is <code class="inline">build/1</code>, which passes the arguments through to <a href="Ash.Query.xhtml#build/2"><code class="inline">Ash.Query.build/2</code></a> when the preparation is run. See that function for what options can be provided.</p><p>Some examples of usage of builtin preparations</p><pre><code class="makeup elixir" translate="no"><span class="c1"># sort by inserted at descending</span><span class="w">
+</span><span class="n">prepare</span><span class="w"> </span><span class="n">build</span><span class="p" data-group-id="8728898803-1">(</span><span class="ss">sort</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="8728898803-2">[</span><span class="ss">inserted_at</span><span class="p">:</span><span class="w"> </span><span class="ss">:desc</span><span class="p" data-group-id="8728898803-2">]</span><span class="p" data-group-id="8728898803-1">)</span><span class="w">
+
+</span><span class="c1"># only show the top 5 results</span><span class="w">
+</span><span class="n">prepare</span><span class="w"> </span><span class="n">build</span><span class="p" data-group-id="8728898803-3">(</span><span class="ss">sort</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="8728898803-4">[</span><span class="ss">total_points</span><span class="p">:</span><span class="w"> </span><span class="ss">:desc</span><span class="p" data-group-id="8728898803-4">]</span><span class="p">,</span><span class="w"> </span><span class="ss">limit</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p" data-group-id="8728898803-3">)</span><span class="w">
+
+</span><span class="c1"># conditional preparation with where clause</span><span class="w">
+</span><span class="n">prepare</span><span class="w"> </span><span class="n">build</span><span class="p" data-group-id="8728898803-5">(</span><span class="ss">filter</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="8728898803-6">[</span><span class="ss">active</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="8728898803-6">]</span><span class="p" data-group-id="8728898803-5">)</span><span class="w"> </span><span class="k" data-group-id="8728898803-7">do</span><span class="w">
+  </span><span class="n">where</span><span class="w"> </span><span class="n">argument_equals</span><span class="p" data-group-id="8728898803-8">(</span><span class="ss">:include_inactive</span><span class="p">,</span><span class="w"> </span><span class="no">false</span><span class="p" data-group-id="8728898803-8">)</span><span class="w">
+</span><span class="k" data-group-id="8728898803-7">end</span><span class="w">
+
+</span><span class="c1"># skip preparation if query is invalid</span><span class="w">
+</span><span class="n">prepare</span><span class="w"> </span><span class="n">expensive_preparation</span><span class="p" data-group-id="8728898803-9">(</span><span class="p" data-group-id="8728898803-9">)</span><span class="w"> </span><span class="k" data-group-id="8728898803-10">do</span><span class="w">
+  </span><span class="n">only_when_valid?</span><span class="w"> </span><span class="no">true</span><span class="w">
+</span><span class="k" data-group-id="8728898803-10">end</span></code></pre><h2 id="custom-preparations">Custom Preparations</h2><pre><code class="makeup elixir" translate="no"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyApp.Preparations.Top5</span><span class="w"> </span><span class="k" data-group-id="3208737286-1">do</span><span class="w">
+  </span><span class="kn">use</span><span class="w"> </span><span class="nc">Ash.Resource.Preparation</span><span class="w">
+
+  </span><span class="c1"># transform and validate opts</span><span class="w">
+  </span><span class="na">@impl</span><span class="w"> </span><span class="no">true</span><span class="w">
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">init</span><span class="p" data-group-id="3208737286-2">(</span><span class="n">opts</span><span class="p" data-group-id="3208737286-2">)</span><span class="w"> </span><span class="k" data-group-id="3208737286-3">do</span><span class="w">
+    </span><span class="k">if</span><span class="w"> </span><span class="n">is_atom</span><span class="p" data-group-id="3208737286-4">(</span><span class="n">opts</span><span class="p" data-group-id="3208737286-5">[</span><span class="ss">:attribute</span><span class="p" data-group-id="3208737286-5">]</span><span class="p" data-group-id="3208737286-4">)</span><span class="w"> </span><span class="k" data-group-id="3208737286-6">do</span><span class="w">
+      </span><span class="p" data-group-id="3208737286-7">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="p" data-group-id="3208737286-7">}</span><span class="w">
+    </span><span class="k" data-group-id="3208737286-6">else</span><span class="w">
+      </span><span class="p" data-group-id="3208737286-8">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;attribute must be an atom!&quot;</span><span class="p" data-group-id="3208737286-8">}</span><span class="w">
+    </span><span class="k" data-group-id="3208737286-6">end</span><span class="w">
+  </span><span class="k" data-group-id="3208737286-3">end</span><span class="w">
+
+  </span><span class="na">@impl</span><span class="w"> </span><span class="no">true</span><span class="w">
+  </span><span class="kd">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p" data-group-id="3208737286-9">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="p">,</span><span class="w"> </span><span class="c">_context</span><span class="p" data-group-id="3208737286-9">)</span><span class="w"> </span><span class="k" data-group-id="3208737286-10">do</span><span class="w">
+    </span><span class="n">attribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">opts</span><span class="p" data-group-id="3208737286-11">[</span><span class="ss">:attribute</span><span class="p" data-group-id="3208737286-11">]</span><span class="w">
+
+    </span><span class="n">query</span><span class="w">
+    </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">sort</span><span class="p" data-group-id="3208737286-12">(</span><span class="p" data-group-id="3208737286-13">[</span><span class="p" data-group-id="3208737286-14">{</span><span class="n">attribute</span><span class="p">,</span><span class="w"> </span><span class="ss">:desc</span><span class="p" data-group-id="3208737286-14">}</span><span class="p" data-group-id="3208737286-13">]</span><span class="p" data-group-id="3208737286-12">)</span><span class="w">
+    </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Ash.Query</span><span class="o">.</span><span class="n">limit</span><span class="p" data-group-id="3208737286-15">(</span><span class="mi">5</span><span class="p" data-group-id="3208737286-15">)</span><span class="w">
+  </span><span class="k" data-group-id="3208737286-10">end</span><span class="w">
+</span><span class="k" data-group-id="3208737286-1">end</span></code></pre><p>This could then be used in a resource via:</p><pre><code class="makeup elixir" translate="no"><span class="n">prepare</span><span class="w"> </span><span class="p" data-group-id="3561704070-1">{</span><span class="nc">MyApp.Preparations.Top5</span><span class="p">,</span><span class="w"> </span><span class="ss">attribute</span><span class="p">:</span><span class="w"> </span><span class="ss">:foo</span><span class="p" data-group-id="3561704070-1">}</span></code></pre><h2 id="anonymous-function-queries">Anonymous Function Queries</h2><p>You can also use anonymous functions for preparations. This is great for prototyping, but we generally recommend using a module for organizational purposes.</p><pre><code class="makeup elixir" translate="no"><span class="n">prepare</span><span class="w"> </span><span class="k" data-group-id="0087296406-1">fn</span><span class="w"> </span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="c">_context</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">
+  </span><span class="c1"># put your code here</span><span class="w">
+</span><span class="k" data-group-id="0087296406-1">end</span></code></pre><h2 id="action-vs-global-preparations">Action vs Global Preparations</h2><p>You can place a preparation on a read action, like so:</p><pre><code class="makeup elixir" translate="no"><span class="n">actions</span><span class="w"> </span><span class="k" data-group-id="3287659435-1">do</span><span class="w">
+  </span><span class="n">read</span><span class="w"> </span><span class="ss">:read</span><span class="w"> </span><span class="k" data-group-id="3287659435-2">do</span><span class="w">
+    </span><span class="n">prepare</span><span class="w"> </span><span class="p" data-group-id="3287659435-3">{</span><span class="nc">Top5</span><span class="p">,</span><span class="w"> </span><span class="ss">attribute</span><span class="p">:</span><span class="w"> </span><span class="ss">:name</span><span class="p" data-group-id="3287659435-3">}</span><span class="w">
+  </span><span class="k" data-group-id="3287659435-2">end</span><span class="w">
+</span><span class="k" data-group-id="3287659435-1">end</span></code></pre><p>Or you can use the global preparations block to apply to all read actions.</p><pre><code class="makeup elixir" translate="no"><span class="n">preparations</span><span class="w"> </span><span class="k" data-group-id="3379823156-1">do</span><span class="w">
+  </span><span class="n">prepare</span><span class="w"> </span><span class="p" data-group-id="3379823156-2">{</span><span class="nc">Top5</span><span class="p">,</span><span class="w"> </span><span class="ss">attribute</span><span class="p">:</span><span class="w"> </span><span class="ss">:name</span><span class="p" data-group-id="3379823156-2">}</span><span class="w">
+</span><span class="k" data-group-id="3379823156-1">end</span></code></pre><p>The preparations section allows you to add preparations across multiple actions of a resource.</p><h2 id="where-clauses">Where Clauses</h2><p>Use <code class="inline">where</code> clauses to conditionally apply preparations based on validations:</p><pre><code class="makeup elixir" translate="no"><span class="n">actions</span><span class="w"> </span><span class="k" data-group-id="1929540726-1">do</span><span class="w">
+  </span><span class="n">read</span><span class="w"> </span><span class="ss">:search</span><span class="w"> </span><span class="k" data-group-id="1929540726-2">do</span><span class="w">
+    </span><span class="n">argument</span><span class="w"> </span><span class="ss">:include_archived</span><span class="p">,</span><span class="w"> </span><span class="ss">:boolean</span><span class="p">,</span><span class="w"> </span><span class="ss">default</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="w">
+    </span><span class="n">argument</span><span class="w"> </span><span class="ss">:sort_by</span><span class="p">,</span><span class="w"> </span><span class="ss">:string</span><span class="p">,</span><span class="w"> </span><span class="ss">default</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;name&quot;</span><span class="w">
+    
+    </span><span class="c1"># Only apply archived filter if not including archived items</span><span class="w">
+    </span><span class="n">prepare</span><span class="w"> </span><span class="n">build</span><span class="p" data-group-id="1929540726-3">(</span><span class="ss">filter</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="1929540726-4">[</span><span class="ss">archived</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="p" data-group-id="1929540726-4">]</span><span class="p" data-group-id="1929540726-3">)</span><span class="w"> </span><span class="k" data-group-id="1929540726-5">do</span><span class="w">
+      </span><span class="n">where</span><span class="w"> </span><span class="n">argument_equals</span><span class="p" data-group-id="1929540726-6">(</span><span class="ss">:include_archived</span><span class="p">,</span><span class="w"> </span><span class="no">false</span><span class="p" data-group-id="1929540726-6">)</span><span class="w">
+    </span><span class="k" data-group-id="1929540726-5">end</span><span class="w">
+    
+    </span><span class="c1"># Conditional sorting</span><span class="w">
+    </span><span class="n">prepare</span><span class="w"> </span><span class="n">build</span><span class="p" data-group-id="1929540726-7">(</span><span class="ss">sort</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="1929540726-8">[</span><span class="ss">updated_at</span><span class="p">:</span><span class="w"> </span><span class="ss">:desc</span><span class="p" data-group-id="1929540726-8">]</span><span class="p" data-group-id="1929540726-7">)</span><span class="w"> </span><span class="k" data-group-id="1929540726-9">do</span><span class="w">
+      </span><span class="n">where</span><span class="w"> </span><span class="n">argument_equals</span><span class="p" data-group-id="1929540726-10">(</span><span class="ss">:sort_by</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;updated_at&quot;</span><span class="p" data-group-id="1929540726-10">)</span><span class="w">
+    </span><span class="k" data-group-id="1929540726-9">end</span><span class="w">
+  </span><span class="k" data-group-id="1929540726-2">end</span><span class="w">
+</span><span class="k" data-group-id="1929540726-1">end</span></code></pre><h2 id="only_when_valid-option">only_when_valid? Option</h2><p>Use the <code class="inline">only_when_valid?</code> option to skip preparations when the query is already invalid. This is useful for expensive preparations that should only run if validations have passed.</p><pre><code class="makeup elixir" translate="no"><span class="n">actions</span><span class="w"> </span><span class="k" data-group-id="2204743921-1">do</span><span class="w">
+  </span><span class="n">read</span><span class="w"> </span><span class="ss">:complex_search</span><span class="w"> </span><span class="k" data-group-id="2204743921-2">do</span><span class="w">
+    </span><span class="n">argument</span><span class="w"> </span><span class="ss">:required_field</span><span class="p">,</span><span class="w"> </span><span class="ss">:string</span><span class="w">
+    
+    </span><span class="c1"># This validation must pass first</span><span class="w">
+    </span><span class="n">validate</span><span class="w"> </span><span class="n">present</span><span class="p" data-group-id="2204743921-3">(</span><span class="ss">:required_field</span><span class="p" data-group-id="2204743921-3">)</span><span class="w">
+    
+    </span><span class="c1"># This expensive preparation only runs if query is valid</span><span class="w">
+    </span><span class="n">prepare</span><span class="w"> </span><span class="n">expensive_data_preparation</span><span class="p" data-group-id="2204743921-4">(</span><span class="p" data-group-id="2204743921-4">)</span><span class="w"> </span><span class="k" data-group-id="2204743921-5">do</span><span class="w">
+      </span><span class="n">only_when_valid?</span><span class="w"> </span><span class="no">true</span><span class="w">
+    </span><span class="k" data-group-id="2204743921-5">end</span><span class="w">
+  </span><span class="k" data-group-id="2204743921-2">end</span><span class="w">
+</span><span class="k" data-group-id="2204743921-1">end</span></code></pre>
+
+  </body>
+</html>

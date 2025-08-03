@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveView.ColocatedJS - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveView.ColocatedJS 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>A special HEEx <code class="inline">:type</code> that extracts any JavaScript code from a co-located
+<code class="inline">&lt;script&gt;</code> tag at compile time.</p><p>Note: To use <code class="inline">ColocatedJS</code>, you need to run Phoenix 1.8+.</p><p>Colocated JavaScript is a more generalized version of <a href="Phoenix.LiveView.ColocatedHook.xhtml"><code class="inline">Phoenix.LiveView.ColocatedHook</code></a>.
+In fact, colocated hooks are built on top of <code class="inline">ColocatedJS</code>.</p><p>You can use <code class="inline">ColocatedJS</code> to define any JavaScript code (Web Components, global event listeners, etc.)
+that do not necessarily need the functionalities of hooks, for example:</p><pre><code class="makeup heex" translate="no"><samp class="p">&lt;</samp><samp class="nt">script</samp><samp class="w"> </samp><samp class="na">:type</samp><samp class="p">=</samp><samp class="p" data-group-id="0618572126-1">{</samp><samp class="nc">Phoenix.LiveView.ColocatedJS</samp><samp class="p" data-group-id="0618572126-1">}</samp><samp class="w"> </samp><samp class="na">name</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">MyWebComponent</samp><samp class="p">&quot;</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="o">export</samp><samp class="w"> </samp><samp class="k">default</samp><samp class="w"> </samp><samp class="kt">class</samp><samp class="w"> </samp><samp class="nc">MyWebComponent</samp><samp class="w"> </samp><samp class="kt">extends</samp><samp class="w"> </samp><samp class="vc">HTMLElement</samp><samp class="w"> </samp><samp class="p" data-group-id="0618572126-2">{</samp><samp class="w">
+    </samp><samp class="n">connectedCallback</samp><samp class="p" data-group-id="0618572126-ex-1">(</samp><samp class="p" data-group-id="0618572126-ex-1">)</samp><samp class="w"> </samp><samp class="p" data-group-id="0618572126-ex-2">{</samp><samp class="w">
+      </samp><samp class="n">this</samp><samp class="o">.</samp><samp class="n">innerHTML</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="s">&quot;Hello, world!&quot;</samp><samp class="p">;</samp><samp class="w">
+    </samp><samp class="p" data-group-id="0618572126-ex-2">}</samp><samp class="w">
+  </samp><samp class="p" data-group-id="0618572126-2">}</samp><samp class="w">
+</samp><samp class="p">&lt;/</samp><samp class="nt">script</samp><samp class="p">&gt;</samp></code></pre><p>Then, in your <code class="inline">app.js</code> file, you could import it like this:</p><pre><code class="makeup javascript" translate="no"><samp class="k">import</samp><samp class="w"> </samp><samp class="nv">colocated</samp><samp class="w"> </samp><samp class="k">from</samp><samp class="w"> </samp><samp class="p">&quot;</samp><samp class="s2">phoenix-colocated/my_app</samp><samp class="p">&quot;</samp><samp class="p">;</samp><samp class="w">
+</samp><samp class="nv">customElements</samp><samp class="p">.</samp><samp class="nf">define</samp><samp class="p">(</samp><samp class="p">&quot;</samp><samp class="s2">my-web-component</samp><samp class="p">&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nv">colocated</samp><samp class="p">.</samp><samp class="n">MyWebComponent</samp><samp class="p">)</samp><samp class="p">;</samp></code></pre><p>In this example, you don't actually need to have special code for the web component
+inside your <code class="inline">app.js</code> file, since you could also directly call <code class="inline">customElements.define</code>
+inside the colocated JavaScript. However, this example shows how you can access the
+exported values inside your bundle.</p><section role="note" class="admonition info"><h4 class="admonition-title info">A note on dependencies and umbrella projects</h4><p>For each application that uses colocated JavaScript, a separate directory is created
+inside the <code class="inline">phoenix-colocated</code> folder. This allows to have clear separation between
+hooks and code of dependencies, but also applications inside umbrella projects.</p><p>While dependencies would typically still bundle their own hooks and colocated JavaScript
+into a separate file before publishing, simple hooks or code snippets that do not require
+access to third-party libraries can also be directly imported into your own bundle.
+If a library requires this, it should be stated in its documentation.</p></section><h2 id="module-internals">Internals</h2><p>While compiling the template, colocated JavaScript is extracted into a special folder inside the
+<code class="inline">Mix.Project.build_path()</code>, called <code class="inline">phoenix-colocated</code>. This is customizable, as we'll see below,
+but it is important that it is a directory that is not tracked by version control, because the
+components are the source of truth for the code. Also, the directory is shared between applications
+(this also applies to applications in umbrella projects), so it should typically also be a shared
+directory not specific to a single application.</p><p>The colocated JS directory follows this structure:</p><pre><code class="text">_build/$MIX_ENV/phoenix-colocated/
+_build/$MIX_ENV/phoenix-colocated/my_app/
+_build/$MIX_ENV/phoenix-colocated/my_app/index.js
+_build/$MIX_ENV/phoenix-colocated/my_app/MyAppWeb.DemoLive/line_HASH.js
+_build/$MIX_ENV/phoenix-colocated/my_dependency/MyDependency.Module/line_HASH.js
+...</code></pre><p>Each application has its own folder. Inside, each module also gets its own folder, which allows
+us to track and clean up outdated code.</p><p>To use colocated JS from your <code class="inline">app.js</code>, your bundler needs to be configured to resolve the
+<code class="inline">phoenix-colocated</code> folder. For new Phoenix applications, this configuration is already included
+in the esbuild configuration inside <code class="inline">config.exs</code>:</p><pre><code class="makeup elixir" translate="no"><samp class="n">config</samp><samp class="w"> </samp><samp class="ss">:esbuild</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="n">...</samp><samp class="w">
+  </samp><samp class="ss">my_app</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7874904509-1">[</samp><samp class="w">
+    </samp><samp class="ss">args</samp><samp class="p">:</samp><samp class="w">
+      </samp><samp class="sx">~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/* --alias:@=.)</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">cd</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Path</samp><samp class="o">.</samp><samp class="n">expand</samp><samp class="p" data-group-id="7874904509-2">(</samp><samp class="s">&quot;../assets&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">__DIR__</samp><samp class="p" data-group-id="7874904509-2">)</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">env</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7874904509-3">%{</samp><samp class="w">
+      </samp><samp class="s">&quot;NODE_PATH&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="p" data-group-id="7874904509-4">[</samp><samp class="nc">Path</samp><samp class="o">.</samp><samp class="n">expand</samp><samp class="p" data-group-id="7874904509-5">(</samp><samp class="s">&quot;../deps&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">__DIR__</samp><samp class="p" data-group-id="7874904509-5">)</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">Mix.Project</samp><samp class="o">.</samp><samp class="n">build_path</samp><samp class="p" data-group-id="7874904509-6">(</samp><samp class="p" data-group-id="7874904509-6">)</samp><samp class="p" data-group-id="7874904509-4">]</samp><samp class="w">
+    </samp><samp class="p" data-group-id="7874904509-3">}</samp><samp class="w">
+  </samp><samp class="p" data-group-id="7874904509-1">]</samp></code></pre><p>The important part here is the <code class="inline">NODE_PATH</code> environment variable, which tells esbuild to also look
+for packages inside the <code class="inline">deps</code> folder, as well as the <code class="inline">Mix.Project.build_path()</code>, which resolves to
+<code class="inline">_build/$MIX_ENV</code>. If you use a different bundler, you'll need to configure it accordingly. If it is not
+possible to configure the <code class="inline">NODE_PATH</code>, you can also change the folder to which LiveView writes colocated
+JavaScript by setting the <code class="inline">:target_directory</code> option in your <code class="inline">config.exs</code>:</p><pre><code class="makeup elixir" translate="no"><samp class="n">config</samp><samp class="w"> </samp><samp class="ss">:phoenix_live_view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:colocated_js</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">target_directory</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">Path</samp><samp class="o">.</samp><samp class="n">expand</samp><samp class="p" data-group-id="0452655790-1">(</samp><samp class="s">&quot;../assets/node_modules/phoenix-colocated&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">__DIR__</samp><samp class="p" data-group-id="0452655790-1">)</samp></code></pre><p>An alternative approach could be to symlink the <code class="inline">phoenix-colocated</code> folder into your <code class="inline">node_modules</code>
+folder.</p><section role="note" class="admonition info"><h4 class="admonition-title info">Tip</h4><p>If you remove or modify the contents of the <code class="inline">:target_directory</code> folder, you can use
+<code class="inline">mix clean --all</code> and <a href="https://hexdocs.pm/mix/Mix.Tasks.Compile.html"><code class="inline">mix compile</code></a> to regenerate all colocated JavaScript.</p></section><section role="note" class="admonition warning"><h4 class="admonition-title warning">Warning!</h4><p>LiveView assumes full ownership over the configured <code class="inline">:target_directory</code>. When
+compiling, it will <strong>delete</strong> any files and folders inside the <code class="inline">:target_directory</code>,
+that it does not associate with a colocated JavaScript module or manifest.</p></section><h3 id="module-imports-in-colocated-js">Imports in colocated JS</h3><p>The colocated JS files are fully handled by your bundler. For Phoenix apps, this is typically
+<code class="inline">esbuild</code>. Because colocated JS is extracted to a folder outside the regular <code class="inline">assets</code> folder,
+special care is necessary when you need to import other files inside the colocated JS:</p><pre><code class="makeup javascript" translate="no"><samp class="k">import</samp><samp class="w"> </samp><samp class="p">{</samp><samp class="w"> </samp><samp class="nv">someFunction</samp><samp class="w"> </samp><samp class="p">}</samp><samp class="w"> </samp><samp class="k">from</samp><samp class="w"> </samp><samp class="p">&quot;</samp><samp class="s2">some-dependency</samp><samp class="p">&quot;</samp><samp class="p">;</samp><samp class="w">
+</samp><samp class="k">import</samp><samp class="w"> </samp><samp class="nv">somethingElse</samp><samp class="w"> </samp><samp class="k">from</samp><samp class="w"> </samp><samp class="p">&quot;</samp><samp class="s2">@/vendor/vendored-file</samp><samp class="p">&quot;</samp><samp class="p">;</samp></code></pre><p>While dependencies from <code class="inline">node_modules</code> should work out of the box, you cannot simply refer to your
+<code class="inline">assets/vendor</code> folder using a relative path. Instead, your bundler needs to be configured to handle
+an alias like <code class="inline">@</code> to resolve to your local <code class="inline">assets</code> folder. This is configured by default in the
+esbuild configuration for new Phoenix 1.8 applications using <code class="inline">esbuild</code>'s <a href="https://esbuild.github.io/api/#alias">alias option</a>,
+as can be seen in the config snippet above (<code class="inline">--alias=@=.</code>).</p><h2 id="module-options">Options</h2><p>Colocated JavaScript can be configured through the attributes of the <code class="inline">&lt;script&gt;</code> tag.
+The supported attributes are:</p><ul><li><p><code class="inline">name</code> - The name under which the default export of the script is available when importing
+the manifest. If omitted, the file will be imported for side effects only.</p></li><li><p><code class="inline">key</code> - A custom key to use for the export. This is used by <a href="Phoenix.LiveView.ColocatedHook.xhtml"><code class="inline">Phoenix.LiveView.ColocatedHook</code></a> to
+export all hooks under the named <code class="inline">hooks</code> export (<code class="inline">export { ... as hooks }</code>).
+For example, you could set this to <code class="inline">web_components</code> for each colocated script that defines
+a web component and then import all of them as <code class="inline">import { web_components } from &quot;phoenix-colocated/my_app&quot;</code>.
+Defaults to <code class="inline">:default</code>, which means the export will be available under the manifest's <code class="inline">default</code> export.
+This needs to be a valid JavaScript identifier. When given, a <code class="inline">name</code> is required as well.</p></li><li><p><code class="inline">extension</code> - a custom extension to use when writing the extracted file. The default is <code class="inline">js</code>.</p></li><li><p><code class="inline">manifest</code> - a custom manifest file to use instead of the default <code class="inline">index.js</code>. For example,
+<code class="inline">web_components.ts</code>. If you change the manifest, you will need to change the
+path of your JavaScript imports accordingly.</p></li></ul>
+      </section>
+
+
+
+
+  </body>
+</html>

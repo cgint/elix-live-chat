@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>WithClauseError - Elixir v1.18.4</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+WithClauseError <small>exception</small>
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>An exception raised when a term in a <a href="Kernel.SpecialForms.xhtml#with/1"><code class="inline">with/1</code></a> expression
+does not match any of the defined <code class="inline">-&gt;</code> clauses in its <code class="inline">else</code>.</p><p>The following fields of this exception are public and can be accessed freely:</p><ul><li><code class="inline">:term</code> (<a href="typespecs.xhtml#built-in-types"><code class="inline">term/0</code></a>) - the term that did not match any of the clauses</li></ul><p>For example, this exception gets raised for a <a href="Kernel.SpecialForms.xhtml#with/1"><code class="inline">with/1</code></a> like the following, because
+the <code class="inline">{:ok, 2}</code> term does not match the <code class="inline">:error</code> or <code class="inline">{:error, _}</code> clauses in the
+<code class="inline">else</code>:</p><pre><code class="makeup elixir" translate="no"><samp class="k">with</samp><samp class="w"> </samp><samp class="p" data-group-id="4133304681-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">1</samp><samp class="p" data-group-id="4133304681-1">}</samp><samp class="w"> </samp><samp class="o">&lt;-</samp><samp class="w"> </samp><samp class="p" data-group-id="4133304681-2">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">2</samp><samp class="p" data-group-id="4133304681-2">}</samp><samp class="w"> </samp><samp class="k" data-group-id="4133304681-3">do</samp><samp class="w">
+  </samp><samp class="ss">:woah</samp><samp class="w">
+</samp><samp class="k" data-group-id="4133304681-3">else</samp><samp class="w">
+  </samp><samp class="ss">:error</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="ss">:error</samp><samp class="w">
+  </samp><samp class="p" data-group-id="4133304681-4">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="4133304681-4">}</samp><samp class="w"> </samp><samp class="o">-&gt;</samp><samp class="w"> </samp><samp class="ss">:error</samp><samp class="w">
+</samp><samp class="k" data-group-id="4133304681-3">end</samp></code></pre>
+      </section>
+
+
+
+
+  </body>
+</html>

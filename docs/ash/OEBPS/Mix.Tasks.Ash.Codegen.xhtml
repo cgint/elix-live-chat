@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>mix ash.codegen - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+mix ash.codegen 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Runs all codegen tasks for any extension on any resource/domain in your application.</p><h2 id="module-flags">Flags</h2><ul><li><code class="inline">--dry-run</code> - no files are created, instead the new generated code is printed to the console</li><li><code class="inline">--check</code> - no files are created, returns an exit(1) code if any code would need to be generated</li><li><code class="inline">--dev</code> - runs codegen tasks in dev mode. See the section on dev mode below</li><li>Individual extensions may use additional flags.</li></ul><h2 id="module-dev-mode">Dev Mode</h2><p>Some extensions that do <code class="inline">codegen</code> require providing a <code class="inline">name</code>. Those extensions (should) support a <code class="inline">--dev</code>
+flag, which indicates that the codegen can have a temporary name chosen by the extension. Then, once you
+are ready to commit the changes, you can run the codegen tasks again without the <code class="inline">--dev</code> flag and with a
+name to generate the final code.</p><p>For example, using AshPostgres:</p><ul><li>First we add <code class="inline">first_name</code> to <code class="inline">MyApp.Accounts.User</code></li><li><code class="inline">mix ash.codegen --dev</code>, which generates a migration for adding <code class="inline">first_name</code> to the <code class="inline">&quot;users&quot;</code> table,
+but the migration is suffixed with <code class="inline">_dev</code></li><li><a href="Mix.Tasks.Ash.Migrate.xhtml"><code class="inline">mix ash.migrate</code></a> apply the migrations</li><li>Then we add <code class="inline">last_name</code> to <code class="inline">MyApp.Accounts.User</code></li><li><code class="inline">mix ash.codegen --dev</code> which generates a migration for adding <code class="inline">last_name</code> to the <code class="inline">&quot;users&quot;</code> table,
+but the migration is suffixed with <code class="inline">_dev</code></li><li>We review our changes, and are ready to save them as a unit</li><li><code class="inline">mix ash.codegen add_name_to_user</code>, which rolls back and deletes the dev migrations &amp; snapshots, and creates new
+ones using the provided name</li></ul>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#run/1" data-no-tooltip="" translate="no">run(argv)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Runs all codegen tasks for any extension on any resource/domain in your application.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="run/1">
+
+  <div class="detail-header">
+    <a href="#run/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">run(argv)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/mix/tasks/ash.codegen.ex#L36" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Runs all codegen tasks for any extension on any resource/domain in your application.</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

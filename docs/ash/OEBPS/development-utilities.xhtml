@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Development Utilities - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Development Utilities</h1>
+<h2 id="formatting-dsls">Formatting DSLs</h2><p>All Ash packages that ship with extensions provide exports in their <code class="inline">.formatter.exs</code>. This prevents the formatter from turning, for example, <code class="inline">attribute :name, :string</code> into <code class="inline">attribute(:name, :string)</code>. To enable this, add <code class="inline">:ash</code> (and any other Ash libraries you are using) to your <code class="inline">.formatter.exs</code> file:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="1988109015-1">[</span><span class="w">
+  </span><span class="c1"># ...</span><span class="w">
+  </span><span class="ss">import_deps</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="1988109015-2">[</span><span class="n">...</span><span class="p">,</span><span class="w"> </span><span class="ss">:ash</span><span class="p" data-group-id="1988109015-2">]</span><span class="p">,</span><span class="w">
+  </span><span class="c1"># ...</span><span class="w">
+</span><span class="p" data-group-id="1988109015-1">]</span></code></pre><h2 id="elixirsense-plugin">ElixirSense Plugin</h2><p>Ash uses <a href="https://hexdocs.pm/spark">Spark</a> to build all of our DSLs (like <a href="Ash.Resource.xhtml"><code class="inline">Ash.Resource</code></a> and <a href="Ash.Domain.xhtml"><code class="inline">Ash.Domain</code></a>) and to validate options lists to functions. <a href="https://hexdocs.pm/spark/2.2.67/Spark.html"><code class="inline">Spark</code></a> ships with an extension that is automatically picked up by ElixirLS to provide autocomplete for all of our DSLs, and options list. You don't need to do anything to enable this, but it only works with ElixirLS (not other language server tools).</p><h2 id="formatter-plugin">Formatter plugin</h2><p><a href="https://hexdocs.pm/spark/2.2.67/Spark.html"><code class="inline">Spark</code></a> also ships with a formatter plugin that can help you keep your resources formatted consistently. This plugin can sort the sections of your DSL to make your resources more consistent, and it can remove any accidentally added parentheses around DSL code.</p><h3 id="adding-the-plugin">Adding the plugin</h3><p>Add the following to your <code class="inline">.formatter.exs</code></p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="7646993250-1">[</span><span class="w">
+  </span><span class="ss">plugins</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7646993250-2">[</span><span class="nc">Spark.Formatter</span><span class="p" data-group-id="7646993250-2">]</span><span class="p">,</span><span class="w"> </span><span class="c1"># &lt;- add the plugin here</span><span class="w">
+  </span><span class="ss">inputs</span><span class="p">:</span><span class="w"> </span><span class="n">...</span><span class="w">
+</span><span class="p" data-group-id="7646993250-1">]</span></code></pre><h3 id="configuration">Configuration</h3><h4>Minimal config for your Ash Resources</h4><pre><code class="makeup elixir" translate="no"><span class="n">config</span><span class="w"> </span><span class="ss">:spark</span><span class="p">,</span><span class="w"> </span><span class="ss">:formatter</span><span class="p">,</span><span class="w">
+  </span><span class="ss">remove_parens?</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p">,</span><span class="w">
+  </span><span class="ss">&quot;Ash.Domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="5163958707-1">[</span><span class="p" data-group-id="5163958707-1">]</span><span class="p">,</span><span class="w">
+  </span><span class="ss">&quot;Ash.Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="5163958707-2">[</span><span class="w">
+    </span><span class="ss">section_order</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="5163958707-3">[</span><span class="w">
+      </span><span class="c1"># any section not in this list is left where it is</span><span class="w">
+      </span><span class="c1"># but these sections will always appear in this order in a resource</span><span class="w">
+      </span><span class="ss">:actions</span><span class="p">,</span><span class="w">
+      </span><span class="ss">:attributes</span><span class="p">,</span><span class="w">
+      </span><span class="ss">:relationships</span><span class="p">,</span><span class="w">
+      </span><span class="ss">:identities</span><span class="w">
+    </span><span class="p" data-group-id="5163958707-3">]</span><span class="w">
+  </span><span class="p" data-group-id="5163958707-2">]</span></code></pre><h4>If you <code class="inline">use</code> a different module than Ash.Resource</h4><pre><code class="makeup elixir" translate="no"><span class="n">config</span><span class="w"> </span><span class="ss">:spark</span><span class="p">,</span><span class="w"> </span><span class="ss">:formatter</span><span class="p">,</span><span class="w">
+  </span><span class="p" data-group-id="0137872461-1">[</span><span class="w">
+    </span><span class="ss">&quot;Ash.Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0137872461-2">[</span><span class="w">
+      </span><span class="ss">section_order</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0137872461-3">[</span><span class="w">
+        </span><span class="ss">:resource</span><span class="p">,</span><span class="w">
+        </span><span class="ss">:identities</span><span class="p">,</span><span class="w">
+        </span><span class="ss">:attributes</span><span class="p">,</span><span class="w">
+        </span><span class="ss">:relationships</span><span class="p">,</span><span class="w">
+        </span><span class="n">...</span><span class="w">
+      </span><span class="p" data-group-id="0137872461-3">]</span><span class="w">
+    </span><span class="p" data-group-id="0137872461-2">]</span><span class="p">,</span><span class="w">
+    </span><span class="c1"># If you use a different module than Ash.Resource</span><span class="w">
+    </span><span class="ss">&quot;MyApp.Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0137872461-4">[</span><span class="w">
+      </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="nc">Ash.Resource</span><span class="p">,</span><span class="w">
+      </span><span class="c1"># What extensions might be added by your base module</span><span class="w">
+      </span><span class="ss">extensions</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0137872461-5">[</span><span class="n">...</span><span class="p" data-group-id="0137872461-5">]</span><span class="p">,</span><span class="w">
+      </span><span class="ss">section_order</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0137872461-6">[</span><span class="w">
+        </span><span class="ss">:resource</span><span class="p">,</span><span class="w">
+        </span><span class="ss">:identities</span><span class="p">,</span><span class="w">
+        </span><span class="ss">:attributes</span><span class="p">,</span><span class="w">
+        </span><span class="ss">:relationships</span><span class="p">,</span><span class="w">
+        </span><span class="n">...</span><span class="w">
+      </span><span class="p" data-group-id="0137872461-6">]</span><span class="w">
+    </span><span class="p" data-group-id="0137872461-4">]</span><span class="w">
+  </span><span class="p" data-group-id="0137872461-1">]</span></code></pre>
+
+  </body>
+</html>

@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phoenix.LiveViewTest - Phoenix LiveView v1.1.2</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Phoenix.LiveViewTest 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Conveniences for testing function components as well as
+LiveViews and LiveComponents.</p><h2 id="module-testing-function-components">Testing function components</h2><p>There are two mechanisms for testing function components. Imagine the
+following component:</p><pre><code class="makeup elixir" translate="no"><samp class="kd">def</samp><samp class="w"> </samp><samp class="nf">greet</samp><samp class="p" data-group-id="3287309680-1">(</samp><samp class="n">assigns</samp><samp class="p" data-group-id="3287309680-1">)</samp><samp class="w"> </samp><samp class="k" data-group-id="3287309680-2">do</samp><samp class="w">
+  </samp><samp class="sx">~H&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="p">&lt;</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="n">Hello, </samp><samp class="p" data-group-id="4168340162-1">{</samp><samp class="na">@name</samp><samp class="p" data-group-id="4168340162-1">}</samp><samp class="n">!</samp><samp class="p">&lt;/</samp><samp class="nt">div</samp><samp class="p">&gt;</samp><samp class="w">
+</samp><samp class="w">  </samp><samp class="sx">&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="k" data-group-id="3287309680-2">end</samp></code></pre><p>You can test it by using <a href="#render_component/3"><code class="inline">render_component/3</code></a>, passing the function
+reference to the component as first argument:</p><pre><code class="makeup elixir" translate="no"><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveViewTest</samp><samp class="w">
+
+</samp><samp class="n">test</samp><samp class="w"> </samp><samp class="s">&quot;greets&quot;</samp><samp class="w"> </samp><samp class="k" data-group-id="7125659227-1">do</samp><samp class="w">
+  </samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_component</samp><samp class="p" data-group-id="7125659227-2">(</samp><samp class="o">&amp;</samp><samp class="nc">MyComponents</samp><samp class="o">.</samp><samp class="n">greet</samp><samp class="o">/</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Mary&quot;</samp><samp class="p" data-group-id="7125659227-2">)</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w">
+           </samp><samp class="s">&quot;&lt;div&gt;Hello, Mary!&lt;/div&gt;&quot;</samp><samp class="w">
+</samp><samp class="k" data-group-id="7125659227-1">end</samp></code></pre><p>However, for complex components, often the simplest way to test them
+is by using the <code class="inline">~H</code> sigil itself:</p><pre><code class="makeup elixir" translate="no"><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Phoenix.Component</samp><samp class="w">
+</samp><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveViewTest</samp><samp class="w">
+
+</samp><samp class="n">test</samp><samp class="w"> </samp><samp class="s">&quot;greets&quot;</samp><samp class="w"> </samp><samp class="k" data-group-id="1263929929-1">do</samp><samp class="w">
+  </samp><samp class="n">assigns</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="1263929929-2">%{</samp><samp class="p" data-group-id="1263929929-2">}</samp><samp class="w">
+  </samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">rendered_to_string</samp><samp class="p" data-group-id="1263929929-3">(</samp><samp class="sx">~H&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="w">         </samp><samp class="p">&lt;</samp><samp class="nc">MyComponents</samp><samp class="o">.</samp><samp class="n">greet</samp><samp class="w"> </samp><samp class="na">name</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">Mary</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="p">/&gt;</samp><samp class="w">
+</samp><samp class="w">         </samp><samp class="sx">&quot;&quot;&quot;</samp><samp class="p" data-group-id="1263929929-3">)</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w">
+           </samp><samp class="s">&quot;&lt;div&gt;Hello, Mary!&lt;/div&gt;&quot;</samp><samp class="w">
+</samp><samp class="k" data-group-id="1263929929-1">end</samp></code></pre><p>The difference is that we use <a href="#rendered_to_string/1"><code class="inline">rendered_to_string/1</code></a> to convert the rendered
+template to a string for testing.</p><h2 id="module-testing-liveviews-and-livecomponents">Testing LiveViews and LiveComponents</h2><p>In LiveComponents and LiveView tests, we interact with views
+via process communication in substitution of a browser.
+Like a browser, our test process receives messages about the
+rendered updates from the view which can be asserted against
+to test the life-cycle and behavior of LiveViews and their
+children.</p><h3 id="module-testing-liveviews">Testing LiveViews</h3><p>The life-cycle of a LiveView as outlined in the <a href="Phoenix.LiveView.xhtml"><code class="inline">Phoenix.LiveView</code></a>
+docs details how a view starts as a stateless HTML render in a disconnected
+socket state. Once the browser receives the HTML, it connects to the
+server and a new LiveView process is started, remounted in a connected
+socket state, and the view continues statefully. The LiveView test functions
+support testing both disconnected and connected mounts separately, for example:</p><pre><code class="makeup elixir" translate="no"><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Plug.Conn</samp><samp class="w">
+</samp><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Phoenix.ConnTest</samp><samp class="w">
+</samp><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveViewTest</samp><samp class="w">
+</samp><samp class="na">@endpoint</samp><samp class="w"> </samp><samp class="nc">MyEndpoint</samp><samp class="w">
+
+</samp><samp class="n">test</samp><samp class="w"> </samp><samp class="s">&quot;disconnected and connected mount&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1826072571-1">%{</samp><samp class="ss">conn</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">conn</samp><samp class="p" data-group-id="1826072571-1">}</samp><samp class="w"> </samp><samp class="k" data-group-id="1826072571-2">do</samp><samp class="w">
+  </samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">get</samp><samp class="p" data-group-id="1826072571-3">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/my-path&quot;</samp><samp class="p" data-group-id="1826072571-3">)</samp><samp class="w">
+  </samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html_response</samp><samp class="p" data-group-id="1826072571-4">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">200</samp><samp class="p" data-group-id="1826072571-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;&lt;h1&gt;My Disconnected View&lt;/h1&gt;&quot;</samp><samp class="w">
+
+  </samp><samp class="p" data-group-id="1826072571-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="1826072571-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="1826072571-6">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="1826072571-6">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="1826072571-2">end</samp><samp class="w">
+
+</samp><samp class="n">test</samp><samp class="w"> </samp><samp class="s">&quot;redirected mount&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1826072571-7">%{</samp><samp class="ss">conn</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">conn</samp><samp class="p" data-group-id="1826072571-7">}</samp><samp class="w"> </samp><samp class="k" data-group-id="1826072571-8">do</samp><samp class="w">
+  </samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="p" data-group-id="1826072571-9">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1826072571-10">{</samp><samp class="ss">:redirect</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1826072571-11">%{</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;/somewhere&quot;</samp><samp class="p" data-group-id="1826072571-11">}</samp><samp class="p" data-group-id="1826072571-10">}</samp><samp class="p" data-group-id="1826072571-9">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="1826072571-12">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;my-path&quot;</samp><samp class="p" data-group-id="1826072571-12">)</samp><samp class="w">
+</samp><samp class="k" data-group-id="1826072571-8">end</samp></code></pre><p>Here, we start by using the familiar <a href="https://hexdocs.pm/phoenix/1.8.0-rc.4/Phoenix.ConnTest.html"><code class="inline">Phoenix.ConnTest</code></a> function, <code class="inline">get/2</code> to
+test the regular HTTP GET request which invokes mount with a disconnected socket.
+Next, <a href="#live/1"><code class="inline">live/1</code></a> is called with our sent connection to mount the view in a connected
+state, which starts our stateful LiveView process.</p><p>In general, it's often more convenient to test the mounting of a view
+in a single step, provided you don't need the result of the stateless HTTP
+render. This is done with a single call to <a href="#live/2"><code class="inline">live/2</code></a>, which performs the
+<code class="inline">get</code> step for us:</p><pre><code class="makeup elixir" translate="no"><samp class="n">test</samp><samp class="w"> </samp><samp class="s">&quot;connected mount&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3024395069-1">%{</samp><samp class="ss">conn</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">conn</samp><samp class="p" data-group-id="3024395069-1">}</samp><samp class="w"> </samp><samp class="k" data-group-id="3024395069-2">do</samp><samp class="w">
+  </samp><samp class="p" data-group-id="3024395069-3">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="3024395069-3">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="3024395069-4">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/my-path&quot;</samp><samp class="p" data-group-id="3024395069-4">)</samp><samp class="w">
+  </samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;&lt;h1&gt;My Connected View&lt;/h1&gt;&quot;</samp><samp class="w">
+</samp><samp class="k" data-group-id="3024395069-2">end</samp></code></pre><h3 id="module-testing-events">Testing Events</h3><p>The browser can send a variety of events to a LiveView via <code class="inline">phx-</code> bindings,
+which are sent to the <code class="inline">handle_event/3</code> callback. To test events sent by the
+browser and assert on the rendered side effect of the event, use the
+<code class="inline">render_*</code> functions:</p><ul><li><p><a href="#render_click/1"><code class="inline">render_click/1</code></a> - sends a phx-click event and value, returning
+the rendered result of the <code class="inline">handle_event/3</code> callback.</p></li><li><p><a href="#render_focus/2"><code class="inline">render_focus/2</code></a> - sends a phx-focus event and value, returning
+the rendered result of the <code class="inline">handle_event/3</code> callback.</p></li><li><p><a href="#render_blur/1"><code class="inline">render_blur/1</code></a> - sends a phx-blur event and value, returning
+the rendered result of the <code class="inline">handle_event/3</code> callback.</p></li><li><p><a href="#render_submit/1"><code class="inline">render_submit/1</code></a> - sends a form phx-submit event and value, returning
+the rendered result of the <code class="inline">handle_event/3</code> callback.</p></li><li><p><a href="#render_change/1"><code class="inline">render_change/1</code></a> - sends a form phx-change event and value, returning
+the rendered result of the <code class="inline">handle_event/3</code> callback.</p></li><li><p><a href="#render_keydown/1"><code class="inline">render_keydown/1</code></a> - sends a form phx-keydown event and value, returning
+the rendered result of the <code class="inline">handle_event/3</code> callback.</p></li><li><p><a href="#render_keyup/1"><code class="inline">render_keyup/1</code></a> - sends a form phx-keyup event and value, returning
+the rendered result of the <code class="inline">handle_event/3</code> callback.</p></li><li><p><a href="#render_hook/3"><code class="inline">render_hook/3</code></a> - sends a hook event and value, returning
+the rendered result of the <code class="inline">handle_event/3</code> callback.</p></li></ul><p>For example:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="1358472575-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_html</samp><samp class="p" data-group-id="1358472575-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="1358472575-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="1358472575-2">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="1358472575-3">(</samp><samp class="s">&quot;button#inc&quot;</samp><samp class="p" data-group-id="1358472575-3">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_click</samp><samp class="p" data-group-id="1358472575-4">(</samp><samp class="p" data-group-id="1358472575-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temperature is: 31℉&quot;</samp></code></pre><p>In the example above, we are looking for a particular element on the page
+and triggering its phx-click event. LiveView takes care of making sure the
+element has a phx-click and automatically sends its values to the server.</p><p>You can also bypass the element lookup and directly trigger the LiveView
+event in most functions:</p><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_click</samp><samp class="p" data-group-id="3948947798-1">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:inc</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3948947798-2">%{</samp><samp class="p" data-group-id="3948947798-2">}</samp><samp class="p" data-group-id="3948947798-1">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temperature is: 31℉&quot;</samp></code></pre><p>The <code class="inline">element</code> style is preferred as much as possible, as it helps LiveView
+perform validations and ensure the events in the HTML actually matches the
+event names on the server.</p><h3 id="module-testing-regular-messages">Testing regular messages</h3><p>LiveViews are <a href="https://hexdocs.pm/elixir/GenServer.html"><code class="inline">GenServer</code></a>'s under the hood, and can send and receive messages
+just like any other server. To test the side effects of sending or receiving
+messages, simply message the view and use the <code class="inline">render</code> function to test the
+result:</p><pre><code class="makeup elixir" translate="no"><samp class="n">send</samp><samp class="p" data-group-id="6202263930-1">(</samp><samp class="n">view</samp><samp class="o">.</samp><samp class="n">pid</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6202263930-2">{</samp><samp class="ss">:set_temp</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">50</samp><samp class="p" data-group-id="6202263930-2">}</samp><samp class="p" data-group-id="6202263930-1">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render</samp><samp class="p" data-group-id="6202263930-3">(</samp><samp class="n">view</samp><samp class="p" data-group-id="6202263930-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temperature is: 50℉&quot;</samp></code></pre><h3 id="module-testing-livecomponents">Testing LiveComponents</h3><p>LiveComponents can be tested in two ways. One way is to use the same
+<a href="#render_component/2"><code class="inline">render_component/2</code></a> function as function components. This will mount
+the LiveComponent and render it once, without testing any of its events:</p><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_component</samp><samp class="p" data-group-id="5417825503-1">(</samp><samp class="nc">MyComponent</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5417825503-2">%</samp><samp class="nc" data-group-id="5417825503-2">User</samp><samp class="p" data-group-id="5417825503-2">{</samp><samp class="p" data-group-id="5417825503-2">}</samp><samp class="p" data-group-id="5417825503-1">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w">
+         </samp><samp class="s">&quot;some markup in component&quot;</samp></code></pre><p>However, if you want to test how components are mounted by a LiveView
+and interact with DOM events, you must use the regular <a href="#live/2"><code class="inline">live/2</code></a> macro
+to build the LiveView with the component and then scope events by
+passing the view and a <strong>DOM selector</strong> in a list:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="6481942722-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="6481942722-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="6481942722-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/users&quot;</samp><samp class="p" data-group-id="6481942722-2">)</samp><samp class="w">
+</samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="6481942722-3">(</samp><samp class="s">&quot;#user-13 a&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Delete&quot;</samp><samp class="p" data-group-id="6481942722-3">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_click</samp><samp class="p" data-group-id="6481942722-4">(</samp><samp class="p" data-group-id="6481942722-4">)</samp><samp class="w">
+</samp><samp class="n">refute</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;user-13&quot;</samp><samp class="w">
+</samp><samp class="n">refute</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="6481942722-5">(</samp><samp class="s">&quot;#user-13&quot;</samp><samp class="p" data-group-id="6481942722-5">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">has_element?</samp><samp class="p" data-group-id="6481942722-6">(</samp><samp class="p" data-group-id="6481942722-6">)</samp></code></pre><p>In the example above, LiveView will lookup for an element with
+ID=user-13 and retrieve its <code class="inline">phx-target</code>. If <code class="inline">phx-target</code> points
+to a component, that will be the component used, otherwise it will
+fallback to the view.</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_patch/2" data-no-tooltip="" translate="no">assert_patch(view, timeout \\ Application.fetch_env!(:ex_unit, :assert_receive_timeout))</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Asserts a live patch will happen within <code class="inline">timeout</code> milliseconds.
+The default <code class="inline">timeout</code> is <a>ExUnit</a>'s
+<code class="inline">assert_receive_timeout</code> (100 ms).</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_patch/3" data-no-tooltip="" translate="no">assert_patch(view, to, timeout)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Asserts a live patch will happen to a given path within <code class="inline">timeout</code>
+milliseconds.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_patched/2" data-no-tooltip="" translate="no">assert_patched(view, to)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Asserts a live patch was performed, and returns the new path.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_push_event/4" data-no-tooltip="" translate="no">assert_push_event(view, event, payload, timeout \\ Application.fetch_env!(:ex_unit, :assert_receive_timeout))</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Asserts an event will be pushed within <code class="inline">timeout</code>.
+The default <code class="inline">timeout</code> is <a>ExUnit</a>'s
+<code class="inline">assert_receive_timeout</code> (100 ms).</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_redirect/2" data-no-tooltip="" translate="no">assert_redirect(view, timeout \\ Application.fetch_env!(:ex_unit, :assert_receive_timeout))</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Asserts a redirect will happen within <code class="inline">timeout</code> milliseconds.
+The default <code class="inline">timeout</code> is <a>ExUnit</a>'s
+<code class="inline">assert_receive_timeout</code> (100 ms).</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_redirect/3" data-no-tooltip="" translate="no">assert_redirect(view, to, timeout)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Asserts a redirect will happen to a given path within <code class="inline">timeout</code> milliseconds.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_redirected/2" data-no-tooltip="" translate="no">assert_redirected(view, to)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Asserts a redirect was performed.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#assert_reply/3" data-no-tooltip="" translate="no">assert_reply(view, payload, timeout \\ Application.fetch_env!(:ex_unit, :assert_receive_timeout))</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Asserts a hook reply was returned from a <code class="inline">handle_event</code> callback.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#element/3" data-no-tooltip="" translate="no">element(view, selector, text_filter \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns an element to scope a function to.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#file_input/4" data-no-tooltip="" translate="no">file_input(view, form_selector, name, entries)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Builds a file input for testing uploads within a form.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#find_live_child/2" data-no-tooltip="" translate="no">find_live_child(parent, child_id)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the nested LiveView child by <code class="inline">child_id</code> from the <code class="inline">parent</code> LiveView.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#follow_redirect/3" data-no-tooltip="" translate="no">follow_redirect(reason, conn, to \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Follows the redirect from a <code class="inline">render_*</code> action or an <code class="inline">{:error, redirect}</code>
+tuple.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#follow_trigger_action/2" data-no-tooltip="" translate="no">follow_trigger_action(form, conn)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Receives a <code class="inline">form_element</code> and asserts that <code class="inline">phx-trigger-action</code> has been
+set to true, following up on that request.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#form/3" data-no-tooltip="" translate="no">form(view, selector, form_data \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns a form element to scope a function to.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#has_element?/1" data-no-tooltip="" translate="no">has_element?(element)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Checks if the given element exists on the page.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#has_element?/3" data-no-tooltip="" translate="no">has_element?(view, selector, text_filter \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Checks if the given <code class="inline">selector</code> with <code class="inline">text_filter</code> is on <code class="inline">view</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#live/3" data-no-tooltip="" translate="no">live(conn, path \\ nil, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Spawns a connected LiveView process.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#live_children/1" data-no-tooltip="" translate="no">live_children(parent)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the current list of LiveView children for the <code class="inline">parent</code> LiveView.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#live_isolated/3" data-no-tooltip="" translate="no">live_isolated(conn, live_view, opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Spawns a connected LiveView process mounted in isolation as the sole rendered element.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#live_redirect/2" data-no-tooltip="" translate="no">live_redirect(view, opts)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Performs a live redirect from one LiveView to another.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#open_browser/2" data-no-tooltip="" translate="no">open_browser(view_or_element, open_fun \\ &amp;open_with_system_cmd/1)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Open the default browser to display current HTML of <code class="inline">view_or_element</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#page_title/1" data-no-tooltip="" translate="no">page_title(view)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the most recent title that was updated via a <code class="inline">page_title</code> assign.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#preflight_upload/1" data-no-tooltip="" translate="no">preflight_upload(upload)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Performs a preflight upload request.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#put_connect_params/2" data-no-tooltip="" translate="no">put_connect_params(conn, params)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Puts connect params to be used on LiveView connections.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#put_submitter/2" data-no-tooltip="" translate="no">put_submitter(form, element_or_selector)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Puts the submitter <code class="inline">element_or_selector</code> on the given <code class="inline">form</code> element.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#refute_push_event/4" data-no-tooltip="" translate="no">refute_push_event(view, event, payload, timeout \\ Application.fetch_env!(:ex_unit, :refute_receive_timeout))</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Refutes an event will be pushed within timeout.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#refute_redirected/1" data-no-tooltip="" translate="no">refute_redirected(view)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Refutes a redirect to a given path was performed.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#refute_redirected/2" data-no-tooltip="" translate="no">refute_redirected(view, to)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render/1" data-no-tooltip="" translate="no">render(view_or_element)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the HTML string of the rendered view or element.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_async/2" data-no-tooltip="" translate="no">render_async(view_or_element, timeout \\ Application.fetch_env!(:ex_unit, :assert_receive_timeout))</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Awaits all current <code class="inline">assign_async</code> and <code class="inline">start_async</code> for a given LiveView or element.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_blur/2" data-no-tooltip="" translate="no">render_blur(element, value \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a blur event given by <code class="inline">element</code> and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_blur/3" data-no-tooltip="" translate="no">render_blur(view, event, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a blur event to the view and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_change/2" data-no-tooltip="" translate="no">render_change(element, value \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a form change event given by <code class="inline">element</code> and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_change/3" data-no-tooltip="" translate="no">render_change(view, event, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a form change event to the view and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_click/2" data-no-tooltip="" translate="no">render_click(element, value \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a click event given by <code class="inline">element</code> and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_click/3" data-no-tooltip="" translate="no">render_click(view, event, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a click <code class="inline">event</code> to the <code class="inline">view</code> with <code class="inline">value</code> and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_component/3" data-no-tooltip="" translate="no">render_component(component, assigns \\ Macro.escape(%{}), opts \\ [])</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Renders a component.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_focus/2" data-no-tooltip="" translate="no">render_focus(element, value \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a focus event given by <code class="inline">element</code> and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_focus/3" data-no-tooltip="" translate="no">render_focus(view, event, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a focus event to the view and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_hook/3" data-no-tooltip="" translate="no">render_hook(view_or_element, event, value \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a hook event to the view or an element and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_keydown/2" data-no-tooltip="" translate="no">render_keydown(element, value \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a keydown event given by <code class="inline">element</code> and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_keydown/3" data-no-tooltip="" translate="no">render_keydown(view, event, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a keydown event to the view and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_keyup/2" data-no-tooltip="" translate="no">render_keyup(element, value \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a keyup event given by <code class="inline">element</code> and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_keyup/3" data-no-tooltip="" translate="no">render_keyup(view, event, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a keyup event to the view and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_patch/2" data-no-tooltip="" translate="no">render_patch(view, path)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Simulates a <code class="inline">push_patch</code> to the given <code class="inline">path</code> and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_submit/2" data-no-tooltip="" translate="no">render_submit(element, value \\ %{})</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a form submit event given by <code class="inline">element</code> and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_submit/3" data-no-tooltip="" translate="no">render_submit(view, event, value)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sends a form submit event to the view and returns the rendered result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_upload/3" data-no-tooltip="" translate="no">render_upload(upload, entry_name, percent \\ 100)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Performs an upload of a file input and renders the result.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#rendered_to_string/1" data-no-tooltip="" translate="no">rendered_to_string(rendered)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Converts a rendered template to a string.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#submit_form/2" data-no-tooltip="" translate="no">submit_form(form, conn)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Receives a form element and submits the HTTP request through the plug pipeline.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#with_target/2" data-no-tooltip="" translate="no">with_target(view, target)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets the target of the view for events.</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="assert_patch/2">
+
+    <span id="assert_patch/1"></span>
+
+  <div class="detail-header">
+    <a href="#assert_patch/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_patch(view, timeout \\ Application.fetch_env!(:ex_unit, :assert_receive_timeout))</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1315" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Asserts a live patch will happen within <code class="inline">timeout</code> milliseconds.
+The default <code class="inline">timeout</code> is <a href="https://hexdocs.pm/ex_unit/ExUnit.html#configure/1">ExUnit</a>'s
+<code class="inline">assert_receive_timeout</code> (100 ms).</p><p>It returns the new path.</p><p>To assert on the flash message, you can assert on the result of the
+rendered LiveView.</p><h2 id="assert_patch/2-examples" class="section-heading"><a href="#assert_patch/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">render_click</samp><samp class="p" data-group-id="5058731056-1">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_patch</samp><samp class="p" data-group-id="5058731056-1">)</samp><samp class="w">
+</samp><samp class="n">assert_patch</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+
+</samp><samp class="n">render_click</samp><samp class="p" data-group-id="5058731056-2">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_patch</samp><samp class="p" data-group-id="5058731056-2">)</samp><samp class="w">
+</samp><samp class="n">assert_patch</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">30</samp><samp class="w">
+
+</samp><samp class="n">render_click</samp><samp class="p" data-group-id="5058731056-3">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_patch</samp><samp class="p" data-group-id="5058731056-3">)</samp><samp class="w">
+</samp><samp class="n">path</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">assert_patch</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">path</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="sr">~r/path/</samp><samp class="err"></samp><samp class="o">+</samp><samp class="o">/</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="assert_patch/3">
+
+  <div class="detail-header">
+    <a href="#assert_patch/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_patch(view, to, timeout)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1346" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Asserts a live patch will happen to a given path within <code class="inline">timeout</code>
+milliseconds.</p><p>The default <code class="inline">timeout</code> is <a href="https://hexdocs.pm/ex_unit/ExUnit.html#configure/1">ExUnit</a>'s
+<code class="inline">assert_receive_timeout</code> (100 ms).</p><p>It returns the new path.</p><p>To assert on the flash message, you can assert on the result of the
+rendered LiveView.</p><h2 id="assert_patch/3-examples" class="section-heading"><a href="#assert_patch/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">render_click</samp><samp class="p" data-group-id="5415502286-1">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_patch</samp><samp class="p" data-group-id="5415502286-1">)</samp><samp class="w">
+</samp><samp class="n">assert_patch</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/path&quot;</samp><samp class="w">
+
+</samp><samp class="n">render_click</samp><samp class="p" data-group-id="5415502286-2">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_patch</samp><samp class="p" data-group-id="5415502286-2">)</samp><samp class="w">
+</samp><samp class="n">assert_patch</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/path&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">30</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="assert_patched/2">
+
+  <div class="detail-header">
+    <a href="#assert_patched/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_patched(view, to)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1364" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Asserts a live patch was performed, and returns the new path.</p><p>To assert on the flash message, you can assert on the result of
+the rendered LiveView.</p><h2 id="assert_patched/2-examples" class="section-heading"><a href="#assert_patched/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">render_click</samp><samp class="p" data-group-id="0331406917-1">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_redirect</samp><samp class="p" data-group-id="0331406917-1">)</samp><samp class="w">
+</samp><samp class="n">assert_patched</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/path&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="assert_push_event/4">
+
+    <span id="assert_push_event/3"></span>
+
+  <div class="detail-header">
+    <a href="#assert_push_event/4" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_push_event(view, event, payload, timeout \\ Application.fetch_env!(:ex_unit, :assert_receive_timeout))</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1623" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Asserts an event will be pushed within <code class="inline">timeout</code>.
+The default <code class="inline">timeout</code> is <a href="https://hexdocs.pm/ex_unit/ExUnit.html#configure/1">ExUnit</a>'s
+<code class="inline">assert_receive_timeout</code> (100 ms).</p><h2 id="assert_push_event/4-examples" class="section-heading"><a href="#assert_push_event/4-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">assert_push_event</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;scores&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9821179633-1">%{</samp><samp class="ss">points</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">100</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;josé&quot;</samp><samp class="p" data-group-id="9821179633-1">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="assert_redirect/2">
+
+    <span id="assert_redirect/1"></span>
+
+  <div class="detail-header">
+    <a href="#assert_redirect/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_redirect(view, timeout \\ Application.fetch_env!(:ex_unit, :assert_receive_timeout))</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1386" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Asserts a redirect will happen within <code class="inline">timeout</code> milliseconds.
+The default <code class="inline">timeout</code> is <a href="https://hexdocs.pm/ex_unit/ExUnit.html#configure/1">ExUnit</a>'s
+<code class="inline">assert_receive_timeout</code> (100 ms).</p><p>It returns a tuple containing the new path and the flash messages from said
+redirect, if any. Note the flash will contain string keys.</p><h2 id="assert_redirect/2-examples" class="section-heading"><a href="#assert_redirect/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">render_click</samp><samp class="p" data-group-id="8890914644-1">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_redirect</samp><samp class="p" data-group-id="8890914644-1">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8890914644-2">{</samp><samp class="n">path</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">flash</samp><samp class="p" data-group-id="8890914644-2">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">assert_redirect</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">flash</samp><samp class="p" data-group-id="8890914644-3">[</samp><samp class="s">&quot;info&quot;</samp><samp class="p" data-group-id="8890914644-3">]</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="s">&quot;Welcome&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">path</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="sr">~r/path</samp><samp class="se">\/</samp><samp class="se">\d</samp><samp class="sr">+/</samp><samp class="w">
+
+</samp><samp class="n">render_click</samp><samp class="p" data-group-id="8890914644-4">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_redirect</samp><samp class="p" data-group-id="8890914644-4">)</samp><samp class="w">
+</samp><samp class="n">assert_redirect</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">30</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="assert_redirect/3">
+
+  <div class="detail-header">
+    <a href="#assert_redirect/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_redirect(view, to, timeout)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1414" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Asserts a redirect will happen to a given path within <code class="inline">timeout</code> milliseconds.</p><p>The default <code class="inline">timeout</code> is <a href="https://hexdocs.pm/ex_unit/ExUnit.html#configure/1">ExUnit</a>'s
+<code class="inline">assert_receive_timeout</code> (100 ms).</p><p>It returns the flash messages from said redirect, if any.
+Note the flash will contain string keys.</p><h2 id="assert_redirect/3-examples" class="section-heading"><a href="#assert_redirect/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">render_click</samp><samp class="p" data-group-id="1010592420-1">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_redirect</samp><samp class="p" data-group-id="1010592420-1">)</samp><samp class="w">
+</samp><samp class="n">flash</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">assert_redirect</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/path&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">flash</samp><samp class="p" data-group-id="1010592420-2">[</samp><samp class="s">&quot;info&quot;</samp><samp class="p" data-group-id="1010592420-2">]</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="s">&quot;Welcome&quot;</samp><samp class="w">
+
+</samp><samp class="n">render_click</samp><samp class="p" data-group-id="1010592420-3">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_redirect</samp><samp class="p" data-group-id="1010592420-3">)</samp><samp class="w">
+</samp><samp class="n">assert_redirect</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/path&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">30</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="assert_redirected/2">
+
+  <div class="detail-header">
+    <a href="#assert_redirected/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_redirected(view, to)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1433" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Asserts a redirect was performed.</p><p>It returns the flash messages from said redirect, if any. Note the
+flash will contain string keys.</p><h2 id="assert_redirected/2-examples" class="section-heading"><a href="#assert_redirected/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">render_click</samp><samp class="p" data-group-id="0260310134-1">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_redirect</samp><samp class="p" data-group-id="0260310134-1">)</samp><samp class="w">
+</samp><samp class="n">flash</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">assert_redirected</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/path&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">flash</samp><samp class="p" data-group-id="0260310134-2">[</samp><samp class="s">&quot;info&quot;</samp><samp class="p" data-group-id="0260310134-2">]</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="s">&quot;Welcome&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="assert_reply/3">
+
+    <span id="assert_reply/2"></span>
+
+  <div class="detail-header">
+    <a href="#assert_reply/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">assert_reply(view, payload, timeout \\ Application.fetch_env!(:ex_unit, :assert_receive_timeout))</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1681" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Asserts a hook reply was returned from a <code class="inline">handle_event</code> callback.</p><p>The default <code class="inline">timeout</code> is <a href="https://hexdocs.pm/ex_unit/ExUnit.html#configure/1">ExUnit</a>'s
+<code class="inline">assert_receive_timeout</code> (100 ms).</p><h2 id="assert_reply/3-examples" class="section-heading"><a href="#assert_reply/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">assert_reply</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3218422924-1">%{</samp><samp class="ss">result</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;ok&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">transaction_id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="3218422924-1">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="element/3">
+
+    <span id="element/2"></span>
+
+  <div class="detail-header">
+    <a href="#element/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">element(view, selector, text_filter \\ nil)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1158" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns an element to scope a function to.</p><p>It expects the current LiveView, a query selector, and a text filter.</p><p>An optional text filter may be given to filter the results by the query
+selector. If the text filter is a string or a regex, it will match any
+element that contains the string (including as a substring) or matches the
+regex.</p><p>So a link containing the text &quot;unopened&quot; will match <code class="inline">element(&quot;a&quot;, &quot;opened&quot;)</code>.
+To prevent this, a regex could specify that &quot;opened&quot; appear without the prefix &quot;un&quot;.
+For example, <code class="inline">element(&quot;a&quot;, ~r{(?&lt;!un)opened})</code>.
+But it may be clearer to add an HTML attribute to make the element easier to
+select.</p><p>After the text filter is applied, only one element must remain, otherwise an
+error is raised.</p><p>If no text filter is given, then the query selector itself must return
+a single element.</p><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+      </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="2835167037-1">(</samp><samp class="s">&quot;#term &gt; :first-child&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Increment&quot;</samp><samp class="p" data-group-id="2835167037-1">)</samp><samp class="w">
+      </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render</samp><samp class="p" data-group-id="2835167037-2">(</samp><samp class="p" data-group-id="2835167037-2">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;Increment&lt;/a&gt;&quot;</samp></code></pre><p>Attribute selectors are also supported, and may be used on special cases
+like ids which contain periods:</p><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="1124422521-1">(</samp><samp class="s">~s{[href=&quot;/foo&quot;][id=&quot;foo.bar.baz&quot;]}</samp><samp class="p" data-group-id="1124422521-1">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render</samp><samp class="p" data-group-id="1124422521-2">(</samp><samp class="p" data-group-id="1124422521-2">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;Increment&lt;/a&gt;&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="file_input/4">
+
+  <div class="detail-header">
+    <a href="#file_input/4" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">file_input(view, form_selector, name, entries)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1215" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Builds a file input for testing uploads within a form.</p><p>Given the form DOM selector, the upload name, and a list of maps of client metadata
+for the upload, the returned file input can be passed to <a href="#render_upload/2"><code class="inline">render_upload/2</code></a>.</p><p>Client metadata takes the following form:</p><ul><li><code class="inline">:last_modified</code> - the last modified timestamp</li><li><code class="inline">:name</code> - the name of the file</li><li><code class="inline">:content</code> - the binary content of the file</li><li><code class="inline">:size</code> - the byte size of the content</li><li><code class="inline">:type</code> - the MIME type of the file</li><li><code class="inline">:relative_path</code> - for simulating webkitdirectory metadata</li><li><code class="inline">:meta</code> - optional metadata sent by the client</li></ul><h2 id="file_input/4-examples" class="section-heading"><a href="#file_input/4-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">avatar</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">file_input</samp><samp class="p" data-group-id="0326648179-1">(</samp><samp class="n">lv</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;#my-form-id&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:avatar</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0326648179-2">[</samp><samp class="p" data-group-id="0326648179-3">%{</samp><samp class="w">
+  </samp><samp class="ss">last_modified</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1_594_171_879_000</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;myfile.jpeg&quot;</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">content</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">File</samp><samp class="o">.</samp><samp class="n">read!</samp><samp class="p" data-group-id="0326648179-4">(</samp><samp class="s">&quot;myfile.jpg&quot;</samp><samp class="p" data-group-id="0326648179-4">)</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">size</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1_396_009</samp><samp class="p">,</samp><samp class="w">
+  </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;image/jpeg&quot;</samp><samp class="w">
+</samp><samp class="p" data-group-id="0326648179-3">}</samp><samp class="p" data-group-id="0326648179-2">]</samp><samp class="p" data-group-id="0326648179-1">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_upload</samp><samp class="p" data-group-id="0326648179-5">(</samp><samp class="n">avatar</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;myfile.jpeg&quot;</samp><samp class="p" data-group-id="0326648179-5">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;100%&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="find_live_child/2">
+
+  <div class="detail-header">
+    <a href="#find_live_child/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">find_live_child(parent, child_id)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1021" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Gets the nested LiveView child by <code class="inline">child_id</code> from the <code class="inline">parent</code> LiveView.</p><h2 id="find_live_child/2-examples" class="section-heading"><a href="#find_live_child/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="9215416961-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_html</samp><samp class="p" data-group-id="9215416961-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="9215416961-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="9215416961-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">clock_view</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">find_live_child</samp><samp class="p" data-group-id="9215416961-3">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;clock&quot;</samp><samp class="p" data-group-id="9215416961-3">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_click</samp><samp class="p" data-group-id="9215416961-4">(</samp><samp class="n">clock_view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:snooze</samp><samp class="p" data-group-id="9215416961-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;snoozing&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="follow_redirect/3">
+
+    <span id="follow_redirect/2"></span>
+
+  <div class="detail-header">
+    <a href="#follow_redirect/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">follow_redirect(reason, conn, to \\ nil)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1728" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Follows the redirect from a <code class="inline">render_*</code> action or an <code class="inline">{:error, redirect}</code>
+tuple.</p><p>Imagine you have a LiveView that redirects on a <code class="inline">render_click</code>
+event. You can make sure it immediately redirects after the
+<code class="inline">render_click</code> action by calling <a href="#follow_redirect/3"><code class="inline">follow_redirect/3</code></a>:</p><pre><code class="makeup elixir" translate="no"><samp class="n">live_view</samp><samp class="w">
+</samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_click</samp><samp class="p" data-group-id="0767750367-1">(</samp><samp class="s">&quot;redirect&quot;</samp><samp class="p" data-group-id="0767750367-1">)</samp><samp class="w">
+</samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">follow_redirect</samp><samp class="p" data-group-id="0767750367-2">(</samp><samp class="n">conn</samp><samp class="p" data-group-id="0767750367-2">)</samp></code></pre><p>Or in the case of an error tuple:</p><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="p" data-group-id="8307386045-1">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8307386045-2">{</samp><samp class="ss">:redirect</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="8307386045-3">%{</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;/somewhere&quot;</samp><samp class="p" data-group-id="8307386045-3">}</samp><samp class="p" data-group-id="8307386045-2">}</samp><samp class="p" data-group-id="8307386045-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">result</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="8307386045-4">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;my-path&quot;</samp><samp class="p" data-group-id="8307386045-4">)</samp><samp class="w">
+</samp><samp class="p" data-group-id="8307386045-5">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="8307386045-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">follow_redirect</samp><samp class="p" data-group-id="8307386045-6">(</samp><samp class="n">result</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">conn</samp><samp class="p" data-group-id="8307386045-6">)</samp></code></pre><p><a href="#follow_redirect/3"><code class="inline">follow_redirect/3</code></a> expects a connection as second argument.
+This is the connection that will be used to perform the underlying
+request.</p><p>If the LiveView redirects with a live redirect, this macro returns
+<code class="inline">{:ok, live_view, disconnected_html}</code> with the content of the new
+LiveView, the same as the <a href="#live/3"><code class="inline">live/3</code></a> macro. If the LiveView redirects
+with a regular redirect, this macro returns <code class="inline">{:ok, conn}</code> with the
+rendered redirected page. In any other case, this macro raises.</p><p>Finally, note that you can optionally assert on the path you are
+being redirected to by passing a third argument:</p><pre><code class="makeup elixir" translate="no"><samp class="n">live_view</samp><samp class="w">
+</samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_click</samp><samp class="p" data-group-id="1252296352-1">(</samp><samp class="s">&quot;redirect&quot;</samp><samp class="p" data-group-id="1252296352-1">)</samp><samp class="w">
+</samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">follow_redirect</samp><samp class="p" data-group-id="1252296352-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/redirected/page&quot;</samp><samp class="p" data-group-id="1252296352-2">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="follow_trigger_action/2">
+
+  <div class="detail-header">
+    <a href="#follow_trigger_action/2" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">follow_trigger_action(form, conn)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1850" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Receives a <code class="inline">form_element</code> and asserts that <code class="inline">phx-trigger-action</code> has been
+set to true, following up on that request.</p><p>Imagine you have a LiveView that sends an HTTP form submission. Say that it
+sets the <code class="inline">phx-trigger-action</code> to true, as a response to a submit event.
+You can follow the trigger action like this:</p><pre><code class="makeup elixir" translate="no"><samp class="n">form</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">form</samp><samp class="p" data-group-id="2227704243-1">(</samp><samp class="n">live_view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">selector</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2227704243-2">%{</samp><samp class="s">&quot;form&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;data&quot;</samp><samp class="p" data-group-id="2227704243-2">}</samp><samp class="p" data-group-id="2227704243-1">)</samp><samp class="w">
+
+</samp><samp class="c1"># First we submit the form. Optionally verify that phx-trigger-action</samp><samp class="w">
+</samp><samp class="c1"># is now part of the form.</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_submit</samp><samp class="p" data-group-id="2227704243-3">(</samp><samp class="n">form</samp><samp class="p" data-group-id="2227704243-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="sr">~r/phx-trigger-action/</samp><samp class="w">
+
+</samp><samp class="c1"># Now follow the request made by the form</samp><samp class="w">
+</samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">follow_trigger_action</samp><samp class="p" data-group-id="2227704243-4">(</samp><samp class="n">form</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">conn</samp><samp class="p" data-group-id="2227704243-4">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">conn</samp><samp class="o">.</samp><samp class="n">method</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="s">&quot;POST&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">conn</samp><samp class="o">.</samp><samp class="n">params</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="p" data-group-id="2227704243-5">%{</samp><samp class="s">&quot;form&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;data&quot;</samp><samp class="p" data-group-id="2227704243-5">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="form/3">
+
+    <span id="form/2"></span>
+
+  <div class="detail-header">
+    <a href="#form/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">form(view, selector, form_data \\ %{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1183" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns a form element to scope a function to.</p><p>It expects the current LiveView, a query selector, and the form data.
+The query selector must return a single element.</p><p>The form data will be validated directly against the form markup and
+make sure the data you are changing/submitting actually exists, failing
+otherwise.</p><h2 id="form/3-examples" class="section-heading"><a href="#form/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+      </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">form</samp><samp class="p" data-group-id="8826478946-1">(</samp><samp class="s">&quot;#term&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="8826478946-2">%{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="8826478946-2">}</samp><samp class="p" data-group-id="8826478946-1">)</samp><samp class="w">
+      </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_submit</samp><samp class="p" data-group-id="8826478946-3">(</samp><samp class="p" data-group-id="8826478946-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;Name updated&quot;</samp></code></pre><p>This function is meant to mimic what the user can actually do, so you cannot
+ set hidden input values. However, hidden values can be given when calling
+ <a href="#render_submit/2"><code class="inline">render_submit/2</code></a> or <a href="#render_change/2"><code class="inline">render_change/2</code></a>, see their docs for examples.</p>
+  </section>
+</section>
+<section class="detail" id="has_element?/1">
+
+  <div class="detail-header">
+    <a href="#has_element?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">has_element?(element)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1035" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Checks if the given element exists on the page.</p><h2 id="has_element?/1-examples" class="section-heading"><a href="#has_element?/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="5688522996-1">(</samp><samp class="s">&quot;#some-element&quot;</samp><samp class="p" data-group-id="5688522996-1">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">has_element?</samp><samp class="p" data-group-id="5688522996-2">(</samp><samp class="p" data-group-id="5688522996-2">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="has_element?/3">
+
+    <span id="has_element?/2"></span>
+
+  <div class="detail-header">
+    <a href="#has_element?/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">has_element?(view, selector, text_filter \\ nil)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1052" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Checks if the given <code class="inline">selector</code> with <code class="inline">text_filter</code> is on <code class="inline">view</code>.</p><p>See <a href="#element/3"><code class="inline">element/3</code></a> for more information.</p><h2 id="has_element?/3-examples" class="section-heading"><a href="#has_element?/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">has_element?</samp><samp class="p" data-group-id="5673258848-1">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;#some-element&quot;</samp><samp class="p" data-group-id="5673258848-1">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="live/3">
+
+    <span id="live/1"></span>
+
+    <span id="live/2"></span>
+
+  <div class="detail-header">
+    <a href="#live/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">live(conn, path \\ nil, opts \\ [])</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L221" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Spawns a connected LiveView process.</p><p>If a <code class="inline">path</code> is given, then a regular <code class="inline">get(conn, path)</code>
+is done and the page is upgraded to a LiveView. If
+no path is given, it assumes a previously rendered
+<code class="inline">%Plug.Conn{}</code> is given, which will be converted to
+a LiveView immediately.</p><h2 id="live/3-options" class="section-heading"><a href="#live/3-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:on_error</code> - Can be either <code class="inline">:raise</code> or <code class="inline">:warn</code> to control whether
+ detected errors like duplicate IDs or live components fail the test or just log
+ a warning. Defaults to <code class="inline">:raise</code>.</li></ul><h2 id="live/3-examples" class="section-heading"><a href="#live/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="7216885195-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="7216885195-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="7216885195-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/path&quot;</samp><samp class="p" data-group-id="7216885195-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="o">.</samp><samp class="n">module</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="nc">MyLive</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;the count is 3&quot;</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="p" data-group-id="7216885195-3">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="7216885195-4">{</samp><samp class="ss">:redirect</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="7216885195-5">%{</samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;/somewhere&quot;</samp><samp class="p" data-group-id="7216885195-5">}</samp><samp class="p" data-group-id="7216885195-4">}</samp><samp class="p" data-group-id="7216885195-3">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="7216885195-6">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/path&quot;</samp><samp class="p" data-group-id="7216885195-6">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="live_children/1">
+
+  <div class="detail-header">
+    <a href="#live_children/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">live_children(parent)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1008" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns the current list of LiveView children for the <code class="inline">parent</code> LiveView.</p><p>Children are returned in the order they appear in the rendered HTML.</p><h2 id="live_children/1-examples" class="section-heading"><a href="#live_children/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="0151932365-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_html</samp><samp class="p" data-group-id="0151932365-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="0151932365-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="0151932365-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="p" data-group-id="0151932365-3">[</samp><samp class="n">clock_view</samp><samp class="p" data-group-id="0151932365-3">]</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live_children</samp><samp class="p" data-group-id="0151932365-4">(</samp><samp class="n">view</samp><samp class="p" data-group-id="0151932365-4">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_click</samp><samp class="p" data-group-id="0151932365-5">(</samp><samp class="n">clock_view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:snooze</samp><samp class="p" data-group-id="0151932365-5">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;snoozing&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="live_isolated/3">
+
+    <span id="live_isolated/2"></span>
+
+  <div class="detail-header">
+    <a href="#live_isolated/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">live_isolated(conn, live_view, opts \\ [])</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L270" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Spawns a connected LiveView process mounted in isolation as the sole rendered element.</p><p>Useful for testing LiveViews that are not directly routable, such as those
+built as small components to be re-used in multiple parents. Testing routable
+LiveViews is still recommended whenever possible since features such as
+live navigation require routable LiveViews.</p><h2 id="live_isolated/3-options" class="section-heading"><a href="#live_isolated/3-options" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Options</span></h2><ul><li><code class="inline">:session</code> - the session to be given to the LiveView</li><li><code class="inline">:on_error</code> - Can be either <code class="inline">:raise</code> or <code class="inline">:warn</code> to control whether
+ detected errors like duplicate IDs or live components fail the test or just log
+ a warning. Defaults to <code class="inline">:raise</code>.</li></ul><p>All other options are forwarded to the LiveView for rendering. Refer to
+<a href="Phoenix.Component.xhtml#live_render/3"><code class="inline">Phoenix.Component.live_render/3</code></a> for a list of supported render
+options.</p><h2 id="live_isolated/3-examples" class="section-heading"><a href="#live_isolated/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="2590407927-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="2590407927-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w">
+  </samp><samp class="n">live_isolated</samp><samp class="p" data-group-id="2590407927-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="nc">MyAppWeb.ClockLive</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">session</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="2590407927-3">%{</samp><samp class="s">&quot;tz&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;EST&quot;</samp><samp class="p" data-group-id="2590407927-3">}</samp><samp class="p" data-group-id="2590407927-2">)</samp></code></pre><p>Use <a href="#put_connect_params/2"><code class="inline">put_connect_params/2</code></a> to put connect params for a call to
+<a href="Phoenix.LiveView.xhtml#get_connect_params/1"><code class="inline">Phoenix.LiveView.get_connect_params/1</code></a> in <a href="Phoenix.LiveView.xhtml#c:mount/3"><code class="inline">Phoenix.LiveView.mount/3</code></a>:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="9729661068-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="9729661068-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w">
+  </samp><samp class="n">conn</samp><samp class="w">
+  </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">put_connect_params</samp><samp class="p" data-group-id="9729661068-2">(</samp><samp class="p" data-group-id="9729661068-3">%{</samp><samp class="s">&quot;param&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;value&quot;</samp><samp class="p" data-group-id="9729661068-3">}</samp><samp class="p" data-group-id="9729661068-2">)</samp><samp class="w">
+  </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">live_isolated</samp><samp class="p" data-group-id="9729661068-4">(</samp><samp class="nc">AppWeb.ClockLive</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">session</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9729661068-5">%{</samp><samp class="s">&quot;tz&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;EST&quot;</samp><samp class="p" data-group-id="9729661068-5">}</samp><samp class="p" data-group-id="9729661068-4">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="live_redirect/2">
+
+  <div class="detail-header">
+    <a href="#live_redirect/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">live_redirect(view, opts)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1786" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Performs a live redirect from one LiveView to another.</p><p>When redirecting between two LiveViews of the same <code class="inline">live_session</code>,
+mounts the new LiveView and shutsdown the previous one, which
+mimics general browser live navigation behaviour.</p><p>When attempting to navigate from a LiveView of a different
+<code class="inline">live_session</code>, an error redirect condition is returned indicating
+a failed <code class="inline">push_navigate</code> from the client.</p><h2 id="live_redirect/2-examples" class="section-heading"><a href="#live_redirect/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="p" data-group-id="4644102854-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">page_live</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_html</samp><samp class="p" data-group-id="4644102854-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="4644102854-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/page/1&quot;</samp><samp class="p" data-group-id="4644102854-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="p" data-group-id="4644102854-3">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">page2_live</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_html</samp><samp class="p" data-group-id="4644102854-3">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="4644102854-4">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/page/2&quot;</samp><samp class="p" data-group-id="4644102854-4">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="p" data-group-id="4644102854-5">{</samp><samp class="ss">:error</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4644102854-6">{</samp><samp class="ss">:redirect</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="4644102854-6">}</samp><samp class="p" data-group-id="4644102854-5">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live_redirect</samp><samp class="p" data-group-id="4644102854-7">(</samp><samp class="n">page2_live</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">to</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;/admin&quot;</samp><samp class="p" data-group-id="4644102854-7">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="open_browser/2">
+
+    <span id="open_browser/1"></span>
+
+  <div class="detail-header">
+    <a href="#open_browser/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">open_browser(view_or_element, open_fun \\ &amp;open_with_system_cmd/1)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1522" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Open the default browser to display current HTML of <code class="inline">view_or_element</code>.</p><h2 id="open_browser/2-examples" class="section-heading"><a href="#open_browser/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">view</samp><samp class="w">
+</samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="7795496646-1">(</samp><samp class="s">&quot;#term &gt; :first-child&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Increment&quot;</samp><samp class="p" data-group-id="7795496646-1">)</samp><samp class="w">
+</samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">open_browser</samp><samp class="p" data-group-id="7795496646-2">(</samp><samp class="p" data-group-id="7795496646-2">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">form</samp><samp class="p" data-group-id="7795496646-3">(</samp><samp class="s">&quot;#term&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="7795496646-4">%{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="7795496646-4">}</samp><samp class="p" data-group-id="7795496646-3">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">open_browser</samp><samp class="p" data-group-id="7795496646-5">(</samp><samp class="p" data-group-id="7795496646-5">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_submit</samp><samp class="p" data-group-id="7795496646-6">(</samp><samp class="p" data-group-id="7795496646-6">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;Name updated&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="page_title/1">
+
+  <div class="detail-header">
+    <a href="#page_title/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">page_title(view)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1289" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns the most recent title that was updated via a <code class="inline">page_title</code> assign.</p><h2 id="page_title/1-examples" class="section-heading"><a href="#page_title/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">render_click</samp><samp class="p" data-group-id="8027137698-1">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_page_title_update</samp><samp class="p" data-group-id="8027137698-1">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">page_title</samp><samp class="p" data-group-id="8027137698-2">(</samp><samp class="n">view</samp><samp class="p" data-group-id="8027137698-2">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;my title&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="preflight_upload/1">
+
+  <div class="detail-header">
+    <a href="#preflight_upload/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">preflight_upload(upload)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L2014" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Performs a preflight upload request.</p><p>Useful for testing external uploaders to retrieve the <code class="inline">:external</code> entry metadata.</p><h2 id="preflight_upload/1-examples" class="section-heading"><a href="#preflight_upload/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">avatar</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">file_input</samp><samp class="p" data-group-id="1199897908-1">(</samp><samp class="n">lv</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;#my-form-id&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:avatar</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1199897908-2">[</samp><samp class="p" data-group-id="1199897908-3">%{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="1199897908-3">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">...</samp><samp class="p" data-group-id="1199897908-2">]</samp><samp class="p" data-group-id="1199897908-1">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="p" data-group-id="1199897908-4">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="1199897908-5">%{</samp><samp class="ss">ref</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="c">_ref</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">config</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1199897908-6">%{</samp><samp class="ss">chunk_size</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p" data-group-id="1199897908-6">}</samp><samp class="p" data-group-id="1199897908-5">}</samp><samp class="p" data-group-id="1199897908-4">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">preflight_upload</samp><samp class="p" data-group-id="1199897908-7">(</samp><samp class="n">avatar</samp><samp class="p" data-group-id="1199897908-7">)</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="put_connect_params/2">
+
+  <div class="detail-header">
+    <a href="#put_connect_params/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">put_connect_params(conn, params)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L193" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Puts connect params to be used on LiveView connections.</p><p>See <a href="Phoenix.LiveView.xhtml#get_connect_params/1"><code class="inline">Phoenix.LiveView.get_connect_params/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="put_submitter/2">
+
+  <div class="detail-header">
+    <a href="#put_submitter/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">put_submitter(form, element_or_selector)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L610" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Puts the submitter <code class="inline">element_or_selector</code> on the given <code class="inline">form</code> element.</p><p>A submitter is an element that initiates the form's submit event on the client. When a submitter
+is put on an element created with <a href="#form/3"><code class="inline">form/3</code></a> and then the form is submitted via <a href="#render_submit/2"><code class="inline">render_submit/2</code></a>,
+the name/value pair of the submitter will be included in the submit event payload.</p><p>The given element or selector must exist within the form and match one of the following:</p><ul><li><p>A <code class="inline">button</code> or <code class="inline">input</code> element with <code class="inline">type=&quot;submit&quot;</code>.</p></li><li><p>A <code class="inline">button</code> element without a <code class="inline">type</code> attribute.</p></li></ul><h2 id="put_submitter/2-examples" class="section-heading"><a href="#put_submitter/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">form</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">form</samp><samp class="p" data-group-id="4252931800-1">(</samp><samp class="s">&quot;#my-form&quot;</samp><samp class="p" data-group-id="4252931800-1">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">form</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">put_submitter</samp><samp class="p" data-group-id="4252931800-2">(</samp><samp class="s">&quot;button[name=example]&quot;</samp><samp class="p" data-group-id="4252931800-2">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_submit</samp><samp class="p" data-group-id="4252931800-3">(</samp><samp class="p" data-group-id="4252931800-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;Submitted example&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="refute_push_event/4">
+
+    <span id="refute_push_event/3"></span>
+
+  <div class="detail-header">
+    <a href="#refute_push_event/4" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">refute_push_event(view, event, payload, timeout \\ Application.fetch_env!(:ex_unit, :refute_receive_timeout))</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1646" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Refutes an event will be pushed within timeout.</p><p>The default <code class="inline">timeout</code> is <a href="https://hexdocs.pm/ex_unit/ExUnit.html#configure/1">ExUnit</a>'s
+<code class="inline">refute_receive_timeout</code> (100 ms).</p><h2 id="refute_push_event/4-examples" class="section-heading"><a href="#refute_push_event/4-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">refute_push_event</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;scores&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="3512157587-1">%{</samp><samp class="ss">points</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="bp">_</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;josé&quot;</samp><samp class="p" data-group-id="3512157587-1">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="refute_redirected/1">
+
+  <div class="detail-header">
+    <a href="#refute_redirected/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">refute_redirected(view)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1474" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Refutes a redirect to a given path was performed.</p><p>It returns :ok if the specified redirect isn't already in the mailbox.</p><p>If no path is specified, refutes any redirection on the given view.</p><h2 id="refute_redirected/1-examples" class="section-heading"><a href="#refute_redirected/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="n">render_click</samp><samp class="p" data-group-id="9998071050-1">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:event_that_triggers_redirect_to_path</samp><samp class="p" data-group-id="9998071050-1">)</samp><samp class="w">
+</samp><samp class="ss">:ok</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">refute_redirected</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/wrong_path&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="refute_redirected/2">
+
+  <div class="detail-header">
+    <a href="#refute_redirected/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">refute_redirected(view, to)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1478" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="render/1">
+
+  <div class="detail-header">
+    <a href="#render/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render(view_or_element)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1073" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns the HTML string of the rendered view or element.</p><p>If a view is provided, the entire LiveView is rendered.
+If a view after calling <a href="#with_target/2"><code class="inline">with_target/2</code></a> or an element
+are given, only that particular context is returned.</p><h2 id="render/1-examples" class="section-heading"><a href="#render/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="2975483856-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_html</samp><samp class="p" data-group-id="2975483856-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="2975483856-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="2975483856-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render</samp><samp class="p" data-group-id="2975483856-3">(</samp><samp class="n">view</samp><samp class="p" data-group-id="2975483856-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">~s|&lt;button id=&quot;alarm&quot;&gt;Snooze&lt;/div&gt;|</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="2975483856-4">(</samp><samp class="s">&quot;#alarm&quot;</samp><samp class="p" data-group-id="2975483856-4">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render</samp><samp class="p" data-group-id="2975483856-5">(</samp><samp class="p" data-group-id="2975483856-5">)</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="s">&quot;Snooze&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_async/2">
+
+    <span id="render_async/1"></span>
+
+  <div class="detail-header">
+    <a href="#render_async/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_async(view_or_element, timeout \\ Application.fetch_env!(:ex_unit, :assert_receive_timeout))</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L954" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Awaits all current <code class="inline">assign_async</code> and <code class="inline">start_async</code> for a given LiveView or element.</p><p>It renders the LiveView or Element once complete and returns the result.
+The default <code class="inline">timeout</code> is <a href="https://hexdocs.pm/ex_unit/ExUnit.html#configure/1">ExUnit</a>'s
+<code class="inline">assert_receive_timeout</code> (100 ms).</p><h2 id="render_async/2-examples" class="section-heading"><a href="#render_async/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="6266532717-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">lv</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="6266532717-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="6266532717-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/path&quot;</samp><samp class="p" data-group-id="6266532717-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;loading data...&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_async</samp><samp class="p" data-group-id="6266532717-3">(</samp><samp class="n">lv</samp><samp class="p" data-group-id="6266532717-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;data loaded!&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_blur/2">
+
+    <span id="render_blur/1"></span>
+
+  <div class="detail-header">
+    <a href="#render_blur/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_blur(element, value \\ %{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L838" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a blur event given by <code class="inline">element</code> and returns the rendered result.</p><p>The <code class="inline">element</code> is created with <a href="#element/3"><code class="inline">element/3</code></a> and must point to a single
+element on the page with a <code class="inline">phx-blur</code> attribute in it. The event name
+given set on <code class="inline">phx-blur</code> is then sent to the appropriate LiveView
+(or component if <code class="inline">phx-target</code> is set accordingly). All <code class="inline">phx-value-*</code>
+entries in the element are sent as values. Extra values can be given
+with the <code class="inline">value</code> argument.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_blur/2-examples" class="section-heading"><a href="#render_blur/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="6095395403-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="6095395403-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="6095395403-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="6095395403-2">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="6095395403-3">(</samp><samp class="s">&quot;#inactive&quot;</samp><samp class="p" data-group-id="6095395403-3">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_blur</samp><samp class="p" data-group-id="6095395403-4">(</samp><samp class="p" data-group-id="6095395403-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;Tap to wake&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_blur/3">
+
+  <div class="detail-header">
+    <a href="#render_blur/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_blur(view, event, value)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L855" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a blur event to the view and returns the rendered result.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_blur/3-examples" class="section-heading"><a href="#render_blur/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="2839428426-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="2839428426-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="2839428426-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="2839428426-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 30℉&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_blur</samp><samp class="p" data-group-id="2839428426-3">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:inactive</samp><samp class="p" data-group-id="2839428426-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;Tap to wake&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_change/2">
+
+    <span id="render_change/1"></span>
+
+  <div class="detail-header">
+    <a href="#render_change/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_change(element, value \\ %{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L712" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a form change event given by <code class="inline">element</code> and returns the rendered result.</p><p>The <code class="inline">element</code> is created with <a href="#element/3"><code class="inline">element/3</code></a> and must point to a single
+element on the page with a <code class="inline">phx-change</code> attribute in it. The event name
+given set on <code class="inline">phx-change</code> is then sent to the appropriate LiveView
+(or component if <code class="inline">phx-target</code> is set accordingly). All <code class="inline">phx-value-*</code>
+entries in the element are sent as values.</p><p>If you need to pass any extra values or metadata, such as the &quot;_target&quot;
+parameter, you can do so by giving a map under the <code class="inline">value</code> argument.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_change/2-examples" class="section-heading"><a href="#render_change/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="3804286166-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="3804286166-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="3804286166-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="3804286166-2">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="3804286166-3">(</samp><samp class="s">&quot;form&quot;</samp><samp class="p" data-group-id="3804286166-3">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_change</samp><samp class="p" data-group-id="3804286166-4">(</samp><samp class="p" data-group-id="3804286166-5">%{</samp><samp class="ss">deg</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">123</samp><samp class="p" data-group-id="3804286166-5">}</samp><samp class="p" data-group-id="3804286166-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;123 exceeds limits&quot;</samp><samp class="w">
+
+</samp><samp class="c1"># Passing metadata</samp><samp class="w">
+</samp><samp class="p" data-group-id="3804286166-6">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="3804286166-6">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="3804286166-7">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="3804286166-7">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="3804286166-8">(</samp><samp class="s">&quot;form&quot;</samp><samp class="p" data-group-id="3804286166-8">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_change</samp><samp class="p" data-group-id="3804286166-9">(</samp><samp class="p" data-group-id="3804286166-10">%{</samp><samp class="ss">_target</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3804286166-11">[</samp><samp class="s">&quot;deg&quot;</samp><samp class="p" data-group-id="3804286166-11">]</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">deg</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">123</samp><samp class="p" data-group-id="3804286166-10">}</samp><samp class="p" data-group-id="3804286166-9">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;123 exceeds limits&quot;</samp></code></pre><p>As with <a href="#render_submit/2"><code class="inline">render_submit/2</code></a>, hidden input field values can be provided like so:</p><pre><code class="makeup elixir" translate="no"><samp class="n">refute</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+      </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">form</samp><samp class="p" data-group-id="1744502165-1">(</samp><samp class="s">&quot;#term&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1744502165-2">%{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="1744502165-2">}</samp><samp class="p" data-group-id="1744502165-1">)</samp><samp class="w">
+      </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_change</samp><samp class="p" data-group-id="1744502165-3">(</samp><samp class="p" data-group-id="1744502165-4">%{</samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="1744502165-5">%{</samp><samp class="s">&quot;hidden_field&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;example&quot;</samp><samp class="p" data-group-id="1744502165-5">}</samp><samp class="p" data-group-id="1744502165-4">}</samp><samp class="p" data-group-id="1744502165-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;can&#39;t be blank&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_change/3">
+
+  <div class="detail-header">
+    <a href="#render_change/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_change(view, event, value)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L728" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a form change event to the view and returns the rendered result.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_change/3-examples" class="section-heading"><a href="#render_change/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="0085998940-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="0085998940-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="0085998940-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="0085998940-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 30℉&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_change</samp><samp class="p" data-group-id="0085998940-3">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:validate</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="0085998940-4">%{</samp><samp class="ss">deg</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">123</samp><samp class="p" data-group-id="0085998940-4">}</samp><samp class="p" data-group-id="0085998940-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;123 exceeds limits&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_click/2">
+
+    <span id="render_click/1"></span>
+
+  <div class="detail-header">
+    <a href="#render_click/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_click(element, value \\ %{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L568" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a click event given by <code class="inline">element</code> and returns the rendered result.</p><p>The <code class="inline">element</code> is created with <a href="#element/3"><code class="inline">element/3</code></a> and must point to a single
+element on the page with a <code class="inline">phx-click</code> attribute in it. The event name
+given set on <code class="inline">phx-click</code> is then sent to the appropriate LiveView
+(or component if <code class="inline">phx-target</code> is set accordingly). All <code class="inline">phx-value-*</code>
+entries in the element are sent as values. Extra values can be given
+with the <code class="inline">value</code> argument.</p><p>If the element does not have a <code class="inline">phx-click</code> attribute but it is
+a link (the <code class="inline">&lt;a&gt;</code> tag), the link will be followed accordingly:</p><ul><li>if the link is a <code class="inline">patch</code>, the current view will be patched</li><li>if the link is a <code class="inline">navigate</code>, this function will return
+<code class="inline">{:error, {:live_redirect, %{to: url}}}</code>, which can be followed
+with <a href="#follow_redirect/2"><code class="inline">follow_redirect/2</code></a></li><li>if the link is a regular link, this function will return
+<code class="inline">{:error, {:redirect, %{to: url}}}</code>, which can be followed
+with <a href="#follow_redirect/2"><code class="inline">follow_redirect/2</code></a></li></ul><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_click/2-examples" class="section-heading"><a href="#render_click/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="0927059524-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="0927059524-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="0927059524-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="0927059524-2">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="0927059524-3">(</samp><samp class="s">&quot;button&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;Increment&quot;</samp><samp class="p" data-group-id="0927059524-3">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_click</samp><samp class="p" data-group-id="0927059524-4">(</samp><samp class="p" data-group-id="0927059524-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temperature is: 30℉&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_click/3">
+
+  <div class="detail-header">
+    <a href="#render_click/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_click(view, event, value)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L585" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a click <code class="inline">event</code> to the <code class="inline">view</code> with <code class="inline">value</code> and returns the rendered result.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_click/3-examples" class="section-heading"><a href="#render_click/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="8040859279-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="8040859279-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="8040859279-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="8040859279-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temperature is: 30℉&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_click</samp><samp class="p" data-group-id="8040859279-3">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:inc</samp><samp class="p" data-group-id="8040859279-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temperature is: 31℉&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_component/3">
+
+    <span id="render_component/1"></span>
+
+    <span id="render_component/2"></span>
+
+  <div class="detail-header">
+    <a href="#render_component/3" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_component(component, assigns \\ Macro.escape(%{}), opts \\ [])</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L459" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Renders a component.</p><p>The first argument may either be a function component, as an
+anonymous function:</p><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_component</samp><samp class="p" data-group-id="0880217924-1">(</samp><samp class="o">&amp;</samp><samp class="nc">Weather</samp><samp class="o">.</samp><samp class="n">city</samp><samp class="o">/</samp><samp class="mi">1</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;Kraków&quot;</samp><samp class="p" data-group-id="0880217924-1">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w">
+         </samp><samp class="s">&quot;some markup in component&quot;</samp></code></pre><p>Or a stateful component as a module. In this case, this function
+will mount, update, and render the component. The <code class="inline">:id</code> option is
+a required argument:</p><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_component</samp><samp class="p" data-group-id="5168467775-1">(</samp><samp class="nc">MyComponent</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="5168467775-2">%</samp><samp class="nc" data-group-id="5168467775-2">User</samp><samp class="p" data-group-id="5168467775-2">{</samp><samp class="p" data-group-id="5168467775-2">}</samp><samp class="p" data-group-id="5168467775-1">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w">
+         </samp><samp class="s">&quot;some markup in component&quot;</samp></code></pre><p>If your component is using the router, you can pass it as argument:</p><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_component</samp><samp class="p" data-group-id="4779430980-1">(</samp><samp class="nc">MyComponent</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="4779430980-2">%{</samp><samp class="ss">id</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="4779430980-3">%</samp><samp class="nc" data-group-id="4779430980-3">User</samp><samp class="p" data-group-id="4779430980-3">{</samp><samp class="p" data-group-id="4779430980-3">}</samp><samp class="p" data-group-id="4779430980-2">}</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">router</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">SomeRouter</samp><samp class="p" data-group-id="4779430980-1">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w">
+         </samp><samp class="s">&quot;some markup in component&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_focus/2">
+
+    <span id="render_focus/1"></span>
+
+  <div class="detail-header">
+    <a href="#render_focus/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_focus(element, value \\ %{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L880" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a focus event given by <code class="inline">element</code> and returns the rendered result.</p><p>The <code class="inline">element</code> is created with <a href="#element/3"><code class="inline">element/3</code></a> and must point to a single
+element on the page with a <code class="inline">phx-focus</code> attribute in it. The event name
+given set on <code class="inline">phx-focus</code> is then sent to the appropriate LiveView
+(or component if <code class="inline">phx-target</code> is set accordingly). All <code class="inline">phx-value-*</code>
+entries in the element are sent as values. Extra values can be given
+with the <code class="inline">value</code> argument.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_focus/2-examples" class="section-heading"><a href="#render_focus/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="4642981369-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="4642981369-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="4642981369-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="4642981369-2">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="4642981369-3">(</samp><samp class="s">&quot;#inactive&quot;</samp><samp class="p" data-group-id="4642981369-3">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_focus</samp><samp class="p" data-group-id="4642981369-4">(</samp><samp class="p" data-group-id="4642981369-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;Tap to wake&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_focus/3">
+
+  <div class="detail-header">
+    <a href="#render_focus/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_focus(view, event, value)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L897" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a focus event to the view and returns the rendered result.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_focus/3-examples" class="section-heading"><a href="#render_focus/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="6106482878-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="6106482878-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="6106482878-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="6106482878-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 30℉&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_focus</samp><samp class="p" data-group-id="6106482878-3">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:inactive</samp><samp class="p" data-group-id="6106482878-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;Tap to wake&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_hook/3">
+
+    <span id="render_hook/2"></span>
+
+  <div class="detail-header">
+    <a href="#render_hook/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_hook(view_or_element, event, value \\ %{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L923" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a hook event to the view or an element and returns the rendered result.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_hook/3-examples" class="section-heading"><a href="#render_hook/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="5005374465-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="5005374465-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="5005374465-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="5005374465-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 30℉&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_hook</samp><samp class="p" data-group-id="5005374465-3">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:refresh</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="5005374465-4">%{</samp><samp class="ss">deg</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">32</samp><samp class="p" data-group-id="5005374465-4">}</samp><samp class="p" data-group-id="5005374465-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 32℉&quot;</samp></code></pre><p>If you are pushing events from a hook to a component, then you must pass
+an <code class="inline">element</code>, created with <a href="#element/3"><code class="inline">element/3</code></a>, as first argument and it must point
+to a single element on the page with a <code class="inline">phx-target</code> attribute in it:</p><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="5697404039-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="c">_html</samp><samp class="p" data-group-id="5697404039-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="5697404039-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="5697404039-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="5697404039-3">(</samp><samp class="s">&quot;#thermo-component&quot;</samp><samp class="p" data-group-id="5697404039-3">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_hook</samp><samp class="p" data-group-id="5697404039-4">(</samp><samp class="ss">:refresh</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="5697404039-5">%{</samp><samp class="ss">deg</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">32</samp><samp class="p" data-group-id="5697404039-5">}</samp><samp class="p" data-group-id="5697404039-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 32℉&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_keydown/2">
+
+    <span id="render_keydown/1"></span>
+
+  <div class="detail-header">
+    <a href="#render_keydown/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_keydown(element, value \\ %{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L752" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a keydown event given by <code class="inline">element</code> and returns the rendered result.</p><p>The <code class="inline">element</code> is created with <a href="#element/3"><code class="inline">element/3</code></a> and must point to a single element
+on the page with a <code class="inline">phx-keydown</code> or <code class="inline">phx-window-keydown</code> attribute in it.
+The event name given set on <code class="inline">phx-keydown</code> is then sent to the appropriate
+LiveView (or component if <code class="inline">phx-target</code> is set accordingly). All <code class="inline">phx-value-*</code>
+entries in the element are sent as values. Extra values can be given with
+the <code class="inline">value</code> argument.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_keydown/2-examples" class="section-heading"><a href="#render_keydown/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="6595901070-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="6595901070-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="6595901070-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="6595901070-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 30℉&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="6595901070-3">(</samp><samp class="s">&quot;#inc&quot;</samp><samp class="p" data-group-id="6595901070-3">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_keydown</samp><samp class="p" data-group-id="6595901070-4">(</samp><samp class="p" data-group-id="6595901070-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 31℉&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_keydown/3">
+
+  <div class="detail-header">
+    <a href="#render_keydown/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_keydown(view, event, value)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L772" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a keydown event to the view and returns the rendered result.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_keydown/3-examples" class="section-heading"><a href="#render_keydown/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="2043810929-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="2043810929-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="2043810929-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="2043810929-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 30℉&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_keydown</samp><samp class="p" data-group-id="2043810929-3">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:inc</samp><samp class="p" data-group-id="2043810929-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 31℉&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_keyup/2">
+
+    <span id="render_keyup/1"></span>
+
+  <div class="detail-header">
+    <a href="#render_keyup/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_keyup(element, value \\ %{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L796" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a keyup event given by <code class="inline">element</code> and returns the rendered result.</p><p>The <code class="inline">element</code> is created with <a href="#element/3"><code class="inline">element/3</code></a> and must point to a single
+element on the page with a <code class="inline">phx-keyup</code> or <code class="inline">phx-window-keyup</code> attribute
+in it. The event name given set on <code class="inline">phx-keyup</code> is then sent to the
+appropriate LiveView (or component if <code class="inline">phx-target</code> is set accordingly).
+All <code class="inline">phx-value-*</code> entries in the element are sent as values. Extra values
+can be given with the <code class="inline">value</code> argument.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_keyup/2-examples" class="section-heading"><a href="#render_keyup/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="2513424598-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="2513424598-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="2513424598-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="2513424598-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 30℉&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="2513424598-3">(</samp><samp class="s">&quot;#inc&quot;</samp><samp class="p" data-group-id="2513424598-3">)</samp><samp class="w"> </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_keyup</samp><samp class="p" data-group-id="2513424598-4">(</samp><samp class="p" data-group-id="2513424598-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 31℉&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_keyup/3">
+
+  <div class="detail-header">
+    <a href="#render_keyup/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_keyup(view, event, value)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L813" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a keyup event to the view and returns the rendered result.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_keyup/3-examples" class="section-heading"><a href="#render_keyup/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="3626579953-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="3626579953-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="3626579953-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="3626579953-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 30℉&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_keyup</samp><samp class="p" data-group-id="3626579953-3">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:inc</samp><samp class="p" data-group-id="3626579953-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 31℉&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_patch/2">
+
+  <div class="detail-header">
+    <a href="#render_patch/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_patch(view, path)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L993" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Simulates a <code class="inline">push_patch</code> to the given <code class="inline">path</code> and returns the rendered result.</p>
+  </section>
+</section>
+<section class="detail" id="render_submit/2">
+
+    <span id="render_submit/1"></span>
+
+  <div class="detail-header">
+    <a href="#render_submit/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_submit(element, value \\ %{})</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L655" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a form submit event given by <code class="inline">element</code> and returns the rendered result.</p><p>The <code class="inline">element</code> is created with <a href="#element/3"><code class="inline">element/3</code></a> and must point to a single
+element on the page with a <code class="inline">phx-submit</code> attribute in it. The event name
+given set on <code class="inline">phx-submit</code> is then sent to the appropriate LiveView
+(or component if <code class="inline">phx-target</code> is set accordingly). All <code class="inline">phx-value-*</code>
+entries in the element are sent as values. Extra values, including hidden
+input fields, can be given with the <code class="inline">value</code> argument.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_submit/2-examples" class="section-heading"><a href="#render_submit/2-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="5795865465-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="5795865465-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="5795865465-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="5795865465-2">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">element</samp><samp class="p" data-group-id="5795865465-3">(</samp><samp class="s">&quot;form&quot;</samp><samp class="p" data-group-id="5795865465-3">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_submit</samp><samp class="p" data-group-id="5795865465-4">(</samp><samp class="p" data-group-id="5795865465-5">%{</samp><samp class="ss">deg</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">123</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">avatar</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="n">upload</samp><samp class="p" data-group-id="5795865465-5">}</samp><samp class="p" data-group-id="5795865465-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;123 exceeds limits&quot;</samp></code></pre><p>To submit a form along with some hidden input values:</p><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">form</samp><samp class="p" data-group-id="3863764956-1">(</samp><samp class="s">&quot;#term&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3863764956-2">%{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="3863764956-2">}</samp><samp class="p" data-group-id="3863764956-1">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_submit</samp><samp class="p" data-group-id="3863764956-3">(</samp><samp class="p" data-group-id="3863764956-4">%{</samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="3863764956-5">%{</samp><samp class="s">&quot;hidden_field&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;example&quot;</samp><samp class="p" data-group-id="3863764956-5">}</samp><samp class="p" data-group-id="3863764956-4">}</samp><samp class="p" data-group-id="3863764956-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;Name updated&quot;</samp></code></pre><p>To submit a form by a specific submit element via <a href="#put_submitter/2"><code class="inline">put_submitter/2</code></a>:</p><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">form</samp><samp class="p" data-group-id="9472089868-1">(</samp><samp class="s">&quot;#term&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">user</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="p" data-group-id="9472089868-2">%{</samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;hello&quot;</samp><samp class="p" data-group-id="9472089868-2">}</samp><samp class="p" data-group-id="9472089868-1">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">put_submitter</samp><samp class="p" data-group-id="9472089868-3">(</samp><samp class="s">&quot;button[name=example_action]&quot;</samp><samp class="p" data-group-id="9472089868-3">)</samp><samp class="w">
+       </samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_submit</samp><samp class="p" data-group-id="9472089868-4">(</samp><samp class="p" data-group-id="9472089868-4">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;Action taken&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_submit/3">
+
+  <div class="detail-header">
+    <a href="#render_submit/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_submit(view, event, value)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L671" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sends a form submit event to the view and returns the rendered result.</p><p>It returns the contents of the whole LiveView or an <code class="inline">{:error, redirect}</code>
+tuple.</p><h2 id="render_submit/3-examples" class="section-heading"><a href="#render_submit/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="p" data-group-id="2476684223-1">{</samp><samp class="ss">:ok</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="p" data-group-id="2476684223-1">}</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">live</samp><samp class="p" data-group-id="2476684223-2">(</samp><samp class="n">conn</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;/thermo&quot;</samp><samp class="p" data-group-id="2476684223-2">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">html</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 30℉&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_submit</samp><samp class="p" data-group-id="2476684223-3">(</samp><samp class="n">view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:refresh</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="2476684223-4">%{</samp><samp class="ss">deg</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">32</samp><samp class="p" data-group-id="2476684223-4">}</samp><samp class="p" data-group-id="2476684223-3">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;The temp is: 32℉&quot;</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="render_upload/3">
+
+    <span id="render_upload/2"></span>
+
+  <div class="detail-header">
+    <a href="#render_upload/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_upload(upload, entry_name, percent \\ 100)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1967" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Performs an upload of a file input and renders the result.</p><p>See <a href="#file_input/4"><code class="inline">file_input/4</code></a> for details on building a file input.</p><h2 id="render_upload/3-examples" class="section-heading"><a href="#render_upload/3-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><p>Given the following LiveView template:</p><pre><code class="makeup heex" translate="no"><samp class="p" data-group-id="2324088865-1">&lt;%=</samp><samp class="w"> </samp><samp class="k">for</samp><samp class="w"> </samp><samp class="n">entry</samp><samp class="w"> </samp><samp class="o">&lt;-</samp><samp class="w"> </samp><samp class="na">@uploads</samp><samp class="o">.</samp><samp class="n">avatar</samp><samp class="o">.</samp><samp class="n">entries</samp><samp class="w"> </samp><samp class="k" data-group-id="2324088865-ex-1">do</samp><samp class="w"> </samp><samp class="p" data-group-id="2324088865-1">%&gt;</samp><samp class="w">
+</samp><samp class="n">  </samp><samp class="p" data-group-id="2324088865-2">{</samp><samp class="n">entry</samp><samp class="o">.</samp><samp class="n">name</samp><samp class="p" data-group-id="2324088865-2">}</samp><samp class="n">: </samp><samp class="p" data-group-id="2324088865-3">{</samp><samp class="n">entry</samp><samp class="o">.</samp><samp class="n">progress</samp><samp class="p" data-group-id="2324088865-3">}</samp><samp class="n">%
+</samp><samp class="p" data-group-id="2324088865-4">&lt;%</samp><samp class="w"> </samp><samp class="k" data-group-id="2324088865-ex-1">end</samp><samp class="w"> </samp><samp class="p" data-group-id="2324088865-4">%&gt;</samp></code></pre><p>Your test case can assert the uploaded content:</p><pre><code class="makeup elixir" translate="no"><samp class="n">avatar</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">file_input</samp><samp class="p" data-group-id="6061691682-1">(</samp><samp class="n">lv</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;#my-form-id&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="ss">:avatar</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="6061691682-2">[</samp><samp class="w">
+  </samp><samp class="p" data-group-id="6061691682-3">%{</samp><samp class="w">
+    </samp><samp class="ss">last_modified</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1_594_171_879_000</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">name</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;myfile.jpeg&quot;</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">content</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="nc">File</samp><samp class="o">.</samp><samp class="n">read!</samp><samp class="p" data-group-id="6061691682-4">(</samp><samp class="s">&quot;myfile.jpg&quot;</samp><samp class="p" data-group-id="6061691682-4">)</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">size</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="mi">1_396_009</samp><samp class="p">,</samp><samp class="w">
+    </samp><samp class="ss">type</samp><samp class="p">:</samp><samp class="w"> </samp><samp class="s">&quot;image/jpeg&quot;</samp><samp class="w">
+  </samp><samp class="p" data-group-id="6061691682-3">}</samp><samp class="w">
+</samp><samp class="p" data-group-id="6061691682-2">]</samp><samp class="p" data-group-id="6061691682-1">)</samp><samp class="w">
+
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_upload</samp><samp class="p" data-group-id="6061691682-5">(</samp><samp class="n">avatar</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;myfile.jpeg&quot;</samp><samp class="p" data-group-id="6061691682-5">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;100%&quot;</samp></code></pre><p>By default, the entire file is chunked to the server, but an optional
+percentage to chunk can be passed to test chunk-by-chunk uploads:</p><pre><code class="makeup elixir" translate="no"><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_upload</samp><samp class="p" data-group-id="9700164659-1">(</samp><samp class="n">avatar</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;myfile.jpeg&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">49</samp><samp class="p" data-group-id="9700164659-1">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;49%&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">render_upload</samp><samp class="p" data-group-id="9700164659-2">(</samp><samp class="n">avatar</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="s">&quot;myfile.jpeg&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="mi">51</samp><samp class="p" data-group-id="9700164659-2">)</samp><samp class="w"> </samp><samp class="o">=~</samp><samp class="w"> </samp><samp class="s">&quot;100%&quot;</samp></code></pre><p>Before making assertions about the how the upload is consumed server-side,
+you will need to call <a href="#render_submit/1"><code class="inline">render_submit/1</code></a>.</p><p>In the case where an upload progress callback issues a navigate, patch, or
+redirect, the following will be returned:</p><ul><li>for a patch, the current view will be patched</li><li>for a navigate, this function will return
+<code class="inline">{:error, {:live_redirect, %{to: url}}}</code>, which can be followed
+with <a href="#follow_redirect/2"><code class="inline">follow_redirect/2</code></a></li><li>for a regular redirect, this function will return
+<code class="inline">{:error, {:redirect, %{to: url}}}</code>, which can be followed
+with <a href="#follow_redirect/2"><code class="inline">follow_redirect/2</code></a></li></ul>
+  </section>
+</section>
+<section class="detail" id="rendered_to_string/1">
+
+  <div class="detail-header">
+    <a href="#rendered_to_string/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">rendered_to_string(rendered)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L530" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Converts a rendered template to a string.</p><h2 id="rendered_to_string/1-examples" class="section-heading"><a href="#rendered_to_string/1-examples" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Examples</span></h2><pre><code class="makeup elixir" translate="no"><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Phoenix.Component</samp><samp class="w">
+</samp><samp class="kn">import</samp><samp class="w"> </samp><samp class="nc">Phoenix.LiveViewTest</samp><samp class="w">
+
+</samp><samp class="n">test</samp><samp class="w"> </samp><samp class="s">&quot;greets&quot;</samp><samp class="w"> </samp><samp class="k" data-group-id="3057385792-1">do</samp><samp class="w">
+  </samp><samp class="n">assigns</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="p" data-group-id="3057385792-2">%{</samp><samp class="p" data-group-id="3057385792-2">}</samp><samp class="w">
+  </samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">rendered_to_string</samp><samp class="p" data-group-id="3057385792-3">(</samp><samp class="sx">~H&quot;&quot;&quot;</samp><samp class="w">
+</samp><samp class="w">         </samp><samp class="p">&lt;</samp><samp class="nc">MyComponents</samp><samp class="o">.</samp><samp class="n">greet</samp><samp class="w"> </samp><samp class="na">name</samp><samp class="p">=</samp><samp class="p">&quot;</samp><samp class="s2">Mary</samp><samp class="p">&quot;</samp><samp class="w"> </samp><samp class="p">/&gt;</samp><samp class="w">
+</samp><samp class="w">         </samp><samp class="sx">&quot;&quot;&quot;</samp><samp class="p" data-group-id="3057385792-3">)</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w">
+           </samp><samp class="s">&quot;&lt;div&gt;Hello, Mary!&lt;/div&gt;&quot;</samp><samp class="w">
+</samp><samp class="k" data-group-id="3057385792-1">end</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="submit_form/2">
+
+  <div class="detail-header">
+    <a href="#submit_form/2" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">submit_form(form, conn)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1881" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Receives a form element and submits the HTTP request through the plug pipeline.</p><p>Imagine you have a LiveView that validates form data, but submits the form to
+a controller via the normal form <code class="inline">action</code> attribute. This is especially useful
+in scenarios where the result of a form submit needs to write to the plug session.</p><p>You can follow submit the form with the <code class="inline">%Plug.Conn{}</code>, like this:</p><pre><code class="makeup elixir" translate="no"><samp class="n">form</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">form</samp><samp class="p" data-group-id="9881033898-1">(</samp><samp class="n">live_view</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">selector</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="9881033898-2">%{</samp><samp class="s">&quot;form&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;data&quot;</samp><samp class="p" data-group-id="9881033898-2">}</samp><samp class="p" data-group-id="9881033898-1">)</samp><samp class="w">
+
+</samp><samp class="c1"># Now submit the LiveView form to the plug pipeline</samp><samp class="w">
+</samp><samp class="n">conn</samp><samp class="w"> </samp><samp class="o">=</samp><samp class="w"> </samp><samp class="n">submit_form</samp><samp class="p" data-group-id="9881033898-3">(</samp><samp class="n">form</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="n">conn</samp><samp class="p" data-group-id="9881033898-3">)</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">conn</samp><samp class="o">.</samp><samp class="n">method</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="s">&quot;POST&quot;</samp><samp class="w">
+</samp><samp class="n">assert</samp><samp class="w"> </samp><samp class="n">conn</samp><samp class="o">.</samp><samp class="n">params</samp><samp class="w"> </samp><samp class="o">==</samp><samp class="w"> </samp><samp class="p" data-group-id="9881033898-4">%{</samp><samp class="s">&quot;form&quot;</samp><samp class="w"> </samp><samp class="p">=&gt;</samp><samp class="w"> </samp><samp class="s">&quot;data&quot;</samp><samp class="p" data-group-id="9881033898-4">}</samp></code></pre>
+  </section>
+</section>
+<section class="detail" id="with_target/2">
+
+  <div class="detail-header">
+    <a href="#with_target/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">with_target(view, target)</h1>
+
+
+        <a href="https://github.com/phoenixframework/phoenix_live_view/blob/v1.1.2/lib/phoenix_live_view/test/live_view_test.ex#L1093" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sets the target of the view for events.</p><p>This emulates <code class="inline">phx-target</code> directly in tests, without
+having to dispatch the event to a specific element.
+This can be useful for invoking events to one or
+multiple components at the same time:</p><pre><code class="makeup elixir" translate="no"><samp class="n">view</samp><samp class="w">
+</samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">with_target</samp><samp class="p" data-group-id="7729174278-1">(</samp><samp class="s">&quot;#user-1,#user-2&quot;</samp><samp class="p" data-group-id="7729174278-1">)</samp><samp class="w">
+</samp><samp class="o">|&gt;</samp><samp class="w"> </samp><samp class="n">render_click</samp><samp class="p" data-group-id="7729174278-2">(</samp><samp class="s">&quot;Hide&quot;</samp><samp class="p">,</samp><samp class="w"> </samp><samp class="p" data-group-id="7729174278-3">%{</samp><samp class="p" data-group-id="7729174278-3">}</samp><samp class="p" data-group-id="7729174278-2">)</samp></code></pre>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>

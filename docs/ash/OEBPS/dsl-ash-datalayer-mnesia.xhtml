@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.DataLayer.Mnesia - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">Ash.DataLayer.Mnesia</h1>
+<p>An Mnesia backed Ash Datalayer.</p><p>In your application initialization, you will need to call <code class="inline">Mnesia.create_schema([node()])</code>.</p><p>Additionally, you will want to create your mnesia tables there.</p><p>This data layer is <em>unoptimized</em>, fetching all records from a table and filtering them
+in memory. For that reason, it is not recommended to use it with large amounts of data. It can be
+great for prototyping or light usage, though.</p><h2 id="mnesia">mnesia</h2><p>A section for configuring the mnesia data layer</p><h3 id="examples">Examples</h3><pre><code class="makeup elixir" translate="no"><span class="n">mnesia</span><span class="w"> </span><span class="k" data-group-id="0433743784-1">do</span><span class="w">
+  </span><span class="n">table</span><span class="w"> </span><span class="ss">:custom_table</span><span class="w">
+</span><span class="k" data-group-id="0433743784-1">end</span><span class="w">
+</span></code></pre><h3 id="options">Options</h3><table><thead><tr><th style="text-align: left;">Name</th><th style="text-align: left;">Type</th><th style="text-align: left;">Default</th><th style="text-align: left;">Docs</th></tr></thead><tbody><tr><td style="text-align: left;"><a href="#mnesia-table" id="mnesia-table"><code class="inline">table</code></a></td><td style="text-align: left;"><code class="inline">atom</code></td><td style="text-align: left;"></td><td style="text-align: left;">The table name to use, defaults to the name of the resource</td></tr></tbody></table><style type="text/css">.spark-required::after { content: "*"; color: red !important; }</style>
+
+  </body>
+</html>

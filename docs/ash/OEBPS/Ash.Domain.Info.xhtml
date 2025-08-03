@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ash.Domain.Info - ash v3.5.33</title>
+    <meta name="generator" content="ExDoc v0.38.2" />
+    <link type="text/css" rel="stylesheet" href="dist/epub-elixir-FNUUKFP7.css" />
+    <script src="dist/epub-4WIP524F.js"></script>
+
+  </head>
+  <body class="content-inner">
+
+    <h1 id="content">
+Ash.Domain.Info 
+    </h1>
+
+
+      <section id="moduledoc" class="docstring">
+<p>Introspection tools for Ash.Domain</p>
+      </section>
+
+
+      <section id="summary" class="details-list">
+        <h1 class="section-heading">Summary</h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#allow/1" data-no-tooltip="" translate="no">allow(domain)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The allow MFA for a domain</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#allow_unregistered?/1" data-no-tooltip="" translate="no">allow_unregistered?(domain)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not the domain allows unregistered resources to be used with it</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#authorize/1" data-no-tooltip="" translate="no">authorize(domain)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>When authorization should happen for a given domain</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#depend_on_resources/1" data-no-tooltip="" translate="no">depend_on_resources(domain)</a>
+
+          <span class="deprecated" title="Use `Ash.Domain.Info.resources/1` instead. This macro is no longer necessary">deprecated</span>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the resources of a domain module. Can be used at compile time.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#description/1" data-no-tooltip="" translate="no">description(domain)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The description of the domain</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#find_manage_relationships_with_identity_not_configured/1" data-no-tooltip="" translate="no">find_manage_relationships_with_identity_not_configured(otp_app)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#related_domain/3" data-no-tooltip="" translate="no">related_domain(subject, relationship, default \\ nil)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Determine what domain to use when interacting with a related resource.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#require_actor?/1" data-no-tooltip="" translate="no">require_actor?(domain)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Whether or not the actor is always required for a domain</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#resource/2" data-no-tooltip="" translate="no">resource(domain, resource)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns <code class="inline">{:ok, resource}</code> if the resource can be used by the domain, or <code class="inline">{:error, error}</code>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#resource_references/1" data-no-tooltip="" translate="no">resource_references(domain)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the resource references of a domain module. DO NOT USE AT COMPILE TIME.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#resources/1" data-no-tooltip="" translate="no">resources(domain)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the resources of a domain module.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#short_name/1" data-no-tooltip="" translate="no">short_name(domain)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The short name for a domain</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#span_name/3" data-no-tooltip="" translate="no">span_name(domain, resource, action)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The span_name for a domain and resource combination</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#telemetry_event_name/2" data-no-tooltip="" translate="no">telemetry_event_name(domain, name)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Names a telemetry event for a given domain/resource combo</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#timeout/1" data-no-tooltip="" translate="no">timeout(domain)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The execution timeout for a domain</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#trace_name/1" data-no-tooltip="" translate="no">trace_name(domain)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>The trace name for a domain</p></div>
+
+    </div>
+
+</div>
+
+      </section>
+
+
+      <section id="functions" class="details-list">
+        <h1 class="section-heading">Functions</h1>
+        <div class="functions-list">
+<section class="detail" id="allow/1">
+
+  <div class="detail-header">
+    <a href="#allow/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">allow(domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L208" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> allow(<a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>() | <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">mfa</a>() | nil</pre>
+
+      </div>
+
+<p>The allow MFA for a domain</p>
+  </section>
+</section>
+<section class="detail" id="allow_unregistered?/1">
+
+  <div class="detail-header">
+    <a href="#allow_unregistered?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">allow_unregistered?(domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L256" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> allow_unregistered?(<a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>() | <a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | nil</pre>
+
+      </div>
+
+<p>Whether or not the domain allows unregistered resources to be used with it</p>
+  </section>
+</section>
+<section class="detail" id="authorize/1">
+
+  <div class="detail-header">
+    <a href="#authorize/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">authorize(domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L250" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> authorize(<a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()) :: :always | :by_default | :when_requested</pre>
+
+      </div>
+
+<p>When authorization should happen for a given domain</p>
+  </section>
+</section>
+<section class="detail" id="depend_on_resources/1">
+
+  <div class="detail-header">
+    <a href="#depend_on_resources/1" class="detail-link" data-no-tooltip="" aria-label="Link to this macro">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">depend_on_resources(domain)</h1>
+
+        <span class="note">(macro)</span>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L185" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+    <div class="deprecated">
+      This macro is deprecated. Use `Ash.Domain.Info.resources/1` instead. This macro is no longer necessary.
+    </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> depend_on_resources(<a href="https://hexdocs.pm/elixir/Macro.html#t:t/0">Macro.t</a>()) :: <a href="https://hexdocs.pm/elixir/Macro.html#t:t/0">Macro.t</a>()</pre>
+
+      </div>
+
+<p>Gets the resources of a domain module. Can be used at compile time.</p><p>Liberal use of this can greatly increase compile times, or even cause compiler deadlocks.
+Use with care.</p>
+  </section>
+</section>
+<section class="detail" id="description/1">
+
+  <div class="detail-header">
+    <a href="#description/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">description(domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L202" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> description(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>The description of the domain</p>
+  </section>
+</section>
+<section class="detail" id="find_manage_relationships_with_identity_not_configured/1">
+
+  <div class="detail-header">
+    <a href="#find_manage_relationships_with_identity_not_configured/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">find_manage_relationships_with_identity_not_configured(otp_app)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L117" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="related_domain/3">
+
+    <span id="related_domain/2"></span>
+
+  <div class="detail-header">
+    <a href="#related_domain/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">related_domain(subject, relationship, default \\ nil)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L46" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> related_domain(
+  <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>() | <a href="Ash.Query.xhtml#t:t/0">Ash.Query.t</a>() | <a href="Ash.Changeset.xhtml#t:t/0">Ash.Changeset.t</a>() | <a href="Ash.ActionInput.xhtml#t:t/0">Ash.ActionInput.t</a>(),
+  <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()
+  | <a href="Ash.Resource.Relationships.xhtml#t:relationship/0">Ash.Resource.Relationships.relationship</a>()
+  | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="Ash.Resource.Relationships.xhtml#t:relationship/0">Ash.Resource.Relationships.relationship</a>()],
+  <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>() | nil
+) :: <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()</pre>
+
+      </div>
+
+<p>Determine what domain to use when interacting with a related resource.</p><p>We choose the first domain found in the following order:</p><ul><li><code class="inline">relationship.domain</code>, i.e an explicitly configured domain for a relationship</li><li><code class="inline">resource.domain</code>, i.e. the domain the resource declares</li><li><code class="inline">subject.domain</code>, i.e. the domain of the query, changeset or action input (if it has one)</li><li><code class="inline">default</code>, the default domain provided as the third argument</li></ul>
+  </section>
+</section>
+<section class="detail" id="require_actor?/1">
+
+  <div class="detail-header">
+    <a href="#require_actor?/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">require_actor?(domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L244" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> require_actor?(<a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()</pre>
+
+      </div>
+
+<p>Whether or not the actor is always required for a domain</p>
+  </section>
+</section>
+<section class="detail" id="resource/2">
+
+  <div class="detail-header">
+    <a href="#resource/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">resource(domain, resource)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L263" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Returns <code class="inline">{:ok, resource}</code> if the resource can be used by the domain, or <code class="inline">{:error, error}</code>.</p>
+  </section>
+</section>
+<section class="detail" id="resource_references/1">
+
+  <div class="detail-header">
+    <a href="#resource_references/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">resource_references(domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L25" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> resource_references(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()) :: [
+  <a href="Ash.Domain.Dsl.ResourceReference.xhtml#t:t/0">Ash.Domain.Dsl.ResourceReference.t</a>()
+]</pre>
+
+      </div>
+
+<p>Gets the resource references of a domain module. DO NOT USE AT COMPILE TIME.</p><p>If you need the resource list at compile time, use <a href="#depend_on_resources/1"><code class="inline">depend_on_resources/1</code></a></p>
+  </section>
+</section>
+<section class="detail" id="resources/1">
+
+  <div class="detail-header">
+    <a href="#resources/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">resources(domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L12" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> resources(<a href="https://hexdocs.pm/spark/2.2.67/Spark.Dsl.html#t:t/0">Spark.Dsl.t</a>() | <a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()) :: [<a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>()]</pre>
+
+      </div>
+
+<p>Gets the resources of a domain module.</p>
+  </section>
+</section>
+<section class="detail" id="short_name/1">
+
+  <div class="detail-header">
+    <a href="#short_name/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">short_name(domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L220" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> short_name(<a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()) :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()</pre>
+
+      </div>
+
+<p>The short name for a domain</p>
+  </section>
+</section>
+<section class="detail" id="span_name/3">
+
+  <div class="detail-header">
+    <a href="#span_name/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">span_name(domain, resource, action)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L232" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> span_name(<a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>(), <a href="Ash.Resource.xhtml#t:t/0">Ash.Resource.t</a>(), action :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()) ::
+  <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>The span_name for a domain and resource combination</p>
+  </section>
+</section>
+<section class="detail" id="telemetry_event_name/2">
+
+  <div class="detail-header">
+    <a href="#telemetry_event_name/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">telemetry_event_name(domain, name)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L238" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> telemetry_event_name(<a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()]) :: [<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()]</pre>
+
+      </div>
+
+<p>Names a telemetry event for a given domain/resource combo</p>
+  </section>
+</section>
+<section class="detail" id="timeout/1">
+
+  <div class="detail-header">
+    <a href="#timeout/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">timeout(domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L214" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> timeout(<a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()) :: nil | :infinity | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>()</pre>
+
+      </div>
+
+<p>The execution timeout for a domain</p>
+  </section>
+</section>
+<section class="detail" id="trace_name/1">
+
+  <div class="detail-header">
+    <a href="#trace_name/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">trace_name(domain)</h1>
+
+
+        <a href="https://github.com/ash-project/ash/blob/v3.5.33/lib/ash/domain/info.ex#L226" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">@spec</span> trace_name(<a href="Ash.Domain.xhtml#t:t/0">Ash.Domain.t</a>()) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>The trace name for a domain</p>
+  </section>
+</section>
+
+        </div>
+      </section>
+
+
+  </body>
+</html>
