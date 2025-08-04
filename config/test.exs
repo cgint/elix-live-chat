@@ -21,5 +21,4 @@ config :logger, level: :warning
 config :phoenix, :plug_init_mode, :runtime
 
 # Enable helpful, but potentially expensive runtime checks
-config :phoenix_live_view,
-  enable_expensive_runtime_checks: true
+config :live_ai_chat, :ai_client, LiveAiChat.AIClientMock

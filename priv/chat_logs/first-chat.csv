@@ -1,1 +1,6 @@
 user,Hello
+user,hi
+user,hello
+user,ahoi
+user,helllo
+assistant," This is a dummy response from the AI, streamed to you one word at a time."

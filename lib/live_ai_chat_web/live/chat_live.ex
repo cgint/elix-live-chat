@@ -2,7 +2,6 @@ defmodule LiveAiChatWeb.ChatLive do
   use LiveAiChatWeb, :live_view
 
   alias LiveAiChat.CsvStorage
-  alias LiveAiChat.AIClient
 
   @impl true
   def mount(_params, _session, socket) do
@@ -28,7 +27,7 @@ defmodule LiveAiChatWeb.ChatLive do
   end
 
   @impl true
-  def handle_event("send_message", %{"message" => %{"content" => content}}, socket) do
+  def handle_event("send_message", %{"content" => content}, socket) do
     active_chat_id = socket.assigns.active_chat_id
 
     if content != "" do
@@ -39,8 +38,10 @@ defmodule LiveAiChatWeb.ChatLive do
         stream_insert(socket, :messages, user_message)
         |> assign(form: to_form(%{"content" => ""}))
 
+      live_view_pid = self()
       Task.Supervisor.start_child(LiveAiChat.TaskSupervisor, fn ->
-        AIClient.stream_reply(self(), user_message)
+        ai_client = Application.get_env(:live_ai_chat, :ai_client, LiveAiChat.AIClient.Dummy)
+        ai_client.stream_reply(live_view_pid, user_message)
       end)
 
       {:noreply, socket}
@@ -75,6 +76,7 @@ defmodule LiveAiChatWeb.ChatLive do
     # Persist the final AI message
     final_message = socket.assigns.streaming_ai_response
     CsvStorage.append_message(socket.assigns.active_chat_id, final_message)
+
     {:noreply, assign(socket, :streaming_ai_response, nil)}
   end
 
