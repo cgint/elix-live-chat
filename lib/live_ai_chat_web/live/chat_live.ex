@@ -35,36 +35,51 @@ defmodule LiveAiChatWeb.ChatLive do
 
   @impl true
   def handle_event("select_chat", %{"chat-id" => chat_id}, socket) do
-    socket = assign(socket, :active_chat_id, chat_id)
-    {:noreply, load_messages(socket, chat_id)}
+    # Prevent chat switching during AI response processing
+    if socket.assigns.streaming_ai_response == nil and not socket.assigns.processing_request do
+      socket = assign(socket, :active_chat_id, chat_id)
+      {:noreply, load_messages(socket, chat_id)}
+    else
+      {:noreply, socket}
+    end
   end
 
   @impl true
   def handle_event("new_chat", _params, socket) do
-    # Generate a unique chat ID with timestamp
-    chat_id = "chat-#{System.system_time(:second)}"
+    # Prevent new chat creation during AI response processing
+    if socket.assigns.streaming_ai_response == nil and not socket.assigns.processing_request do
+      # Generate a unique chat ID with timestamp
+      chat_id = "chat-#{System.system_time(:second)}"
 
-    case CsvStorage.create_chat(chat_id) do
-      :ok ->
-        chats = CsvStorage.list_chats()
-        socket =
-          assign(socket,
-            chats: chats,
-            active_chat_id: chat_id,
-            editing_chat_id: nil
-          )
-          |> stream(:messages, [])
-        {:noreply, socket}
-      {:error, _reason} ->
-        # Could add flash message here for error handling
-        {:noreply, socket}
+      case CsvStorage.create_chat(chat_id) do
+        :ok ->
+          chats = CsvStorage.list_chats()
+          socket =
+            assign(socket,
+              chats: chats,
+              active_chat_id: chat_id,
+              editing_chat_id: nil
+            )
+            |> stream(:messages, [])
+          {:noreply, socket}
+        {:error, _reason} ->
+          # Could add flash message here for error handling
+          {:noreply, socket}
+      end
+    else
+      {:noreply, socket}
     end
   end
 
   @impl true
   def handle_event("start_rename", %{"chat-id" => chat_id}, socket) do
-    socket = assign(socket, :editing_chat_id, chat_id)
-    {:noreply, socket}
+    # Prevent rename during AI response processing
+    if socket.assigns.streaming_ai_response == nil and not socket.assigns.processing_request do
+      socket = assign(socket, :editing_chat_id, chat_id)
+      {:noreply, socket}
+    else
+      {:noreply, socket}
+    end
   end
 
   @impl true
@@ -102,23 +117,28 @@ defmodule LiveAiChatWeb.ChatLive do
 
   @impl true
   def handle_event("delete_chat", %{"chat-id" => chat_id}, socket) do
-    case CsvStorage.delete_chat(chat_id) do
-      :ok ->
-        chats = CsvStorage.list_chats()
-        # If we deleted the active chat, select the first available chat
-        active_chat_id = if socket.assigns.active_chat_id == chat_id do
-          List.first(chats)
-        else
-          socket.assigns.active_chat_id
-        end
+    # Prevent delete during AI response processing
+    if socket.assigns.streaming_ai_response == nil and not socket.assigns.processing_request do
+      case CsvStorage.delete_chat(chat_id) do
+        :ok ->
+          chats = CsvStorage.list_chats()
+          # If we deleted the active chat, select the first available chat
+          active_chat_id = if socket.assigns.active_chat_id == chat_id do
+            List.first(chats)
+          else
+            socket.assigns.active_chat_id
+          end
 
-        socket =
-          assign(socket, chats: chats, active_chat_id: active_chat_id)
-          |> load_messages(active_chat_id)
-        {:noreply, socket}
-      {:error, _reason} ->
-        # Could add flash message here for error handling
-        {:noreply, socket}
+          socket =
+            assign(socket, chats: chats, active_chat_id: active_chat_id)
+            |> load_messages(active_chat_id)
+          {:noreply, socket}
+        {:error, _reason} ->
+          # Could add flash message here for error handling
+          {:noreply, socket}
+      end
+    else
+      {:noreply, socket}
     end
   end
 
