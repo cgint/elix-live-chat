@@ -13,6 +13,10 @@ defmodule LiveAiChat.Application do
       {Phoenix.PubSub, name: LiveAiChat.PubSub},
       # Start a worker by calling: LiveAiChat.Worker.start_link(arg)
       # {LiveAiChat.Worker, arg},
+      # Start the CsvStorage GenServer
+      LiveAiChat.CsvStorage,
+      # Start the Task supervisor for AI tasks
+      {Task.Supervisor, name: LiveAiChat.TaskSupervisor},
       # Start to serve requests, typically the last entry
       LiveAiChatWeb.Endpoint
     ]
