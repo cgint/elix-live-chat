@@ -153,19 +153,33 @@
               <.input
                 field={@form[:content]}
                 type="text"
-                class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
-                placeholder="Type your message..."
+                class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                placeholder={if @processing_request or @streaming_ai_response, do: "AI is responding...", else: "Type your message..."}
+                disabled={@processing_request or @streaming_ai_response}
               />
             </div>
           </div>
           <div class="ml-4">
-            <button class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
-              <span>Send</span>
-              <span class="ml-2">
-                <svg class="w-4 h-4 transform rotate-45 -mt-px" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                </svg>
-              </span>
+            <button 
+              type="submit"
+              disabled={@processing_request or @streaming_ai_response}
+              class={"flex items-center justify-center rounded-xl text-white px-4 py-1 flex-shrink-0 #{if @processing_request or @streaming_ai_response, do: "bg-gray-400 cursor-not-allowed", else: "bg-indigo-500 hover:bg-indigo-600"}"}
+            >
+              <%= if @processing_request or @streaming_ai_response do %>
+                <span>...</span>
+                <span class="ml-2">
+                  <svg class="animate-spin w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                  </svg>
+                </span>
+              <% else %>
+                <span>Send</span>
+                <span class="ml-2">
+                  <svg class="w-4 h-4 transform rotate-45 -mt-px" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                  </svg>
+                </span>
+              <% end %>
             </button>
           </div>
         </.form>

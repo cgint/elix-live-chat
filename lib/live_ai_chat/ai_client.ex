@@ -128,10 +128,10 @@ defmodule LiveAiChat.AIClient do
 
     defp parse_streaming_response(response_body) when is_list(response_body) do
       # Handle list of response objects (streaming format)
-      content_parts = 
+      content_parts =
         response_body
         |> Enum.flat_map(&extract_text_content/1)
-      
+
       case content_parts do
         [] -> {:error, "No content found in response"}
         parts -> {:ok, Enum.join(parts, "")}
@@ -141,14 +141,14 @@ defmodule LiveAiChat.AIClient do
     defp parse_streaming_response(response_body) when is_binary(response_body) do
       # Handle streaming response format - each line should be a JSON object
       lines = String.split(response_body, "\n")
-      
-      content_parts = 
+
+      content_parts =
         lines
         |> Enum.filter(&(String.trim(&1) != ""))
         |> Enum.map(&parse_json_line/1)
         |> Enum.filter(&(&1 != nil))
         |> Enum.flat_map(&extract_text_content/1)
-      
+
       case content_parts do
         [] -> {:error, "No content found in response"}
         parts -> {:ok, Enum.join(parts, "")}

@@ -49,35 +49,35 @@ defmodule LiveAiChat.Application do
           default_creds_path = Path.join([
             System.user_home!(),
             ".config",
-            "gcloud", 
+            "gcloud",
             "application_default_credentials.json"
           ])
-          
+
           if File.exists?(default_creds_path) do
             {:refresh_token, File.read!(default_creds_path) |> Jason.decode!()}
           else
             raise """
             Google Cloud authentication not configured.
-            
+
             Please run one of the following:
-            
+
             1. Quick setup with gcloud CLI:
                export VERTEXAI_PROJECT="gen-lang-client-0910640178"
                export VERTEXAI_LOCATION="europe-west1"
                gcloud auth application-default login
-            
+
             2. Or use a service account key:
                export GOOGLE_APPLICATION_CREDENTIALS="path/to/service-account.json"
-            
+
             3. Or set service account JSON directly:
                export GOOGLE_SERVICE_ACCOUNT_JSON='{"type": "service_account", ...}'
             """
           end
-        
+
         credentials_path ->
           # Use specified credentials file
           creds = File.read!(credentials_path) |> Jason.decode!()
-          
+
           case creds["type"] do
             "service_account" -> {:service_account, creds}
             "authorized_user" -> {:refresh_token, creds}

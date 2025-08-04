@@ -24,6 +24,7 @@ defmodule LiveAiChatWeb.ChatLive do
         active_chat_id: active_chat_id,
         form: to_form(%{"content" => ""}),
         streaming_ai_response: nil,
+        processing_request: false,
         editing_chat_id: nil,
         test_pid: test_pid
       )
@@ -125,13 +126,16 @@ defmodule LiveAiChatWeb.ChatLive do
   def handle_event("send_message", %{"content" => content}, socket) do
     active_chat_id = socket.assigns.active_chat_id
 
-    if content != "" do
+    # Prevent multiple simultaneous requests
+    if content != "" and socket.assigns.streaming_ai_response == nil do
       user_message = %{id: System.unique_integer(), role: "user", content: content}
       CsvStorage.append_message(active_chat_id, user_message)
 
+      # Clear input immediately and show processing state
       socket =
         stream_insert(socket, :messages, user_message)
         |> assign(form: to_form(%{"content" => ""}))
+        |> assign(:processing_request, true)
 
       live_view_pid = self()
       Task.Supervisor.start_child(LiveAiChat.TaskSupervisor, fn ->
@@ -171,7 +175,7 @@ defmodule LiveAiChatWeb.ChatLive do
 
     if pid = socket.assigns.test_pid, do: send(pid, :render_complete)
 
-    {:noreply, assign(socket, :streaming_ai_response, nil)}
+    {:noreply, assign(socket, streaming_ai_response: nil, processing_request: false)}
   end
 
   defp load_messages(socket, nil) do
