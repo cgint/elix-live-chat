@@ -20,6 +20,20 @@ if System.get_env("PHX_SERVER") do
   config :live_ai_chat, LiveAiChatWeb.Endpoint, server: true
 end
 
+# AI Client configuration
+config :live_ai_chat, :ai_client, LiveAiChat.AIClient.Gemini
+
+# Google Cloud configuration
+config :live_ai_chat,
+  google_cloud_project: System.get_env("VERTEXAI_PROJECT"),
+  google_cloud_location: System.get_env("VERTEXAI_LOCATION") || "europe-west1",
+  gemini_model: System.get_env("GEMINI_MODEL") || "gemini-2.5-flash"
+
+# Optional: Configure service account JSON directly (alternative to GOOGLE_APPLICATION_CREDENTIALS)
+if service_account_json = System.get_env("GOOGLE_SERVICE_ACCOUNT_JSON") do
+  config :live_ai_chat, :google_service_account_json, Jason.decode!(service_account_json)
+end
+
 if config_env() == :prod do
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
