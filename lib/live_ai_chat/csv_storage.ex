@@ -30,6 +30,21 @@ defmodule LiveAiChat.CsvStorage do
     GenServer.call(__MODULE__, {:append_message, chat_id, message})
   end
 
+  @doc "Creates a new empty chat with the given ID."
+  def create_chat(chat_id) do
+    GenServer.call(__MODULE__, {:create_chat, chat_id})
+  end
+
+  @doc "Renames a chat from old_chat_id to new_chat_id."
+  def rename_chat(old_chat_id, new_chat_id) do
+    GenServer.call(__MODULE__, {:rename_chat, old_chat_id, new_chat_id})
+  end
+
+  @doc "Deletes a chat by moving it to an archived folder."
+  def delete_chat(chat_id) do
+    GenServer.call(__MODULE__, {:delete_chat, chat_id})
+  end
+
   # --- GenServer Callbacks ---
 
   @impl true
@@ -74,5 +89,57 @@ defmodule LiveAiChat.CsvStorage do
     # Append the string to the file
     File.write!(path, csv_string, [:append])
     {:reply, :ok, state}
+  end
+
+  @impl true
+  def handle_call({:create_chat, chat_id}, _from, state) do
+    path = Path.join(chat_logs_dir(), "#{chat_id}.csv")
+
+    if File.exists?(path) do
+      {:reply, {:error, :chat_already_exists}, state}
+    else
+      # Create an empty CSV file
+      File.write!(path, "")
+      {:reply, :ok, state}
+    end
+  end
+
+  @impl true
+  def handle_call({:rename_chat, old_chat_id, new_chat_id}, _from, state) do
+    old_path = Path.join(chat_logs_dir(), "#{old_chat_id}.csv")
+    new_path = Path.join(chat_logs_dir(), "#{new_chat_id}.csv")
+
+    cond do
+      not File.exists?(old_path) ->
+        {:reply, {:error, :chat_not_found}, state}
+      File.exists?(new_path) ->
+        {:reply, {:error, :chat_already_exists}, state}
+      true ->
+        case File.rename(old_path, new_path) do
+          :ok -> {:reply, :ok, state}
+          {:error, reason} -> {:reply, {:error, reason}, state}
+        end
+    end
+  end
+
+  @impl true
+  def handle_call({:delete_chat, chat_id}, _from, state) do
+    path = Path.join(chat_logs_dir(), "#{chat_id}.csv")
+
+    if not File.exists?(path) do
+      {:reply, {:error, :chat_not_found}, state}
+    else
+      # Create archived directory if it doesn't exist
+      archived_dir = Path.join(chat_logs_dir(), "archived")
+      File.mkdir_p!(archived_dir)
+
+      # Move file to archived directory
+      archived_path = Path.join(archived_dir, "#{chat_id}.csv")
+
+      case File.rename(path, archived_path) do
+        :ok -> {:reply, :ok, state}
+        {:error, reason} -> {:reply, {:error, reason}, state}
+      end
+    end
   end
 end

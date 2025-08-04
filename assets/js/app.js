@@ -26,6 +26,16 @@ import MishkaComponents from "../vendor/mishka_components.js";
 const csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
+// Custom hooks
+const customHooks = {
+  AutoFocus: {
+    mounted() {
+      this.el.focus();
+      this.el.select();
+    }
+  }
+};
+
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {
@@ -34,6 +44,7 @@ const liveSocket = new LiveSocket("/live", Socket, {
   hooks: {
     ...colocatedHooks,
     ...MishkaComponents,
+    ...customHooks,
   },
 });
 // Show progress bar on live navigation and form submits
