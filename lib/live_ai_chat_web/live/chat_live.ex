@@ -54,13 +54,13 @@ defmodule LiveAiChatWeb.ChatLive do
       case CsvStorage.create_chat(chat_id) do
         :ok ->
           chats = CsvStorage.list_chats()
-          socket =
-            assign(socket,
-              chats: chats,
-              active_chat_id: chat_id,
-              editing_chat_id: nil
-            )
-            |> stream(:messages, [])
+                  socket =
+          assign(socket,
+            chats: chats,
+            active_chat_id: chat_id,
+            editing_chat_id: nil
+          )
+          |> load_messages(chat_id)
           {:noreply, socket}
         {:error, _reason} ->
           # Could add flash message here for error handling
