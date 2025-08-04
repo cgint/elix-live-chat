@@ -40,6 +40,7 @@ defmodule LiveAiChat.MixProject do
       {:ash_ai, "~> 0.2"},
       {:mishka_chelekom, "~> 0.0", only: [:dev]},
       {:live_debugger, "~> 0.3", only: [:dev]},
+      {:ex_doc, "~> 0.34", only: :dev, runtime: false, warn_if_outdated: true},
       {:ash_csv, "~> 0.9"},
       {:ash_phoenix, "~> 2.0"},
       {:ash, "~> 3.0"},
