@@ -4,7 +4,17 @@ defmodule LiveAiChatWeb.ChatLive do
   alias LiveAiChat.CsvStorage
 
   @impl true
+  def mount(_params, %{"test_pid" => test_pid}, socket) do
+    setup(socket, test_pid)
+  end
+
+  # This is the default mount for normal application startup.
+  @impl true
   def mount(_params, _session, socket) do
+    setup(socket, nil)
+  end
+
+  defp setup(socket, test_pid) do
     chats = CsvStorage.list_chats()
     active_chat_id = List.first(chats)
 
@@ -13,7 +23,8 @@ defmodule LiveAiChatWeb.ChatLive do
         chats: chats,
         active_chat_id: active_chat_id,
         form: to_form(%{"content" => ""}),
-        streaming_ai_response: nil
+        streaming_ai_response: nil,
+        test_pid: test_pid
       )
       |> stream(:messages, [])
 
@@ -54,14 +65,12 @@ defmodule LiveAiChatWeb.ChatLive do
   def handle_info({:ai_chunk, chunk}, socket) do
     case socket.assigns.streaming_ai_response do
       nil ->
-        # First chunk
         new_message = %{id: chunk.id, role: "assistant", content: chunk.content}
         socket =
           stream_insert(socket, :messages, new_message)
           |> assign(:streaming_ai_response, new_message)
         {:noreply, socket}
       current_message ->
-        # Subsequent chunks
         updated_content = current_message.content <> chunk.content
         updated_message = %{current_message | content: updated_content}
         socket =
@@ -73,9 +82,10 @@ defmodule LiveAiChatWeb.ChatLive do
 
   @impl true
   def handle_info(:ai_done, socket) do
-    # Persist the final AI message
     final_message = socket.assigns.streaming_ai_response
     CsvStorage.append_message(socket.assigns.active_chat_id, final_message)
+
+    if pid = socket.assigns.test_pid, do: send(pid, :render_complete)
 
     {:noreply, assign(socket, :streaming_ai_response, nil)}
   end

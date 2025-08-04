@@ -4,3 +4,13 @@ user,hello
 user,ahoi
 user,helllo
 assistant," This is a dummy response from the AI, streamed to you one word at a time."
+user,hi
+assistant," This is a dummy response from the AI, streamed to you one word at a time."
+user,now
+assistant," This is a dummy response from the AI, streamed to you one word at a time."
+user,hello
+assistant," This is a dummy response from the AI, streamed to you one word at a time."
+user,hellohi
+assistant," This is a dummy response from the AI, streamed to you one word at a time."
+user,hello
+assistant," This is a dummy response from the AI, streamed to you one word at a time."
