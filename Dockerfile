@@ -4,8 +4,8 @@
 # ==============================================================================
 
 # Argument for Elixir/OTP versions - allows easy updates
-ARG ELIXIR_VERSION=1.16.3
-ARG OTP_VERSION=26.2.5
+ARG ELIXIR_VERSION=1.18.4
+ARG OTP_VERSION=27
 ARG ALPINE_VERSION=3.20
 
 # ==============================================================================
@@ -23,6 +23,8 @@ RUN apk add --no-cache \
 
 # Set build environment
 ENV MIX_ENV=prod
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ERL_AFLAGS="-kernel shell_history enabled"
 
 # Create app directory
 WORKDIR /app
@@ -34,7 +36,7 @@ RUN mix local.hex --force && \
 # Copy dependency files first (for better caching)
 COPY mix.exs mix.lock ./
 
-# Install dependencies
+# Install and compile dependencies in one step to avoid module conflicts
 RUN mix deps.get --only=prod && \
     mix deps.compile
 

@@ -17,7 +17,8 @@ TAG="v2-$LAST_COMMIT_DATE_TIME" # Or use a specific version, e.g., $(git rev-par
 
 # Build the Docker image for linux/amd64 platform with plain progress
 echo "Building Docker image for linux/amd64: $IMAGE_NAME:$TAG"
-docker build --platform linux/amd64 --progress=plain -t "$IMAGE_NAME:$TAG" .
+# Use default docker driver to avoid emulation issues
+docker build --platform linux/amd64 --progress=plain -t "$IMAGE_NAME:$TAG" --load .
 
 echo "Docker image built successfully: $IMAGE_NAME:$TAG"
 
