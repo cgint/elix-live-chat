@@ -124,7 +124,8 @@ defmodule LiveAiChat.AIClient do
           temperature: 0.7,
           topK: 40,
           topP: 0.95,
-          maxOutputTokens: 2048
+          maxOutputTokens: 2048,
+          thinkingConfig: %{thinkingBudget: 0}
         },
         safetySettings: [
           %{
@@ -328,10 +329,11 @@ defmodule LiveAiChat.AIClient do
           }
         ],
         generationConfig: %{
-          temperature: 0.1,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 4096
+          temperature: 0.3,
+          thinkingConfig: %{thinkingBudget: 0}
+          # topK: 40,
+          # topP: 0.95,
+          # maxOutputTokens: 4096
         },
         safetySettings: [
           %{
@@ -401,7 +403,8 @@ defmodule LiveAiChat.AIClient do
           temperature: 0.1,
           topK: 40,
           topP: 0.95,
-          maxOutputTokens: 4096
+          maxOutputTokens: 4096,
+          thinkingConfig: %{thinkingBudget: 0}
         },
         safetySettings: [
           %{

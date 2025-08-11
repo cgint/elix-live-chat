@@ -1,7 +1,7 @@
 defmodule LiveAiChatWeb.ChatLive do
   use LiveAiChatWeb, :live_view
 
-  alias LiveAiChat.{ChatStorageAdapter, ChatStorage, FileStorage}
+  alias LiveAiChat.{ChatStorageAdapter, ChatStorage, FileStorage, TagStorage}
 
   @impl true
   def mount(params, %{"test_pid" => test_pid}, socket) do
@@ -63,6 +63,7 @@ defmodule LiveAiChatWeb.ChatLive do
         test_pid: test_pid,
         # Knowledge Pool integration
         available_files: get_available_files(),
+        available_tags: get_available_tags(),
         selected_files: [],
         show_knowledge_panel: false
       )
@@ -276,6 +277,25 @@ defmodule LiveAiChatWeb.ChatLive do
   end
 
   @impl true
+  def handle_event("select_tag", %{"tag" => tag}, socket) do
+    try do
+      # Get files associated with this tag
+      files_for_tag = TagStorage.get_files_by_tags([tag])
+
+      # Add these files to selected_files, avoiding duplicates
+      current_selected = socket.assigns.selected_files
+      new_selected = (current_selected ++ files_for_tag) |> Enum.uniq()
+
+      socket = assign(socket, :selected_files, new_selected)
+      {:noreply, socket}
+    rescue
+      _ ->
+        # Fallback in case TagStorage is not available
+        {:noreply, socket}
+    end
+  end
+
+  @impl true
   def handle_event("send_message", %{"content" => content}, socket) do
     active_chat_id = socket.assigns.active_chat_id
 
@@ -374,6 +394,26 @@ defmodule LiveAiChatWeb.ChatLive do
   defp get_available_files do
     try do
       FileStorage.list_pdf_files()
+    rescue
+      _ -> []
+    end
+  end
+
+  defp get_available_tags do
+    try do
+      tags_map = TagStorage.get_all_tags()
+
+      # Create a map of tag -> count
+      tag_counts =
+        tags_map
+        |> Map.values()
+        |> List.flatten()
+        |> Enum.frequencies()
+
+      # Return sorted list of {tag, count} tuples
+      tag_counts
+      |> Enum.to_list()
+      |> Enum.sort_by(fn {tag, _count} -> tag end)
     rescue
       _ -> []
     end
