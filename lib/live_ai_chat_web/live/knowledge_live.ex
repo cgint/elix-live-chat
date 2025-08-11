@@ -16,22 +16,27 @@ defmodule LiveAiChatWeb.KnowledgeLive do
       |> assign(:selected_file, nil)
       |> assign(:file_metadata, %{})
       |> assign(:new_tags, "")
+      |> assign(:show_modal, false)
+      |> assign(:modal_meta, %{})
       |> allow_upload(:knowledge_files,
-        accept: ~w(.pdf .txt .md .markdown),
+        accept: ~w(.pdf),
         max_entries: 5,
         max_file_size: 10_000_000
       )
 
     if connected?(socket) do
+      :ok = Phoenix.PubSub.subscribe(LiveAiChat.PubSub, "knowledge")
+
       {:ok,
        socket
-       |> assign(:files, FileStorage.list_files())
-       |> assign(:tags, TagStorage.get_all_tags())}
+       |> assign_files_and_tags()
+       |> build_file_meta_map()}
     else
       {:ok,
        socket
        |> assign(:files, [])
-       |> assign(:tags, %{})}
+       |> assign(:tags, %{})
+       |> assign(:file_meta_map, %{})}
     end
   end
 
@@ -96,6 +101,27 @@ defmodule LiveAiChatWeb.KnowledgeLive do
   end
 
   @impl true
+  def handle_event("show-details", %{"filename" => filename}, socket) do
+    meta = Map.get(socket.assigns.file_meta_map, filename, %{})
+
+    {:noreply,
+     socket
+     |> assign(:show_modal, true)
+     |> assign(:modal_meta, %{filename: filename, meta: meta})}
+  end
+
+  @impl true
+  def handle_event("close-modal", _params, socket) do
+    {:noreply, assign(socket, :show_modal, false)}
+  end
+
+  @impl true
+  def handle_event("stop-propagation", _params, socket) do
+    # This event handler prevents click events from propagating to parent elements
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("update-tags", %{"filename" => filename, "tags" => tags_string}, socket) do
     # Parse the tags from the comma-separated string
     tag_list =
@@ -111,6 +137,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
      socket
      |> assign_files_and_tags()
      |> assign(:new_tags, tags_string)
+     |> assign(:show_modal, false)
      |> put_flash(:info, "Tags updated for #{filename}")}
   end
 
@@ -138,7 +165,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
   def handle_event("search-by-tags", %{"search_tags" => search_tags}, socket) do
     if search_tags == "" do
       # Show all files if search is empty
-      {:noreply, assign(socket, :files, FileStorage.list_files())}
+      {:noreply, assign(socket, :files, FileStorage.list_pdf_files())}
     else
       # Parse search tags and find matching files
       tag_list =
@@ -153,12 +180,49 @@ defmodule LiveAiChatWeb.KnowledgeLive do
     end
   end
 
+  @impl true
+  def handle_event("show-metadata", %{"filename" => filename}, socket) do
+    metadata = TagStorage.get_extraction(filename)
+    {:noreply, assign(socket, :file_metadata, metadata)}
+  end
+
+  @impl true
+  def handle_info({:extraction_done, filename}, socket) do
+    # Refresh metadata for just that file for efficiency
+    meta = TagStorage.get_extraction(filename)
+    new_meta_map = Map.put(socket.assigns.file_meta_map, filename, meta)
+
+    socket =
+      socket
+      |> assign(:file_meta_map, new_meta_map)
+      |> assign_files_and_tags()
+
+    # If the modal or side panel is showing this file, refresh its metadata
+    socket =
+      if socket.assigns.selected_file == filename do
+        assign(socket, :file_metadata, meta)
+      else
+        socket
+      end
+
+    {:noreply, socket}
+  end
+
   # Helper functions
 
   defp assign_files_and_tags(socket) do
     socket
-    |> assign(:files, FileStorage.list_files())
+    |> assign(:files, FileStorage.list_pdf_files())
     |> assign(:tags, TagStorage.get_all_tags())
+  end
+
+  defp build_file_meta_map(socket) do
+    meta_map =
+      Enum.reduce(socket.assigns.files, %{}, fn filename, acc ->
+        Map.put(acc, filename, TagStorage.get_extraction(filename))
+      end)
+
+    assign(socket, :file_meta_map, meta_map)
   end
 
   defp get_tags_string(filename, tags_map) do
@@ -171,16 +235,6 @@ defmodule LiveAiChatWeb.KnowledgeLive do
 
   defp error_to_string(:too_large), do: "File too large (max 10MB)"
   defp error_to_string(:too_many_files), do: "Too many files selected (max 5)"
-  defp error_to_string(:not_accepted), do: "File type not accepted (.pdf, .txt, .md only)"
+  defp error_to_string(:not_accepted), do: "File type not accepted (.pdf only)"
   defp error_to_string(error), do: "Upload error: #{inspect(error)}"
-
-  defp file_icon(filename) do
-    case Path.extname(filename) |> String.downcase() do
-      ".pdf" -> "hero-document-text"
-      ".md" -> "hero-document"
-      ".markdown" -> "hero-document"
-      ".txt" -> "hero-document-text"
-      _ -> "hero-document"
-    end
-  end
 end

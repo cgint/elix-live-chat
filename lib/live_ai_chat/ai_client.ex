@@ -51,6 +51,31 @@ defmodule LiveAiChat.AIClient do
       end)
     end
 
+    @doc """
+    Extract content from a document using Gemini's multimodal capabilities.
+    Returns a synchronous response instead of streaming.
+
+    ## Parameters
+    - binary_content: The binary content of the PDF file
+    - extraction_prompt: The prompt for content extraction
+
+    Returns {:ok, response_text} on success or {:error, reason} on failure.
+    """
+    @spec extract_document_content(binary(), String.t()) :: {:ok, String.t()} | {:error, term()}
+    def extract_document_content(binary_content, extraction_prompt) do
+      case call_gemini_extraction_api(binary_content, extraction_prompt) do
+        {:ok, response} ->
+          case parse_extraction_response(response) do
+            {:ok, text_content} -> {:ok, text_content}
+            {:error, reason} -> {:error, reason}
+          end
+
+        {:error, reason} ->
+          Logger.error("Gemini document extraction API error: #{inspect(reason)}")
+          {:error, reason}
+      end
+    end
+
     defp call_gemini_api(user_message) do
       project_id = get_project_id()
       location = get_location()
@@ -255,6 +280,90 @@ defmodule LiveAiChat.AIClient do
 
     defp get_model do
       Application.get_env(:live_ai_chat, :gemini_model, "gemini-2.5-flash")
+    end
+
+    defp call_gemini_extraction_api(binary_content, extraction_prompt) do
+      project_id = get_project_id()
+      location = get_location()
+      model = get_model()
+
+      # Use generateContent endpoint instead of streamGenerateContent for synchronous extraction
+      url =
+        "https://#{location}-aiplatform.googleapis.com/v1/projects/#{project_id}/locations/#{location}/publishers/google/models/#{model}:generateContent"
+
+      headers = [
+        {"content-type", "application/json"},
+        {"authorization", "Bearer #{get_access_token()}"}
+      ]
+
+      # Encode the PDF binary as base64
+      file_base64 = Base.encode64(binary_content)
+
+      body = %{
+        contents: [
+          %{
+            role: "user",
+            parts: [
+              %{text: extraction_prompt},
+              %{
+                inline_data: %{
+                  mime_type: "application/pdf",
+                  data: file_base64
+                }
+              }
+            ]
+          }
+        ],
+        generationConfig: %{
+          temperature: 0.1,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 4096
+        },
+        safetySettings: [
+          %{
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          %{
+            category: "HARM_CATEGORY_HATE_SPEECH",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          %{
+            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          %{
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          }
+        ]
+      }
+
+      # Set timeout to 180 seconds for PDF extraction (can be large files)
+      case Req.post(url, headers: headers, json: body, receive_timeout: 180_000) do
+        {:ok, %{status: 200, body: response_body}} ->
+          {:ok, response_body}
+
+        {:ok, %{status: status, body: body}} ->
+          {:error, "HTTP #{status}: #{inspect(body)}"}
+
+        {:error, reason} ->
+          {:error, reason}
+      end
+    end
+
+    defp parse_extraction_response(response_body) when is_map(response_body) do
+      # Handle single JSON response for generateContent endpoint
+      case extract_text_content(response_body) do
+        [] -> {:error, "No content found in extraction response"}
+        parts -> {:ok, Enum.join(parts, "")}
+      end
+    end
+
+    defp parse_extraction_response(response_body) do
+      # Fallback for other response formats
+      {:error, "Unexpected response format: #{inspect(response_body)}"}
     end
   end
 end

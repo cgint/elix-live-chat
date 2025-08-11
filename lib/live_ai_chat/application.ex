@@ -7,25 +7,25 @@ defmodule LiveAiChat.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      LiveAiChatWeb.Telemetry,
-      {DNSCluster, query: Application.get_env(:live_ai_chat, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: LiveAiChat.PubSub},
-      # Start a worker by calling: LiveAiChat.Worker.start_link(arg)
-      # {LiveAiChat.Worker, arg},
-      # Start Goth for Google Cloud authentication
-      {Goth, name: LiveAiChat.Goth, source: goth_source()},
-      # Start the CsvStorage GenServer
-      LiveAiChat.CsvStorage,
-      # Start the FileStorage GenServer for knowledge pool
-      LiveAiChat.FileStorage,
-      # Start the TagStorage GenServer for knowledge pool
-      LiveAiChat.TagStorage,
-      # Start the Task supervisor for AI tasks
-      {Task.Supervisor, name: LiveAiChat.TaskSupervisor},
-      # Start to serve requests, typically the last entry
-      LiveAiChatWeb.Endpoint
-    ]
+    children =
+      [
+        LiveAiChatWeb.Telemetry,
+        {DNSCluster, query: Application.get_env(:live_ai_chat, :dns_cluster_query) || :ignore},
+        {Phoenix.PubSub, name: LiveAiChat.PubSub},
+        # Start a worker by calling: LiveAiChat.Worker.start_link(arg)
+        # {LiveAiChat.Worker, arg},
+        # Start Goth for Google Cloud authentication
+        {Goth, name: LiveAiChat.Goth, source: goth_source()},
+        # Start the CsvStorage GenServer (needed for chat tests as well)
+        LiveAiChat.CsvStorage
+      ] ++
+        extra_storage_children() ++
+        [
+          # Start the Task supervisor for AI tasks
+          {Task.Supervisor, name: LiveAiChat.TaskSupervisor},
+          # Start to serve requests, typically the last entry
+          LiveAiChatWeb.Endpoint
+        ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
@@ -90,5 +90,18 @@ defmodule LiveAiChat.Application do
           end
       end
     end
+  end
+
+  # -- Helpers ------------------------------------------------------------
+
+  # In the test environment we let individual tests start FileStorage and
+  # TagStorage with their own (temporary) configuration to avoid leaking
+  # state between tests. In all other environments we start them under the
+  # supervision tree as normal.
+  defp extra_storage_children do
+    [
+      LiveAiChat.FileStorage,
+      LiveAiChat.TagStorage
+    ]
   end
 end

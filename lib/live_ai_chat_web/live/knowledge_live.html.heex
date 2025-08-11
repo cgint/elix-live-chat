@@ -1,259 +1,314 @@
-<div class="min-h-screen bg-base-100">
-  <!-- Header -->
-  <div class="navbar bg-base-200 shadow-lg">
-    <div class="navbar-start">
-      <.link navigate={~p"/"} class="btn btn-ghost btn-sm">
-        <.icon name="hero-arrow-left" class="h-4 w-4" /> Back to Chat
-      </.link>
-    </div>
-    <div class="navbar-center">
-      <h1 class="text-xl font-bold">Knowledge Pool</h1>
-    </div>
-    <div class="navbar-end">
-      <div class="form-control">
-        <form phx-change="search-by-tags" phx-submit="search-by-tags">
-          <input
-            type="text"
-            name="search_tags"
-            placeholder="Search by tags (comma-separated)"
-            class="input input-bordered input-sm w-64"
-            phx-debounce="300"
-          />
-        </form>
-      </div>
-    </div>
+<div class="container mx-auto p-6 max-w-6xl">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Knowledge Pool</h1>
+    <p class="text-gray-600">Upload and manage your knowledge base files</p>
   </div>
+  
+<!-- Upload Section -->
+  <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-4">Upload Files</h2>
 
-  <div class="flex flex-col lg:flex-row gap-6 p-6">
-    <!-- Upload Section -->
-    <div class="lg:w-1/3">
-      <div class="card bg-base-200 shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title">
-            <.icon name="hero-cloud-arrow-up" class="h-5 w-5" /> Upload Files
-          </h2>
-
-          <form id="upload-form" phx-submit="save" phx-change="validate">
-            <!-- File Upload Area -->
-            <section
-              phx-drop-target={@uploads.knowledge_files.ref}
-              class="border-2 border-dashed border-base-300 rounded-lg p-8 text-center hover:border-primary transition-colors"
+    <form id="upload-form" phx-submit="save" phx-change="validate" phx-hook="AutoUpload">
+      <div
+        class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors"
+        phx-drop-target={@uploads.knowledge_files.ref}
+      >
+        <div class="flex flex-col items-center">
+          <svg
+            class="w-12 h-12 text-gray-400 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            />
+          </svg>
+          <p class="text-lg text-gray-600 mb-2">
+            Drop files here or
+            <.live_file_input upload={@uploads.knowledge_files} class="hidden" />
+            <label
+              for={@uploads.knowledge_files.ref}
+              class="text-blue-500 hover:text-blue-700 cursor-pointer underline"
             >
-              <.icon
-                name="hero-document-arrow-up"
-                class="h-12 w-12 mx-auto mb-4 text-base-content/50"
-              />
-              <p class="text-sm text-base-content/70 mb-4">
-                Drop files here or click to select<br />
-                <span class="text-xs">Supports: PDF, TXT, MD (max 10MB each, 5 files max)</span>
-              </p>
-              <.live_file_input
-                upload={@uploads.knowledge_files}
-                class="file-input file-input-bordered w-full"
-              />
-            </section>
-            
-<!-- Upload Progress -->
-            <div :for={entry <- @uploads.knowledge_files.entries} class="mt-4">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-sm font-medium truncate flex-1">
-                  {entry.client_name}
-                </span>
+              browse
+            </label>
+          </p>
+          <p class="text-sm text-gray-500">Supports PDF files only (max 10MB each)</p>
+        </div>
+      </div>
+
+      <%= for entry <- @uploads.knowledge_files.entries do %>
+        <div class="mt-4 p-3 bg-gray-50 rounded border">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="text-sm font-medium text-gray-700">{entry.client_name}</div>
+              <div class="ml-2 text-xs text-gray-500">
+                ({Float.round(entry.client_size / 1024, 1)} KB)
+              </div>
+            </div>
+            <button
+              type="button"
+              phx-click="cancel-upload"
+              phx-value-ref={entry.ref}
+              class="text-red-500 hover:text-red-700"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+          <div class="mt-2 bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full" style={"width: #{entry.progress}%"}></div>
+          </div>
+        </div>
+      <% end %>
+
+      <%= for err <- upload_errors(@uploads.knowledge_files) do %>
+        <div class="mt-2 text-sm text-red-600">
+          {error_to_string(err)}
+        </div>
+      <% end %>
+
+      <!-- Manual submit button for testing -->
+      <div class="mt-4">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded">
+          Upload Selected Files
+        </button>
+      </div>
+    </form>
+  </div>
+  
+<!-- Files List Section -->
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-semibold mb-4">Uploaded Files</h2>
+
+    <%= if @files == [] do %>
+      <div class="text-center py-8 text-gray-500">
+        <svg
+          class="w-16 h-16 mx-auto mb-4 text-gray-300"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          />
+        </svg>
+        <p>No files uploaded yet</p>
+      </div>
+    <% else %>
+      <div class="space-y-4">
+        <%= for filename <- @files do %>
+          <% meta = Map.get(@file_meta_map, filename, %{}) %>
+          <% extraction_complete = meta != %{} and Map.has_key?(meta, "summary") %>
+          <% file_tags = Map.get(@tags, filename, []) %>
+
+          <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+            <!-- First line: Filename and status -->
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-3">
+                <h3 class="text-lg font-medium text-gray-800">{filename}</h3>
+                
+<!-- Extraction status badge -->
+                <%= if extraction_complete do %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    Extracted
+                  </span>
+                <% else %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                    <svg class="animate-spin -ml-1 mr-1 h-3 w-3" fill="none" viewBox="0 0 24 24">
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      >
+                      </circle>
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      >
+                      </path>
+                    </svg>
+                    Extracting
+                  </span>
+                <% end %>
+              </div>
+
+              <div class="flex items-center space-x-2">
                 <button
-                  type="button"
-                  phx-click="cancel-upload"
-                  phx-value-ref={entry.ref}
-                  class="btn btn-ghost btn-xs"
+                  phx-click="show-details"
+                  phx-value-filename={filename}
+                  class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium py-1 px-3 rounded"
                 >
-                  <.icon name="hero-x-mark" class="h-4 w-4" />
+                  Info
+                </button>
+                <button
+                  phx-click="delete-file"
+                  phx-value-filename={filename}
+                  data-confirm="Are you sure you want to delete this file?"
+                  class="bg-red-500 hover:bg-red-600 text-white text-xs font-medium py-1 px-3 rounded"
+                >
+                  Delete
                 </button>
               </div>
-
-              <progress class="progress progress-primary w-full" value={entry.progress} max="100">
-                {entry.progress}%
-              </progress>
-              
-<!-- Upload Errors -->
-              <div
-                :for={err <- upload_errors(@uploads.knowledge_files, entry)}
-                class="alert alert-error mt-2"
-              >
-                <.icon name="hero-exclamation-triangle" class="h-4 w-4" />
-                <span class="text-sm">{error_to_string(err)}</span>
-              </div>
             </div>
             
-<!-- Global Upload Errors -->
-            <div
-              :for={err <- upload_errors(@uploads.knowledge_files)}
-              class="alert alert-error mt-4"
-            >
-              <.icon name="hero-exclamation-triangle" class="h-4 w-4" />
-              <span class="text-sm">{error_to_string(err)}</span>
-            </div>
-
-            <div class="card-actions justify-end mt-6">
-              <button
-                type="submit"
-                class="btn btn-primary"
-                disabled={Enum.empty?(@uploads.knowledge_files.entries)}
-              >
-                <.icon name="hero-cloud-arrow-up" class="h-4 w-4" /> Upload Files
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    
-<!-- Files List -->
-    <div class="lg:w-1/3">
-      <div class="card bg-base-200 shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title">
-            <.icon name="hero-folder" class="h-5 w-5" /> Files ({length(@files)})
-          </h2>
-
-          <div class="max-h-96 overflow-y-auto">
-            <div :if={Enum.empty?(@files)} class="text-center py-8 text-base-content/50">
-              <.icon name="hero-document" class="h-12 w-12 mx-auto mb-2" />
-              <p>No files uploaded yet</p>
-            </div>
-
-            <div :for={filename <- @files} class="mb-2">
-              <div
-                class={[
-                  "p-3 border rounded-lg cursor-pointer transition-colors",
-                  if(@selected_file == filename,
-                    do: "border-primary bg-primary/10",
-                    else: "border-base-300 hover:border-base-content/20"
-                  )
-                ]}
-                phx-click="select-file"
-                phx-value-filename={filename}
-              >
-                <div class="flex items-center justify-between">
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                      <.icon name={file_icon(filename)} class="h-4 w-4 text-base-content/70" />
-                      <span class="text-sm font-medium truncate">{filename}</span>
-                    </div>
-                    
-<!-- File Tags -->
-                    <div :if={Map.get(@tags, filename)} class="flex flex-wrap gap-1 mt-1">
-                      <span
-                        :for={tag <- Map.get(@tags, filename, [])}
-                        class="badge badge-outline badge-xs"
-                      >
+<!-- Second line: Tags and metadata preview -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <%= if file_tags != [] do %>
+                  <div class="flex flex-wrap gap-1">
+                    <%= for tag <- file_tags do %>
+                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         {tag}
                       </span>
-                    </div>
+                    <% end %>
                   </div>
-
-                  <button
-                    type="button"
-                    phx-click="delete-file"
-                    phx-value-filename={filename}
-                    class="btn btn-ghost btn-xs text-error"
-                    onclick="return confirm('Are you sure you want to delete this file?')"
-                  >
-                    <.icon name="hero-trash" class="h-3 w-3" />
-                  </button>
-                </div>
+                <% else %>
+                  <span class="text-sm text-gray-500">No tags</span>
+                <% end %>
               </div>
+
+              <%= if extraction_complete do %>
+                <div class="text-sm text-gray-600">
+                  <%= if Map.has_key?(meta, "word_count") do %>
+                    <span>{meta["word_count"]} words</span>
+                  <% end %>
+                  <%= if Map.has_key?(meta, "read_time") do %>
+                    <span class="ml-2">• {meta["read_time"]} min read</span>
+                  <% end %>
+                </div>
+              <% end %>
             </div>
           </div>
-        </div>
+        <% end %>
       </div>
-    </div>
-    
-<!-- File Details & Tags -->
-    <div class="lg:w-1/3">
-      <div class="card bg-base-200 shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title">
-            <.icon name="hero-tag" class="h-5 w-5" /> File Details
-          </h2>
-
-          <div :if={@selected_file}>
-            <!-- File Info -->
-            <div class="mb-6">
-              <h3 class="font-semibold text-lg mb-2">{@selected_file}</h3>
-              
-<!-- Extracted Metadata -->
-              <div :if={@file_metadata != %{}} class="space-y-3">
-                <div :if={@file_metadata["summary"]} class="text-sm">
-                  <strong>Summary:</strong>
-                  <p class="mt-1 text-base-content/80">{@file_metadata["summary"]}</p>
-                </div>
-
-                <div :if={@file_metadata["keyPoints"]} class="text-sm">
-                  <strong>Key Points:</strong>
-                  <ul class="list-disc list-inside mt-1 text-base-content/80">
-                    <li :for={point <- @file_metadata["keyPoints"]}>{point}</li>
-                  </ul>
-                </div>
-
-                <div class="flex flex-wrap gap-2 text-xs">
-                  <span :if={@file_metadata["difficulty"]} class="badge badge-outline">
-                    Difficulty: {@file_metadata["difficulty"]}
-                  </span>
-                  <span :if={@file_metadata["estimatedReadTime"]} class="badge badge-outline">
-                    {@file_metadata["estimatedReadTime"]}
-                  </span>
-                  <span :if={@file_metadata["wordCount"]} class="badge badge-outline">
-                    {@file_metadata["wordCount"]} words
-                  </span>
-                </div>
-
-                <div :if={@file_metadata["topics"]} class="text-sm">
-                  <strong>Topics:</strong>
-                  <div class="flex flex-wrap gap-1 mt-1">
-                    <span
-                      :for={topic <- @file_metadata["topics"]}
-                      class="badge badge-primary badge-sm"
-                    >
-                      {topic}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-<!-- Tag Management -->
-            <div class="divider"></div>
-            <div>
-              <h4 class="font-semibold mb-3">Manage Tags</h4>
-              <form phx-submit="update-tags">
-                <input type="hidden" name="filename" value={@selected_file} />
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">Tags (comma-separated)</span>
-                  </label>
-                  <div class="join">
-                    <input
-                      type="text"
-                      name="tags"
-                      value={@new_tags}
-                      placeholder="e.g., elixir, tutorial, beginner"
-                      class="input input-bordered join-item flex-1"
-                      phx-debounce="blur"
-                    />
-                    <button type="submit" class="btn btn-primary join-item">
-                      <.icon name="hero-tag" class="h-4 w-4" /> Update
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <div :if={is_nil(@selected_file)} class="text-center py-8 text-base-content/50">
-            <.icon name="hero-cursor-arrow-rays" class="h-12 w-12 mx-auto mb-2" />
-            <p>Select a file to view details and manage tags</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <% end %>
   </div>
+  
+<!-- File Details Modal -->
+  <%= if @show_modal do %>
+    <div
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+      phx-click="close-modal"
+    >
+      <div
+        class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white"
+        phx-click="stop-propagation"
+      >
+        
+<!-- Modal Header -->
+        <div class="flex items-center justify-between pb-3 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900">
+            File Details: {@modal_meta[:filename]}
+          </h3>
+          <button phx-click="close-modal" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        
+<!-- Modal Body -->
+        <div class="mt-4 space-y-4 max-h-96 overflow-y-auto">
+          <% meta = @modal_meta[:meta] || %{} %>
+
+          <%= if Map.has_key?(meta, "summary") do %>
+            <div>
+              <h4 class="font-medium text-gray-900 mb-2">Summary</h4>
+              <p class="text-gray-700 text-sm">{meta["summary"]}</p>
+            </div>
+          <% end %>
+
+          <%= if Map.has_key?(meta, "key_points") and is_list(meta["key_points"]) do %>
+            <div>
+              <h4 class="font-medium text-gray-900 mb-2">Key Points</h4>
+              <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                <%= for point <- meta["key_points"] do %>
+                  <li>{point}</li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <%= if Map.has_key?(meta, "topics") and is_list(meta["topics"]) do %>
+            <div>
+              <h4 class="font-medium text-gray-900 mb-2">Topics</h4>
+              <div class="flex flex-wrap gap-2">
+                <%= for topic <- meta["topics"] do %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    {topic}
+                  </span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <%= if Map.has_key?(meta, "word_count") do %>
+              <div>
+                <span class="font-medium text-gray-900">Word Count:</span>
+                <span class="text-gray-700">{meta["word_count"]}</span>
+              </div>
+            <% end %>
+
+            <%= if Map.has_key?(meta, "read_time") do %>
+              <div>
+                <span class="font-medium text-gray-900">Read Time:</span>
+                <span class="text-gray-700">{meta["read_time"]} minutes</span>
+              </div>
+            <% end %>
+          </div>
+          
+<!-- Tags Editor -->
+          <div>
+            <h4 class="font-medium text-gray-900 mb-2">Tags</h4>
+            <form phx-submit="update-tags" class="space-y-2">
+              <input type="hidden" name="filename" value={@modal_meta[:filename]} />
+              <input
+                type="text"
+                name="tags"
+                value={get_tags_string(@modal_meta[:filename], @tags)}
+                placeholder="Enter tags separated by commas"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="submit"
+                class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-1 px-3 rounded"
+              >
+                Update Tags
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>

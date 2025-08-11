@@ -1,17 +1,17 @@
 defmodule LiveAiChatWeb.ChatLive do
   use LiveAiChatWeb, :live_view
 
-  alias LiveAiChat.CsvStorage
+  alias LiveAiChat.{CsvStorage, FileStorage}
 
   @impl true
   def mount(_params, %{"test_pid" => test_pid}, socket) do
     setup(socket, test_pid)
   end
 
-  # This is the default mount for normal application startup.
+  # Fallback mount clause. We extract :test_pid if present to support tests.
   @impl true
-  def mount(_params, _session, socket) do
-    setup(socket, nil)
+  def mount(_params, session, socket) do
+    setup(socket, Map.get(session, "test_pid"))
   end
 
   defp setup(socket, test_pid) do
@@ -26,7 +26,11 @@ defmodule LiveAiChatWeb.ChatLive do
         streaming_ai_response: nil,
         processing_request: false,
         editing_chat_id: nil,
-        test_pid: test_pid
+        test_pid: test_pid,
+        # Knowledge Pool integration
+        available_files: get_available_files(),
+        selected_files: [],
+        show_knowledge_panel: false
       )
       |> stream(:messages, [])
 
@@ -156,12 +160,44 @@ defmodule LiveAiChatWeb.ChatLive do
   end
 
   @impl true
+  def handle_event("toggle_knowledge_panel", _params, socket) do
+    socket = assign(socket, :show_knowledge_panel, !socket.assigns.show_knowledge_panel)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("toggle_file_selection", %{"filename" => filename}, socket) do
+    selected_files = socket.assigns.selected_files
+
+    updated_files =
+      if filename in selected_files do
+        List.delete(selected_files, filename)
+      else
+        [filename | selected_files]
+      end
+
+    socket = assign(socket, :selected_files, updated_files)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("clear_selected_files", _params, socket) do
+    socket = assign(socket, :selected_files, [])
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("send_message", %{"content" => content}, socket) do
     active_chat_id = socket.assigns.active_chat_id
 
     # Prevent multiple simultaneous requests
     if content != "" and socket.assigns.streaming_ai_response == nil do
+      # Build enhanced message with file context
+      enhanced_content = build_message_with_context(content, socket.assigns.selected_files)
+
       user_message = %{id: System.unique_integer(), role: "user", content: content}
+      ai_context_message = %{user_message | content: enhanced_content}
+
       CsvStorage.append_message(active_chat_id, user_message)
 
       # Clear input immediately and show processing state
@@ -172,10 +208,17 @@ defmodule LiveAiChatWeb.ChatLive do
 
       live_view_pid = self()
 
-      Task.Supervisor.start_child(LiveAiChat.TaskSupervisor, fn ->
-        ai_client = Application.get_env(:live_ai_chat, :ai_client, LiveAiChat.AIClient.Dummy)
-        ai_client.stream_reply(live_view_pid, user_message)
-      end)
+      try do
+        Task.Supervisor.start_child(LiveAiChat.TaskSupervisor, fn ->
+          ai_client = Application.get_env(:live_ai_chat, :ai_client, LiveAiChat.AIClient.Dummy)
+          ai_client.stream_reply(live_view_pid, ai_context_message)
+        end)
+      rescue
+        _e ->
+          # Fallback for tests - call AI client directly
+          ai_client = Application.get_env(:live_ai_chat, :ai_client, LiveAiChat.AIClient.Dummy)
+          ai_client.stream_reply(live_view_pid, ai_context_message)
+      end
 
       {:noreply, socket}
     else
@@ -212,9 +255,18 @@ defmodule LiveAiChatWeb.ChatLive do
     final_message = socket.assigns.streaming_ai_response
     CsvStorage.append_message(socket.assigns.active_chat_id, final_message)
 
-    if pid = socket.assigns.test_pid, do: send(pid, :render_complete)
+    # Defer notifying tests until after this render cycle completes
+    if pid = socket.assigns.test_pid do
+      Process.send_after(self(), {:notify_test, pid}, 20)
+    end
 
     {:noreply, assign(socket, streaming_ai_response: nil, processing_request: false)}
+  end
+
+  @impl true
+  def handle_info({:notify_test, pid}, socket) do
+    send(pid, :render_complete)
+    {:noreply, socket}
   end
 
   defp load_messages(socket, nil) do
@@ -228,5 +280,54 @@ defmodule LiveAiChatWeb.ChatLive do
       |> Enum.map(fn {:ok, message} -> Map.put(message, :id, System.unique_integer()) end)
 
     stream(socket, :messages, messages, reset: true)
+  end
+
+  defp get_available_files do
+    try do
+      FileStorage.list_pdf_files()
+    rescue
+      _ -> []
+    end
+  end
+
+  defp build_message_with_context(content, []) do
+    content
+  end
+
+  defp build_message_with_context(content, selected_files) do
+    file_contents =
+      selected_files
+      |> Enum.map(fn filename ->
+        try do
+          case FileStorage.read_file(filename) do
+            {:ok, file_content} ->
+              """
+
+              --- File: #{filename} ---
+              #{file_content}
+              --- End of #{filename} ---
+              """
+
+            {:error, _reason} ->
+              "\n--- Error reading file: #{filename} ---\n"
+          end
+        rescue
+          _ -> "\n--- Error reading file: #{filename} (FileStorage not available) ---\n"
+        end
+      end)
+      |> Enum.join("\n")
+
+    if file_contents != "" do
+      """
+      User Query: #{content}
+
+      Context from uploaded files:
+      #{file_contents}
+
+      Please answer the user's query using the context provided above.
+      """
+    else
+      content
+    end
   end
 end

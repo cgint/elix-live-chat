@@ -159,11 +159,19 @@ defmodule LiveAiChat.Knowledge.ExtractorTest do
                Extractor.extract_content("file.xyz", content)
     end
 
-    test "returns error for PDF files (not implemented)" do
+    test "extracts content from PDF files using Gemini (with fallback)" do
       content = <<"%PDF-1.4", "some pdf content">>
 
-      assert {:error, :pdf_extraction_not_implemented} =
-               Extractor.extract_content("document.pdf", content)
+      assert {:ok, metadata} = Extractor.extract_content("document.pdf", content)
+      assert metadata["filename"] == "document.pdf"
+      assert metadata["contentType"] == "pdf"
+      assert metadata["extractorVersion"] in ["1.0.0", "2.0.0-gemini"]
+
+      # Should have basic metadata structure
+      assert is_binary(metadata["summary"])
+      assert is_list(metadata["keyPoints"])
+      assert is_list(metadata["topics"])
+      assert metadata["difficulty"] in ["beginner", "intermediate", "advanced"]
     end
   end
 
@@ -190,6 +198,12 @@ defmodule LiveAiChat.Knowledge.ExtractorTest do
       saved_metadata = TagStorage.get_extraction("test.txt")
       assert saved_metadata["filename"] == "test.txt"
       assert "elixir" in saved_metadata["topics"]
+
+      # Check that extracted topics were automatically assigned as tags
+      all_tags = TagStorage.get_all_tags()
+      file_tags = Map.get(all_tags, "test.txt", [])
+      assert "elixir" in file_tags
+      assert "programming" in file_tags
     end
 
     test "handles extraction errors gracefully" do
@@ -252,6 +266,120 @@ defmodule LiveAiChat.Knowledge.ExtractorTest do
       {:ok, metadata} = Extractor.extract_content("general.txt", content)
 
       assert metadata["topics"] == ["general"]
+    end
+  end
+
+  describe "topic-to-tag assignment" do
+    test "automatically assigns extracted topics as initial tags" do
+      content = """
+      This is a comprehensive guide about Elixir Phoenix web development.
+
+      Topics covered:
+      - LiveView real-time applications
+      - GenServer process management
+      - Database integration with PostgreSQL
+      - API design and testing strategies
+
+      Phoenix framework makes web development enjoyable with Elixir's functional programming paradigm.
+      """
+
+      # Use enqueue to test the full workflow including tag assignment
+      {:ok, pid} = Extractor.enqueue("comprehensive_guide.txt", content)
+
+      # Wait for task completion
+      ref = Process.monitor(pid)
+
+      receive do
+        {:DOWN, ^ref, :process, ^pid, _reason} -> :ok
+      after
+        5000 -> flunk("Task did not complete within 5 seconds")
+      end
+
+      # Allow time for the cast operations to complete
+      Process.sleep(200)
+
+      # Verify metadata was saved
+      metadata = TagStorage.get_extraction("comprehensive_guide.txt")
+      assert metadata["filename"] == "comprehensive_guide.txt"
+      topics = metadata["topics"]
+      assert "elixir" in topics
+      assert "phoenix" in topics
+      assert "web" in topics
+
+      # Verify that topics were automatically assigned as tags
+      all_tags = TagStorage.get_all_tags()
+      file_tags = Map.get(all_tags, "comprehensive_guide.txt", [])
+
+      # All extracted topics should be present as tags
+      for topic <- topics do
+        assert topic in file_tags, "Topic '#{topic}' should be assigned as a tag"
+      end
+
+      assert length(file_tags) == length(topics), "Number of tags should match number of topics"
+    end
+
+    test "handles empty or invalid topics gracefully" do
+      # Test extraction with content that produces no specific topics
+      empty_content = "This is some very generic content without technical terms."
+
+      {:ok, pid} = Extractor.enqueue("empty_topics_test.txt", empty_content)
+
+      ref = Process.monitor(pid)
+
+      receive do
+        {:DOWN, ^ref, :process, ^pid, _reason} -> :ok
+      after
+        5000 -> flunk("Task did not complete within 5 seconds")
+      end
+
+      Process.sleep(200)
+
+      # Should assign "general" as the topic/tag when no specific topics found
+      all_tags = TagStorage.get_all_tags()
+      file_tags = Map.get(all_tags, "empty_topics_test.txt", [])
+      assert file_tags == ["general"], "Should assign 'general' tag when no specific topics found"
+    end
+
+    test "assigns topics from content that contains multiple tech terms" do
+      # Test content that should generate multiple topics
+      content = """
+      This guide covers Phoenix LiveView development with Elixir and testing strategies.
+      We'll explore web development patterns, API design, and database integration.
+      """
+
+      filename = "multi_topic_test.txt"
+      {:ok, pid} = Extractor.enqueue(filename, content)
+
+      ref = Process.monitor(pid)
+
+      receive do
+        {:DOWN, ^ref, :process, ^pid, _reason} -> :ok
+      after
+        5000 -> flunk("Task did not complete within 5 seconds")
+      end
+
+      Process.sleep(200)
+
+      # Verify that multiple topics were detected and assigned as tags
+      all_tags = TagStorage.get_all_tags()
+      file_tags = Map.get(all_tags, filename, [])
+
+      # Should include all detected topics
+      assert "elixir" in file_tags
+      assert "phoenix" in file_tags
+      assert "liveview" in file_tags
+      assert "web" in file_tags
+      assert "api" in file_tags
+      assert "testing" in file_tags
+
+      # Verify metadata contains the same topics
+      metadata = TagStorage.get_extraction(filename)
+      metadata_topics = metadata["topics"]
+
+      # All topics in metadata should be present as tags
+      for topic <- metadata_topics do
+        assert topic in file_tags, "Topic '#{topic}' should be assigned as a tag"
+      end
     end
   end
 

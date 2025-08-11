@@ -17,9 +17,22 @@ defmodule LiveAiChatWeb.Router do
   scope "/", LiveAiChatWeb do
     pipe_through :browser
 
-    live "/", ChatLive
-    live "/knowledge", KnowledgeLive
+    live_session :default, session: {__MODULE__, :session_values, []} do
+      live "/", ChatLive
+      live "/knowledge", KnowledgeLive
+    end
   end
+
+  # Return a map of values to put in the live session. We only forward
+  # test_pid if present in the Plug session so normal runtime is unaffected.
+  def session_values(%Plug.Conn{private: %{plug_session: plug_session}}) do
+    case Map.get(plug_session, "test_pid") do
+      nil -> %{}
+      pid -> %{"test_pid" => pid}
+    end
+  end
+
+  def session_values(_conn), do: %{}
 
   # Other scopes may use custom stacks.
   # scope "/api", LiveAiChatWeb do

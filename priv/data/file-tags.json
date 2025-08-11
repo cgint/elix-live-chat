@@ -1,69 +1,9 @@
 {
-  "concurrent_1.txt": [
-    "tag_1"
-  ],
-  "concurrent_10.txt": [
-    "tag_10"
-  ],
-  "concurrent_2.txt": [
-    "tag_2"
-  ],
-  "concurrent_3.txt": [
-    "tag_3"
-  ],
-  "concurrent_4.txt": [
-    "tag_4"
-  ],
-  "concurrent_5.txt": [
-    "tag_5"
-  ],
-  "concurrent_6.txt": [
-    "tag_6"
-  ],
-  "concurrent_7.txt": [
-    "tag_7"
-  ],
-  "concurrent_8.txt": [
-    "tag_8"
-  ],
-  "concurrent_9.txt": [
-    "tag_9"
-  ],
-  "document.pdf": [
-    "elixir",
-    "phoenix"
-  ],
-  "elixir_guide.pdf": [
-    "elixir",
-    "programming"
-  ],
-  "file1.txt": [
-    "tag1",
-    "tag2"
-  ],
-  "file2.txt": [
-    "tag3",
-    "tag4"
-  ],
-  "javascript_book.pdf": [
-    "javascript",
-    "web"
-  ],
-  "javascript_book.txt": [
-    "javascript",
-    "programming"
-  ],
-  "persistent.txt": [
-    "test",
-    "persistent"
-  ],
-  "phoenix_tutorial.md": [
-    "phoenix",
-    "web",
-    "elixir"
-  ],
-  "test.txt": [
-    "test",
-    "example"
+  "response.pdf": [
+    "Artificial Intelligence (AI)",
+    "AI Planning",
+    "Neuro-symbolic AI",
+    "Cognitive Science",
+    "Hybrid AI Systems"
   ]
 }

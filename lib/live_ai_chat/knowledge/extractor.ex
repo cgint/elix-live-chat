@@ -53,7 +53,22 @@ defmodule LiveAiChat.Knowledge.Extractor do
     case extract_content(filename, binary_content) do
       {:ok, metadata} ->
         LiveAiChat.TagStorage.save_extraction(filename, metadata)
-        Logger.info("Successfully extracted and saved metadata for #{filename}")
+
+        # Assign extracted topics as initial tags for the file
+        case assign_topics_as_tags(filename, metadata) do
+          :ok ->
+            Logger.info(
+              "Successfully extracted, saved metadata, and assigned tags for #{filename}"
+            )
+
+          {:error, tag_reason} ->
+            Logger.warning(
+              "Failed to assign extracted topics as tags for #{filename}: #{inspect(tag_reason)}"
+            )
+
+            # Don't fail the extraction if tagging fails
+        end
+
         {:ok, metadata}
 
       {:error, reason} ->
@@ -88,10 +103,9 @@ defmodule LiveAiChat.Knowledge.Extractor do
     extract_with_ai(filename, content, "markdown document")
   end
 
-  defp extract_from_pdf(_filename, _binary_content) do
-    # For now, we'll return a placeholder since PDF extraction requires additional libraries
-    # In a full implementation, you would use a PDF parsing library here
-    {:error, :pdf_extraction_not_implemented}
+  defp extract_from_pdf(filename, binary_content) do
+    # Use Gemini directly for PDF analysis instead of pdftotext
+    extract_with_ai_pdf(filename, binary_content, "pdf")
   end
 
   defp extract_with_ai(filename, content, content_type) do
@@ -113,6 +127,39 @@ defmodule LiveAiChat.Knowledge.Extractor do
     {:ok, enhanced_metadata}
   end
 
+  defp extract_with_ai_pdf(filename, binary_content, content_type) do
+    prompt = build_pdf_extraction_prompt()
+
+    case LiveAiChat.AIClient.Gemini.extract_document_content(binary_content, prompt) do
+      {:ok, response_text} ->
+        case parse_ai_extraction_response(response_text) do
+          {:ok, metadata} ->
+            enhanced_metadata =
+              Map.merge(metadata, %{
+                "filename" => filename,
+                "contentType" => content_type,
+                "extractedAt" => DateTime.utc_now() |> DateTime.to_iso8601(),
+                "extractorVersion" => "2.0.0-gemini"
+              })
+
+            {:ok, enhanced_metadata}
+
+          {:error, _reason} ->
+            Logger.warning(
+              "Failed to parse AI extraction response for #{filename}, falling back to simple analysis"
+            )
+
+            # Fallback to simple analysis with placeholder content
+            extract_with_ai(filename, "[PDF file analyzed by Gemini]", content_type)
+        end
+
+      {:error, reason} ->
+        Logger.error("Gemini PDF extraction failed for #{filename}: #{inspect(reason)}")
+        # Fallback to simple analysis
+        extract_with_ai(filename, "[PDF file - Gemini extraction failed]", content_type)
+    end
+  end
+
   defp build_extraction_prompt(content, content_type) do
     """
     Please analyze the following #{content_type} and extract key information.
@@ -131,6 +178,63 @@ defmodule LiveAiChat.Knowledge.Extractor do
     #{String.slice(content, 0, 4000)}
     #{if String.length(content) > 4000, do: "\n... (content truncated)", else: ""}
     """
+  end
+
+  defp build_pdf_extraction_prompt do
+    """
+    Please analyze this PDF document and extract key information in JSON format.
+
+    Return a JSON object with the following structure:
+    {
+      "summary": "A concise 2-3 sentence summary of the main content and purpose of this document",
+      "keyPoints": ["List of 3-7 key points or main topics covered in the document"],
+      "topics": ["List of 2-5 relevant categories or tags that describe the document type, subject area, or domain"],
+      "concepts": ["Key concepts, terms, or technologies mentioned in the document"],
+      "difficulty": "beginner|intermediate|advanced",
+      "estimatedReadTime": "X minutes"
+    }
+
+    For PDFs and images: You can read text, analyze charts, tables, diagrams, and extract any relevant information.
+    Focus on the main content, structure, and purpose of the document.
+    """
+  end
+
+  defp parse_ai_extraction_response(response_text) do
+    try do
+      # Extract JSON from the response (LLM might include some text before/after JSON)
+      json_match = Regex.run(~r/\{[\s\S]*\}/, response_text)
+
+      case json_match do
+        [json_string] ->
+          case Jason.decode(json_string) do
+            {:ok, parsed_json} ->
+              # Validate required fields and convert to expected format
+              metadata = %{
+                "summary" => Map.get(parsed_json, "summary", "Summary not available"),
+                "keyPoints" => Map.get(parsed_json, "keyPoints", []),
+                "topics" => Map.get(parsed_json, "topics", ["general"]),
+                "concepts" => Map.get(parsed_json, "concepts", []),
+                "difficulty" => Map.get(parsed_json, "difficulty", "intermediate"),
+                "estimatedReadTime" => Map.get(parsed_json, "estimatedReadTime", "5 minutes"),
+                "extractionMethod" => "gemini_ai"
+              }
+
+              {:ok, metadata}
+
+            {:error, decode_error} ->
+              Logger.warning("Failed to decode JSON from AI response: #{inspect(decode_error)}")
+              {:error, :json_decode_error}
+          end
+
+        nil ->
+          Logger.warning("No JSON found in AI response: #{response_text}")
+          {:error, :no_json_found}
+      end
+    rescue
+      error ->
+        Logger.error("Error parsing AI extraction response: #{inspect(error)}")
+        {:error, :parse_error}
+    end
   end
 
   # Simple content analysis without AI (fallback/placeholder)
@@ -220,6 +324,49 @@ defmodule LiveAiChat.Knowledge.Extractor do
       String.match?(content, advanced_terms) -> "advanced"
       String.match?(content, intermediate_terms) -> "intermediate"
       true -> "beginner"
+    end
+  end
+
+  defp assign_topics_as_tags(filename, metadata) do
+    # Extract topics from metadata - handle both "topics" and "categories" keys
+    # as the AI extraction might use "categories" while simple analysis uses "topics"
+    topics = Map.get(metadata, "topics", []) ++ Map.get(metadata, "categories", [])
+
+    case topics do
+      [] ->
+        Logger.debug("No topics found to assign as tags for #{filename}")
+        :ok
+
+      topic_list when is_list(topic_list) ->
+        # Filter out empty or nil topics and ensure they are strings
+        valid_topics =
+          topic_list
+          |> Enum.filter(&(&1 != nil and &1 != ""))
+          |> Enum.map(&to_string/1)
+          |> Enum.uniq()
+
+        case valid_topics do
+          [] ->
+            Logger.debug("No valid topics found to assign as tags for #{filename}")
+            :ok
+
+          tags ->
+            Logger.info(
+              "Assigning #{length(tags)} extracted topics as tags for #{filename}: #{inspect(tags)}"
+            )
+
+            try do
+              LiveAiChat.TagStorage.update_tags_for_file(filename, tags)
+              :ok
+            rescue
+              error ->
+                {:error, error}
+            end
+        end
+
+      _ ->
+        Logger.warning("Invalid topics format in metadata for #{filename}: #{inspect(topics)}")
+        :ok
     end
   end
 
