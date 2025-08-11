@@ -37,3 +37,5 @@ npm-debug.log
 
 .DS_Store
 epub/
+# Ignore Code Giant output directory
+.codegiant/
