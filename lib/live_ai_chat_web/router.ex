@@ -18,6 +18,7 @@ defmodule LiveAiChatWeb.Router do
     pipe_through :browser
 
     live "/", ChatLive
+    live "/knowledge", KnowledgeLive
   end
 
   # Other scopes may use custom stacks.

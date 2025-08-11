@@ -17,6 +17,10 @@ defmodule LiveAiChat.Application do
       {Goth, name: LiveAiChat.Goth, source: goth_source()},
       # Start the CsvStorage GenServer
       LiveAiChat.CsvStorage,
+      # Start the FileStorage GenServer for knowledge pool
+      LiveAiChat.FileStorage,
+      # Start the TagStorage GenServer for knowledge pool
+      LiveAiChat.TagStorage,
       # Start the Task supervisor for AI tasks
       {Task.Supervisor, name: LiveAiChat.TaskSupervisor},
       # Start to serve requests, typically the last entry

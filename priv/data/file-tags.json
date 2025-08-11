@@ -1,0 +1,20 @@
+{
+  "elixir_guide.pdf": [
+    "elixir",
+    "programming"
+  ],
+  "javascript_book.txt": [
+    "javascript",
+    "programming"
+  ],
+  "phoenix_tutorial.md": [
+    "phoenix",
+    "web",
+    "elixir"
+  ],
+  "test.txt": [
+    "elixir",
+    "programming",
+    "tutorial"
+  ]
+}
