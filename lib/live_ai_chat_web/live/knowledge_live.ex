@@ -146,7 +146,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
     case FileStorage.delete_file(filename) do
       :ok ->
         # Also clean up tags and metadata
-        TagStorage.update_tags_for_file(filename, [])
+        TagStorage.remove_tags_for_file(filename)
 
         {:noreply,
          socket

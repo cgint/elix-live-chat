@@ -19,6 +19,7 @@ defmodule LiveAiChatWeb.Router do
 
     live_session :default, session: {__MODULE__, :session_values, []} do
       live "/", ChatLive
+      live "/chat/:chat_id", ChatLive
       live "/knowledge", KnowledgeLive
     end
   end

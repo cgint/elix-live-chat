@@ -61,12 +61,17 @@ defmodule LiveAiChat.Knowledge.Extractor do
               "Successfully extracted, saved metadata, and assigned tags for #{filename}"
             )
 
+            # Notify the LiveView that extraction is complete
+            Phoenix.PubSub.broadcast(LiveAiChat.PubSub, "knowledge", {:extraction_done, filename})
+
           {:error, tag_reason} ->
             Logger.warning(
               "Failed to assign extracted topics as tags for #{filename}: #{inspect(tag_reason)}"
             )
 
-            # Don't fail the extraction if tagging fails
+            # Don't fail the extraction if tagging fails - this is not critical
+            # But still notify that extraction is complete
+            Phoenix.PubSub.broadcast(LiveAiChat.PubSub, "knowledge", {:extraction_done, filename})
         end
 
         {:ok, metadata}
@@ -109,28 +114,11 @@ defmodule LiveAiChat.Knowledge.Extractor do
   end
 
   defp extract_with_ai(filename, content, content_type) do
-    _prompt = build_extraction_prompt(content, content_type)
+    prompt = build_extraction_prompt(content, content_type)
+    gemini_client = Application.get_env(:live_ai_chat, :gemini_client, LiveAiChat.AIClient.Gemini)
 
-    # For now, we'll create a simple extraction since we need to adapt the AI client
-    # to support extraction vs. chat completion
-    # TODO: Integrate with actual AI client for enhanced extraction
-    {:ok, metadata} = extract_using_simple_analysis(content)
-
-    enhanced_metadata =
-      Map.merge(metadata, %{
-        "filename" => filename,
-        "contentType" => content_type,
-        "extractedAt" => DateTime.utc_now() |> DateTime.to_iso8601(),
-        "extractorVersion" => "1.0.0"
-      })
-
-    {:ok, enhanced_metadata}
-  end
-
-  defp extract_with_ai_pdf(filename, binary_content, content_type) do
-    prompt = build_pdf_extraction_prompt()
-
-    case LiveAiChat.AIClient.Gemini.extract_document_content(binary_content, prompt) do
+    # For non-PDF content, use Gemini text completion for extraction
+    case gemini_client.get_completion(prompt) do
       {:ok, response_text} ->
         case parse_ai_extraction_response(response_text) do
           {:ok, metadata} ->
@@ -144,19 +132,53 @@ defmodule LiveAiChat.Knowledge.Extractor do
 
             {:ok, enhanced_metadata}
 
-          {:error, _reason} ->
+          {:error, reason} ->
             Logger.warning(
-              "Failed to parse AI extraction response for #{filename}, falling back to simple analysis"
+              "Failed to parse AI extraction response for #{filename}: #{inspect(reason)}"
             )
 
-            # Fallback to simple analysis with placeholder content
-            extract_with_ai(filename, "[PDF file analyzed by Gemini]", content_type)
+            # Do not fall back to simple analysis - fail the extraction
+            {:error, :ai_extraction_failed}
+        end
+
+      {:error, reason} ->
+        Logger.error("Gemini text extraction failed for #{filename}: #{inspect(reason)}")
+        # Do not fall back to simple analysis - fail the extraction
+        {:error, :gemini_extraction_failed}
+    end
+  end
+
+  defp extract_with_ai_pdf(filename, binary_content, content_type) do
+    prompt = build_pdf_extraction_prompt()
+    gemini_client = Application.get_env(:live_ai_chat, :gemini_client, LiveAiChat.AIClient.Gemini)
+
+    case gemini_client.extract_document_content(binary_content, prompt) do
+      {:ok, response_text} ->
+        case parse_ai_extraction_response(response_text) do
+          {:ok, metadata} ->
+            enhanced_metadata =
+              Map.merge(metadata, %{
+                "filename" => filename,
+                "contentType" => content_type,
+                "extractedAt" => DateTime.utc_now() |> DateTime.to_iso8601(),
+                "extractorVersion" => "2.0.0-gemini"
+              })
+
+            {:ok, enhanced_metadata}
+
+          {:error, reason} ->
+            Logger.warning(
+              "Failed to parse AI extraction response for #{filename}: #{inspect(reason)}"
+            )
+
+            # Do not fall back to simple analysis - fail the extraction
+            {:error, :ai_extraction_failed}
         end
 
       {:error, reason} ->
         Logger.error("Gemini PDF extraction failed for #{filename}: #{inspect(reason)}")
-        # Fallback to simple analysis
-        extract_with_ai(filename, "[PDF file - Gemini extraction failed]", content_type)
+        # Do not fall back to simple analysis - fail the extraction
+        {:error, :gemini_extraction_failed}
     end
   end
 
@@ -201,33 +223,33 @@ defmodule LiveAiChat.Knowledge.Extractor do
 
   defp parse_ai_extraction_response(response_text) do
     try do
-      # Extract JSON from the response (LLM might include some text before/after JSON)
-      json_match = Regex.run(~r/\{[\s\S]*\}/, response_text)
+      # Extract JSON from the response with multiple extraction strategies
+      json_string = extract_json_from_response(response_text)
 
-      case json_match do
-        [json_string] ->
-          case Jason.decode(json_string) do
+      case json_string do
+        {:ok, extracted_json} ->
+          case Jason.decode(extracted_json) do
             {:ok, parsed_json} ->
-              # Validate required fields and convert to expected format
-              metadata = %{
-                "summary" => Map.get(parsed_json, "summary", "Summary not available"),
-                "keyPoints" => Map.get(parsed_json, "keyPoints", []),
-                "topics" => Map.get(parsed_json, "topics", ["general"]),
-                "concepts" => Map.get(parsed_json, "concepts", []),
-                "difficulty" => Map.get(parsed_json, "difficulty", "intermediate"),
-                "estimatedReadTime" => Map.get(parsed_json, "estimatedReadTime", "5 minutes"),
-                "extractionMethod" => "gemini_ai"
-              }
+              # Validate that we have meaningful content before proceeding
+              case validate_extracted_content(parsed_json) do
+                {:ok, validated_metadata} ->
+                  enhanced_metadata = Map.put(validated_metadata, "extractionMethod", "gemini_ai")
+                  {:ok, enhanced_metadata}
 
-              {:ok, metadata}
+                {:error, reason} ->
+                  Logger.warning("AI extraction validation failed: #{reason}")
+                  {:error, :invalid_extraction_content}
+              end
 
             {:error, decode_error} ->
               Logger.warning("Failed to decode JSON from AI response: #{inspect(decode_error)}")
+              Logger.debug("Extracted JSON string: #{extracted_json}")
               {:error, :json_decode_error}
           end
 
-        nil ->
-          Logger.warning("No JSON found in AI response: #{response_text}")
+        {:error, reason} ->
+          Logger.warning("Failed to extract JSON from AI response: #{reason}")
+          Logger.debug("AI response text: #{String.slice(response_text, 0, 500)}...")
           {:error, :no_json_found}
       end
     rescue
@@ -237,93 +259,82 @@ defmodule LiveAiChat.Knowledge.Extractor do
     end
   end
 
-  # Simple content analysis without AI (fallback/placeholder)
-  defp extract_using_simple_analysis(content) do
-    content_str = to_string(content)
-    word_count = content_str |> String.split() |> length()
+  defp extract_json_from_response(response_text) do
+    # Strategy 1: Extract from complete markdown code blocks (```json ... ```)
+    case Regex.run(~r/```(?:json)?\s*(\{[\s\S]*?\})\s*```/i, response_text) do
+      [_, json_content] ->
+        {:ok, String.trim(json_content)}
 
-    # Simple heuristics for content analysis
-    summary = extract_first_sentences(content_str, 2)
-    key_points = extract_bullet_points(content_str)
-    topics = extract_common_topics(content_str)
+      nil ->
+        # Strategy 2: Extract from incomplete markdown blocks (```json ... without closing)
+        case Regex.run(~r/```(?:json)?\s*(\{[\s\S]*)/i, response_text) do
+          [_, potential_json] ->
+            # Try to extract a complete JSON object from this
+            case Regex.run(~r/(\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})/s, potential_json) do
+              [_, json_content] ->
+                {:ok, String.trim(json_content)}
 
-    metadata = %{
-      "summary" => summary,
-      "keyPoints" => key_points,
-      "topics" => topics,
-      "wordCount" => word_count,
-      "estimatedReadTime" => "#{max(1, div(word_count, 200))} minutes",
-      "difficulty" => determine_difficulty(content_str),
-      "extractionMethod" => "simple_analysis"
-    }
+              nil ->
+                # Continue to strategy 3
+                extract_json_fallback(response_text)
+            end
 
-    {:ok, metadata}
-  end
-
-  defp extract_first_sentences(content, count) do
-    content
-    |> String.split(~r/[.!?]+/)
-    |> Enum.take(count)
-    |> Enum.map(&String.trim/1)
-    |> Enum.reject(&(&1 == ""))
-    |> Enum.join(". ")
-    |> case do
-      "" -> "Content summary not available"
-      summary -> summary <> "."
+          nil ->
+            # Strategy 3: Extract JSON object between curly braces anywhere in text
+            extract_json_fallback(response_text)
+        end
     end
   end
 
-  defp extract_bullet_points(content) do
-    content
-    |> String.split("\n")
-    |> Enum.filter(&(String.match?(&1, ~r/^\s*[-*•]\s+/) || String.match?(&1, ~r/^\s*\d+\.\s+/)))
-    |> Enum.map(&String.trim/1)
-    |> Enum.map(&String.replace(&1, ~r/^\s*[-*•]\s*/, ""))
-    |> Enum.map(&String.replace(&1, ~r/^\s*\d+\.\s*/, ""))
-    |> Enum.take(5)
-    |> case do
-      [] -> ["No bullet points found"]
-      points -> points
-    end
-  end
-
-  defp extract_common_topics(content) do
-    # Simple topic extraction based on common technical terms
-    topic_keywords = %{
-      "elixir" => ~r/\belixir\b/i,
-      "phoenix" => ~r/\bphoenix\b/i,
-      "liveview" => ~r/\blive.?view\b/i,
-      "genserver" => ~r/\bgenserver\b/i,
-      "otp" => ~r/\botp\b/i,
-      "programming" => ~r/\b(programming|coding|development)\b/i,
-      "web" => ~r/\b(web|http|html|css|javascript)\b/i,
-      "database" => ~r/\b(database|sql|postgres|mysql)\b/i,
-      "api" => ~r/\b(api|rest|graphql)\b/i,
-      "testing" => ~r/\b(test|testing|spec|tdd|bdd)\b/i
-    }
-
-    found_topics =
-      topic_keywords
-      |> Enum.filter(fn {_topic, regex} -> String.match?(content, regex) end)
-      |> Enum.map(fn {topic, _regex} -> topic end)
-
-    case found_topics do
-      [] -> ["general"]
-      topics -> topics
-    end
-  end
-
-  defp determine_difficulty(content) do
-    # Simple heuristics for difficulty assessment
-    advanced_terms =
-      ~r/\b(metaprogramming|macros|protocols|behaviours|supervision|distribution|clustering)\b/i
-
-    intermediate_terms = ~r/\b(genserver|supervisor|process|concurrency|pattern.matching)\b/i
+  defp validate_extracted_content(parsed_json) do
+    # Check that we have meaningful content, not just empty defaults
+    summary = Map.get(parsed_json, "summary")
+    topics = Map.get(parsed_json, "topics", [])
+    key_points = Map.get(parsed_json, "keyPoints", [])
 
     cond do
-      String.match?(content, advanced_terms) -> "advanced"
-      String.match?(content, intermediate_terms) -> "intermediate"
-      true -> "beginner"
+      # Summary is missing or looks like a default/placeholder
+      is_nil(summary) or summary == "" or
+          String.contains?(String.downcase(summary), ["not available", "summary not available"]) ->
+        {:error, "Missing or placeholder summary"}
+
+      # Topics are missing or just defaults
+      is_nil(topics) or topics == [] or topics == ["general"] ->
+        {:error, "Missing or default topics"}
+
+      # No key points provided
+      is_nil(key_points) or key_points == [] ->
+        {:error, "Missing key points"}
+
+      true ->
+        # Content looks valid, return validated metadata
+        metadata = %{
+          "summary" => summary,
+          "keyPoints" => key_points,
+          "topics" => topics,
+          "concepts" => Map.get(parsed_json, "concepts", []),
+          "difficulty" => Map.get(parsed_json, "difficulty", "intermediate"),
+          "estimatedReadTime" => Map.get(parsed_json, "estimatedReadTime", "5 minutes")
+        }
+
+        {:ok, metadata}
+    end
+  end
+
+  defp extract_json_fallback(response_text) do
+    case Regex.run(~r/(\{[\s\S]*\})/m, response_text) do
+      [_, json_content] ->
+        # Clean up potential markdown artifacts
+        cleaned_json =
+          json_content
+          |> String.replace(~r/^```(?:json)?\s*/i, "")
+          |> String.replace(~r/\s*```$/, "")
+          |> String.trim()
+
+        {:ok, cleaned_json}
+
+      nil ->
+        {:error, "No JSON structure found in response"}
     end
   end
 

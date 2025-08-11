@@ -34,8 +34,8 @@ defmodule LiveAiChatWeb.KnowledgeLiveTest do
     test "renders knowledge pool page", %{conn: conn} do
       {:ok, _view, html} = live(conn, ~p"/knowledge")
 
-      assert html =~ "Knowledge Pool"
-      assert html =~ "Upload Files"
+      assert html =~ "Upload and manage your knowledge base files"
+      assert html =~ "Knowledge"
       assert html =~ "Uploaded Files"
     end
 
@@ -52,7 +52,7 @@ defmodule LiveAiChatWeb.KnowledgeLiveTest do
       {:ok, view, _html} = live(conn, ~p"/knowledge")
 
       # Test form validation
-      assert render_change(view, "validate", %{}) =~ "Knowledge Pool"
+      assert render_change(view, "validate", %{}) =~ "Upload and manage your knowledge base files"
     end
 
     test "handles file upload error gracefully", %{conn: conn} do
@@ -61,7 +61,8 @@ defmodule LiveAiChatWeb.KnowledgeLiveTest do
       # Simulate upload without actual file
       html = render_submit(view, "save", %{})
 
-      assert html =~ "No files were uploaded" or html =~ "Knowledge Pool"
+      assert html =~ "No files uploaded yet" or
+               html =~ "Upload and manage your knowledge base files"
     end
   end
 
@@ -118,6 +119,53 @@ defmodule LiveAiChatWeb.KnowledgeLiveTest do
       # Verify file was deleted from storage
       files = FileStorage.list_files()
       refute "test.pdf" in files
+    end
+
+    test "deletes file and removes its tags completely", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/knowledge")
+
+      # Verify tags exist initially
+      tags = TagStorage.get_all_tags()
+      assert tags["test.pdf"] == ["test", "example"]
+
+      # Delete the file
+      _html = render_click(view, "delete-file", %{"filename" => "test.pdf"})
+
+      # Verify file was deleted from storage
+      files = FileStorage.list_files()
+      refute "test.pdf" in files
+
+      # Verify tags were completely removed from file-tags.json
+      tags = TagStorage.get_all_tags()
+      refute Map.has_key?(tags, "test.pdf")
+    end
+
+    test "deletes file and removes both tags and metadata", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/knowledge")
+
+      # Add some metadata for the test file
+      metadata = %{"summary" => "Test document", "keyPoints" => ["test", "example"]}
+      TagStorage.save_extraction("test.pdf", metadata)
+      Process.sleep(10)
+
+      # Verify metadata file exists
+      test_data_dir = Application.get_env(:live_ai_chat, :upload_dir)
+      meta_file = Path.join(test_data_dir, "test.pdf.meta.json")
+      assert File.exists?(meta_file)
+
+      # Delete the file
+      _html = render_click(view, "delete-file", %{"filename" => "test.pdf"})
+
+      # Verify file was deleted from storage
+      files = FileStorage.list_files()
+      refute "test.pdf" in files
+
+      # Verify tags were completely removed
+      tags = TagStorage.get_all_tags()
+      refute Map.has_key?(tags, "test.pdf")
+
+      # Verify metadata file was also removed
+      refute File.exists?(meta_file)
     end
   end
 
@@ -181,8 +229,8 @@ defmodule LiveAiChatWeb.KnowledgeLiveTest do
     test "provides link to upload files", %{conn: conn} do
       {:ok, _view, html} = live(conn, ~p"/knowledge")
 
-      assert html =~ "Upload Files"
-      assert html =~ "Knowledge Pool"
+      assert html =~ "Back to Chat"
+      assert html =~ "Knowledge"
     end
   end
 

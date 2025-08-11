@@ -8,7 +8,7 @@ defmodule LiveAiChat.TagStorage do
   require Logger
 
   @default_data_dir Path.join(:code.priv_dir(:live_ai_chat), "data")
-  @default_upload_dir Path.join(:code.priv_dir(:live_ai_chat), "uploads")
+  @default_upload_dir Path.join(:code.priv_dir(:live_ai_chat), "data/uploads")
 
   # -- Public API -----------------------------------------------------------
 
@@ -31,6 +31,10 @@ defmodule LiveAiChat.TagStorage do
 
   @spec get_files_by_tags([String.t()]) :: [String.t()]
   def get_files_by_tags(tag_list), do: GenServer.call(__MODULE__, {:files_by_tags, tag_list})
+
+  @spec remove_tags_for_file(String.t()) :: :ok
+  def remove_tags_for_file(filename),
+    do: GenServer.call(__MODULE__, {:remove_tags, filename})
 
   # -- GenServer callbacks --------------------------------------------------
 
@@ -89,6 +93,34 @@ defmodule LiveAiChat.TagStorage do
 
       {:error, reason} ->
         Logger.error("Failed to save tags: #{inspect(reason)}")
+        {:reply, :ok, state}
+    end
+  end
+
+  @impl true
+  def handle_call({:remove_tags, filename}, _from, state) do
+    current_tags = load_json(tags_json_path())
+    new_tags = Map.delete(current_tags, filename)
+
+    # Also remove the metadata file if it exists
+    meta_file_path = meta_path(filename)
+
+    if File.exists?(meta_file_path) do
+      case File.rm(meta_file_path) do
+        :ok ->
+          Logger.debug("Removed metadata file for #{filename}")
+
+        {:error, reason} ->
+          Logger.warning("Failed to remove metadata file for #{filename}: #{inspect(reason)}")
+      end
+    end
+
+    case write_json(tags_json_path(), new_tags) do
+      :ok ->
+        {:reply, :ok, %{state | tags: new_tags}}
+
+      {:error, reason} ->
+        Logger.error("Failed to remove tags: #{inspect(reason)}")
         {:reply, :ok, state}
     end
   end

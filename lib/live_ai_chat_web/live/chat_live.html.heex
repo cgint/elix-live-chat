@@ -1,29 +1,10 @@
 <.flash_group flash={@flash} />
-<div class="flex h-screen antialiased text-gray-800">
+<LiveAiChatWeb.Components.Navigation.navigation_bar current_page={:chat} />
+<div class="flex h-[calc(100vh-4rem)] antialiased text-gray-800">
   <div class="flex flex-row h-full w-full overflow-x-hidden">
     <!-- Sidebar -->
-    <div class="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
-      <div class="flex flex-row items-center justify-center h-12 w-full">
-        <div class="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-            >
-            </path>
-          </svg>
-        </div>
-        <div class="ml-2 font-bold text-2xl">LiveAiChat</div>
-      </div>
-      <div class="flex flex-col mt-8">
+    <div class="flex flex-col py-6 pl-6 pr-2 w-64 bg-white flex-shrink-0">
+      <div class="flex flex-col">
         <div class="flex flex-row items-center justify-between text-xs">
           <span class="font-bold">Conversations</span>
           <span class="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full">
@@ -69,7 +50,7 @@
               class={"flex flex-row items-center flex-1 rounded-lg p-1 -m-1 #{if @processing_request or @streaming_ai_response, do: "cursor-not-allowed opacity-50", else: "hover:bg-gray-50"}"}
             >
               <div class="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
-                {String.at(chat_id, 0)}
+                {get_chat_name(@chats_with_metadata, chat_id) |> String.at(0) |> String.upcase()}
               </div>
               <%= if @editing_chat_id == chat_id do %>
                 <!-- Inline Edit Form -->
@@ -78,14 +59,16 @@
                     id={"rename-input-#{chat_id}"}
                     type="text"
                     name="new-name"
-                    value={chat_id}
+                    value={get_chat_name(@chats_with_metadata, chat_id)}
                     class="text-sm font-semibold bg-white border border-gray-300 rounded px-2 py-1 w-full"
                     phx-hook="AutoFocus"
                     phx-blur="cancel_rename"
                   />
                 </form>
               <% else %>
-                <div class="ml-2 text-sm font-semibold flex-1 text-left">{chat_id}</div>
+                <div class="ml-2 text-sm font-semibold flex-1 text-left">
+                  {get_chat_name(@chats_with_metadata, chat_id)}
+                </div>
               <% end %>
             </button>
             
@@ -203,12 +186,9 @@
               <%= if length(@available_files) == 0 do %>
                 <div class="text-xs text-gray-500 text-center py-4">
                   No files uploaded yet.
-                  <.link
-                    navigate={~p"/knowledge"}
-                    class="block mt-1 text-indigo-600 hover:text-indigo-800 underline"
-                  >
-                    Upload files →
-                  </.link>
+                  <div class="text-xs text-gray-400 mt-1">
+                    Use the navigation above to upload files.
+                  </div>
                 </div>
               <% else %>
                 <div class="space-y-1">

@@ -1,10 +1,15 @@
-defmodule LiveAiChat.CsvStorage do
+defmodule LiveAiChat.ChatStorageAdapter do
   @moduledoc """
-  A GenServer responsible for all file-based operations related to chat logs.
-  It ensures that all file I/O is handled in a separate, supervised process,
-  preventing the main application or LiveViews from being blocked.
+  A compatibility adapter that provides the old CsvStorage API while delegating
+  to the new JSON-based ChatStorage system. This maintains backward compatibility
+  for existing code that expects the CSV-based interface.
+
+  This module acts as a bridge during the transition from CSV to JSON storage,
+  ensuring that all file I/O is handled in a separate, supervised process.
   """
   use GenServer
+
+  alias LiveAiChat.ChatStorage
 
   defp chat_logs_dir,
     do: Application.get_env(:live_ai_chat, :chat_logs_dir, "priv/data/chat_logs")
@@ -18,32 +23,68 @@ defmodule LiveAiChat.CsvStorage do
 
   @doc "Returns a list of all chat IDs."
   def list_chats() do
-    GenServer.call(__MODULE__, :list_chats)
+    try do
+      # Use the new ChatStorage system
+      case ChatStorage.list_chats() do
+        chats when is_list(chats) ->
+          # Extract just the chat IDs for backward compatibility
+          Enum.map(chats, fn {chat_id, _metadata} -> chat_id end)
+
+        _ ->
+          # Fallback to legacy CSV storage if needed
+          GenServer.call(__MODULE__, :list_chats)
+      end
+    rescue
+      _ ->
+        # Fallback to legacy CSV storage if ChatStorage fails
+        GenServer.call(__MODULE__, :list_chats)
+    end
   end
 
   @doc "Reads all messages for a given chat ID."
   def read_chat(chat_id) do
-    GenServer.call(__MODULE__, {:read_chat, chat_id})
+    # Use the new ChatStorage system
+    case ChatStorage.read_chat_messages(chat_id) do
+      messages when is_list(messages) ->
+        # Convert from new format to old format for backward compatibility
+        Enum.map(messages, fn
+          {:ok, message} -> {:ok, %{role: message["role"], content: message["content"]}}
+          error -> error
+        end)
+
+      _ ->
+        # Fallback to legacy CSV storage if needed
+        GenServer.call(__MODULE__, {:read_chat, chat_id})
+    end
   end
 
-  @doc "Appends a message to a chat's CSV file."
+  @doc "Appends a message to a chat's message file."
   def append_message(chat_id, message) do
-    GenServer.call(__MODULE__, {:append_message, chat_id, message})
+    # Convert from old format to new format and use ChatStorage
+    new_message = %{
+      "role" => to_string(message.role),
+      "content" => to_string(message.content)
+    }
+
+    ChatStorage.append_message(chat_id, new_message)
   end
 
   @doc "Creates a new empty chat with the given ID."
   def create_chat(chat_id) do
-    GenServer.call(__MODULE__, {:create_chat, chat_id})
+    # Use the new ChatStorage system
+    ChatStorage.create_chat(chat_id)
   end
 
   @doc "Renames a chat from old_chat_id to new_chat_id."
   def rename_chat(old_chat_id, new_chat_id) do
-    GenServer.call(__MODULE__, {:rename_chat, old_chat_id, new_chat_id})
+    # Update the chat name in metadata using ChatStorage
+    ChatStorage.update_chat_metadata(old_chat_id, %{"name" => new_chat_id})
   end
 
   @doc "Deletes a chat by moving it to an archived folder."
   def delete_chat(chat_id) do
-    GenServer.call(__MODULE__, {:delete_chat, chat_id})
+    # Use the new ChatStorage system
+    ChatStorage.delete_chat(chat_id)
   end
 
   # --- GenServer Callbacks ---

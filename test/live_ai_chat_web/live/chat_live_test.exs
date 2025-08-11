@@ -7,16 +7,30 @@ defmodule LiveAiChatWeb.ChatLiveTest do
   alias LiveAiChat.AIClientMock
 
   @chat_logs_dir "priv/test_chat_logs"
+  @test_chats_dir "priv/test_chats"
 
   setup do
     Mox.stub_with(AIClientMock, LiveAiChat.AIClient.Dummy)
+
+    # Clean up any existing test data
+    File.rm_rf!(@test_chats_dir)
+    File.rm_rf!(@chat_logs_dir)
+
+    # Configure both storage systems for testing
     File.mkdir_p!(@chat_logs_dir)
+    File.mkdir_p!(@test_chats_dir)
     Application.put_env(:live_ai_chat, :chat_logs_dir, @chat_logs_dir)
-    File.write!(Path.join(@chat_logs_dir, "test-chat.csv"), "user,Hello\n")
+    Application.put_env(:live_ai_chat, :chats_dir, @test_chats_dir)
+
+    # Create a test chat with a message using the new storage system
+    :ok = LiveAiChat.ChatStorage.create_chat("test-chat")
+    LiveAiChat.ChatStorageAdapter.append_message("test-chat", %{role: "user", content: "Hello"})
 
     on_exit(fn ->
       File.rm_rf!(@chat_logs_dir)
+      File.rm_rf!(@test_chats_dir)
       Application.delete_env(:live_ai_chat, :chat_logs_dir)
+      Application.delete_env(:live_ai_chat, :chats_dir)
     end)
 
     :ok

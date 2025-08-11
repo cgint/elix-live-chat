@@ -91,6 +91,109 @@ defmodule LiveAiChat.TagStorageTest do
     end
   end
 
+  describe "remove_tags_for_file/1" do
+    test "removes tags for a file completely" do
+      TagStorage.update_tags_for_file("document.pdf", ["elixir", "phoenix"])
+      Process.sleep(10)
+
+      # Verify tags exist
+      tags = TagStorage.get_all_tags()
+      assert tags["document.pdf"] == ["elixir", "phoenix"]
+
+      # Remove tags
+      TagStorage.remove_tags_for_file("document.pdf")
+      Process.sleep(10)
+
+      # Verify tags are completely removed
+      tags = TagStorage.get_all_tags()
+      refute Map.has_key?(tags, "document.pdf")
+    end
+
+    test "removes tags from JSON file permanently" do
+      TagStorage.update_tags_for_file("test_file.txt", ["test", "tag"])
+      Process.sleep(10)
+
+      # Verify file exists in JSON
+      tags_file = Path.join(@test_data_dir, "file-tags.json")
+      {:ok, content} = File.read(tags_file)
+      {:ok, data} = Jason.decode(content)
+      assert Map.has_key?(data, "test_file.txt")
+
+      # Remove tags
+      TagStorage.remove_tags_for_file("test_file.txt")
+      Process.sleep(10)
+
+      # Verify file is removed from JSON
+      {:ok, content} = File.read(tags_file)
+      {:ok, data} = Jason.decode(content)
+      refute Map.has_key?(data, "test_file.txt")
+    end
+
+    test "handles removing tags for non-existent file" do
+      # Should not crash when removing tags for a file that doesn't exist
+      TagStorage.remove_tags_for_file("nonexistent.txt")
+      Process.sleep(10)
+
+      tags = TagStorage.get_all_tags()
+      assert tags == %{}
+    end
+
+    test "removes only specified file while preserving others" do
+      TagStorage.update_tags_for_file("file1.txt", ["tag1"])
+      TagStorage.update_tags_for_file("file2.txt", ["tag2"])
+      TagStorage.update_tags_for_file("file3.txt", ["tag3"])
+      Process.sleep(10)
+
+      # Remove tags for file2 only
+      TagStorage.remove_tags_for_file("file2.txt")
+      Process.sleep(10)
+
+      tags = TagStorage.get_all_tags()
+      assert tags["file1.txt"] == ["tag1"]
+      assert tags["file3.txt"] == ["tag3"]
+      refute Map.has_key?(tags, "file2.txt")
+    end
+
+    test "removes corresponding metadata file when removing tags" do
+      filename = "test_with_meta.pdf"
+
+      # Create metadata file
+      metadata = %{"summary" => "Test document", "keyPoints" => ["point1"]}
+      TagStorage.save_extraction(filename, metadata)
+      TagStorage.update_tags_for_file(filename, ["test", "pdf"])
+      Process.sleep(10)
+
+      # Verify both tags and metadata exist
+      tags = TagStorage.get_all_tags()
+      assert tags[filename] == ["test", "pdf"]
+
+      meta_file = Path.join(@test_upload_dir, "#{filename}.meta.json")
+      assert File.exists?(meta_file)
+
+      # Remove tags (should also remove metadata)
+      TagStorage.remove_tags_for_file(filename)
+      Process.sleep(10)
+
+      # Verify both tags and metadata are removed
+      tags = TagStorage.get_all_tags()
+      refute Map.has_key?(tags, filename)
+      refute File.exists?(meta_file)
+    end
+
+    test "handles removal when metadata file doesn't exist" do
+      # Create tags without metadata
+      TagStorage.update_tags_for_file("no_meta.txt", ["test"])
+      Process.sleep(10)
+
+      # Remove tags (should not crash even though no metadata file exists)
+      TagStorage.remove_tags_for_file("no_meta.txt")
+      Process.sleep(10)
+
+      tags = TagStorage.get_all_tags()
+      refute Map.has_key?(tags, "no_meta.txt")
+    end
+  end
+
   describe "save_extraction/2 and get_extraction/1" do
     test "saves and retrieves extraction metadata" do
       filename = "test_document.pdf"

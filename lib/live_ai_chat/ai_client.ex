@@ -52,6 +52,30 @@ defmodule LiveAiChat.AIClient do
     end
 
     @doc """
+    Get a text completion from Gemini using a text prompt.
+    Returns a synchronous response instead of streaming.
+
+    ## Parameters
+    - prompt: The text prompt for completion
+
+    Returns {:ok, response_text} on success or {:error, reason} on failure.
+    """
+    @spec get_completion(String.t()) :: {:ok, String.t()} | {:error, term()}
+    def get_completion(prompt) do
+      case call_gemini_text_api(prompt) do
+        {:ok, response} ->
+          case parse_extraction_response(response) do
+            {:ok, text_content} -> {:ok, text_content}
+            {:error, reason} -> {:error, reason}
+          end
+
+        {:error, reason} ->
+          Logger.error("Gemini text completion API error: #{inspect(reason)}")
+          {:error, reason}
+      end
+    end
+
+    @doc """
     Extract content from a document using Gemini's multimodal capabilities.
     Returns a synchronous response instead of streaming.
 
@@ -280,6 +304,65 @@ defmodule LiveAiChat.AIClient do
 
     defp get_model do
       Application.get_env(:live_ai_chat, :gemini_model, "gemini-2.5-flash")
+    end
+
+    defp call_gemini_text_api(prompt) do
+      project_id = get_project_id()
+      location = get_location()
+      model = get_model()
+
+      # Use generateContent endpoint for synchronous text completion
+      url =
+        "https://#{location}-aiplatform.googleapis.com/v1/projects/#{project_id}/locations/#{location}/publishers/google/models/#{model}:generateContent"
+
+      headers = [
+        {"content-type", "application/json"},
+        {"authorization", "Bearer #{get_access_token()}"}
+      ]
+
+      body = %{
+        contents: [
+          %{
+            role: "user",
+            parts: [%{text: prompt}]
+          }
+        ],
+        generationConfig: %{
+          temperature: 0.1,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 4096
+        },
+        safetySettings: [
+          %{
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          %{
+            category: "HARM_CATEGORY_HATE_SPEECH",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          %{
+            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          %{
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          }
+        ]
+      }
+
+      case Req.post(url, headers: headers, json: body, receive_timeout: 60_000) do
+        {:ok, %{status: 200, body: response_body}} ->
+          {:ok, response_body}
+
+        {:ok, %{status: status, body: body}} ->
+          {:error, "HTTP #{status}: #{inspect(body)}"}
+
+        {:error, reason} ->
+          {:error, reason}
+      end
     end
 
     defp call_gemini_extraction_api(binary_content, extraction_prompt) do

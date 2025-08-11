@@ -22,3 +22,4 @@ config :phoenix, :plug_init_mode, :runtime
 
 # Enable helpful, but potentially expensive runtime checks
 config :live_ai_chat, :ai_client, LiveAiChat.AIClientMock
+config :live_ai_chat, :gemini_client, LiveAiChat.AIClient.GeminiMock

@@ -16,8 +16,10 @@ defmodule LiveAiChat.Application do
         # {LiveAiChat.Worker, arg},
         # Start Goth for Google Cloud authentication
         {Goth, name: LiveAiChat.Goth, source: goth_source()},
-        # Start the CsvStorage GenServer (needed for chat tests as well)
-        LiveAiChat.CsvStorage
+        # Start the ChatStorageAdapter GenServer (needed for chat tests as well)
+        LiveAiChat.ChatStorageAdapter,
+        # Start the new ChatStorage GenServer
+        LiveAiChat.ChatStorage
       ] ++
         extra_storage_children() ++
         [
