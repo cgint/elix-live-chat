@@ -103,10 +103,11 @@ defmodule LiveAiChatWeb.KnowledgeLiveTest do
       render_click(view, "select-file", %{"filename" => "test.txt"})
 
       # Update tags
-      _html = render_submit(view, "update-tags", %{
-        "filename" => "test.txt",
-        "tags" => "elixir, programming, tutorial"
-      })
+      _html =
+        render_submit(view, "update-tags", %{
+          "filename" => "test.txt",
+          "tags" => "elixir, programming, tutorial"
+        })
 
       # Verify tags were saved
       tags = TagStorage.get_all_tags()
@@ -172,9 +173,12 @@ defmodule LiveAiChatWeb.KnowledgeLiveTest do
       html = render_change(view, "search-by-tags", %{"search_tags" => "programming, web"})
 
       # Should match files with either "programming" or "web" tags
-      assert html =~ "elixir_guide.pdf"    # has "programming"
-      assert html =~ "phoenix_tutorial.md" # has "web"
-      assert html =~ "javascript_book.txt" # has "programming"
+      # has "programming"
+      assert html =~ "elixir_guide.pdf"
+      # has "web"
+      assert html =~ "phoenix_tutorial.md"
+      # has "programming"
+      assert html =~ "javascript_book.txt"
     end
   end
 

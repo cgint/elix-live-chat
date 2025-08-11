@@ -50,12 +50,13 @@ defmodule LiveAiChat.Application do
       case System.get_env("GOOGLE_APPLICATION_CREDENTIALS") do
         nil ->
           # Use gcloud application default credentials if available
-          default_creds_path = Path.join([
-            System.user_home!(),
-            ".config",
-            "gcloud",
-            "application_default_credentials.json"
-          ])
+          default_creds_path =
+            Path.join([
+              System.user_home!(),
+              ".config",
+              "gcloud",
+              "application_default_credentials.json"
+            ])
 
           if File.exists?(default_creds_path) do
             {:refresh_token, File.read!(default_creds_path) |> Jason.decode!()}

@@ -19,13 +19,15 @@ defmodule LiveAiChat.TagStorage do
   def get_all_tags(), do: GenServer.call(__MODULE__, :all_tags)
 
   @spec update_tags_for_file(String.t(), [String.t()]) :: :ok
-  def update_tags_for_file(filename, tag_list), do: GenServer.cast(__MODULE__, {:update_tags, filename, tag_list})
+  def update_tags_for_file(filename, tag_list),
+    do: GenServer.cast(__MODULE__, {:update_tags, filename, tag_list})
 
   @spec get_extraction(String.t()) :: map()
   def get_extraction(filename), do: GenServer.call(__MODULE__, {:get_meta, filename})
 
   @spec save_extraction(String.t(), map()) :: :ok
-  def save_extraction(filename, data), do: GenServer.cast(__MODULE__, {:save_meta, filename, data})
+  def save_extraction(filename, data),
+    do: GenServer.cast(__MODULE__, {:save_meta, filename, data})
 
   @spec get_files_by_tags([String.t()]) :: [String.t()]
   def get_files_by_tags(tag_list), do: GenServer.call(__MODULE__, {:files_by_tags, tag_list})
@@ -36,16 +38,18 @@ defmodule LiveAiChat.TagStorage do
   def init(_) do
     data_dir = Application.get_env(:live_ai_chat, :data_dir, @default_data_dir)
     upload_dir = Application.get_env(:live_ai_chat, :upload_dir, @default_upload_dir)
-    
+
     File.mkdir_p!(data_dir)
     File.mkdir_p!(upload_dir)
-    
+
     tags_json = Path.join(data_dir, "file-tags.json")
+
     state = %{
       tags: load_json(tags_json),
       tags_json: tags_json,
       upload_dir: upload_dir
     }
+
     {:ok, state}
   end
 
@@ -62,7 +66,7 @@ defmodule LiveAiChat.TagStorage do
 
   @impl true
   def handle_call({:files_by_tags, tag_list}, _from, state) do
-    matching_files = 
+    matching_files =
       state.tags
       |> Enum.filter(fn {_filename, file_tags} ->
         # Check if any of the requested tags match any of the file's tags
@@ -73,17 +77,18 @@ defmodule LiveAiChat.TagStorage do
         end)
       end)
       |> Enum.map(fn {filename, _tags} -> filename end)
-    
+
     {:reply, matching_files, state}
   end
 
   @impl true
   def handle_cast({:update_tags, filename, tag_list}, state) do
     new_tags = Map.put(state.tags, filename, tag_list)
-    
+
     case write_json(state.tags_json, new_tags) do
       :ok ->
         {:noreply, %{state | tags: new_tags}}
+
       {:error, reason} ->
         Logger.error("Failed to save tags: #{inspect(reason)}")
         {:noreply, state}
@@ -93,14 +98,15 @@ defmodule LiveAiChat.TagStorage do
   @impl true
   def handle_cast({:save_meta, filename, data}, state) do
     meta_path = meta_path(filename, state.upload_dir)
-    
+
     case write_json(meta_path, data) do
       :ok ->
         Logger.debug("Saved metadata for #{filename}")
+
       {:error, reason} ->
         Logger.error("Failed to save metadata for #{filename}: #{inspect(reason)}")
     end
-    
+
     {:noreply, state}
   end
 
@@ -113,7 +119,8 @@ defmodule LiveAiChat.TagStorage do
           {:ok, data} -> data
           {:error, _} -> %{}
         end
-      _ -> 
+
+      _ ->
         %{}
     end
   end
@@ -122,6 +129,7 @@ defmodule LiveAiChat.TagStorage do
     case Jason.encode(data, pretty: true) do
       {:ok, json} ->
         File.write(path, json)
+
       {:error, reason} ->
         {:error, reason}
     end
@@ -133,16 +141,16 @@ defmodule LiveAiChat.TagStorage do
 
   defp read_meta(filename, upload_dir) do
     meta_path = meta_path(filename, upload_dir)
-    
+
     case File.read(meta_path) do
       {:ok, bin} ->
         case Jason.decode(bin) do
           {:ok, data} -> data
           {:error, _} -> %{}
         end
-      _ -> 
+
+      _ ->
         %{}
     end
   end
 end
-

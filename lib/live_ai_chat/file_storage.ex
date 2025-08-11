@@ -28,8 +28,8 @@ defmodule LiveAiChat.FileStorage do
 
   @spec safe_filename(String.t()) :: String.t()
   def safe_filename(name) do
-    name 
-    |> Path.basename() 
+    name
+    |> Path.basename()
     |> String.replace(~r/[^\w\.-]/, "_")
   end
 
@@ -68,14 +68,16 @@ defmodule LiveAiChat.FileStorage do
     case File.ls(state.dir) do
       {:ok, files} ->
         # Filter out directories, only return files
-        actual_files = Enum.filter(files, fn file ->
-          path = Path.join(state.dir, file)
-          File.regular?(path)
-        end)
+        actual_files =
+          Enum.filter(files, fn file ->
+            path = Path.join(state.dir, file)
+            File.regular?(path)
+          end)
+
         {:reply, actual_files, state}
+
       {:error, _} ->
         {:reply, [], state}
     end
   end
 end
-

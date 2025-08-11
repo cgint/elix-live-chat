@@ -16,7 +16,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
       |> assign(:selected_file, nil)
       |> assign(:file_metadata, %{})
       |> assign(:new_tags, "")
-             |> allow_upload(:knowledge_files,
+      |> allow_upload(:knowledge_files,
         accept: ~w(.pdf .txt .md .markdown),
         max_entries: 5,
         max_file_size: 10_000_000
@@ -57,6 +57,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
             # Enqueue for background content extraction
             Extractor.enqueue(safe_filename, binary_content)
             {:ok, safe_filename}
+
           {:error, reason} ->
             {:postpone, {:error, reason}}
         end
@@ -65,12 +66,14 @@ defmodule LiveAiChatWeb.KnowledgeLive do
     case uploaded_files do
       [] ->
         {:noreply, put_flash(socket, :error, "No files were uploaded")}
+
       files when is_list(files) ->
         {:noreply,
          socket
          |> update(:uploaded_files, &(&1 ++ files))
          |> assign_files_and_tags()
          |> put_flash(:info, "#{length(files)} file(s) uploaded successfully")}
+
       {:error, reason} ->
         {:noreply, put_flash(socket, :error, "Upload failed: #{inspect(reason)}")}
     end
@@ -125,6 +128,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
          |> assign(:file_metadata, %{})
          |> assign(:new_tags, "")
          |> put_flash(:info, "File #{filename} deleted")}
+
       {:error, reason} ->
         {:noreply, put_flash(socket, :error, "Failed to delete file: #{inspect(reason)}")}
     end

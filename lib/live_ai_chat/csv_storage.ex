@@ -67,6 +67,7 @@ defmodule LiveAiChat.CsvStorage do
 
   def handle_call({:read_chat, chat_id}, _from, state) do
     path = Path.join(chat_logs_dir(), "#{chat_id}.csv")
+
     messages =
       if File.exists?(path) do
         path
@@ -112,8 +113,10 @@ defmodule LiveAiChat.CsvStorage do
     cond do
       not File.exists?(old_path) ->
         {:reply, {:error, :chat_not_found}, state}
+
       File.exists?(new_path) ->
         {:reply, {:error, :chat_already_exists}, state}
+
       true ->
         case File.rename(old_path, new_path) do
           :ok -> {:reply, :ok, state}

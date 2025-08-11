@@ -92,11 +92,18 @@ defmodule LiveAiChat.Knowledge.ExtractorTest do
 
     test "determines difficulty level based on content" do
       beginner_content = "This is a simple introduction to programming concepts."
-      intermediate_content = "GenServer processes handle state in Elixir applications using pattern matching."
-      advanced_content = "Metaprogramming with macros allows compile-time code generation and protocol implementations."
+
+      intermediate_content =
+        "GenServer processes handle state in Elixir applications using pattern matching."
+
+      advanced_content =
+        "Metaprogramming with macros allows compile-time code generation and protocol implementations."
 
       {:ok, beginner_meta} = Extractor.extract_content("beginner.txt", beginner_content)
-      {:ok, intermediate_meta} = Extractor.extract_content("intermediate.txt", intermediate_content)
+
+      {:ok, intermediate_meta} =
+        Extractor.extract_content("intermediate.txt", intermediate_content)
+
       {:ok, advanced_meta} = Extractor.extract_content("advanced.txt", advanced_content)
 
       assert beginner_meta["difficulty"] == "beginner"
@@ -131,7 +138,8 @@ defmodule LiveAiChat.Knowledge.ExtractorTest do
       {:ok, metadata} = Extractor.extract_content("bullets.txt", content)
 
       key_points = metadata["keyPoints"]
-      assert length(key_points) <= 5  # Should limit to 5 points
+      # Should limit to 5 points
+      assert length(key_points) <= 5
       assert "First important point" in key_points
       assert "Second key concept" in key_points
     end
@@ -147,13 +155,15 @@ defmodule LiveAiChat.Knowledge.ExtractorTest do
     test "returns error for unsupported file types" do
       content = "Some content"
 
-      assert {:error, {:unsupported_file_type, _}} = Extractor.extract_content("file.xyz", content)
+      assert {:error, {:unsupported_file_type, _}} =
+               Extractor.extract_content("file.xyz", content)
     end
 
     test "returns error for PDF files (not implemented)" do
       content = <<"%PDF-1.4", "some pdf content">>
 
-      assert {:error, :pdf_extraction_not_implemented} = Extractor.extract_content("document.pdf", content)
+      assert {:error, :pdf_extraction_not_implemented} =
+               Extractor.extract_content("document.pdf", content)
     end
   end
 
@@ -167,6 +177,7 @@ defmodule LiveAiChat.Knowledge.ExtractorTest do
 
       # Wait for the task to complete by monitoring the process
       ref = Process.monitor(pid)
+
       receive do
         {:DOWN, ^ref, :process, ^pid, _reason} -> :ok
       after
@@ -174,7 +185,8 @@ defmodule LiveAiChat.Knowledge.ExtractorTest do
       end
 
       # Check that metadata was saved to TagStorage
-      Process.sleep(100)  # Give the cast operation time to complete
+      # Give the cast operation time to complete
+      Process.sleep(100)
       saved_metadata = TagStorage.get_extraction("test.txt")
       assert saved_metadata["filename"] == "test.txt"
       assert "elixir" in saved_metadata["topics"]
@@ -186,6 +198,7 @@ defmodule LiveAiChat.Knowledge.ExtractorTest do
 
       # Wait for the task to complete by monitoring the process
       ref = Process.monitor(pid)
+
       receive do
         {:DOWN, ^ref, :process, ^pid, _reason} -> :ok
       after
@@ -213,8 +226,6 @@ defmodule LiveAiChat.Knowledge.ExtractorTest do
       assert {:ok, metadata} = Extractor.extract_content("document.markdown", "content")
       assert metadata["contentType"] == "markdown document"
     end
-
-
   end
 
   describe "topic extraction" do
@@ -252,9 +263,17 @@ defmodule LiveAiChat.Knowledge.ExtractorTest do
 
       # Check that all expected fields are present
       required_fields = [
-        "filename", "contentType", "extractedAt", "extractorVersion",
-        "summary", "keyPoints", "topics", "wordCount", "estimatedReadTime",
-        "difficulty", "extractionMethod"
+        "filename",
+        "contentType",
+        "extractedAt",
+        "extractorVersion",
+        "summary",
+        "keyPoints",
+        "topics",
+        "wordCount",
+        "estimatedReadTime",
+        "difficulty",
+        "extractionMethod"
       ]
 
       for field <- required_fields do

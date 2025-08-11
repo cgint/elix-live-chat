@@ -3,8 +3,7 @@
   <div class="navbar bg-base-200 shadow-lg">
     <div class="navbar-start">
       <.link navigate={~p"/"} class="btn btn-ghost btn-sm">
-        <.icon name="hero-arrow-left" class="h-4 w-4" />
-        Back to Chat
+        <.icon name="hero-arrow-left" class="h-4 w-4" /> Back to Chat
       </.link>
     </div>
     <div class="navbar-center">
@@ -13,10 +12,10 @@
     <div class="navbar-end">
       <div class="form-control">
         <form phx-change="search-by-tags" phx-submit="search-by-tags">
-          <input 
-            type="text" 
-            name="search_tags" 
-            placeholder="Search by tags (comma-separated)" 
+          <input
+            type="text"
+            name="search_tags"
+            placeholder="Search by tags (comma-separated)"
             class="input input-bordered input-sm w-64"
             phx-debounce="300"
           />
@@ -31,96 +30,104 @@
       <div class="card bg-base-200 shadow-xl">
         <div class="card-body">
           <h2 class="card-title">
-            <.icon name="hero-cloud-arrow-up" class="h-5 w-5" />
-            Upload Files
+            <.icon name="hero-cloud-arrow-up" class="h-5 w-5" /> Upload Files
           </h2>
-          
+
           <form id="upload-form" phx-submit="save" phx-change="validate">
             <!-- File Upload Area -->
-            <section 
+            <section
               phx-drop-target={@uploads.knowledge_files.ref}
               class="border-2 border-dashed border-base-300 rounded-lg p-8 text-center hover:border-primary transition-colors"
             >
-              <.icon name="hero-document-arrow-up" class="h-12 w-12 mx-auto mb-4 text-base-content/50" />
+              <.icon
+                name="hero-document-arrow-up"
+                class="h-12 w-12 mx-auto mb-4 text-base-content/50"
+              />
               <p class="text-sm text-base-content/70 mb-4">
-                Drop files here or click to select<br>
+                Drop files here or click to select<br />
                 <span class="text-xs">Supports: PDF, TXT, MD (max 10MB each, 5 files max)</span>
               </p>
-              <.live_file_input upload={@uploads.knowledge_files} class="file-input file-input-bordered w-full" />
+              <.live_file_input
+                upload={@uploads.knowledge_files}
+                class="file-input file-input-bordered w-full"
+              />
             </section>
-
-            <!-- Upload Progress -->
+            
+<!-- Upload Progress -->
             <div :for={entry <- @uploads.knowledge_files.entries} class="mt-4">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-sm font-medium truncate flex-1">
                   {entry.client_name}
                 </span>
-                <button 
-                  type="button" 
-                  phx-click="cancel-upload" 
+                <button
+                  type="button"
+                  phx-click="cancel-upload"
                   phx-value-ref={entry.ref}
                   class="btn btn-ghost btn-xs"
                 >
                   <.icon name="hero-x-mark" class="h-4 w-4" />
                 </button>
               </div>
-              
-              <progress 
-                class="progress progress-primary w-full" 
-                value={entry.progress} 
-                max="100"
-              >
+
+              <progress class="progress progress-primary w-full" value={entry.progress} max="100">
                 {entry.progress}%
               </progress>
               
-              <!-- Upload Errors -->
-              <div :for={err <- upload_errors(@uploads.knowledge_files, entry)} class="alert alert-error mt-2">
+<!-- Upload Errors -->
+              <div
+                :for={err <- upload_errors(@uploads.knowledge_files, entry)}
+                class="alert alert-error mt-2"
+              >
                 <.icon name="hero-exclamation-triangle" class="h-4 w-4" />
                 <span class="text-sm">{error_to_string(err)}</span>
               </div>
             </div>
-
-            <!-- Global Upload Errors -->
-            <div :for={err <- upload_errors(@uploads.knowledge_files)} class="alert alert-error mt-4">
+            
+<!-- Global Upload Errors -->
+            <div
+              :for={err <- upload_errors(@uploads.knowledge_files)}
+              class="alert alert-error mt-4"
+            >
               <.icon name="hero-exclamation-triangle" class="h-4 w-4" />
               <span class="text-sm">{error_to_string(err)}</span>
             </div>
 
             <div class="card-actions justify-end mt-6">
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 class="btn btn-primary"
                 disabled={Enum.empty?(@uploads.knowledge_files.entries)}
               >
-                <.icon name="hero-cloud-arrow-up" class="h-4 w-4" />
-                Upload Files
+                <.icon name="hero-cloud-arrow-up" class="h-4 w-4" /> Upload Files
               </button>
             </div>
           </form>
         </div>
       </div>
     </div>
-
-    <!-- Files List -->
+    
+<!-- Files List -->
     <div class="lg:w-1/3">
       <div class="card bg-base-200 shadow-xl">
         <div class="card-body">
           <h2 class="card-title">
-            <.icon name="hero-folder" class="h-5 w-5" />
-            Files ({length(@files)})
+            <.icon name="hero-folder" class="h-5 w-5" /> Files ({length(@files)})
           </h2>
-          
+
           <div class="max-h-96 overflow-y-auto">
             <div :if={Enum.empty?(@files)} class="text-center py-8 text-base-content/50">
               <.icon name="hero-document" class="h-12 w-12 mx-auto mb-2" />
               <p>No files uploaded yet</p>
             </div>
-            
+
             <div :for={filename <- @files} class="mb-2">
-              <div 
+              <div
                 class={[
                   "p-3 border rounded-lg cursor-pointer transition-colors",
-                  if(@selected_file == filename, do: "border-primary bg-primary/10", else: "border-base-300 hover:border-base-content/20")
+                  if(@selected_file == filename,
+                    do: "border-primary bg-primary/10",
+                    else: "border-base-300 hover:border-base-content/20"
+                  )
                 ]}
                 phx-click="select-file"
                 phx-value-filename={filename}
@@ -132,9 +139,9 @@
                       <span class="text-sm font-medium truncate">{filename}</span>
                     </div>
                     
-                    <!-- File Tags -->
+<!-- File Tags -->
                     <div :if={Map.get(@tags, filename)} class="flex flex-wrap gap-1 mt-1">
-                      <span 
+                      <span
                         :for={tag <- Map.get(@tags, filename, [])}
                         class="badge badge-outline badge-xs"
                       >
@@ -142,8 +149,8 @@
                       </span>
                     </div>
                   </div>
-                  
-                  <button 
+
+                  <button
                     type="button"
                     phx-click="delete-file"
                     phx-value-filename={filename}
@@ -159,35 +166,34 @@
         </div>
       </div>
     </div>
-
-    <!-- File Details & Tags -->
+    
+<!-- File Details & Tags -->
     <div class="lg:w-1/3">
       <div class="card bg-base-200 shadow-xl">
         <div class="card-body">
           <h2 class="card-title">
-            <.icon name="hero-tag" class="h-5 w-5" />
-            File Details
+            <.icon name="hero-tag" class="h-5 w-5" /> File Details
           </h2>
-          
+
           <div :if={@selected_file}>
             <!-- File Info -->
             <div class="mb-6">
               <h3 class="font-semibold text-lg mb-2">{@selected_file}</h3>
               
-              <!-- Extracted Metadata -->
+<!-- Extracted Metadata -->
               <div :if={@file_metadata != %{}} class="space-y-3">
                 <div :if={@file_metadata["summary"]} class="text-sm">
                   <strong>Summary:</strong>
                   <p class="mt-1 text-base-content/80">{@file_metadata["summary"]}</p>
                 </div>
-                
+
                 <div :if={@file_metadata["keyPoints"]} class="text-sm">
                   <strong>Key Points:</strong>
                   <ul class="list-disc list-inside mt-1 text-base-content/80">
                     <li :for={point <- @file_metadata["keyPoints"]}>{point}</li>
                   </ul>
                 </div>
-                
+
                 <div class="flex flex-wrap gap-2 text-xs">
                   <span :if={@file_metadata["difficulty"]} class="badge badge-outline">
                     Difficulty: {@file_metadata["difficulty"]}
@@ -199,11 +205,11 @@
                     {@file_metadata["wordCount"]} words
                   </span>
                 </div>
-                
+
                 <div :if={@file_metadata["topics"]} class="text-sm">
                   <strong>Topics:</strong>
                   <div class="flex flex-wrap gap-1 mt-1">
-                    <span 
+                    <span
                       :for={topic <- @file_metadata["topics"]}
                       class="badge badge-primary badge-sm"
                     >
@@ -214,7 +220,7 @@
               </div>
             </div>
             
-            <!-- Tag Management -->
+<!-- Tag Management -->
             <div class="divider"></div>
             <div>
               <h4 class="font-semibold mb-3">Manage Tags</h4>
@@ -225,24 +231,23 @@
                     <span class="label-text">Tags (comma-separated)</span>
                   </label>
                   <div class="join">
-                    <input 
-                      type="text" 
-                      name="tags" 
+                    <input
+                      type="text"
+                      name="tags"
                       value={@new_tags}
                       placeholder="e.g., elixir, tutorial, beginner"
                       class="input input-bordered join-item flex-1"
                       phx-debounce="blur"
                     />
                     <button type="submit" class="btn btn-primary join-item">
-                      <.icon name="hero-tag" class="h-4 w-4" />
-                      Update
+                      <.icon name="hero-tag" class="h-4 w-4" /> Update
                     </button>
                   </div>
                 </div>
               </form>
             </div>
           </div>
-          
+
           <div :if={is_nil(@selected_file)} class="text-center py-8 text-base-content/50">
             <.icon name="hero-cursor-arrow-rays" class="h-12 w-12 mx-auto mb-2" />
             <p>Select a file to view details and manage tags</p>

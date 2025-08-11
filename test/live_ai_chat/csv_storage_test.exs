@@ -46,10 +46,11 @@ defmodule LiveAiChat.CsvStorageTest do
       assert CsvStorage.read_chat(chat_id) == [{:ok, %{role: "user", content: "Hello"}}]
 
       CsvStorage.append_message(chat_id, msg2)
+
       assert CsvStorage.read_chat(chat_id) == [
-        {:ok, %{role: "user", content: "Hello"}},
-        {:ok, %{role: "assistant", content: "Hi there"}}
-      ]
+               {:ok, %{role: "user", content: "Hello"}},
+               {:ok, %{role: "assistant", content: "Hi there"}}
+             ]
     end
   end
 end

@@ -39,6 +39,7 @@ defmodule LiveAiChat.Knowledge.Extractor do
     case determine_file_type(filename) do
       {:ok, file_type} ->
         perform_extraction(filename, binary_content, file_type)
+
       {:error, reason} ->
         {:error, reason}
     end
@@ -54,6 +55,7 @@ defmodule LiveAiChat.Knowledge.Extractor do
         LiveAiChat.TagStorage.save_extraction(filename, metadata)
         Logger.info("Successfully extracted and saved metadata for #{filename}")
         {:ok, metadata}
+
       {:error, reason} ->
         Logger.error("Content extraction failed for #{filename}: #{inspect(reason)}")
         {:error, reason}
@@ -64,10 +66,13 @@ defmodule LiveAiChat.Knowledge.Extractor do
     case file_type do
       :text ->
         extract_from_text(filename, binary_content)
+
       :pdf ->
         extract_from_pdf(filename, binary_content)
+
       :markdown ->
         extract_from_markdown(filename, binary_content)
+
       unsupported ->
         {:error, {:unsupported_file_type, unsupported}}
     end
@@ -97,12 +102,14 @@ defmodule LiveAiChat.Knowledge.Extractor do
     # TODO: Integrate with actual AI client for enhanced extraction
     {:ok, metadata} = extract_using_simple_analysis(content)
 
-    enhanced_metadata = Map.merge(metadata, %{
-      "filename" => filename,
-      "contentType" => content_type,
-      "extractedAt" => DateTime.utc_now() |> DateTime.to_iso8601(),
-      "extractorVersion" => "1.0.0"
-    })
+    enhanced_metadata =
+      Map.merge(metadata, %{
+        "filename" => filename,
+        "contentType" => content_type,
+        "extractedAt" => DateTime.utc_now() |> DateTime.to_iso8601(),
+        "extractorVersion" => "1.0.0"
+      })
+
     {:ok, enhanced_metadata}
   end
 
@@ -204,7 +211,9 @@ defmodule LiveAiChat.Knowledge.Extractor do
 
   defp determine_difficulty(content) do
     # Simple heuristics for difficulty assessment
-    advanced_terms = ~r/\b(metaprogramming|macros|protocols|behaviours|supervision|distribution|clustering)\b/i
+    advanced_terms =
+      ~r/\b(metaprogramming|macros|protocols|behaviours|supervision|distribution|clustering)\b/i
+
     intermediate_terms = ~r/\b(genserver|supervisor|process|concurrency|pattern.matching)\b/i
 
     cond do

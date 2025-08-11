@@ -15,11 +15,16 @@ defmodule LiveAiChat.AIClient do
       Task.start(fn ->
         # Send the initial assistant message chunk
         assistant_message_id = System.unique_integer()
-        send(recipient_pid, {:ai_chunk, %{id: assistant_message_id, role: "assistant", content: ""}})
+
+        send(
+          recipient_pid,
+          {:ai_chunk, %{id: assistant_message_id, role: "assistant", content: ""}}
+        )
 
         # Stream the rest of the response
         for word <- String.split(@canned_response) do
-          Process.sleep(5) # Use a shorter sleep for tests
+          # Use a shorter sleep for tests
+          Process.sleep(5)
           send(recipient_pid, {:ai_chunk, %{id: assistant_message_id, content: " " <> word}})
         end
 
@@ -38,6 +43,7 @@ defmodule LiveAiChat.AIClient do
         case call_gemini_api(user_message) do
           {:ok, response} ->
             stream_response(recipient_pid, response)
+
           {:error, reason} ->
             Logger.error("Gemini API error: #{inspect(reason)}")
             send_error_response(recipient_pid, reason)
@@ -50,7 +56,8 @@ defmodule LiveAiChat.AIClient do
       location = get_location()
       model = get_model()
 
-      url = "https://#{location}-aiplatform.googleapis.com/v1/projects/#{project_id}/locations/#{location}/publishers/google/models/#{model}:streamGenerateContent"
+      url =
+        "https://#{location}-aiplatform.googleapis.com/v1/projects/#{project_id}/locations/#{location}/publishers/google/models/#{model}:streamGenerateContent"
 
       headers = [
         {"content-type", "application/json"},
@@ -93,8 +100,10 @@ defmodule LiveAiChat.AIClient do
       case Req.post(url, headers: headers, json: body) do
         {:ok, %{status: 200, body: response_body}} ->
           {:ok, response_body}
+
         {:ok, %{status: status, body: body}} ->
           {:error, "HTTP #{status}: #{inspect(body)}"}
+
         {:error, reason} ->
           {:error, reason}
       end
@@ -104,7 +113,10 @@ defmodule LiveAiChat.AIClient do
       assistant_message_id = System.unique_integer()
 
       # Send initial chunk
-      send(recipient_pid, {:ai_chunk, %{id: assistant_message_id, role: "assistant", content: ""}})
+      send(
+        recipient_pid,
+        {:ai_chunk, %{id: assistant_message_id, role: "assistant", content: ""}}
+      )
 
       # Parse the streaming response
       case parse_streaming_response(response_body) do
@@ -113,14 +125,23 @@ defmodule LiveAiChat.AIClient do
           words = String.split(text_content, " ")
 
           Enum.each(words, fn word ->
-            Process.sleep(50) # Small delay to simulate streaming
+            # Small delay to simulate streaming
+            Process.sleep(50)
             content = if word == List.first(words), do: word, else: " " <> word
             send(recipient_pid, {:ai_chunk, %{id: assistant_message_id, content: content}})
           end)
 
         {:error, reason} ->
           Logger.error("Failed to parse Gemini response: #{inspect(reason)}")
-          send(recipient_pid, {:ai_chunk, %{id: assistant_message_id, content: "Sorry, I encountered an error processing the response."}})
+
+          send(
+            recipient_pid,
+            {:ai_chunk,
+             %{
+               id: assistant_message_id,
+               content: "Sorry, I encountered an error processing the response."
+             }}
+          )
       end
 
       send(recipient_pid, :ai_done)
@@ -181,7 +202,9 @@ defmodule LiveAiChat.AIClient do
                 _ -> ""
               end
             end)
-          _ -> []
+
+          _ ->
+            []
         end
       end)
     end
@@ -190,14 +213,30 @@ defmodule LiveAiChat.AIClient do
 
     defp send_error_response(recipient_pid, _reason) do
       assistant_message_id = System.unique_integer()
-      send(recipient_pid, {:ai_chunk, %{id: assistant_message_id, role: "assistant", content: ""}})
-      send(recipient_pid, {:ai_chunk, %{id: assistant_message_id, content: "Sorry, I'm having trouble connecting to the AI service right now. Please try again later."}})
+
+      send(
+        recipient_pid,
+        {:ai_chunk, %{id: assistant_message_id, role: "assistant", content: ""}}
+      )
+
+      send(
+        recipient_pid,
+        {:ai_chunk,
+         %{
+           id: assistant_message_id,
+           content:
+             "Sorry, I'm having trouble connecting to the AI service right now. Please try again later."
+         }}
+      )
+
       send(recipient_pid, :ai_done)
     end
 
     defp get_access_token do
       case Goth.fetch(LiveAiChat.Goth) do
-        {:ok, %{token: token}} -> token
+        {:ok, %{token: token}} ->
+          token
+
         {:error, reason} ->
           Logger.error("Failed to get access token: #{inspect(reason)}")
           raise "Failed to authenticate with Google Cloud: #{inspect(reason)}"

@@ -43,7 +43,12 @@ defmodule LiveAiChatWeb.ChatLiveTest do
       expect(AIClientMock, :stream_reply, fn live_view_pid, _message ->
         Task.start(fn ->
           assistant_message_id = System.unique_integer()
-          send(live_view_pid, {:ai_chunk, %{id: assistant_message_id, role: "assistant", content: ""}})
+
+          send(
+            live_view_pid,
+            {:ai_chunk, %{id: assistant_message_id, role: "assistant", content: ""}}
+          )
+
           Process.sleep(10)
           send(live_view_pid, {:ai_chunk, %{id: assistant_message_id, content: "Mocked"}})
           Process.sleep(10)

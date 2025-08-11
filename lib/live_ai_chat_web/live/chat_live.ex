@@ -54,14 +54,17 @@ defmodule LiveAiChatWeb.ChatLive do
       case CsvStorage.create_chat(chat_id) do
         :ok ->
           chats = CsvStorage.list_chats()
-                  socket =
-          assign(socket,
-            chats: chats,
-            active_chat_id: chat_id,
-            editing_chat_id: nil
-          )
-          |> load_messages(chat_id)
+
+          socket =
+            assign(socket,
+              chats: chats,
+              active_chat_id: chat_id,
+              editing_chat_id: nil
+            )
+            |> load_messages(chat_id)
+
           {:noreply, socket}
+
         {:error, _reason} ->
           # Could add flash message here for error handling
           {:noreply, socket}
@@ -96,14 +99,21 @@ defmodule LiveAiChatWeb.ChatLive do
       case CsvStorage.rename_chat(old_chat_id, new_chat_id) do
         :ok ->
           chats = CsvStorage.list_chats()
-          active_chat_id = if socket.assigns.active_chat_id == old_chat_id, do: new_chat_id, else: socket.assigns.active_chat_id
+
+          active_chat_id =
+            if socket.assigns.active_chat_id == old_chat_id,
+              do: new_chat_id,
+              else: socket.assigns.active_chat_id
+
           socket =
             assign(socket,
               chats: chats,
               active_chat_id: active_chat_id,
               editing_chat_id: nil
             )
+
           {:noreply, socket}
+
         {:error, _reason} ->
           # Could add flash message here for error handling
           socket = assign(socket, :editing_chat_id, nil)
@@ -123,16 +133,19 @@ defmodule LiveAiChatWeb.ChatLive do
         :ok ->
           chats = CsvStorage.list_chats()
           # If we deleted the active chat, select the first available chat
-          active_chat_id = if socket.assigns.active_chat_id == chat_id do
-            List.first(chats)
-          else
-            socket.assigns.active_chat_id
-          end
+          active_chat_id =
+            if socket.assigns.active_chat_id == chat_id do
+              List.first(chats)
+            else
+              socket.assigns.active_chat_id
+            end
 
           socket =
             assign(socket, chats: chats, active_chat_id: active_chat_id)
             |> load_messages(active_chat_id)
+
           {:noreply, socket}
+
         {:error, _reason} ->
           # Could add flash message here for error handling
           {:noreply, socket}
@@ -158,6 +171,7 @@ defmodule LiveAiChatWeb.ChatLive do
         |> assign(:processing_request, true)
 
       live_view_pid = self()
+
       Task.Supervisor.start_child(LiveAiChat.TaskSupervisor, fn ->
         ai_client = Application.get_env(:live_ai_chat, :ai_client, LiveAiChat.AIClient.Dummy)
         ai_client.stream_reply(live_view_pid, user_message)
@@ -174,16 +188,21 @@ defmodule LiveAiChatWeb.ChatLive do
     case socket.assigns.streaming_ai_response do
       nil ->
         new_message = %{id: chunk.id, role: "assistant", content: chunk.content}
+
         socket =
           stream_insert(socket, :messages, new_message)
           |> assign(:streaming_ai_response, new_message)
+
         {:noreply, socket}
+
       current_message ->
         updated_content = current_message.content <> chunk.content
         updated_message = %{current_message | content: updated_content}
+
         socket =
           stream_insert(socket, :messages, updated_message)
           |> assign(:streaming_ai_response, updated_message)
+
         {:noreply, socket}
     end
   end
