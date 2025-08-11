@@ -67,8 +67,8 @@ GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 
 The application uses volumes for persistent storage:
 
-- `/app/priv/chat_logs` - Chat conversation history
-- `/app/priv/uploads` - User uploaded files
+- `/app/priv/data/chat_logs` - Chat conversation history
+- `/app/priv/data/uploads` - User uploaded files
 - `/app/priv/data` - Application data and tags
 
 ## Production Deployment

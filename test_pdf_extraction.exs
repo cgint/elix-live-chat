@@ -12,7 +12,7 @@ defmodule PDFExtractionTest do
     Code.prepend_path("_build/dev/lib/live_ai_chat/ebin")
 
     # Read the PDF file
-    pdf_file = "priv/uploads/2503.18238v1.pdf"
+    pdf_file = "priv/data/uploads/2503.18238v1.pdf"
 
     case File.read(pdf_file) do
       {:ok, binary_content} ->

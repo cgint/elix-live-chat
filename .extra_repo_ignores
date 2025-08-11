@@ -40,6 +40,5 @@ assets/node_modules/
 epub/
 # Ignore Code Giant output directory
 .codegiant/
-priv/chat_logs/
+
 priv/data/
-priv/uploads/

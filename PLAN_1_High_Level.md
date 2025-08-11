@@ -75,7 +75,7 @@ Key Points:
 - Use **manual actions** for arbitrary streaming APIs; maintain type safety via return schema.
 
 ### D. CSV Persistence Pattern
-- Path convention: `priv/chat_logs/YYYY-MM-DD.csv`.
+- Path convention: `priv/data/chat_logs/YYYY-MM-DD.csv`.
 - Columns: `timestamp, user_id, role, content`.
 - Atomically append via `File.write!(path, row, [:append])`.
 

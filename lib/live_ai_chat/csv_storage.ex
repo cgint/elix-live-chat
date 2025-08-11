@@ -6,7 +6,8 @@ defmodule LiveAiChat.CsvStorage do
   """
   use GenServer
 
-  defp chat_logs_dir, do: Application.get_env(:live_ai_chat, :chat_logs_dir, "priv/chat_logs")
+  defp chat_logs_dir,
+    do: Application.get_env(:live_ai_chat, :chat_logs_dir, "priv/data/chat_logs")
 
   # --- Client API ---
 

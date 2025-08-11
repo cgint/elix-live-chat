@@ -25,9 +25,7 @@ services:
       - GOOGLE_SERVICE_ACCOUNT_JSON=${GOOGLE_SERVICE_ACCOUNT_JSON}
     
     volumes:
-      # Persistent data volumes
-      - chat_logs:/app/priv/chat_logs
-      - uploads:/app/priv/uploads
+      # Persistent data volumes - everything now under priv/data
       - app_data:/app/priv/data
       
       # Optional: Mount Google Cloud credentials
@@ -46,9 +44,5 @@ services:
     user: "1000:1000"
 
 volumes:
-  chat_logs:
-    driver: local
-  uploads:
-    driver: local
   app_data:
     driver: local

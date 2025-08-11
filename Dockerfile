@@ -79,8 +79,8 @@ ENV PHX_SERVER=true
 ENV PORT=3000
 
 # Create necessary directories with proper permissions
-RUN mkdir -p /app/priv/chat_logs \
-             /app/priv/uploads \
+RUN mkdir -p /app/priv/data/chat_logs \
+             /app/priv/data/uploads \
              /app/priv/data && \
     chown -R elixir:elixir /app
 
@@ -95,7 +95,7 @@ COPY --from=builder --chown=elixir:elixir /app/_build/prod/rel/live_ai_chat ./
 COPY --from=builder --chown=elixir:elixir /app/priv/static ./priv/static
 
 # Create volumes for persistent data
-VOLUME ["/app/priv/chat_logs", "/app/priv/uploads", "/app/priv/data"]
+VOLUME ["/app/priv/data"]
 
 # Expose port
 EXPOSE ${PORT}

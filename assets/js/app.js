@@ -34,35 +34,7 @@ const customHooks = {
       this.el.select();
     }
   },
-  AutoUpload: {
-    mounted() {
-      console.log('AutoUpload hook mounted on:', this.el);
-      // Find the file input in this form
-      const fileInput = this.el.querySelector('input[type="file"]');
-      console.log('Found file input:', fileInput);
-      if (fileInput) {
-        // Listen for the LiveView upload change event
-        fileInput.addEventListener('change', (event) => {
-          console.log('File input changed, files:', event.target.files);
-          if (event.target.files && event.target.files.length > 0) {
-            console.log('Files selected, waiting for upload to start...');
-            // Wait a bit for LiveView to process the change, then submit
-            setTimeout(() => {
-              console.log('Auto-submitting form...');
-              // Trigger the form submission which will start the actual upload
-              if (this.el && this.el.requestSubmit) {
-                this.el.requestSubmit();
-              } else if (this.el) {
-                this.el.submit();
-              }
-            }, 200);
-          }
-        });
-      } else {
-        console.log('No file input found in form');
-      }
-    }
-  }
+
 };
 
 const liveSocket = new LiveSocket("/live", Socket, {

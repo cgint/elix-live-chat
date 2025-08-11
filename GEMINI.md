@@ -1,6 +1,6 @@
 # LiveAiChat – Coding-AI Agent Reference (Elixir / Phoenix / LiveView)
 
-> **Primary scope:** Everything under `lib/`, `assets/`, and `priv/chat_logs/` that powers the LiveAiChat application described in `PLAN_0` – `PLAN_2`.
+> **Primary scope:** Everything under `lib/`, `assets/`, and `priv/data/chat_logs/` that powers the LiveAiChat application described in `PLAN_0` – `PLAN_2`.
 >
 > **Key constraint:** _No new Hex or NPM dependencies; CSV files for persistence; Phoenix LiveView for real-time UI._
 
@@ -8,7 +8,7 @@
 ## 📌 Essential Project Facts
 
 • **Tech stack**: Elixir 1.16 • OTP 26 • Phoenix 1.7 • Phoenix LiveView ≥ 0.20 • Tailwind 3 + DaisyUI (vendored)  
-• **Persistence**: Flat CSV files under `priv/chat_logs/` (one file per chat).  
+• **Persistence**: Flat CSV files under `priv/data/chat_logs/` (one file per chat).  
 • **Domain layer**: Ash 3.5 (optional, future).  
 • **AI calls**: Streaming HTTP/SSE, wrapped in `LiveAiChat.AIClient` tasks supervised by `Task.Supervisor`.  
 • **Supervision additions**: `Registry` for Chat IDs, `CsvStorage` GenServer, and `Task.Supervisor` for AI tasks (see PLAN 2 §9).

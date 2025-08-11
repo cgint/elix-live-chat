@@ -25,7 +25,7 @@ Users can open multiple chat “conversations”, see their message history at a
    • Active chat is highlighted; unread badge shows if the AI is still responding in a background chat.
 
 4. **Persistent History**  
-   • Each chat transcript is appended to a per-chat CSV file (`priv/chat_logs/<chat-id>.csv`).  
+   • Each chat transcript is appended to a per-chat CSV file (`priv/data/chat_logs/<chat-id>.csv`).  
    • On reconnect or page refresh, the LiveView reconstructs the history from CSV so nothing is lost.
 
 5. **Rename or Delete Chats**  

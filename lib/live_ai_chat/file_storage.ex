@@ -1,13 +1,13 @@
 defmodule LiveAiChat.FileStorage do
   @moduledoc """
-  GenServer guarding access to files under priv/uploads/ .
+  GenServer guarding access to files under priv/data/uploads/ .
   Performs write/read/delete so callers never touch the FS directly.
   """
 
   use GenServer
   require Logger
 
-  @default_upload_dir Path.join(:code.priv_dir(:live_ai_chat), "uploads")
+  @default_upload_dir Path.join(:code.priv_dir(:live_ai_chat), "data/uploads")
 
   # -- Public API -----------------------------------------------------------
 

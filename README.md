@@ -21,7 +21,7 @@ Keep these in sync with the codebase as we implement.
 * **Phoenix 1.7 + LiveView 0.20+**  – WebSocket transport & `live_stream/4` rendering
 * **Ash 3.5** (future) – Domain layer when we add auth or resources
 * **TailwindCSS 3 + DaisyUI** – Modern styling, already vendored
-* **CSV-based persistence** – Flat files under `priv/chat_logs/`, no extra deps
+* **CSV-based persistence** – Flat files under `priv/data/chat_logs/`, no extra deps
 
 See [`KNOWHOW_tech_stack.md`](KNOWHOW_tech_stack.md) for generator tips and workflow shortcuts.
 
@@ -38,7 +38,7 @@ See [`KNOWHOW_tech_stack.md`](KNOWHOW_tech_stack.md) for generator tips and work
    ```
 3. Visit [`http://localhost:4000`](http://localhost:4000) and start chatting.
 
-> The first run creates `priv/chat_logs/` automatically.
+> The first run creates `priv/data/chat_logs/` automatically.
 
 ---
 ## 🗺  Implementation Milestones (excerpt)

@@ -27,12 +27,12 @@ lib/
 
 ---
 ## 2. CSV Storage Layer
-1. **Path Convention**: `priv/chat_logs/<chat-id>.csv`.  
+1. **Path Convention**: `priv/data/chat_logs/<chat-id>.csv`.  
 2. **Row Schema**: `timestamp,user_id,role,content`.  
 3. API sketch (in `csv_storage.ex`):
    - `append(chat_id, row_map)` → `File.write!(…, [:append])`.  
    - `load(chat_id)` → `File.read!/1` → `CSV.decode/2` (use standard `:csv` module from Elixir stdlib; *no new dep*).  
-   - `list_chats()` → `File.ls!("priv/chat_logs")`.
+   - `list_chats()` → `File.ls!("priv/data/chat_logs")`.
 4. Ensure **atomic writes**: wrap `File.open!/3` with `:append` + `:delayed_write` ≈ 512 bytes.
 
 ---
