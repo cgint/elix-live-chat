@@ -113,11 +113,14 @@ defmodule LiveAiChat.AIClient do
         {"authorization", "Bearer #{get_access_token()}"}
       ]
 
+      # Build parts array - handle multimodal content if present
+      parts = build_message_parts(user_message)
+
       body = %{
         contents: [
           %{
             role: "user",
-            parts: [%{text: user_message.content}]
+            parts: parts
           }
         ],
         generationConfig: %{
@@ -260,6 +263,61 @@ defmodule LiveAiChat.AIClient do
     end
 
     defp extract_text_content(_), do: []
+
+    # Build message parts - handles both text-only and multimodal content
+    defp build_message_parts(user_message) do
+      # Start with the text content
+      text_part = %{text: user_message.content}
+
+      # Add file attachments as inline_data parts if present
+      file_parts = case Map.get(user_message, :attachments) do
+        nil -> []
+        [] -> []
+        filenames when is_list(filenames) ->
+          Enum.map(filenames, &build_file_part/1)
+      end
+
+      [text_part | file_parts]
+    end
+
+    defp build_file_part(filename) do
+      try do
+        case LiveAiChat.FileStorage.read_file(filename) do
+          {:ok, binary_content} ->
+            mime_type = get_mime_type(filename)
+            base64_content = Base.encode64(binary_content)
+
+            %{
+              inline_data: %{
+                mime_type: mime_type,
+                data: base64_content
+              }
+            }
+
+          {:error, _reason} ->
+            Logger.warning("Failed to read file #{filename} for AI request")
+            # Return a text part indicating the file couldn't be read
+            %{text: "[File #{filename} could not be read]"}
+        end
+      rescue
+        error ->
+          Logger.error("Error reading file #{filename}: #{inspect(error)}")
+          %{text: "[Error reading file #{filename}]"}
+      end
+    end
+
+    defp get_mime_type(filename) do
+      case String.downcase(Path.extname(filename)) do
+        ".pdf" -> "application/pdf"
+        ".jpg" -> "image/jpeg"
+        ".jpeg" -> "image/jpeg"
+        ".png" -> "image/png"
+        ".gif" -> "image/gif"
+        ".txt" -> "text/plain"
+        ".md" -> "text/markdown"
+        _ -> "application/octet-stream"
+      end
+    end
 
     defp send_error_response(recipient_pid, _reason) do
       assistant_message_id = System.unique_integer()

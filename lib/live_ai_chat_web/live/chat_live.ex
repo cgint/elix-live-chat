@@ -301,11 +301,9 @@ defmodule LiveAiChatWeb.ChatLive do
 
     # Prevent multiple simultaneous requests
     if content != "" and socket.assigns.streaming_ai_response == nil do
-      # Build enhanced message with file context
-      enhanced_content = build_message_with_context(content, socket.assigns.selected_files)
-
       user_message = %{id: System.unique_integer(), role: "user", content: content}
-      ai_context_message = %{user_message | content: enhanced_content}
+      # Pass selected files as attachments to the AI client for multimodal processing
+      ai_context_message = Map.put(user_message, :attachments, socket.assigns.selected_files)
 
       ChatStorageAdapter.append_message(active_chat_id, user_message)
 
@@ -426,44 +424,5 @@ defmodule LiveAiChatWeb.ChatLive do
     end
   end
 
-  defp build_message_with_context(content, []) do
-    content
-  end
 
-  defp build_message_with_context(content, selected_files) do
-    file_contents =
-      selected_files
-      |> Enum.map(fn filename ->
-        try do
-          case FileStorage.read_file(filename) do
-            {:ok, file_content} ->
-              """
-
-              --- File: #{filename} ---
-              #{file_content}
-              --- End of #{filename} ---
-              """
-
-            {:error, _reason} ->
-              "\n--- Error reading file: #{filename} ---\n"
-          end
-        rescue
-          _ -> "\n--- Error reading file: #{filename} (FileStorage not available) ---\n"
-        end
-      end)
-      |> Enum.join("\n")
-
-    if file_contents != "" do
-      """
-      User Query: #{content}
-
-      Context from uploaded files:
-      #{file_contents}
-
-      Please answer the user's query using the context provided above.
-      """
-    else
-      content
-    end
-  end
 end
