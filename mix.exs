@@ -35,6 +35,7 @@ defmodule LiveAiChat.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:earmark, "~> 1.4"},
       {:usage_rules, "~> 0.1"},
       {:sourceror, "~> 1.8"},
       {:ash_ai, "~> 0.2"},

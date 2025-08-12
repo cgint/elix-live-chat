@@ -283,7 +283,11 @@
                     message.role == "user" && "mr-3 bg-indigo-100",
                     message.role == "assistant" && "ml-3 bg-white"
                   ]}>
-                    <div>{message.content}</div>
+                    <%= if message.role == "assistant" && Map.get(message, :html_content) do %>
+                      <div class="prose prose-sm max-w-none"><%= raw message.html_content %></div>
+                    <% else %>
+                      <div>{message.content}</div>
+                    <% end %>
                   </div>
                 </div>
               </div>

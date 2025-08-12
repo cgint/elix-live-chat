@@ -333,11 +333,27 @@ defmodule LiveAiChatWeb.ChatLive do
     end
   end
 
+  # Helper function for safe markdown conversion
+  defp safe_markdown_to_html(markdown) do
+    try do
+      Earmark.as_html!(markdown)
+    rescue
+      _ ->
+        # Fall back to plain text if markdown parsing fails during streaming
+        Phoenix.HTML.html_escape(markdown) |> Phoenix.HTML.safe_to_string()
+    end
+  end
+
   @impl true
   def handle_info({:ai_chunk, chunk}, socket) do
     case socket.assigns.streaming_ai_response do
       nil ->
-        new_message = %{id: chunk.id, role: "assistant", content: chunk.content}
+        new_message = %{
+          id: chunk.id,
+          role: "assistant",
+          content: chunk.content,
+          html_content: safe_markdown_to_html(chunk.content)
+        }
 
         socket =
           stream_insert(socket, :messages, new_message)
@@ -347,7 +363,11 @@ defmodule LiveAiChatWeb.ChatLive do
 
       current_message ->
         updated_content = current_message.content <> chunk.content
-        updated_message = %{current_message | content: updated_content}
+        updated_message = %{
+          current_message |
+          content: updated_content,
+          html_content: safe_markdown_to_html(updated_content)
+        }
 
         socket =
           stream_insert(socket, :messages, updated_message)
@@ -360,7 +380,9 @@ defmodule LiveAiChatWeb.ChatLive do
   @impl true
   def handle_info(:ai_done, socket) do
     final_message = socket.assigns.streaming_ai_response
-    ChatStorageAdapter.append_message(socket.assigns.active_chat_id, final_message)
+    # Store only the original content without html_content to keep storage unchanged
+    storage_message = Map.delete(final_message, :html_content)
+    ChatStorageAdapter.append_message(socket.assigns.active_chat_id, storage_message)
 
     # Defer notifying tests until after this render cycle completes
     if pid = socket.assigns.test_pid do
@@ -384,7 +406,16 @@ defmodule LiveAiChatWeb.ChatLive do
     messages =
       chat_id
       |> ChatStorageAdapter.read_chat()
-      |> Enum.map(fn {:ok, message} -> Map.put(message, :id, System.unique_integer()) end)
+      |> Enum.map(fn {:ok, message} ->
+        message_with_id = Map.put(message, :id, System.unique_integer())
+
+        # Add HTML content for assistant messages for display purposes only
+        if message_with_id.role == "assistant" do
+          Map.put(message_with_id, :html_content, safe_markdown_to_html(message_with_id.content))
+        else
+          message_with_id
+        end
+      end)
 
     stream(socket, :messages, messages, reset: true)
   end
