@@ -3,7 +3,7 @@ defmodule LiveAiChat.AIClient do
   A behaviour for clients that interact with an AI service.
   """
 
-  @callback stream_reply(pid :: pid(), user_message :: map()) :: any()
+  @callback stream_reply(pid :: pid(), chat_id :: String.t(), user_message :: map()) :: any()
 
   defmodule Dummy do
     @behaviour LiveAiChat.AIClient
@@ -11,7 +11,7 @@ defmodule LiveAiChat.AIClient do
     @canned_response "This is a dummy response from the AI, streamed to you one word at a time."
 
     @impl true
-    def stream_reply(recipient_pid, _user_message) do
+    def stream_reply(recipient_pid, chat_id, _user_message) do
       Task.start(fn ->
         # Send the initial assistant message chunk
         assistant_message_id = System.unique_integer()
@@ -28,6 +28,21 @@ defmodule LiveAiChat.AIClient do
           send(recipient_pid, {:ai_chunk, %{id: assistant_message_id, content: " " <> word}})
         end
 
+        # Store the final message when done
+        final_message = %{
+          id: assistant_message_id,
+          role: "assistant",
+          content: @canned_response
+        }
+
+        try do
+          LiveAiChat.ChatStorageAdapter.append_message(chat_id, final_message)
+        rescue
+          error ->
+            require Logger
+            Logger.error("Failed to store AI response: #{inspect(error)}")
+        end
+
         send(recipient_pid, :ai_done)
       end)
     end
@@ -38,15 +53,15 @@ defmodule LiveAiChat.AIClient do
     require Logger
 
     @impl true
-    def stream_reply(recipient_pid, user_message) do
+    def stream_reply(recipient_pid, chat_id, user_message) do
       Task.start(fn ->
         case call_gemini_api(user_message) do
           {:ok, response} ->
-            stream_response(recipient_pid, response)
+            stream_response(recipient_pid, chat_id, response)
 
           {:error, reason} ->
             Logger.error("Gemini API error: #{inspect(reason)}")
-            send_error_response(recipient_pid, reason)
+            send_error_response(recipient_pid, chat_id, reason)
         end
       end)
     end
@@ -124,10 +139,10 @@ defmodule LiveAiChat.AIClient do
           }
         ],
         generationConfig: %{
-          temperature: 0.7,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 2048,
+          temperature: 0.3,
+          # topK: 40,
+          # topP: 0.95,
+          # maxOutputTokens: 2048,
           thinkingConfig: %{thinkingBudget: 0}
         },
         safetySettings: [
@@ -162,7 +177,7 @@ defmodule LiveAiChat.AIClient do
       end
     end
 
-    defp stream_response(recipient_pid, response_body) do
+    defp stream_response(recipient_pid, chat_id, response_body) do
       assistant_message_id = System.unique_integer()
 
       # Send initial chunk
@@ -184,17 +199,46 @@ defmodule LiveAiChat.AIClient do
             send(recipient_pid, {:ai_chunk, %{id: assistant_message_id, content: content}})
           end)
 
+          # Store the final message when streaming is complete
+          final_message = %{
+            id: assistant_message_id,
+            role: "assistant",
+            content: text_content
+          }
+
+          try do
+            LiveAiChat.ChatStorageAdapter.append_message(chat_id, final_message)
+          rescue
+            error ->
+              Logger.error("Failed to store AI response: #{inspect(error)}")
+          end
+
         {:error, reason} ->
           Logger.error("Failed to parse Gemini response: #{inspect(reason)}")
+          error_content = "Sorry, I encountered an error processing the response."
 
           send(
             recipient_pid,
             {:ai_chunk,
              %{
                id: assistant_message_id,
-               content: "Sorry, I encountered an error processing the response."
+               content: error_content
              }}
           )
+
+          # Store the error message as well
+          error_message = %{
+            id: assistant_message_id,
+            role: "assistant",
+            content: error_content
+          }
+
+          try do
+            LiveAiChat.ChatStorageAdapter.append_message(chat_id, error_message)
+          rescue
+            error ->
+              Logger.error("Failed to store AI error response: #{inspect(error)}")
+          end
       end
 
       send(recipient_pid, :ai_done)
@@ -319,8 +363,9 @@ defmodule LiveAiChat.AIClient do
       end
     end
 
-    defp send_error_response(recipient_pid, _reason) do
+    defp send_error_response(recipient_pid, chat_id, _reason) do
       assistant_message_id = System.unique_integer()
+      error_content = "Sorry, I'm having trouble connecting to the AI service right now. Please try again later."
 
       send(
         recipient_pid,
@@ -332,10 +377,23 @@ defmodule LiveAiChat.AIClient do
         {:ai_chunk,
          %{
            id: assistant_message_id,
-           content:
-             "Sorry, I'm having trouble connecting to the AI service right now. Please try again later."
+           content: error_content
          }}
       )
+
+      # Store the error message
+      error_message = %{
+        id: assistant_message_id,
+        role: "assistant",
+        content: error_content
+      }
+
+      try do
+        LiveAiChat.ChatStorageAdapter.append_message(chat_id, error_message)
+      rescue
+        error ->
+          Logger.error("Failed to store AI error response: #{inspect(error)}")
+      end
 
       send(recipient_pid, :ai_done)
     end
@@ -458,10 +516,10 @@ defmodule LiveAiChat.AIClient do
           }
         ],
         generationConfig: %{
-          temperature: 0.1,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 4096,
+          temperature: 0.3,
+          # topK: 40,
+          # topP: 0.95,
+          # maxOutputTokens: 4096,
           thinkingConfig: %{thinkingBudget: 0}
         },
         safetySettings: [
