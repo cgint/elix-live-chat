@@ -363,10 +363,11 @@ defmodule LiveAiChatWeb.ChatLive do
 
       current_message ->
         updated_content = current_message.content <> chunk.content
+
         updated_message = %{
-          current_message |
-          content: updated_content,
-          html_content: safe_markdown_to_html(updated_content)
+          current_message
+          | content: updated_content,
+            html_content: safe_markdown_to_html(updated_content)
         }
 
         socket =
@@ -452,6 +453,4 @@ defmodule LiveAiChatWeb.ChatLive do
       nil -> "Untitled Chat"
     end
   end
-
-
 end

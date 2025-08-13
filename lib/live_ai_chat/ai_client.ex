@@ -314,12 +314,17 @@ defmodule LiveAiChat.AIClient do
       text_part = %{text: user_message.content}
 
       # Add file attachments as inline_data parts if present
-      file_parts = case Map.get(user_message, :attachments) do
-        nil -> []
-        [] -> []
-        filenames when is_list(filenames) ->
-          Enum.map(filenames, &build_file_part/1)
-      end
+      file_parts =
+        case Map.get(user_message, :attachments) do
+          nil ->
+            []
+
+          [] ->
+            []
+
+          filenames when is_list(filenames) ->
+            Enum.map(filenames, &build_file_part/1)
+        end
 
       [text_part | file_parts]
     end
@@ -365,7 +370,9 @@ defmodule LiveAiChat.AIClient do
 
     defp send_error_response(recipient_pid, chat_id, _reason) do
       assistant_message_id = System.unique_integer()
-      error_content = "Sorry, I'm having trouble connecting to the AI service right now. Please try again later."
+
+      error_content =
+        "Sorry, I'm having trouble connecting to the AI service right now. Please try again later."
 
       send(
         recipient_pid,

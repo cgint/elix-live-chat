@@ -47,15 +47,15 @@ COPY config ./config
 COPY assets ./assets
 COPY priv ./priv
 
-# Setup and build assets (following the project's setup alias)
-RUN mix assets.setup && \
-    mix assets.deploy
-
 # Copy source code
 COPY lib ./lib
 
-# Compile application
+# Compile application (generates colocated JS under _build for esbuild resolution)
 RUN mix compile
+
+# Setup and build assets (after compile so "phoenix-colocated" is available)
+RUN mix assets.setup && \
+    mix assets.deploy
 
 # Build release
 RUN mix release

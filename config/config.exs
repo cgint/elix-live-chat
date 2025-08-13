@@ -7,6 +7,18 @@
 # General application configuration
 import Config
 
+# Extend MIME types to recognize MHT/MHTML for LiveView uploads
+config :mime, :types, %{
+  "multipart/related" => ["mht", "mhtml"],
+  "application/x-mimearchive" => ["mht", "mhtml"]
+}
+
+# Prefer a canonical mime for extensions with multiple types
+config :mime, :extensions, %{
+  "mht" => "multipart/related",
+  "mhtml" => "multipart/related"
+}
+
 config :ash,
   allow_forbidden_field_for_relationships_by_default?: true,
   include_embedded_source_by_default?: false,

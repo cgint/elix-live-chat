@@ -38,7 +38,7 @@
               browse
             </label>
           </p>
-          <p class="text-sm text-gray-500">Supports PDF files only (max 10MB each)</p>
+          <p class="text-sm text-gray-500">Supports PDF and MHT/MHTML files (max 10MB each)</p>
         </div>
       </div>
 
@@ -133,6 +133,7 @@
           <% meta = Map.get(@file_meta_map, filename, %{}) %>
           <% extraction_complete = meta != %{} and Map.has_key?(meta, "summary") %>
           <% file_tags = Map.get(@tags, filename, []) %>
+          <% conv_status = Map.get(@conversion_status, filename) %>
 
           <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
             <!-- First line: Filename and status -->
@@ -141,23 +142,10 @@
                 <h3 class="text-lg font-medium text-gray-800">{filename}</h3>
                 
 <!-- Extraction status icon -->
-                <%= if extraction_complete do %>
-                  <span
-                    class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-800"
-                    title="Extraction complete"
-                  >
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fill-rule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                <% else %>
+                <%= if conv_status == :converting do %>
                   <span
                     class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 text-yellow-800"
-                    title="Extracting content..."
+                    title="Converting to PDF..."
                   >
                     <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                       <circle
@@ -177,18 +165,79 @@
                       </path>
                     </svg>
                   </span>
+                <% else %>
+                  <%= if match?({:failed, _}, conv_status) do %>
+                    <span
+                      class="inline-flex items-center justify-center px-2 h-6 rounded-full bg-red-100 text-red-800 text-xs"
+                      title="Conversion failed"
+                    >
+                      Failed
+                    </span>
+                  <% else %>
+                    <%= if extraction_complete do %>
+                      <span
+                        class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-800"
+                        title="Extraction complete"
+                      >
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </span>
+                    <% else %>
+                      <span
+                        class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 text-yellow-800"
+                        title="Extracting content..."
+                      >
+                        <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                          <circle
+                            class="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            stroke-width="4"
+                          >
+                          </circle>
+                          <path
+                            class="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          >
+                          </path>
+                        </svg>
+                      </span>
+                    <% end %>
+                  <% end %>
                 <% end %>
               </div>
 
               <div class="flex items-center space-x-2">
-                <%= if extraction_complete do %>
-                  <button
-                    phx-click="show-details"
-                    phx-value-filename={filename}
-                    class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium py-1 px-3 rounded"
-                  >
-                    Info
-                  </button>
+                <%= if conv_status == :converting do %>
+                  <span class="text-xs text-gray-500">Converting to PDF…</span>
+                <% else %>
+                  <%= if match?({:failed, _}, conv_status) do %>
+                    <button
+                      phx-click="retry-conversion"
+                      phx-value-filename={filename}
+                      class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium py-1 px-3 rounded"
+                    >
+                      Retry conversion
+                    </button>
+                  <% else %>
+                    <%= if extraction_complete do %>
+                      <button
+                        phx-click="show-details"
+                        phx-value-filename={filename}
+                        class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium py-1 px-3 rounded"
+                      >
+                        Info
+                      </button>
+                    <% end %>
+                  <% end %>
                 <% end %>
                 <button
                   phx-click="delete-file"
@@ -216,20 +265,24 @@
 <!-- Second line: Tags and metadata preview -->
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-2">
-                <%= if file_tags != [] do %>
-                  <div class="flex flex-wrap gap-1">
-                    <%= for tag <- file_tags do %>
-                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {tag}
-                      </span>
-                    <% end %>
-                  </div>
+                <%= if conv_status do %>
+                  <span class="text-sm text-gray-500">Source: MHT</span>
                 <% else %>
-                  <span class="text-sm text-gray-500">No tags</span>
+                  <%= if file_tags != [] do %>
+                    <div class="flex flex-wrap gap-1">
+                      <%= for tag <- file_tags do %>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {tag}
+                        </span>
+                      <% end %>
+                    </div>
+                  <% else %>
+                    <span class="text-sm text-gray-500">No tags</span>
+                  <% end %>
                 <% end %>
               </div>
 
-              <%= if extraction_complete do %>
+              <%= if extraction_complete and is_nil(conv_status) do %>
                 <div class="text-sm text-gray-600">
                   <%= if Map.has_key?(meta, "word_count") do %>
                     <span>{meta["word_count"]} words</span>

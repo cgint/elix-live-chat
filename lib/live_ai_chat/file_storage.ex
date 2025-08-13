@@ -29,6 +29,9 @@ defmodule LiveAiChat.FileStorage do
   @spec list_pdf_files() :: [String.t()]
   def list_pdf_files, do: GenServer.call(__MODULE__, :list_pdf)
 
+  @spec list_mht_files() :: [String.t()]
+  def list_mht_files, do: GenServer.call(__MODULE__, :list_mht)
+
   @spec safe_filename(String.t()) :: String.t()
   def safe_filename(name) do
     name
@@ -103,6 +106,29 @@ defmodule LiveAiChat.FileStorage do
           end)
 
         {:reply, pdf_files, state}
+
+      {:error, _} ->
+        {:reply, [], state}
+    end
+  end
+
+  @impl true
+  def handle_call(:list_mht, _from, state) do
+    dir = current_upload_dir()
+
+    case File.ls(dir) do
+      {:ok, files} ->
+        # Filter out directories and non-MHT/MHTML files
+        mht_files =
+          Enum.filter(files, fn file ->
+            path = Path.join(dir, file)
+            down = String.downcase(file)
+
+            File.regular?(path) and
+              (String.ends_with?(down, ".mht") or String.ends_with?(down, ".mhtml"))
+          end)
+
+        {:reply, mht_files, state}
 
       {:error, _} ->
         {:reply, [], state}

@@ -13,7 +13,7 @@ if [ "$1" = "runnative" ]; then
 fi
 
 # Define image name and tag
-IMAGE_NAME="cgint/know-how"
+IMAGE_NAME="docker.io/cgint/know-how"
 LAST_COMMIT_DATE_TIME=$(git log -1 --pretty=format:"%ad" --date=format:'%Y%m%d_%H%M%S')
 echo "Last commit date time: $LAST_COMMIT_DATE_TIME"
 TAG="v2-$LAST_COMMIT_DATE_TIME" # Or use a specific version, e.g., $(git rev-parse --short HEAD)
@@ -37,8 +37,11 @@ else
   # Build on remote daemon (image will be available on remote host)
   DOCKER_BUILDKIT=1 docker build --platform linux/amd64 --progress=plain -t "$IMAGE_NAME:$TAG" .
 
+  # Revert to default context
+  docker context use default
+
   # Optional push from remote when 'push' arg provided
-  if [ "$MODE" = "push" ]; then
+  if [ "$2" = "push" ]; then
     echo "Pushing image from remote context..."
     docker push "$IMAGE_NAME:$TAG"
   fi

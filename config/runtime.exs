@@ -23,6 +23,13 @@ end
 # AI Client configuration
 config :live_ai_chat, :ai_client, LiveAiChat.AIClient.Gemini
 
+# MHT Converter configuration via ENV
+converter_url = System.get_env("MHT_CONVERTER_URL")
+
+if converter_url && converter_url != "" do
+  config :live_ai_chat, :mht_converter_url, converter_url
+end
+
 # Google Cloud configuration
 config :live_ai_chat,
   google_cloud_project: System.get_env("VERTEXAI_PROJECT"),

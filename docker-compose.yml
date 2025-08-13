@@ -5,9 +5,10 @@
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: cgint/know-how:v2-20250813_213725
+    # build:
+      # context: .
+      # dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
@@ -16,13 +17,15 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE:-$(openssl rand -base64 64 | tr -d '\n')}
       - PHX_HOST=${PHX_HOST:-localhost}
       - PORT=3000
+      # MHT converter endpoint (inside container). Defaults to calling a converter on the host machine
+      - MHT_CONVERTER_URL=${MHT_CONVERTER_URL:-http://localhost:9111/mht-to-pdf}
       
       # Google Cloud / AI configuration
       - VERTEXAI_PROJECT=${VERTEXAI_PROJECT}
       - VERTEXAI_LOCATION=${VERTEXAI_LOCATION:-europe-west1}
       - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
       - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
-      - GOOGLE_SERVICE_ACCOUNT_JSON=${GOOGLE_SERVICE_ACCOUNT_JSON}
+      # - GOOGLE_SERVICE_ACCOUNT_JSON=${GOOGLE_SERVICE_ACCOUNT_JSON}
     
     volumes:
       # Persistent data volumes - everything now under priv/data
