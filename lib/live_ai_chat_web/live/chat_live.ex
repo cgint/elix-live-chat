@@ -318,13 +318,13 @@ defmodule LiveAiChatWeb.ChatLive do
       try do
         Task.Supervisor.start_child(LiveAiChat.TaskSupervisor, fn ->
           ai_client = Application.get_env(:live_ai_chat, :ai_client, LiveAiChat.AIClient.Dummy)
-          ai_client.stream_reply(live_view_pid, ai_context_message)
+          ai_client.stream_reply(live_view_pid, active_chat_id, ai_context_message)
         end)
       rescue
         _e ->
           # Fallback for tests - call AI client directly
           ai_client = Application.get_env(:live_ai_chat, :ai_client, LiveAiChat.AIClient.Dummy)
-          ai_client.stream_reply(live_view_pid, ai_context_message)
+          ai_client.stream_reply(live_view_pid, active_chat_id, ai_context_message)
       end
 
       {:noreply, socket}
@@ -379,10 +379,8 @@ defmodule LiveAiChatWeb.ChatLive do
 
   @impl true
   def handle_info(:ai_done, socket) do
-    final_message = socket.assigns.streaming_ai_response
-    # Store only the original content without html_content to keep storage unchanged
-    storage_message = Map.delete(final_message, :html_content)
-    ChatStorageAdapter.append_message(socket.assigns.active_chat_id, storage_message)
+    # Note: AI response storage is now handled directly by the AI client
+    # This handler only manages UI state updates
 
     # Defer notifying tests until after this render cycle completes
     if pid = socket.assigns.test_pid do

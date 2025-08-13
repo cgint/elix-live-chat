@@ -39,7 +39,7 @@ defmodule LiveAiChatWeb.ChatLiveTest do
   describe "sending a message" do
     test "sends a message and it appears in the chat", %{conn: conn} do
       # This test doesn't focus on the AI response, but we need to satisfy the mock.
-      expect(AIClientMock, :stream_reply, fn _, _ -> :ok end)
+      expect(AIClientMock, :stream_reply, fn _, _, _ -> :ok end)
 
       {:ok, view, _html} = live(conn, "/")
 
@@ -55,7 +55,7 @@ defmodule LiveAiChatWeb.ChatLiveTest do
     @tag :skip
     test "sends a message and receives a streamed AI response", %{conn: conn} do
       # Mock the AI response
-      expect(AIClientMock, :stream_reply, fn live_view_pid, _message ->
+      expect(AIClientMock, :stream_reply, fn live_view_pid, _chat_id, _message ->
         Task.start(fn ->
           assistant_message_id = System.unique_integer()
 
