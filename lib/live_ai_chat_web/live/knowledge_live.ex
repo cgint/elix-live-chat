@@ -21,7 +21,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
       |> assign(:conversion_status, %{})
       |> allow_upload(:knowledge_files,
         accept: ~w(.pdf .mht .mhtml),
-        max_entries: 5,
+        max_entries: 50,
         max_file_size: 10_000_000
       )
 
