@@ -22,6 +22,9 @@ defmodule LiveAiChatWeb.Router do
       live "/chat/:chat_id", ChatLive
       live "/knowledge", KnowledgeLive
     end
+
+    # Route for serving uploaded PDF files
+    get "/files/:filename", PageController, :serve_file
   end
 
   # Return a map of values to put in the live session. We only forward

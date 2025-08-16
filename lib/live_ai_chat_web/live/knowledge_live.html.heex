@@ -239,6 +239,25 @@
                     <% end %>
                   <% end %>
                 <% end %>
+                <%= if is_nil(conv_status) do %>
+                  <a
+                    href={~p"/files/#{filename}"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center w-8 h-8 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded"
+                    title="Open PDF"
+                  >
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                      <path
+                        fill-rule="evenodd"
+                        d="M.458 10C1.732 5.943 5.522 3 10 3c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.478 0-8.268-2.943-9.542-7z"
+                        clip-rule="evenodd"
+                      >
+                      </path>
+                    </svg>
+                  </a>
+                <% end %>
                 <button
                   phx-click="delete-file"
                   phx-value-filename={filename}
