@@ -73,8 +73,9 @@ defmodule LiveAiChatWeb.KnowledgeLive do
           :mht ->
             case FileStorage.save_file(safe_filename, binary_content) do
               :ok ->
-                # Create immediate metadata for MHT with source filename
-                TagStorage.create_immediate_metadata(safe_filename, safe_filename)
+                # Create immediate metadata using target PDF filename
+                pdf_filename = mht_to_pdf_filename(safe_filename)
+                TagStorage.create_immediate_metadata(pdf_filename, safe_filename)
                 # Kick off conversion in background
                 start_mht_conversion(safe_filename, binary_content)
                 {:ok, safe_filename}
@@ -201,18 +202,24 @@ defmodule LiveAiChatWeb.KnowledgeLive do
   end
 
   @impl true
-  def handle_event("retry-conversion", %{"filename" => mht_filename}, socket) do
+  def handle_event("retry-conversion", %{"filename" => display_filename}, socket) do
     # Reset status to converting and re-run conversion using the stored MHT bytes
-    TagStorage.update_metadata(mht_filename, %{"status" => "converting"})
+    # display_filename is the PDF filename shown in UI, need to find the MHT source
+    meta = TagStorage.get_extraction(display_filename)
+    mht_filename = Map.get(meta, "filename_mht")
 
-    mht_binary =
-      case FileStorage.read_file(mht_filename) do
-        {:ok, bin} -> bin
-        _ -> <<>>
+    if mht_filename do
+      TagStorage.update_metadata(display_filename, %{"status" => "converting"})
+
+      mht_binary =
+        case FileStorage.read_file(mht_filename) do
+          {:ok, bin} -> bin
+          _ -> <<>>
+        end
+
+      if byte_size(mht_binary) > 0 do
+        start_mht_conversion(mht_filename, mht_binary)
       end
-
-    if byte_size(mht_binary) > 0 do
-      start_mht_conversion(mht_filename, mht_binary)
     end
 
     {:noreply, assign_files_and_tags(socket)}
@@ -321,9 +328,20 @@ defmodule LiveAiChatWeb.KnowledgeLive do
     end
   end
 
+  # Convert MHT filename to target PDF filename (same logic as MhtConverter)
+  defp mht_to_pdf_filename(mht_filename) do
+    base = mht_filename |> Path.basename() |> Path.rootname()
+    FileStorage.safe_filename(base <> ".pdf")
+  end
+
   defp start_mht_conversion(mht_filename, mht_binary) do
     # Track status in UI via PubSub updates; initial status is implicit after upload
     Task.Supervisor.start_child(LiveAiChat.TaskSupervisor, fn ->
+      # Helper to convert MHT filename to PDF filename within task
+      mht_to_pdf_fn = fn mht_name ->
+        base = mht_name |> Path.basename() |> Path.rootname()
+        FileStorage.safe_filename(base <> ".pdf")
+      end
       max_attempts = Application.get_env(:live_ai_chat, :mht_converter_max_attempts, 3)
       base_delay_ms = Application.get_env(:live_ai_chat, :mht_converter_backoff_ms, 2_000)
 
@@ -333,7 +351,9 @@ defmodule LiveAiChatWeb.KnowledgeLive do
             case FileStorage.save_file(pdf_filename, pdf_binary) do
               :ok ->
                 # Update metadata to include PDF filename and change status
-                TagStorage.update_metadata(mht_filename, %{
+                # Metadata is stored under PDF filename, not MHT filename
+                target_pdf_name = mht_to_pdf_fn.(mht_filename)
+                TagStorage.update_metadata(target_pdf_name, %{
                   "filename" => pdf_filename,
                   "status" => "extracting"
                 })
@@ -348,7 +368,8 @@ defmodule LiveAiChatWeb.KnowledgeLive do
 
               {:error, reason} ->
                 # Update metadata to show conversion failed
-                TagStorage.update_metadata(mht_filename, %{
+                target_pdf_name = mht_to_pdf_fn.(mht_filename)
+                TagStorage.update_metadata(target_pdf_name, %{
                   "status" => "conversion_failed",
                   "error" => inspect(reason)
                 })
@@ -368,7 +389,8 @@ defmodule LiveAiChatWeb.KnowledgeLive do
               fun.(attempt + 1, fun)
             else
               # Update metadata to show conversion failed after retries
-              TagStorage.update_metadata(mht_filename, %{
+              target_pdf_name = mht_to_pdf_fn.(mht_filename)
+              TagStorage.update_metadata(target_pdf_name, %{
                 "status" => "conversion_failed",
                 "error" => inspect(reason)
               })

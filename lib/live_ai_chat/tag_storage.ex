@@ -192,7 +192,7 @@ defmodule LiveAiChat.TagStorage do
         metadata_files =
           files
           |> Enum.filter(&String.ends_with?(&1, ".meta.json"))
-          |> Enum.map(&String.replace_suffix(&1, ".meta.json", ""))
+          |> Enum.map(&String.replace_suffix(&1, ".meta.json", ".pdf"))
 
         {:reply, metadata_files, state}
 
@@ -247,7 +247,9 @@ defmodule LiveAiChat.TagStorage do
   end
 
   defp meta_path(filename) do
-    Path.join(current_upload_dir(), "#{filename}.meta.json")
+    # Remove .pdf extension if present to avoid file.pdf.meta.json
+    base_name = Path.rootname(filename, ".pdf")
+    Path.join(current_upload_dir(), "#{base_name}.meta.json")
   end
 
   defp read_meta(filename) do
