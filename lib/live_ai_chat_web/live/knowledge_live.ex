@@ -59,29 +59,39 @@ defmodule LiveAiChatWeb.KnowledgeLive do
 
         case determine_upload_kind(safe_filename) do
           :pdf ->
-            case FileStorage.save_file(safe_filename, binary_content) do
-              :ok ->
-                # Create immediate metadata for PDF
-                TagStorage.create_immediate_metadata(safe_filename)
-                Extractor.enqueue(safe_filename, binary_content)
-                {:ok, safe_filename}
+            # Check if metadata already exists for this PDF
+            if metadata_exists?(safe_filename) do
+              {:ok, {:skipped, safe_filename}}
+            else
+              case FileStorage.save_file(safe_filename, binary_content) do
+                :ok ->
+                  # Create immediate metadata for PDF
+                  TagStorage.create_immediate_metadata(safe_filename)
+                  Extractor.enqueue(safe_filename, binary_content)
+                  {:ok, safe_filename}
 
-              {:error, reason} ->
-                {:postpone, {:error, reason}}
+                {:error, reason} ->
+                  {:postpone, {:error, reason}}
+              end
             end
 
           :mht ->
-            case FileStorage.save_file(safe_filename, binary_content) do
-              :ok ->
-                # Create immediate metadata using target PDF filename
-                pdf_filename = mht_to_pdf_filename(safe_filename)
-                TagStorage.create_immediate_metadata(pdf_filename, safe_filename)
-                # Kick off conversion in background
-                start_mht_conversion(safe_filename, binary_content)
-                {:ok, safe_filename}
+            # Check if metadata already exists for the target PDF
+            pdf_filename = mht_to_pdf_filename(safe_filename)
+            if metadata_exists?(pdf_filename) do
+              {:ok, {:skipped, safe_filename}}
+            else
+              case FileStorage.save_file(safe_filename, binary_content) do
+                :ok ->
+                  # Create immediate metadata using target PDF filename
+                  TagStorage.create_immediate_metadata(pdf_filename, safe_filename)
+                  # Kick off conversion in background
+                  start_mht_conversion(safe_filename, binary_content)
+                  {:ok, safe_filename}
 
-              {:error, reason} ->
-                {:postpone, {:error, reason}}
+                {:error, reason} ->
+                  {:postpone, {:error, reason}}
+              end
             end
         end
       end)
@@ -91,11 +101,30 @@ defmodule LiveAiChatWeb.KnowledgeLive do
         {:noreply, put_flash(socket, :error, "No files were uploaded")}
 
       files when is_list(files) ->
+        # Separate skipped files from processed files
+        {skipped_files, processed_files} = 
+          Enum.reduce(files, {[], []}, fn
+            {:skipped, filename}, {skipped, processed} -> {[filename | skipped], processed}
+            filename, {skipped, processed} -> {skipped, [filename | processed]}
+          end)
+        
+        # Build flash message
+        flash_message = 
+          case {length(processed_files), length(skipped_files)} do
+            {0, 0} -> "No files processed"
+            {processed_count, 0} -> "#{processed_count} file(s) uploaded successfully"
+            {0, skipped_count} -> "#{skipped_count} file(s) skipped (already exist)"
+            {processed_count, skipped_count} -> 
+              "#{processed_count} file(s) uploaded, #{skipped_count} skipped (already exist)"
+          end
+        
+        all_files = processed_files ++ skipped_files
+        
         {:noreply,
          socket
-         |> update(:uploaded_files, &(&1 ++ files))
+         |> update(:uploaded_files, &(&1 ++ all_files))
          |> assign_files_and_tags()
-         |> put_flash(:info, "#{length(files)} file(s) uploaded successfully")}
+         |> put_flash(:info, flash_message)}
     end
   end
 
@@ -162,15 +191,15 @@ defmodule LiveAiChatWeb.KnowledgeLive do
     metadata = TagStorage.get_extraction(filename)
     mht_filename = Map.get(metadata, "filename_mht")
     pdf_filename = Map.get(metadata, "filename")
-    
+
     # Collect all files to delete
     files_to_delete = []
     files_to_delete = if mht_filename, do: [mht_filename | files_to_delete], else: files_to_delete
     files_to_delete = if pdf_filename, do: [pdf_filename | files_to_delete], else: files_to_delete
-    
+
     # Also try to delete the display filename if it's different
     files_to_delete = if filename not in files_to_delete, do: [filename | files_to_delete], else: files_to_delete
-    
+
     # Attempt to delete all related files
     deletion_results = Enum.map(files_to_delete, fn file ->
       case FileStorage.delete_file(file) do
@@ -179,20 +208,20 @@ defmodule LiveAiChatWeb.KnowledgeLive do
         {:error, reason} -> {:error, {file, reason}}
       end
     end)
-    
+
     # Check if any deletions failed
     failed_deletions = Enum.filter(deletion_results, fn
       {:error, _} -> true
       _ -> false
     end)
-    
+
     case failed_deletions do
       [] ->
         # All deletions successful, clean up tags and metadata
         TagStorage.remove_tags_for_file(filename)
-        
+
         deleted_files = Enum.map(deletion_results, fn {:ok, file} -> file end)
-        
+
         {:noreply,
          socket
          |> assign_files_and_tags()
@@ -200,7 +229,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
          |> assign(:file_metadata, %{})
          |> assign(:new_tags, "")
          |> put_flash(:info, "Deleted #{length(deleted_files)} related file(s)")}
-      
+
       errors ->
         error_details = Enum.map(errors, fn {:error, {file, reason}} -> "#{file}: #{inspect(reason)}" end)
         {:noreply, put_flash(socket, :error, "Failed to delete some files: #{Enum.join(error_details, ", ")}")}
@@ -341,14 +370,6 @@ defmodule LiveAiChatWeb.KnowledgeLive do
     end
   end
 
-  # Helper function to determine source type for UI display
-  defp get_source_type(meta) do
-    cond do
-      Map.has_key?(meta, "filename_mht") -> "mht"
-      true -> "pdf"
-    end
-  end
-
   # -- MHT Conversion helpers -------------------------------------------------
   defp determine_upload_kind(filename) do
     case Path.extname(String.downcase(filename)) do
@@ -363,6 +384,13 @@ defmodule LiveAiChatWeb.KnowledgeLive do
   defp mht_to_pdf_filename(mht_filename) do
     base = mht_filename |> Path.basename() |> Path.rootname()
     FileStorage.safe_filename(base <> ".pdf")
+  end
+
+  # Check if metadata already exists for a given filename
+  defp metadata_exists?(filename) do
+    metadata = TagStorage.get_extraction(filename)
+    # Consider metadata exists if it has any content (not just an empty map)
+    metadata != %{} and map_size(metadata) > 0
   end
 
   defp start_mht_conversion(mht_filename, mht_binary) do
