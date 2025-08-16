@@ -85,44 +85,6 @@ defmodule LiveAiChatWeb.Components.Navigation do
 
               <!-- Quick Actions & User Menu -->
           <div class="flex items-center space-x-3">
-            <%= if @current_page == :chat do %>
-              <!-- Quick link to upload files -->
-              <.link
-                navigate={~p"/knowledge"}
-                class="inline-flex items-center px-3 py-1.5 text-sm text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-md transition-colors duration-200"
-                title="Upload new files"
-              >
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  >
-                  </path>
-                </svg>
-                Upload Files
-              </.link>
-            <% else %>
-              <!-- Quick link back to chat -->
-              <.link
-                navigate={~p"/"}
-                class="inline-flex items-center px-3 py-1.5 text-sm text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-md transition-colors duration-200"
-                title="Back to chat"
-              >
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.013 8.013 0 01-7-4L3 20l4-4a8.003 8.003 0 01-1-4c0-4.418 3.582-8 8-8s8 3.582 8 8z"
-                  >
-                  </path>
-                </svg>
-                Back to Chat
-              </.link>
-            <% end %>
-
             <!-- User Menu -->
             <%= if @current_user do %>
               <div class="flex items-center space-x-2">
@@ -137,9 +99,6 @@ defmodule LiveAiChatWeb.Components.Navigation do
                       </span>
                     </div>
                   <% end %>
-                  <span class="text-sm text-gray-700 hidden sm:block">
-                    <%= @current_user.name || @current_user.email %>
-                  </span>
                 </div>
                 <!-- Logout Form -->
                 <form action="/auth/logout" method="post" class="inline">
@@ -157,7 +116,6 @@ defmodule LiveAiChatWeb.Components.Navigation do
                         d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                       />
                     </svg>
-                    Sign out
                   </button>
                 </form>
               </div>
