@@ -52,7 +52,9 @@ defmodule LiveAiChat.Knowledge.Extractor do
 
     case extract_content(filename, binary_content) do
       {:ok, metadata} ->
-        LiveAiChat.TagStorage.save_extraction(filename, metadata)
+        # Update metadata to include extraction results and mark as ready
+        extraction_metadata = Map.merge(metadata, %{"status" => "ready"})
+        LiveAiChat.TagStorage.save_extraction(filename, extraction_metadata)
 
         # Assign extracted topics as initial tags for the file
         case assign_topics_as_tags(filename, metadata) do
@@ -78,6 +80,11 @@ defmodule LiveAiChat.Knowledge.Extractor do
 
       {:error, reason} ->
         Logger.error("Content extraction failed for #{filename}: #{inspect(reason)}")
+        # Update metadata to show extraction failed
+        LiveAiChat.TagStorage.update_metadata(filename, %{
+          "status" => "extraction_failed",
+          "error" => inspect(reason)
+        })
         {:error, reason}
     end
   end
@@ -92,9 +99,6 @@ defmodule LiveAiChat.Knowledge.Extractor do
 
       :markdown ->
         extract_from_markdown(filename, binary_content)
-
-      unsupported ->
-        {:error, {:unsupported_file_type, unsupported}}
     end
   end
 

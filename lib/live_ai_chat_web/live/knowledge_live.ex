@@ -18,7 +18,6 @@ defmodule LiveAiChatWeb.KnowledgeLive do
       |> assign(:new_tags, "")
       |> assign(:show_modal, false)
       |> assign(:modal_meta, %{})
-      |> assign(:conversion_status, %{})
       |> assign(:current_user, Map.get(session, "user"))
       |> allow_upload(:knowledge_files,
         accept: ~w(.pdf .mht .mhtml),
@@ -62,6 +61,8 @@ defmodule LiveAiChatWeb.KnowledgeLive do
           :pdf ->
             case FileStorage.save_file(safe_filename, binary_content) do
               :ok ->
+                # Create immediate metadata for PDF
+                TagStorage.create_immediate_metadata(safe_filename)
                 Extractor.enqueue(safe_filename, binary_content)
                 {:ok, safe_filename}
 
@@ -72,6 +73,8 @@ defmodule LiveAiChatWeb.KnowledgeLive do
           :mht ->
             case FileStorage.save_file(safe_filename, binary_content) do
               :ok ->
+                # Create immediate metadata for MHT with source filename
+                TagStorage.create_immediate_metadata(safe_filename, safe_filename)
                 # Kick off conversion in background
                 start_mht_conversion(safe_filename, binary_content)
                 {:ok, safe_filename}
@@ -87,24 +90,11 @@ defmodule LiveAiChatWeb.KnowledgeLive do
         {:noreply, put_flash(socket, :error, "No files were uploaded")}
 
       files when is_list(files) ->
-        # Mark any uploaded MHT files as converting so they are visible immediately
-        new_conversion_status =
-          Enum.reduce(files, socket.assigns.conversion_status, fn fname, acc ->
-            case determine_upload_kind(fname) do
-              :mht -> Map.put(acc, fname, :converting)
-              _ -> acc
-            end
-          end)
-
         {:noreply,
          socket
-         |> assign(:conversion_status, new_conversion_status)
          |> update(:uploaded_files, &(&1 ++ files))
          |> assign_files_and_tags()
          |> put_flash(:info, "#{length(files)} file(s) uploaded successfully")}
-
-      {:error, reason} ->
-        {:noreply, put_flash(socket, :error, "Upload failed: #{inspect(reason)}")}
     end
   end
 
@@ -213,7 +203,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
   @impl true
   def handle_event("retry-conversion", %{"filename" => mht_filename}, socket) do
     # Reset status to converting and re-run conversion using the stored MHT bytes
-    new_status = Map.put(socket.assigns.conversion_status, mht_filename, :converting)
+    TagStorage.update_metadata(mht_filename, %{"status" => "converting"})
 
     mht_binary =
       case FileStorage.read_file(mht_filename) do
@@ -225,7 +215,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
       start_mht_conversion(mht_filename, mht_binary)
     end
 
-    {:noreply, assign(socket, :conversion_status, new_status)}
+    {:noreply, assign_files_and_tags(socket)}
   end
 
   @impl true
@@ -254,12 +244,10 @@ defmodule LiveAiChatWeb.KnowledgeLive do
   def handle_info({:conversion_done, mht_filename, pdf_filename}, socket) do
     meta = TagStorage.get_extraction(pdf_filename)
     new_meta_map = Map.put(socket.assigns.file_meta_map, pdf_filename, meta)
-    conversion_status = Map.delete(socket.assigns.conversion_status, mht_filename)
 
     socket =
       socket
       |> assign(:file_meta_map, new_meta_map)
-      |> assign(:conversion_status, conversion_status)
       |> assign_files_and_tags()
       |> put_flash(:info, "Converted #{mht_filename} to #{pdf_filename}")
 
@@ -268,22 +256,20 @@ defmodule LiveAiChatWeb.KnowledgeLive do
 
   @impl true
   def handle_info({:conversion_failed, mht_filename, reason}, socket) do
-    conversion_status = Map.put(socket.assigns.conversion_status, mht_filename, {:failed, reason})
-
     {:noreply,
      socket
-     |> assign(:conversion_status, conversion_status)
+     |> assign_files_and_tags()
      |> put_flash(:error, "Conversion failed for #{mht_filename}: #{inspect(reason)}")}
   end
 
   # Helper functions
 
   defp assign_files_and_tags(socket) do
-    pdf_files = FileStorage.list_pdf_files()
-    mht_in_ui = socket.assigns[:conversion_status] |> Map.keys()
+    # Get all files that have metadata (immediately created upon upload)
+    all_metadata_files = TagStorage.list_all_metadata_files()
 
     socket
-    |> assign(:files, pdf_files ++ mht_in_ui)
+    |> assign(:files, all_metadata_files)
     |> assign(:tags, TagStorage.get_all_tags())
   end
 
@@ -309,6 +295,22 @@ defmodule LiveAiChatWeb.KnowledgeLive do
   defp error_to_string(:not_accepted), do: "File type not accepted (.pdf, .mht, .mhtml)"
   defp error_to_string(error), do: "Upload error: #{inspect(error)}"
 
+  # Helper function to get the display filename for UI
+  defp get_display_filename(filename, meta) do
+    case Map.get(meta, "filename") do
+      nil -> filename  # Show original filename if no PDF filename available
+      pdf_filename -> pdf_filename  # Show PDF filename if available
+    end
+  end
+
+  # Helper function to determine source type for UI display
+  defp get_source_type(meta) do
+    cond do
+      Map.has_key?(meta, "filename_mht") -> "mht"
+      true -> "pdf"
+    end
+  end
+
   # -- MHT Conversion helpers -------------------------------------------------
   defp determine_upload_kind(filename) do
     case Path.extname(String.downcase(filename)) do
@@ -330,6 +332,12 @@ defmodule LiveAiChatWeb.KnowledgeLive do
           {:ok, %{pdf_filename: pdf_filename, pdf_binary: pdf_binary}} ->
             case FileStorage.save_file(pdf_filename, pdf_binary) do
               :ok ->
+                # Update metadata to include PDF filename and change status
+                TagStorage.update_metadata(mht_filename, %{
+                  "filename" => pdf_filename,
+                  "status" => "extracting"
+                })
+
                 Extractor.enqueue(pdf_filename, pdf_binary)
 
                 Phoenix.PubSub.broadcast(
@@ -339,6 +347,12 @@ defmodule LiveAiChatWeb.KnowledgeLive do
                 )
 
               {:error, reason} ->
+                # Update metadata to show conversion failed
+                TagStorage.update_metadata(mht_filename, %{
+                  "status" => "conversion_failed",
+                  "error" => inspect(reason)
+                })
+
                 Phoenix.PubSub.broadcast(
                   LiveAiChat.PubSub,
                   "knowledge",
@@ -353,6 +367,12 @@ defmodule LiveAiChatWeb.KnowledgeLive do
               Process.sleep(delay)
               fun.(attempt + 1, fun)
             else
+              # Update metadata to show conversion failed after retries
+              TagStorage.update_metadata(mht_filename, %{
+                "status" => "conversion_failed",
+                "error" => inspect(reason)
+              })
+
               Phoenix.PubSub.broadcast(
                 LiveAiChat.PubSub,
                 "knowledge",

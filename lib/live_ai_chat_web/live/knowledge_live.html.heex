@@ -42,6 +42,37 @@
         </div>
       </div>
 
+<!-- Upload button -->
+      <div class="mt-6 text-center">
+        <button
+          type="submit"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={@uploads.knowledge_files.entries == []}
+        >
+          <svg
+            class="inline-block w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            >
+            </path>
+          </svg>
+          Upload Selected Files
+        </button>
+      </div>
+
+      <%= for err <- upload_errors(@uploads.knowledge_files) do %>
+        <div class="mt-2 text-sm text-red-600">
+          {error_to_string(err)}
+        </div>
+      <% end %>
+
       <%= for entry <- @uploads.knowledge_files.entries do %>
         <div class="mt-4 p-3 bg-gray-50 rounded border">
           <div class="flex items-center justify-between">
@@ -71,37 +102,7 @@
           </div>
         </div>
       <% end %>
-
-      <%= for err <- upload_errors(@uploads.knowledge_files) do %>
-        <div class="mt-2 text-sm text-red-600">
-          {error_to_string(err)}
-        </div>
-      <% end %>
       
-<!-- Upload button -->
-      <div class="mt-6 text-center">
-        <button
-          type="submit"
-          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={@uploads.knowledge_files.entries == []}
-        >
-          <svg
-            class="inline-block w-5 h-5 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-            >
-            </path>
-          </svg>
-          Upload Selected Files
-        </button>
-      </div>
     </form>
   </div>
   
@@ -131,95 +132,108 @@
       <div class="space-y-4">
         <%= for filename <- @files do %>
           <% meta = Map.get(@file_meta_map, filename, %{}) %>
-          <% extraction_complete = meta != %{} and Map.has_key?(meta, "summary") %>
+          <% status = Map.get(meta, "status", "unknown") %>
+          <% extraction_complete = status == "ready" %>
           <% file_tags = Map.get(@tags, filename, []) %>
-          <% conv_status = Map.get(@conversion_status, filename) %>
+          <% display_filename = get_display_filename(filename, meta) %>
+          <% source_type = get_source_type(meta) %>
 
           <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
             <!-- First line: Filename and status -->
             <div class="flex items-center justify-between mb-2">
               <div class="flex items-center space-x-3">
-                <h3 class="text-lg font-medium text-gray-800">{filename}</h3>
+                <h3 class="text-lg font-medium text-gray-800">{display_filename}</h3>
                 
-<!-- Extraction status icon -->
-                <%= if conv_status == :converting do %>
-                  <span
-                    class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 text-yellow-800"
-                    title="Converting to PDF..."
-                  >
-                    <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                      <circle
-                        class="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        stroke-width="4"
-                      >
-                      </circle>
-                      <path
-                        class="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      >
-                      </path>
-                    </svg>
-                  </span>
-                <% else %>
-                  <%= if match?({:failed, _}, conv_status) do %>
+<!-- Status icon based on metadata status -->
+                <%= case status do %>
+                  <% "converting" -> %>
+                    <span
+                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 text-yellow-800"
+                      title="Converting to PDF..."
+                    >
+                      <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                        <circle
+                          class="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          stroke-width="4"
+                        >
+                        </circle>
+                        <path
+                          class="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        >
+                        </path>
+                      </svg>
+                    </span>
+                  <% "conversion_failed" -> %>
                     <span
                       class="inline-flex items-center justify-center px-2 h-6 rounded-full bg-red-100 text-red-800 text-xs"
                       title="Conversion failed"
                     >
                       Failed
                     </span>
-                  <% else %>
-                    <%= if extraction_complete do %>
-                      <span
-                        class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-800"
-                        title="Extraction complete"
-                      >
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </span>
-                    <% else %>
-                      <span
-                        class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 text-yellow-800"
-                        title="Extracting content..."
-                      >
-                        <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                          <circle
-                            class="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            stroke-width="4"
-                          >
-                          </circle>
-                          <path
-                            class="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          >
-                          </path>
-                        </svg>
-                      </span>
-                    <% end %>
-                  <% end %>
+                  <% "extracting" -> %>
+                    <span
+                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 text-yellow-800"
+                      title="Extracting content..."
+                    >
+                      <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                        <circle
+                          class="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          stroke-width="4"
+                        >
+                        </circle>
+                        <path
+                          class="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        >
+                        </path>
+                      </svg>
+                    </span>
+                  <% "extraction_failed" -> %>
+                    <span
+                      class="inline-flex items-center justify-center px-2 h-6 rounded-full bg-red-100 text-red-800 text-xs"
+                      title="Extraction failed"
+                    >
+                      Extract Failed
+                    </span>
+                  <% "ready" -> %>
+                    <span
+                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-800"
+                      title="Ready"
+                    >
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          fill-rule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  <% _other -> %>
+                    <span
+                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-800"
+                      title="Unknown status"
+                    >
+                      ?
+                    </span>
                 <% end %>
               </div>
 
               <div class="flex items-center space-x-2">
-                <%= if conv_status == :converting do %>
-                  <span class="text-xs text-gray-500">Converting to PDF…</span>
-                <% else %>
-                  <%= if match?({:failed, _}, conv_status) do %>
+                <%= case status do %>
+                  <% "converting" -> %>
+                    <span class="text-xs text-gray-500">Converting to PDF…</span>
+                  <% "conversion_failed" -> %>
                     <button
                       phx-click="retry-conversion"
                       phx-value-filename={filename}
@@ -227,21 +241,24 @@
                     >
                       Retry conversion
                     </button>
-                  <% else %>
-                    <%= if extraction_complete do %>
-                      <button
-                        phx-click="show-details"
-                        phx-value-filename={filename}
-                        class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium py-1 px-3 rounded"
-                      >
-                        Info
-                      </button>
-                    <% end %>
-                  <% end %>
+                  <% "extracting" -> %>
+                    <span class="text-xs text-gray-500">Extracting content…</span>
+                  <% "extraction_failed" -> %>
+                    <span class="text-xs text-red-500">Extraction failed</span>
+                  <% "ready" -> %>
+                    <button
+                      phx-click="show-details"
+                      phx-value-filename={filename}
+                      class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium py-1 px-3 rounded"
+                    >
+                      Info
+                    </button>
+                  <% _other -> %>
+                    <span class="text-xs text-gray-500">Processing…</span>
                 <% end %>
-                <%= if is_nil(conv_status) do %>
+                <%= if status == "ready" and Map.has_key?(meta, "filename") do %>
                   <a
-                    href={~p"/files/#{filename}"}
+                    href={~p"/files/#{meta["filename"]}"}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="inline-flex items-center justify-center w-8 h-8 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded"
@@ -284,7 +301,7 @@
 <!-- Second line: Tags and metadata preview -->
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-2">
-                <%= if conv_status do %>
+                <%= if source_type == "mht" do %>
                   <span class="text-sm text-gray-500">Source: MHT</span>
                 <% else %>
                   <%= if file_tags != [] do %>
@@ -301,13 +318,13 @@
                 <% end %>
               </div>
 
-              <%= if extraction_complete and is_nil(conv_status) do %>
+              <%= if extraction_complete do %>
                 <div class="text-sm text-gray-600">
                   <%= if Map.has_key?(meta, "word_count") do %>
                     <span>{meta["word_count"]} words</span>
                   <% end %>
-                  <%= if Map.has_key?(meta, "read_time") do %>
-                    <span class="ml-2">• {meta["read_time"]} min read</span>
+                  <%= if Map.has_key?(meta, "estimatedReadTime") do %>
+                    <span class="ml-2">• {meta["estimatedReadTime"]}</span>
                   <% end %>
                 </div>
               <% end %>

@@ -36,6 +36,18 @@ defmodule LiveAiChat.TagStorage do
   def remove_tags_for_file(filename),
     do: GenServer.call(__MODULE__, {:remove_tags, filename})
 
+  @spec create_immediate_metadata(String.t(), String.t() | nil) :: :ok
+  def create_immediate_metadata(filename, mht_filename \\ nil),
+    do: GenServer.call(__MODULE__, {:create_immediate_metadata, filename, mht_filename})
+
+  @spec update_metadata(String.t(), map()) :: :ok
+  def update_metadata(filename, updates),
+    do: GenServer.call(__MODULE__, {:update_metadata, filename, updates})
+
+  @spec list_all_metadata_files() :: [String.t()]
+  def list_all_metadata_files(),
+    do: GenServer.call(__MODULE__, :list_metadata_files)
+
   # -- GenServer callbacks --------------------------------------------------
 
   @impl true
@@ -126,10 +138,78 @@ defmodule LiveAiChat.TagStorage do
   end
 
   @impl true
-  def handle_cast({:save_meta, filename, data}, state) do
+  def handle_call({:create_immediate_metadata, filename, mht_filename}, _from, state) do
+    now = DateTime.utc_now() |> DateTime.to_iso8601()
+
+    base_metadata = %{
+      "uploadedAt" => now,
+      "status" => if(mht_filename, do: "converting", else: "extracting")
+    }
+
+    metadata =
+      if mht_filename do
+        Map.put(base_metadata, "filename_mht", mht_filename)
+      else
+        Map.put(base_metadata, "filename", filename)
+      end
+
     meta_path = meta_path(filename)
 
-    case write_json(meta_path, data) do
+    case write_json(meta_path, metadata) do
+      :ok ->
+        Logger.debug("Created immediate metadata for #{filename}")
+        {:reply, :ok, state}
+
+      {:error, reason} ->
+        Logger.error("Failed to create immediate metadata for #{filename}: #{inspect(reason)}")
+        {:reply, {:error, reason}, state}
+    end
+  end
+
+  @impl true
+  def handle_call({:update_metadata, filename, updates}, _from, state) do
+    existing_metadata = read_meta(filename)
+    updated_metadata = Map.merge(existing_metadata, updates)
+    meta_path = meta_path(filename)
+
+    case write_json(meta_path, updated_metadata) do
+      :ok ->
+        Logger.debug("Updated metadata for #{filename}")
+        {:reply, :ok, state}
+
+      {:error, reason} ->
+        Logger.error("Failed to update metadata for #{filename}: #{inspect(reason)}")
+        {:reply, {:error, reason}, state}
+    end
+  end
+
+  @impl true
+  def handle_call(:list_metadata_files, _from, state) do
+    dir = current_upload_dir()
+
+    case File.ls(dir) do
+      {:ok, files} ->
+        metadata_files =
+          files
+          |> Enum.filter(&String.ends_with?(&1, ".meta.json"))
+          |> Enum.map(&String.replace_suffix(&1, ".meta.json", ""))
+
+        {:reply, metadata_files, state}
+
+      {:error, _} ->
+        {:reply, [], state}
+    end
+  end
+
+  @impl true
+  def handle_cast({:save_meta, filename, data}, state) do
+    # Update existing metadata instead of overwriting
+    existing_metadata = read_meta(filename)
+    merged_metadata = Map.merge(existing_metadata, data)
+
+    meta_path = meta_path(filename)
+
+    case write_json(meta_path, merged_metadata) do
       :ok ->
         Logger.debug("Saved metadata for #{filename}")
         broadcast_extraction_done(filename)
@@ -190,12 +270,12 @@ defmodule LiveAiChat.TagStorage do
       :ok ->
         :ok
 
-      :error ->
+      {:error, reason} ->
         Logger.warning(
-          "Failed to broadcast extraction_done for #{filename}: PubSub may not be ready or no subscribers"
+          "Failed to broadcast extraction_done for #{filename}: #{inspect(reason)}"
         )
 
-        :error
+        {:error, reason}
     end
   end
 
