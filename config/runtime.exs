@@ -41,6 +41,13 @@ if service_account_json = System.get_env("GOOGLE_SERVICE_ACCOUNT_JSON") do
   config :live_ai_chat, :google_service_account_json, Jason.decode!(service_account_json)
 end
 
+# Configure Google OAuth credentials for production - loaded at runtime
+if config_env() == :prod do
+  config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+    client_id: System.get_env("GOOGLE_CLIENT_ID"),
+    client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
+end
+
 if config_env() == :prod do
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you

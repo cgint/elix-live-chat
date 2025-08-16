@@ -42,3 +42,5 @@ epub/
 .codegiant/
 
 priv/data/
+
+dev.env

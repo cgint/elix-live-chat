@@ -10,12 +10,33 @@ defmodule LiveAiChatWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :protected do
+    plug :browser
+    plug LiveAiChatWeb.Plugs.RequireAuth
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
 
+  scope "/auth", LiveAiChatWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+    post "/logout", AuthController, :logout
+  end
+
   scope "/", LiveAiChatWeb do
     pipe_through :browser
+
+    live_session :public, session: {__MODULE__, :session_values, []} do
+      live "/login", LoginLive
+    end
+  end
+
+  scope "/", LiveAiChatWeb do
+    pipe_through :protected
 
     live_session :default, session: {__MODULE__, :session_values, []} do
       live "/", ChatLive
@@ -27,16 +48,18 @@ defmodule LiveAiChatWeb.Router do
     get "/files/:filename", PageController, :serve_file
   end
 
-  # Return a map of values to put in the live session. We only forward
-  # test_pid if present in the Plug session so normal runtime is unaffected.
+  # Return a map of values to put in the live session. We forward both user
+  # and test_pid if present in the Plug session.
   def session_values(%Plug.Conn{private: %{plug_session: plug_session}}) do
-    case Map.get(plug_session, "test_pid") do
-      nil -> %{}
-      pid -> %{"test_pid" => pid}
-    end
+    %{}
+    |> maybe_put("user", Map.get(plug_session, "user"))
+    |> maybe_put("test_pid", Map.get(plug_session, "test_pid"))
   end
 
   def session_values(_conn), do: %{}
+
+  defp maybe_put(map, _key, nil), do: map
+  defp maybe_put(map, key, value), do: Map.put(map, key, value)
 
   # Other scopes may use custom stacks.
   # scope "/api", LiveAiChatWeb do

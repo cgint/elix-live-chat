@@ -9,7 +9,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
   alias LiveAiChat.{FileStorage, TagStorage, Knowledge.Extractor}
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
     socket =
       socket
       |> assign(:uploaded_files, [])
@@ -19,6 +19,7 @@ defmodule LiveAiChatWeb.KnowledgeLive do
       |> assign(:show_modal, false)
       |> assign(:modal_meta, %{})
       |> assign(:conversion_status, %{})
+      |> assign(:current_user, Map.get(session, "user"))
       |> allow_upload(:knowledge_files,
         accept: ~w(.pdf .mht .mhtml),
         max_entries: 50,

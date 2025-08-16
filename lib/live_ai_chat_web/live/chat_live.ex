@@ -4,17 +4,17 @@ defmodule LiveAiChatWeb.ChatLive do
   alias LiveAiChat.{ChatStorageAdapter, ChatStorage, FileStorage, TagStorage}
 
   @impl true
-  def mount(params, %{"test_pid" => test_pid}, socket) do
-    setup(socket, params, test_pid)
+  def mount(params, %{"test_pid" => test_pid} = session, socket) do
+    setup(socket, params, test_pid, Map.get(session, "user"))
   end
 
-  # Fallback mount clause. We extract :test_pid if present to support tests.
+  # Fallback mount clause. We extract :test_pid and :user if present.
   @impl true
   def mount(params, session, socket) do
-    setup(socket, params, Map.get(session, "test_pid"))
+    setup(socket, params, Map.get(session, "test_pid"), Map.get(session, "user"))
   end
 
-  defp setup(socket, params, test_pid) do
+  defp setup(socket, params, test_pid, current_user) do
     # Get chats with metadata from the new storage system
     chats_with_metadata = ChatStorage.list_chats()
     chats = Enum.map(chats_with_metadata, fn {chat_id, _metadata} -> chat_id end)
@@ -61,6 +61,7 @@ defmodule LiveAiChatWeb.ChatLive do
         processing_request: false,
         editing_chat_id: nil,
         test_pid: test_pid,
+        current_user: current_user,
         # Knowledge Pool integration
         available_files: get_available_files(),
         available_tags: get_available_tags(),

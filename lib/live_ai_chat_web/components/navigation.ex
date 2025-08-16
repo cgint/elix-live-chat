@@ -7,6 +7,7 @@ defmodule LiveAiChatWeb.Components.Navigation do
   use LiveAiChatWeb, :verified_routes
 
   attr :current_page, :atom, required: true, doc: "The current page (:chat or :knowledge)"
+  attr :current_user, :map, default: nil, doc: "The currently logged in user"
 
   def navigation_bar(assigns) do
     ~H"""
@@ -29,7 +30,7 @@ defmodule LiveAiChatWeb.Components.Navigation do
               </div>
               <span class="ml-2 text-xl font-bold text-gray-900">LiveAiChat</span>
             </div>
-            
+
     <!-- Navigation Items -->
             <div class="ml-8 flex space-x-1">
               <!-- Chat Tab -->
@@ -55,7 +56,7 @@ defmodule LiveAiChatWeb.Components.Navigation do
                   <div class="ml-2 w-2 h-2 bg-indigo-500 rounded-full"></div>
                 <% end %>
               </.link>
-              
+
     <!-- Knowledge Tab -->
               <.link
                 navigate={~p"/knowledge"}
@@ -81,8 +82,8 @@ defmodule LiveAiChatWeb.Components.Navigation do
               </.link>
             </div>
           </div>
-          
-    <!-- Quick Actions -->
+
+              <!-- Quick Actions & User Menu -->
           <div class="flex items-center space-x-3">
             <%= if @current_page == :chat do %>
               <!-- Quick link to upload files -->
@@ -119,6 +120,54 @@ defmodule LiveAiChatWeb.Components.Navigation do
                   </path>
                 </svg>
                 Back to Chat
+              </.link>
+            <% end %>
+
+            <!-- User Menu -->
+            <%= if @current_user do %>
+              <div class="flex items-center space-x-2">
+                <!-- User Info -->
+                <div class="flex items-center space-x-2">
+                  <%= if @current_user.picture do %>
+                    <img src={@current_user.picture} alt="User avatar" class="h-8 w-8 rounded-full" />
+                  <% else %>
+                    <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                      <span class="text-sm font-medium text-indigo-700">
+                        <%= String.first(@current_user.name || @current_user.email || "?") %>
+                      </span>
+                    </div>
+                  <% end %>
+                  <span class="text-sm text-gray-700 hidden sm:block">
+                    <%= @current_user.name || @current_user.email %>
+                  </span>
+                </div>
+                <!-- Logout Form -->
+                <form action="/auth/logout" method="post" class="inline">
+                  <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
+                  <button
+                    type="submit"
+                    class="inline-flex items-center px-3 py-1.5 text-sm text-gray-600 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200"
+                    title="Sign out"
+                  >
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      />
+                    </svg>
+                    Sign out
+                  </button>
+                </form>
+              </div>
+            <% else %>
+              <!-- Login Link -->
+              <.link
+                href="/login"
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors duration-200"
+              >
+                Login
               </.link>
             <% end %>
           </div>

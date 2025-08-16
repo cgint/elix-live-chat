@@ -43,6 +43,8 @@ epub/
 
 priv/data/
 
+# dev.env
+
 # Do not add ignores specific to your repository here.
 # Add them in a files named .extra_repo_ignores in your repository instead.
 # Contents of .extra_repo_ignores will be prepended to the ignores file in this directory.

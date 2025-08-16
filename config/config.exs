@@ -77,6 +77,12 @@ config :live_ai_chat, LiveAiChatWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :live_ai_chat, LiveAiChat.Mailer, adapter: Swoosh.Adapters.Local
 
+# Configure ueberauth for Google OAuth
+config :ueberauth, Ueberauth,
+  providers: [
+    google: {Ueberauth.Strategy.Google, [default_scope: "email profile"]}
+  ]
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.25.4",
