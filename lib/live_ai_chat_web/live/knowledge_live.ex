@@ -158,21 +158,52 @@ defmodule LiveAiChatWeb.KnowledgeLive do
 
   @impl true
   def handle_event("delete-file", %{"filename" => filename}, socket) do
-    case FileStorage.delete_file(filename) do
-      :ok ->
-        # Also clean up tags and metadata
+    # Get metadata to check for related files
+    metadata = TagStorage.get_extraction(filename)
+    mht_filename = Map.get(metadata, "filename_mht")
+    pdf_filename = Map.get(metadata, "filename")
+    
+    # Collect all files to delete
+    files_to_delete = []
+    files_to_delete = if mht_filename, do: [mht_filename | files_to_delete], else: files_to_delete
+    files_to_delete = if pdf_filename, do: [pdf_filename | files_to_delete], else: files_to_delete
+    
+    # Also try to delete the display filename if it's different
+    files_to_delete = if filename not in files_to_delete, do: [filename | files_to_delete], else: files_to_delete
+    
+    # Attempt to delete all related files
+    deletion_results = Enum.map(files_to_delete, fn file ->
+      case FileStorage.delete_file(file) do
+        :ok -> {:ok, file}
+        {:error, :enoent} -> {:ok, file}  # File already doesn't exist, that's fine
+        {:error, reason} -> {:error, {file, reason}}
+      end
+    end)
+    
+    # Check if any deletions failed
+    failed_deletions = Enum.filter(deletion_results, fn
+      {:error, _} -> true
+      _ -> false
+    end)
+    
+    case failed_deletions do
+      [] ->
+        # All deletions successful, clean up tags and metadata
         TagStorage.remove_tags_for_file(filename)
-
+        
+        deleted_files = Enum.map(deletion_results, fn {:ok, file} -> file end)
+        
         {:noreply,
          socket
          |> assign_files_and_tags()
          |> assign(:selected_file, nil)
          |> assign(:file_metadata, %{})
          |> assign(:new_tags, "")
-         |> put_flash(:info, "File #{filename} deleted")}
-
-      {:error, reason} ->
-        {:noreply, put_flash(socket, :error, "Failed to delete file: #{inspect(reason)}")}
+         |> put_flash(:info, "Deleted #{length(deleted_files)} related file(s)")}
+      
+      errors ->
+        error_details = Enum.map(errors, fn {:error, {file, reason}} -> "#{file}: #{inspect(reason)}" end)
+        {:noreply, put_flash(socket, :error, "Failed to delete some files: #{Enum.join(error_details, ", ")}")}
     end
   end
 
