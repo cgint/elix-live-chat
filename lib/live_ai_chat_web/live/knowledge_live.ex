@@ -102,24 +102,24 @@ defmodule LiveAiChatWeb.KnowledgeLive do
 
       files when is_list(files) ->
         # Separate skipped files from processed files
-        {skipped_files, processed_files} = 
+        {skipped_files, processed_files} =
           Enum.reduce(files, {[], []}, fn
             {:skipped, filename}, {skipped, processed} -> {[filename | skipped], processed}
             filename, {skipped, processed} -> {skipped, [filename | processed]}
           end)
-        
+
         # Build flash message
-        flash_message = 
+        flash_message =
           case {length(processed_files), length(skipped_files)} do
             {0, 0} -> "No files processed"
             {processed_count, 0} -> "#{processed_count} file(s) uploaded successfully"
             {0, skipped_count} -> "#{skipped_count} file(s) skipped (already exist)"
-            {processed_count, skipped_count} -> 
+            {processed_count, skipped_count} ->
               "#{processed_count} file(s) uploaded, #{skipped_count} skipped (already exist)"
           end
-        
+
         all_files = processed_files ++ skipped_files
-        
+
         {:noreply,
          socket
          |> update(:uploaded_files, &(&1 ++ all_files))
